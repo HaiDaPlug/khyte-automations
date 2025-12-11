@@ -21,6 +21,7 @@ khyte-automations/
 │   └── app/
 │       ├── automations/
 │       │   └── page.tsx          # Main marketing site (Swedish)
+│       ├── page.tsx               # Root page (redirects to /automations)
 │       ├── layout.tsx             # Root layout (Swedish metadata)
 │       └── globals.css            # Tailwind v4 config + global styles
 ├── docs/
@@ -179,7 +180,7 @@ npm run dev
 
 ```
 Route (app)
-├── / (root page - default Next.js template)
+├── / (redirects to /automations)
 ├── /_not-found
 └── /automations (main marketing site)
 
@@ -204,7 +205,12 @@ Route (app)
    - Simplified to use system font stack
    - Applied `.main-wrapper` class to body
 
-3. **src/app/automations/page.tsx** (NEW FILE)
+3. **src/app/page.tsx**
+   - Replaced default Next.js starter template (65 lines)
+   - Added redirect to `/automations` using `redirect()` from `next/navigation`
+   - Prepares for future root hub page development
+
+4. **src/app/automations/page.tsx** (NEW FILE)
    - Created full one-page marketing site
    - Implemented 8 sections as React components
    - Functional Formspree contact form
@@ -296,6 +302,11 @@ Before deployment, verify:
 
 ## Version History
 
+- **v1.1** (2025-12-12) - Root page redirect
+  - Replaced default Next.js template with redirect to `/automations`
+  - Root page (`/`) now automatically redirects to main marketing site
+  - Simplified user experience - single entry point
+
 - **v1.0** (2025-12-10) - Initial implementation
   - Created Swedish marketing site at `/automations`
   - Implemented Tailwind v4 configuration
@@ -304,5 +315,5 @@ Before deployment, verify:
 
 ---
 
-**Last Updated**: 2025-12-10
+**Last Updated**: 2025-12-12
 **Status**: Production Ready ✅
