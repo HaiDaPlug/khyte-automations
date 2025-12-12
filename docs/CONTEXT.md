@@ -18,12 +18,18 @@
 ```
 khyte-automations/
 ├── src/
-│   └── app/
-│       ├── automations/
-│       │   └── page.tsx          # Main marketing site (Swedish)
-│       ├── page.tsx               # Root page (redirects to /automations)
-│       ├── layout.tsx             # Root layout (Swedish metadata)
-│       └── globals.css            # Tailwind v4 config + global styles
+│   ├── app/
+│   │   ├── automations/
+│   │   │   └── page.tsx          # Redirects to / (v1.2)
+│   │   ├── cases/
+│   │   │   └── page.tsx          # Cases page (3 case cards)
+│   │   ├── contact/
+│   │   │   └── page.tsx          # Contact page (Formspree form)
+│   │   ├── page.tsx               # Landing page (hero-first)
+│   │   ├── layout.tsx             # Root layout (Swedish metadata)
+│   │   └── globals.css            # Tailwind v4 config + animations
+│   └── components/
+│       └── Nav.tsx                # Shared navigation component
 ├── docs/
 │   └── CONTEXT.md                 # This file
 ├── public/                        # Static assets
@@ -81,9 +87,29 @@ khyte-automations/
 - **Calendly**: `https://calendly.com/hai-khyteteam/30min`
 - **Formspree Endpoint**: `https://formspree.io/f/xzznjaly`
 
+### CSS Animations (v1.2)
+
+Lightweight CSS-only animations added for hero section:
+
+```css
+/* Gradient shift animation */
+@keyframes gradient {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* Floating shapes animation */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
+}
+```
+
+**Usage**: Hero section includes animated gradient background and floating shapes with staggered timing.
+
 ### Form Implementation
 
-The contact form at `/automations#contact` uses **Formspree** for submissions:
+The contact form at `/contact` uses **Formspree** for submissions:
 
 ```html
 <form action="https://formspree.io/f/xzznjaly" method="POST">
@@ -100,18 +126,44 @@ The contact form at `/automations#contact` uses **Formspree** for submissions:
 - No custom JavaScript needed - Formspree handles submission
 - User is redirected to Formspree's thank-you page after submission
 
-## Page Structure - `/automations`
+## Site Structure (v1.2 Multi-Page)
 
-The main marketing site is a single-page application with 8 sections:
+The site now uses a multi-page structure with dedicated pages:
 
-1. **Header** - Sticky navigation with anchor links
-2. **Hero** - Main value proposition + 3 benefit cards
-3. **Services** - Target audiences (bureaus, consultants, Excel-heavy businesses)
-4. **Process** - 3-step methodology (Understand → Test → Implement)
-5. **Cases** - 3 example projects
-6. **About** - Personal introduction about Hai
-7. **Contact** - Functional Formspree form + direct contact options
-8. **Footer** - Copyright and tech stack note
+### `/` - Landing Page (Hero-First)
+1. **Shared Navigation** - Hem / Case / Kontakt
+2. **Hero Section** - Full-screen with slogan + CSS animations (gradient, floating shapes)
+3. **Case Preview** - 3 short case teasers linking to `/cases`
+4. **How I Work** - 3-step process (numbered cards)
+5. **Bottom CTAs** - Links to `/cases` and `/contact`
+
+### `/cases` - Cases List Page
+1. **Shared Navigation** - Hem / Case / Kontakt
+2. **Page Header** - "Case" + subheading
+3. **Cases Grid** - Exactly 3 case cards with Problem/Build/Result format
+4. **Bottom CTA** - Link to `/contact`
+
+**Case Examples**:
+- **Prospektmotor för sälj** - Automated company data to Google Sheets
+- **Research-motor för byrå** - Automated industry/competitor data collection
+- **Interna admin-flöden** - Automated internal workflows and reminders
+
+### `/contact` - Contact Page
+1. **Shared Navigation** - Hem / Case / Kontakt
+2. **Page Header** - "Kontakt" + subheading
+3. **Formspree Form** - name, company (optional), email, message
+4. **Direct Contact** - Email link + Calendly button (uses `<a>` tag, not next/link)
+
+### `/automations` - Redirect
+Server-side redirect to `/` using Next.js `redirect()` function
+
+### Shared Components
+
+**Nav Component** (`src/components/Nav.tsx`):
+- Minimal navigation: Hem / Case / Kontakt
+- Links to: `/` / `/cases` / `/contact`
+- Used on all pages to prevent dead-end feeling
+- Styled with text-sm, muted color, accent hover
 
 ### Design System
 
@@ -180,9 +232,11 @@ npm run dev
 
 ```
 Route (app)
-├── / (redirects to /automations)
+├── / (landing page - hero-first)
 ├── /_not-found
-└── /automations (main marketing site)
+├── /automations (redirects to /)
+├── /cases (3 case cards)
+└── /contact (Formspree form)
 
 ○ (Static) - All routes prerendered as static content
 ```
@@ -197,6 +251,7 @@ Route (app)
    - Added radial gradient background
    - Created utility classes (`.main-wrapper`, `.section`)
    - Enabled smooth scrolling
+   - **v1.2**: Added CSS animations (gradient shift, floating shapes)
 
 2. **src/app/layout.tsx**
    - Changed language to Swedish (`lang="sv"`)
@@ -206,20 +261,34 @@ Route (app)
    - Applied `.main-wrapper` class to body
 
 3. **src/app/page.tsx**
-   - Replaced default Next.js starter template (65 lines)
-   - Added redirect to `/automations` using `redirect()` from `next/navigation`
-   - Prepares for future root hub page development
+   - **v1.0-v1.1**: Redirect to `/automations`
+   - **v1.2**: Hero-first landing page with CSS animations, case previews, process section
 
-4. **src/app/automations/page.tsx** (NEW FILE)
-   - Created full one-page marketing site
-   - Implemented 8 sections as React components
-   - Functional Formspree contact form
-   - All Swedish copy
-   - Responsive Tailwind classes
+4. **src/app/automations/page.tsx**
+   - **v1.0-v1.1**: Full one-page marketing site with 8 sections
+   - **v1.2**: Server-side redirect to `/`
+
+5. **src/app/cases/page.tsx** (NEW in v1.2)
+   - Dedicated cases page with exactly 3 case cards
+   - Each card: Problem / Build / Result format
+   - Links to `/contact` at bottom
+
+6. **src/app/contact/page.tsx** (NEW in v1.2)
+   - Dedicated contact page with Formspree form
+   - Email link and Calendly button (uses `<a>` tag)
+   - 2-column responsive layout
+
+7. **src/components/Nav.tsx** (NEW in v1.2)
+   - Shared navigation component
+   - Links: Hem / Case / Kontakt
+   - Used on all pages
 
 ### Created Directories
 
-- `src/app/automations/` - Houses the main marketing page
+- `src/app/automations/` - Redirect page (v1.0-v1.2)
+- `src/app/cases/` - Cases page (v1.2)
+- `src/app/contact/` - Contact page (v1.2)
+- `src/components/` - Shared components (v1.2)
 - `docs/` - Documentation and context files
 
 ## Metadata & SEO
@@ -274,17 +343,23 @@ These are documented for future reference but not currently implemented:
 
 Before deployment, verify:
 
-- [x] Site loads at `/automations`
-- [x] All 8 sections render correctly
-- [x] Smooth anchor navigation works (#services, #process, etc.)
+**v1.2 Multi-Page:**
+- [x] `/` loads landing page with hero + animations
+- [x] `/cases` loads 3 case cards with Problem/Build/Result
+- [x] `/contact` loads Formspree form + email + Calendly
+- [x] `/automations` redirects to `/`
+- [x] Shared navigation (Hem/Case/Kontakt) appears on all pages
+- [x] CSS animations (gradient, floating shapes) work on hero
 - [x] Contact form submits to Formspree
 - [x] Email link opens mail client (mailto:hai@khyteteam.com)
-- [x] Calendly link opens in new tab
+- [x] Calendly button opens in new tab (uses `<a>` tag)
 - [x] Responsive design works on mobile/tablet/desktop
 - [x] Dark theme applied correctly
 - [x] Swedish copy is accurate
 - [x] No TypeScript errors
+- [x] No ESLint warnings
 - [x] Production build succeeds
+- [x] All routes statically generated
 
 ## Support & Contact
 
@@ -302,9 +377,18 @@ Before deployment, verify:
 
 ## Version History
 
+- **v1.2** (2025-12-12) - Multi-page redesign
+  - Replaced single-page site with multi-page structure
+  - **New pages**: `/` (hero-first landing), `/cases` (3 cards), `/contact` (Formspree form)
+  - **Redirect**: `/automations` now redirects to `/`
+  - **Components**: Created shared `Nav.tsx` component (Hem/Case/Kontakt)
+  - **Animations**: Added lightweight CSS animations (gradient shift, floating shapes)
+  - **Design**: Minimal, premium look with consistent navigation across all pages
+  - **Production ready**: All routes statically generated, no TS/lint errors
+
 - **v1.1** (2025-12-12) - Root page redirect
   - Replaced default Next.js template with redirect to `/automations`
-  - Root page (`/`) now automatically redirects to main marketing site
+  - Root page (`/`) automatically redirects to main marketing site
   - Simplified user experience - single entry point
 
 - **v1.0** (2025-12-10) - Initial implementation
@@ -316,4 +400,4 @@ Before deployment, verify:
 ---
 
 **Last Updated**: 2025-12-12
-**Status**: Production Ready ✅
+**Status**: Production Ready ✅ (v1.2)
