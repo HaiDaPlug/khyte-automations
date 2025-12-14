@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function Nav() {
   return (
-    <nav className="w-full py-8">
+    <nav className="fixed top-0 left-0 right-0 w-full py-8 bg-[var(--color-bg)] z-50 backdrop-blur-sm bg-opacity-95">
       <div className="max-w-[1100px] mx-auto px-6 flex justify-between items-center text-sm font-medium">
         <Link
           href="/"

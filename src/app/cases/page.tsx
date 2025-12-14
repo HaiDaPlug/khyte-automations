@@ -26,14 +26,15 @@ const cases = [
 export default function Cases() {
   return (
     <div>
+      <Nav />
       <Container>
-        <Nav />
-
-        <main className="py-16">
-          <div className="mb-12">
-            <span className="section-header">Case</span>
-            <p className="text-[var(--color-muted)] text-[15px] max-w-2xl">
-              Exempel på automationer jag byggt
+        <main className="pt-32 pb-20">
+          <div className="mb-16">
+            <h1 className="text-[2.5rem] font-medium text-[var(--color-text)] mb-4 tracking-[-0.02em]">
+              Case
+            </h1>
+            <p className="text-[var(--color-muted)] text-[17px] leading-[1.6] max-w-2xl">
+              Exempel på automationer jag har byggt
             </p>
           </div>
 
@@ -77,8 +78,8 @@ export default function Cases() {
           </div>
 
           {/* Bottom CTA */}
-          <div className="text-center">
-            <p className="text-lg text-[var(--color-muted)] mb-6">
+          <div className="text-center pt-8">
+            <p className="text-[18px] text-[var(--color-text)] mb-6 font-medium">
               Vill du ha en liknande lösning?
             </p>
             <Button variant="primary" href="/contact">

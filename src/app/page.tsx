@@ -145,8 +145,8 @@ export default function Home() {
 
             <div className="order-1 md:order-2 flex justify-center md:justify-end">
               <img
-                src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&h=400&fit=crop&crop=face"
-                alt="Person working"
+                src="/dna-weave.gif"
+                alt="DNA weave animation"
                 className="max-w-full h-auto rounded-[4px] max-h-80 md:max-h-[320px] object-cover"
               />
             </div>

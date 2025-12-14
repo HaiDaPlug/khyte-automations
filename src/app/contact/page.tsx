@@ -5,13 +5,14 @@ import Button from "@/components/Button";
 export default function Contact() {
   return (
     <div>
+      <Nav />
       <Container>
-        <Nav />
-
-        <main className="py-16">
-          <div className="mb-12">
-            <span className="section-header">Kontakt</span>
-            <p className="text-[var(--color-muted)] text-[15px] max-w-2xl">
+        <main className="pt-32 pb-20">
+          <div className="mb-16">
+            <h1 className="text-[2.5rem] font-medium text-[var(--color-text)] mb-4 tracking-[-0.02em]">
+              Kontakt
+            </h1>
+            <p className="text-[var(--color-muted)] text-[17px] leading-[1.6] max-w-2xl">
               Låt oss prata om din automation
             </p>
           </div>
