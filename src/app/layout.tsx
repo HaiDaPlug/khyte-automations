@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Khyte Automations – AI som tar hand om jobbet du inte vill göra",
+  title: "KHYTE AUTOMATIONS | No Hype, Just Workflows",
   description:
-    "Khyte Automations hjälper företag att hitta tids­tjuvar i vardagen och bygga smarta automationer som frigör tid.",
+    "Jag bygger automationer som tar bort friktion i vardagen — utan hype, bara fungerande workflows.",
 };
 
 export default function RootLayout({
@@ -14,9 +14,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="sv">
-      <body className="main-wrapper">
-        {children}
-      </body>
+      <body className="main-wrapper">{children}</body>
     </html>
   );
 }

@@ -1,26 +1,25 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-background: #0f172a;
-  --color-foreground: #f9fafb;
-  --color-muted: #9ca3af;
-  --color-accent: #38bdf8;
-  --color-accentSoft: rgba(56, 189, 248, 0.12);
-  --color-borderSoft: rgba(148, 163, 184, 0.35);
+  --color-bg: #0F0F10;
+  --color-card-bg: #18181B;
+  --color-text: #EDEDEF;
+  --color-muted: #A1A1AA;
+  --color-accent: #FFFFFF;
+  --color-border: #27272A;
 
-  --radius-xl: 1rem;
-  --radius-2xl: 1.25rem;
-
+  --radius-sm: 4px;
   --shadow-soft: 0 18px 45px rgba(0, 0, 0, 0.08);
 }
 
 :root {
-  --color-background: #0f172a;
-  --color-foreground: #f9fafb;
-  --color-muted: #9ca3af;
-  --color-accent: #38bdf8;
-  --color-accent-soft: rgba(56, 189, 248, 0.12);
-  --color-border-soft: rgba(148, 163, 184, 0.35);
+  --spacing-section: 120px;
+}
+
+@media (max-width: 768px) {
+  :root {
+    --spacing-section: 80px;
+  }
 }
 
 *,
@@ -38,8 +37,10 @@ body {
 body {
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
     "Segoe UI", sans-serif;
-  background: radial-gradient(circle at top, #1f2937 0, #020617 55%);
-  color: var(--color-foreground);
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
 }
 
 .main-wrapper {
@@ -48,20 +49,37 @@ body {
   flex-direction: column;
 }
 
-.section {
-  padding-top: 4rem;
-  padding-bottom: 4rem;
+/* Container utility */
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px;
 }
 
-.section + .section {
-  border-top: 1px solid var(--color-border-soft);
+/* Section utilities */
+.section {
+  margin-bottom: var(--spacing-section);
+}
+
+.section-border {
+  border-top: 1px solid var(--color-border);
+  padding-top: var(--spacing-section);
+}
+
+.section-header {
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-muted);
+  margin-bottom: 48px;
+  display: block;
 }
 
 html {
   scroll-behavior: smooth;
 }
 
-/* Animations */
+/* Animations (keep from current implementation) */
 @keyframes gradient {
   0%,
   100% {
