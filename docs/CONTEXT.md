@@ -19,6 +19,8 @@
 khyte-automations/
 ├── src/
 │   ├── app/
+│   │   ├── about/
+│   │   │   └── page.tsx          # About page (company purpose, philosophy, team)
 │   │   ├── automations/
 │   │   │   └── page.tsx          # Redirects to /
 │   │   ├── cases/
@@ -29,13 +31,14 @@ khyte-automations/
 │   │   ├── layout.tsx             # Root layout (Swedish metadata)
 │   │   └── globals.css            # Design tokens + animations
 │   └── components/
-│       ├── Nav.tsx                # Navigation (logo + Case/Kontakt)
+│       ├── Nav.tsx                # Navigation with active state (logo + Case/Om/Kontakt)
 │       ├── Button.tsx             # Primary/secondary button variants
 │       ├── CaseCard.tsx           # Reusable case card
 │       └── Container.tsx          # Layout wrapper (1100px max-width)
 ├── docs/
 │   └── CONTEXT.md                 # This file
-├── public/                        # Static assets
+├── public/
+│   └── dna-weave.gif              # DNA weave animation (footer CTA)
 ├── opus4.5-merged.html            # HTML v1 reference (design source)
 ├── package.json
 ├── tsconfig.json
@@ -113,12 +116,17 @@ khyte-automations/
 - Hover: Border color changes to muted
 - Sections: Problem badge (monospace, 13px) + Title (20px) + Description (15px, muted)
 
-**4. Nav.tsx** - Site navigation
+**4. Nav.tsx** - Fixed site navigation (Client Component)
+- **Position**: Fixed at top (sticky header with backdrop blur)
+- **Styling**: `z-50`, `backdrop-blur-sm`, `bg-opacity-95`
+- **Active State**: Uses `usePathname()` to highlight current page
 - Logo: "Khyte" (uppercase, bold, tracking 0.05em, links to `/`)
-- Links: Case, Kontakt (no "Hem" link)
+- Links: Case, Om, Kontakt (no "Hem" link)
 - Font size: 14px
-- Link color: Muted → Text on hover
-- Spacing: 32px between links
+- Link color: Active page = `text-[var(--color-text)]`, Inactive = `text-[var(--color-muted)]`
+- Hover: All links transition to `text-[var(--color-text)]`
+- Spacing: 32px between links (gap-8)
+- **Note**: Pages need `pt-32` to account for fixed nav height
 
 ### Contact Information (Production Data)
 
@@ -170,9 +178,11 @@ The contact form at `/contact` uses **Formspree** for submissions:
 
 ### `/` - Landing Page
 
-1. **Navigation**
+1. **Navigation** (Fixed header with active state)
    - Logo: "Khyte" (links to `/`)
-   - Links: Case, Kontakt
+   - Links: Case, Om, Kontakt
+   - Position: Fixed at top with backdrop blur
+   - Active state highlights current page
 
 2. **Hero Section** (85vh min-height)
    - H1: "AI som tar hand om jobbet du inte vill göra."
@@ -202,14 +212,15 @@ The contact form at `/contact` uses **Formspree** for submissions:
 
 5. **Footer CTA** (2-column layout)
    - Left: "Redo att automatisera bort tråkiga uppgifter?" + subtext + CTA button
-   - Right: Placeholder image from Unsplash
+   - Right: DNA weave GIF animation (`/dna-weave.gif`)
    - Mobile: Single column, image first
    - Padding: 100px vertical
 
 ### `/cases` - Cases List Page
 
-1. **Navigation** (shared Nav component)
-2. **Page Header** - "Case" (uppercase section header)
+1. **Navigation** (shared Nav component - fixed header)
+2. **Page Header** - Large H1 "Case" (2.5rem) with descriptive subtitle
+   - Spacing: `pt-32` to account for fixed nav
 3. **Cases Grid** - Exactly 3 case cards
    - Prospektmotor för sälj
    - Research-motor för byrå
@@ -219,13 +230,42 @@ The contact form at `/contact` uses **Formspree** for submissions:
 
 ### `/contact` - Contact Page
 
-1. **Navigation** (shared Nav component)
-2. **Page Header** - "Kontakt" (uppercase section header)
+1. **Navigation** (shared Nav component - fixed header)
+2. **Page Header** - Large H1 "Kontakt" (2.5rem) with descriptive subtitle
+   - Spacing: `pt-32` to account for fixed nav
 3. **2-Column Layout**:
    - Left: Formspree form (4 fields: name, company, email, message)
    - Right: Direct contact options (email + Calendly)
 4. **Form Styling**: 4px border radius, token colors, focus ring on accent
 5. **Calendly Button**: Uses `<a>` tag (not next/link) with `target="_blank"`
+
+### `/about` - About Page
+
+1. **Navigation** (shared Nav component - fixed header with active state)
+2. **Page Header** - Large H1 "Om Khyte" (2.5rem)
+   - Spacing: `pt-32` to account for fixed nav
+3. **Section 1: Varför Khyte finns** (Why Khyte exists)
+   - Two-column grid layout (stacks on mobile)
+   - Left: Company purpose copy with typographic Swedish quotes
+   - Right: Placeholder image block (card-style frame with border)
+   - Grid gap: 64px (gap-16)
+4. **Section 2: Hur vi tänker & vad du kan förvänta dig** (Philosophy & expectations)
+   - Single prominent card (same styling as case cards)
+   - Intro paragraph + lead-in text
+   - 5-item bulleted list with em-dash bullets
+   - Closing paragraph
+   - All text uses standard 15px sizing with 1.6 line-height
+5. **Section 3: Vi bakom Khyte** (Team profiles)
+   - Section H2: "Vi bakom Khyte" (24px, medium weight)
+   - Two profile cards in grid layout (stacks on mobile)
+   - Each card includes:
+     - Placeholder image block (4:5 aspect ratio, card-style frame)
+     - Name (H3, 20px)
+     - Role (small, muted text)
+     - Description paragraph (15px, muted)
+     - Contact info (email link for Hai, placeholder text for Abdi)
+   - Grid gap: 48px (gap-12)
+6. **Spacing**: `mb-20` between major sections for consistent rhythm
 
 ### `/automations` - Redirect
 
@@ -313,6 +353,7 @@ npm run dev
 Route (app)
 ├── / (landing page - hero + timeline + footer CTA)
 ├── /_not-found
+├── /about (company purpose, philosophy, team profiles)
 ├── /automations (redirects to /)
 ├── /cases (3 case cards with Problem/Build/Result)
 └── /contact (Formspree form + direct contact)
@@ -321,6 +362,54 @@ Route (app)
 ```
 
 ## File Modification History
+
+### v1.5 (2025-12-15) - About Page Implementation
+
+**New Page:**
+1. **src/app/about/page.tsx** (new file) - About page with 3 sections:
+   - Section 1: Two-column layout (company purpose + placeholder image)
+   - Section 2: Philosophy card with 5-item bullet list
+   - Section 3: Team profile cards (Hai Bui & Abdi)
+   - Uses typographic Swedish quotes ("") for premium appearance
+   - Placeholder images with card-style framing (border + background)
+   - All responsive grids stack properly on mobile
+
+**Updated Components:**
+1. **src/components/Nav.tsx**:
+   - Converted to client component with `"use client"`
+   - Added `usePathname()` hook from `next/navigation`
+   - Added "Om" link between "Case" and "Kontakt"
+   - Implemented active state highlighting (current page shows text color)
+   - All links transition to text color on hover
+
+**Routes Added:**
+- `/about` - Static route for About page
+
+### v1.4 (2025-12-15) - Fixed Navigation & Page Header Refinements
+
+**Updated Components:**
+1. **src/components/Nav.tsx**:
+   - Changed from inline to fixed positioning
+   - Added backdrop blur effect
+   - Moved outside Container for proper fixed behavior
+
+**Updated Pages:**
+1. **src/app/cases/page.tsx**:
+   - Added `pt-32` spacing for fixed nav
+   - Larger H1 typography (2.5rem)
+   - Enhanced subtitle typography (17px)
+
+2. **src/app/contact/page.tsx**:
+   - Added `pt-32` spacing for fixed nav
+   - Larger H1 typography (2.5rem)
+   - Enhanced subtitle typography (17px)
+
+3. **src/app/page.tsx**:
+   - Updated footer CTA with DNA weave GIF
+   - Improved visual hierarchy
+
+**Assets Added:**
+- **public/dna-weave.gif** - DNA weave animation for footer
 
 ### v1.3 (2025-12-14) - HTML v1 Pixel-Perfect Migration
 
@@ -482,6 +571,29 @@ Before deployment, verify:
 
 ## Version History
 
+- **v1.5** (2025-12-15) - About Page Implementation
+  - Added new `/about` route (Swedish: "Om Khyte")
+  - Implemented three-section About page:
+    - Section 1: Company purpose with two-column layout
+    - Section 2: Work philosophy card with bullet points
+    - Section 3: Team profiles (Hai & Abdi) with contact info
+  - Updated Nav component to client component with `usePathname()` for active state
+  - Added "Om" link to navigation between "Case" and "Kontakt"
+  - Active nav links now highlight with `text-[var(--color-text)]`
+  - Placeholder image blocks use card-style framing (border + background)
+  - Used typographic Swedish quotes ("") for premium look
+  - All responsive layouts stack properly on mobile (lg: breakpoint)
+  - Zero new design tokens - fully consistent with existing system
+
+- **v1.4** (2025-12-15) - Fixed Navigation & Page Header Refinements
+  - Added fixed navigation header with backdrop blur effect
+  - Refined Cases and Contact page headers with larger H1 typography (2.5rem)
+  - Updated all pages with `pt-32` spacing to accommodate fixed nav
+  - Replaced footer placeholder image with DNA weave GIF animation
+  - Improved CTA text styling and visual hierarchy
+  - Moved Nav component outside Container for proper fixed positioning
+  - Enhanced page subtitle typography (17px, improved line-height)
+
 - **v1.3** (2025-12-14) - Pixel-Perfect HTML v1 Migration
   - Complete design system overhaul (monochrome scheme)
   - Replaced all color tokens: cyan accent → pure white accent
@@ -512,7 +624,7 @@ Before deployment, verify:
 
 ---
 
-**Last Updated**: 2025-12-14
-**Current Version**: v1.3
+**Last Updated**: 2025-12-15
+**Current Version**: v1.5
 **Status**: Production Ready ✅
-**Commit**: `b8afe4e` - Pixel-perfect HTML v1 migration with monochrome design system
+**Commit**: `fa82249` - Add About page (Om) with active nav state
