@@ -6,7 +6,7 @@
 
 ## Tech Stack
 
-- **Framework**: Next.js 16.0.8 (App Router)
+- **Framework**: Next.js 16.0.9 (App Router)
 - **React**: 19.2.1
 - **TypeScript**: 5 (Strict mode enabled)
 - **Styling**: Tailwind CSS v4 with PostCSS
@@ -20,19 +20,23 @@ khyte-automations/
 ├── src/
 │   ├── app/
 │   │   ├── automations/
-│   │   │   └── page.tsx          # Redirects to / (v1.2)
+│   │   │   └── page.tsx          # Redirects to /
 │   │   ├── cases/
 │   │   │   └── page.tsx          # Cases page (3 case cards)
 │   │   ├── contact/
 │   │   │   └── page.tsx          # Contact page (Formspree form)
-│   │   ├── page.tsx               # Landing page (hero-first)
+│   │   ├── page.tsx               # Landing page (hero + timeline + CTA)
 │   │   ├── layout.tsx             # Root layout (Swedish metadata)
-│   │   └── globals.css            # Tailwind v4 config + animations
+│   │   └── globals.css            # Design tokens + animations
 │   └── components/
-│       └── Nav.tsx                # Shared navigation component
+│       ├── Nav.tsx                # Navigation (logo + Case/Kontakt)
+│       ├── Button.tsx             # Primary/secondary button variants
+│       ├── CaseCard.tsx           # Reusable case card
+│       └── Container.tsx          # Layout wrapper (1100px max-width)
 ├── docs/
 │   └── CONTEXT.md                 # This file
 ├── public/                        # Static assets
+├── opus4.5-merged.html            # HTML v1 reference (design source)
 ├── package.json
 ├── tsconfig.json
 ├── postcss.config.mjs
@@ -50,34 +54,71 @@ khyte-automations/
 - **Location**: All Tailwind config is in `src/app/globals.css`
 - **Syntax**: Uses `@theme inline { ... }` directive
 
-#### Custom Theme Variables
+#### Design Tokens (v1.3 - Monochrome Scheme)
 
 ```css
 @theme inline {
-  /* Colors */
-  --color-background: #0f172a;      /* Dark slate */
-  --color-foreground: #f9fafb;      /* Near-white */
-  --color-muted: #9ca3af;           /* Gray-400 */
-  --color-accent: #38bdf8;          /* Sky-400 (primary brand) */
-  --color-accentSoft: rgba(56, 189, 248, 0.12);
-  --color-borderSoft: rgba(148, 163, 184, 0.35);
+  --color-bg: #0F0F10;              /* Deep charcoal */
+  --color-card-bg: #18181B;         /* Card background */
+  --color-text: #EDEDEF;            /* Off-white text */
+  --color-muted: #A1A1AA;           /* Muted grey */
+  --color-accent: #FFFFFF;          /* Pure white accent */
+  --color-border: #27272A;          /* Dark border */
 
-  /* Border Radius */
-  --radius-xl: 1rem;
-  --radius-2xl: 1.25rem;
-
-  /* Shadows */
+  --radius-sm: 4px;                 /* Small border radius */
   --shadow-soft: 0 18px 45px rgba(0, 0, 0, 0.08);
+}
+
+:root {
+  --spacing-section: 120px;         /* Section spacing (desktop) */
+}
+
+@media (max-width: 768px) {
+  :root {
+    --spacing-section: 80px;        /* Section spacing (mobile) */
+  }
 }
 ```
 
-**Usage in JSX**: `className="bg-background text-foreground border-borderSoft"`
+**Usage**: All components use CSS variables via `var(--color-*)` or Tailwind arbitrary values like `text-[var(--color-text)]`
+
+**Design Philosophy**: Monochrome color scheme (white accent on charcoal) for a premium, minimal aesthetic.
 
 ### Typography
 
 - **Font Stack**: System fonts (no web fonts for faster loading)
 - **CSS**: `system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif`
-- **Note**: Geist fonts were removed from the original Next.js template
+- **Hero H1**: `clamp(3rem, 5vw, 4.5rem)` with weight 500, tracking -0.03em
+- **Body Text**: 15px with line-height 1.6 for optimal readability
+
+### Shared Components (v1.3)
+
+**1. Container.tsx** - Layout wrapper
+- Max-width: 1100px
+- Responsive padding: 24px (px-6)
+- Centers content horizontally
+
+**2. Button.tsx** - CTA buttons
+- **Primary**: White background, dark text, hover to #ccc
+- **Secondary**: Transparent background, border, hover border change
+- Props: `variant`, `href`, `children`, `className`
+- Border radius: 4px (matches HTML v1)
+- Padding: 16px/32px
+
+**3. CaseCard.tsx** - Case study cards
+- Card background: `#18181B`
+- Border: 1px solid `#27272A`
+- Padding: 40px
+- Border radius: 4px
+- Hover: Border color changes to muted
+- Sections: Problem badge (monospace, 13px) + Title (20px) + Description (15px, muted)
+
+**4. Nav.tsx** - Site navigation
+- Logo: "Khyte" (uppercase, bold, tracking 0.05em, links to `/`)
+- Links: Case, Kontakt (no "Hem" link)
+- Font size: 14px
+- Link color: Muted → Text on hover
+- Spacing: 32px between links
 
 ### Contact Information (Production Data)
 
@@ -87,37 +128,35 @@ khyte-automations/
 - **Calendly**: `https://calendly.com/hai-khyteteam/30min`
 - **Formspree Endpoint**: `https://formspree.io/f/xzznjaly`
 
-### CSS Animations (v1.2)
+### CSS Animations
 
-Lightweight CSS-only animations added for hero section:
+Lightweight CSS-only animations (keep from v1.2):
 
 ```css
-/* Gradient shift animation */
 @keyframes gradient {
   0%, 100% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
 }
 
-/* Floating shapes animation */
 @keyframes float {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-20px); }
 }
 ```
 
-**Usage**: Hero section includes animated gradient background and floating shapes with staggered timing.
+**Classes**: `.animate-gradient`, `.animate-float`, `.animate-float-delayed`
 
 ### Form Implementation
 
 The contact form at `/contact` uses **Formspree** for submissions:
 
-```html
+```tsx
 <form action="https://formspree.io/f/xzznjaly" method="POST">
   <input type="text" name="name" required />
   <input type="text" name="company" />
   <input type="email" name="email" required />
   <textarea name="message" required></textarea>
-  <button type="submit">Skicka förfrågan</button>
+  <Button variant="primary">Skicka förfrågan</Button>
 </form>
 ```
 
@@ -125,81 +164,121 @@ The contact form at `/contact` uses **Formspree** for submissions:
 - All inputs must have `name` attributes
 - No custom JavaScript needed - Formspree handles submission
 - User is redirected to Formspree's thank-you page after submission
+- Styled with 4px border radius, exact token colors
 
-## Site Structure (v1.2 Multi-Page)
+## Site Structure (v1.3 - Pixel-Perfect HTML v1)
 
-The site now uses a multi-page structure with dedicated pages:
+### `/` - Landing Page
 
-### `/` - Landing Page (Hero-First)
-1. **Shared Navigation** - Hem / Case / Kontakt
-2. **Hero Section** - Full-screen with slogan + CSS animations (gradient, floating shapes)
-3. **Case Preview** - 3 short case teasers linking to `/cases`
-4. **How I Work** - 3-step process (numbered cards)
-5. **Bottom CTAs** - Links to `/cases` and `/contact`
+1. **Navigation**
+   - Logo: "Khyte" (links to `/`)
+   - Links: Case, Kontakt
+
+2. **Hero Section** (85vh min-height)
+   - H1: "AI som tar hand om jobbet du inte vill göra."
+   - Subtext: "Jag bygger automationer som tar bort friktion i vardagen — utan hype, bara fungerande workflows."
+   - CTA buttons: "Boka ett samtal" (primary) + "Se hur det funkar" (secondary)
+   - Max-width: 900px
+
+3. **Cases Section** ("Nyliga projekt")
+   - Section header: Uppercase, 14px, tracking 0.05em
+   - **Exactly 2 case previews** (data-driven, expandable via array)
+   - Cases:
+     1. Automatiserad orderhantering
+     2. AI-driven inbox triage
+   - Uses CaseCard component
+
+4. **Process Section** ("Så jobbar jag")
+   - Border top + padding top (120px spacing)
+   - Intro text (max-width 600px)
+   - **Timeline with connecting line**:
+     - 3-column grid (responsive to 1-column mobile)
+     - Horizontal line connecting circles (desktop only)
+     - Step 1: Solid white circle, dark text
+     - Step 2: White outline (2px border), white text
+     - Step 3: Grey outline (1px border), muted text
+   - Step titles: 18px, weight 500
+   - Step descriptions: 15px, muted, line-height 1.6
+
+5. **Footer CTA** (2-column layout)
+   - Left: "Redo att automatisera bort tråkiga uppgifter?" + subtext + CTA button
+   - Right: Placeholder image from Unsplash
+   - Mobile: Single column, image first
+   - Padding: 100px vertical
 
 ### `/cases` - Cases List Page
-1. **Shared Navigation** - Hem / Case / Kontakt
-2. **Page Header** - "Case" + subheading
-3. **Cases Grid** - Exactly 3 case cards with Problem/Build/Result format
-4. **Bottom CTA** - Link to `/contact`
 
-**Case Examples**:
-- **Prospektmotor för sälj** - Automated company data to Google Sheets
-- **Research-motor för byrå** - Automated industry/competitor data collection
-- **Interna admin-flöden** - Automated internal workflows and reminders
+1. **Navigation** (shared Nav component)
+2. **Page Header** - "Case" (uppercase section header)
+3. **Cases Grid** - Exactly 3 case cards
+   - Prospektmotor för sälj
+   - Research-motor för byrå
+   - Interna admin-flöden
+4. **Format**: Problem → Build → Result (each with white accent label)
+5. **Bottom CTA** - "Vill du ha en liknande lösning?" + Contact button
 
 ### `/contact` - Contact Page
-1. **Shared Navigation** - Hem / Case / Kontakt
-2. **Page Header** - "Kontakt" + subheading
-3. **Formspree Form** - name, company (optional), email, message
-4. **Direct Contact** - Email link + Calendly button (uses `<a>` tag, not next/link)
+
+1. **Navigation** (shared Nav component)
+2. **Page Header** - "Kontakt" (uppercase section header)
+3. **2-Column Layout**:
+   - Left: Formspree form (4 fields: name, company, email, message)
+   - Right: Direct contact options (email + Calendly)
+4. **Form Styling**: 4px border radius, token colors, focus ring on accent
+5. **Calendly Button**: Uses `<a>` tag (not next/link) with `target="_blank"`
 
 ### `/automations` - Redirect
+
 Server-side redirect to `/` using Next.js `redirect()` function
 
-### Shared Components
+## Design System (v1.3)
 
-**Nav Component** (`src/components/Nav.tsx`):
-- Minimal navigation: Hem / Case / Kontakt
-- Links to: `/` / `/cases` / `/contact`
-- Used on all pages to prevent dead-end feeling
-- Styled with text-sm, muted color, accent hover
+### Color Palette (Monochrome Scheme)
 
-### Design System
+- **Background**: Deep charcoal (#0F0F10) - solid, no gradient
+- **Card Background**: #18181B (slightly lighter for depth)
+- **Accent**: Pure white (#FFFFFF) for CTAs and highlights
+- **Text**: Off-white (#EDEDEF) for primary text
+- **Muted**: Grey (#A1A1AA) for secondary text
+- **Border**: Dark grey (#27272A) for subtle dividers
 
-**Color Palette**:
-- Background: Dark slate (#0f172a) with radial gradient
-- Accent: Sky blue (#38bdf8) for CTAs and highlights
-- Text: Near-white (#f9fafb) with muted gray (#9ca3af) for secondary text
+### Spacing System
 
-**Key Features**:
+- **Section Spacing**: 120px (desktop) / 80px (mobile) via `--spacing-section`
+- **Utility Classes**: `.section`, `.section-border`, `.section-header`
+- **Container**: 1100px max-width, 24px horizontal padding
+
+### Border Radius
+
+- **All Elements**: 4px (consistent with HTML v1)
+- **No Rounded Variants**: No `rounded-xl` or `rounded-2xl`
+
+### Key Features
+
+- Pixel-perfect match to HTML v1 (opus4.5-merged.html)
+- Data-driven architecture (case previews expandable via array)
+- Zero hard-coded hex values (all via CSS variables)
+- Responsive grid layouts (3-col → 1-col on mobile)
 - Smooth anchor navigation (`scroll-behavior: smooth`)
-- Responsive grid layouts (`sm:grid-cols-3`, `lg:flex-row`)
-- Dark theme throughout
-- Border dividers between sections
-- Soft shadows on cards
+- Timeline with connecting line (desktop only)
 
 ## Content Language
 
 **All user-facing content is in Swedish** (`lang="sv"` in HTML)
 
 **Swedish Terminology Used**:
-- "Tjänster" (Services)
+- "Nyliga projekt" (Recent projects)
 - "Så jobbar jag" (How I work)
-- "Exempel" (Examples)
-- "Om mig" (About me)
+- "Case" (Cases)
 - "Kontakt" (Contact)
 - "Skicka förfrågan" (Send inquiry)
+- "Boka ett samtal" (Book a call)
 
 ## Known Issues & Workarounds
 
 ### Turbopack Dev Mode Bug
 
-**Issue**: Next.js 16.0.8's Turbopack has a panic error when compiling `/automations/page`:
-
-```
-FATAL: Turbopack Error: Failed to write app endpoint /automations/page
-```
+**Issue**: Next.js 16.0.9's Turbopack has a panic error when compiling `/automations/page`
 
 **Root Cause**: Internal Turbopack bug (not related to our code)
 
@@ -221,7 +300,7 @@ FATAL: Turbopack Error: Failed to write app endpoint /automations/page
 # Production mode (works reliably)
 npm run build
 npm run start
-# Visit: http://localhost:3000/automations
+# Visit: http://localhost:3000
 
 # Dev mode (currently broken due to Turbopack bug)
 npm run dev
@@ -232,71 +311,94 @@ npm run dev
 
 ```
 Route (app)
-├── / (landing page - hero-first)
+├── / (landing page - hero + timeline + footer CTA)
 ├── /_not-found
 ├── /automations (redirects to /)
-├── /cases (3 case cards)
-└── /contact (Formspree form)
+├── /cases (3 case cards with Problem/Build/Result)
+└── /contact (Formspree form + direct contact)
 
 ○ (Static) - All routes prerendered as static content
 ```
 
 ## File Modification History
 
-### Modified Files
+### v1.3 (2025-12-14) - HTML v1 Pixel-Perfect Migration
 
-1. **src/app/globals.css**
-   - Added Tailwind v4 `@theme inline` block
-   - Defined custom color system (background, foreground, muted, accent, etc.)
-   - Added radial gradient background
-   - Created utility classes (`.main-wrapper`, `.section`)
-   - Enabled smooth scrolling
-   - **v1.2**: Added CSS animations (gradient shift, floating shapes)
+**Design System Overhaul:**
+- Replaced color scheme: Sky blue (#38bdf8) → Pure white (#FFFFFF) accent
+- Updated background: Dark blue (#0f172a) → Deep charcoal (#0F0F10)
+- Added card background token: #18181B
+- Changed border radius: 12-20px → 4px (all elements)
+- Updated spacing: 96px → 120px section spacing
 
-2. **src/app/layout.tsx**
-   - Changed language to Swedish (`lang="sv"`)
-   - Updated metadata (Swedish title and description)
-   - Removed Geist font imports
-   - Simplified to use system font stack
-   - Applied `.main-wrapper` class to body
+**New Components:**
+1. **src/components/Container.tsx** - Layout wrapper (1100px max-width)
+2. **src/components/Button.tsx** - Primary/secondary variants (4px radius)
+3. **src/components/CaseCard.tsx** - Reusable case card (Problem/Title/Description)
 
-3. **src/app/page.tsx**
-   - **v1.0-v1.1**: Redirect to `/automations`
-   - **v1.2**: Hero-first landing page with CSS animations, case previews, process section
+**Rebuilt Pages:**
+1. **src/app/page.tsx** - Complete rebuild:
+   - Data-driven case previews (2 shown, expandable to 3+)
+   - Process timeline with connecting line + 3 circle styles
+   - Footer CTA with 2-column layout + image
+   - Max-width 900px hero section
 
-4. **src/app/automations/page.tsx**
-   - **v1.0-v1.1**: Full one-page marketing site with 8 sections
-   - **v1.2**: Server-side redirect to `/`
+2. **src/app/cases/page.tsx** - Updated styling:
+   - 3 case cards with Problem/Build/Result format
+   - Uses new CaseCard component structure
+   - Uppercase section headers
 
-5. **src/app/cases/page.tsx** (NEW in v1.2)
-   - Dedicated cases page with exactly 3 case cards
-   - Each card: Problem / Build / Result format
-   - Links to `/contact` at bottom
+3. **src/app/contact/page.tsx** - Updated styling:
+   - Form inputs with 4px radius
+   - Button component for submit
+   - Consistent token usage
 
-6. **src/app/contact/page.tsx** (NEW in v1.2)
-   - Dedicated contact page with Formspree form
-   - Email link and Calendly button (uses `<a>` tag)
-   - 2-column responsive layout
+**Updated Components:**
+1. **src/components/Nav.tsx**:
+   - Added "Khyte" logo (links to `/`)
+   - Removed "Hem" link
+   - Matched HTML v1 styling exactly
 
-7. **src/components/Nav.tsx** (NEW in v1.2)
-   - Shared navigation component
-   - Links: Hem / Case / Kontakt
-   - Used on all pages
+**Global Changes:**
+1. **src/app/globals.css**:
+   - Complete token replacement (monochrome scheme)
+   - Added spacing tokens (--spacing-section)
+   - Added utility classes (.section-header, .section-border)
+   - Removed gradient background
 
-### Created Directories
+2. **src/app/layout.tsx**:
+   - Updated title: "KHYTE AUTOMATIONS | No Hype, Just Workflows"
+   - Updated description to match hero copy
+   - Kept Swedish lang attribute
 
-- `src/app/automations/` - Redirect page (v1.0-v1.2)
-- `src/app/cases/` - Cases page (v1.2)
-- `src/app/contact/` - Contact page (v1.2)
-- `src/components/` - Shared components (v1.2)
-- `docs/` - Documentation and context files
+### v1.2 (2025-12-12) - Multi-Page Redesign
+
+- Replaced single-page site with multi-page structure
+- **New pages**: `/` (hero-first landing), `/cases` (3 cards), `/contact` (Formspree form)
+- **Redirect**: `/automations` now redirects to `/`
+- **Components**: Created shared `Nav.tsx` component (Hem/Case/Kontakt)
+- **Animations**: Added lightweight CSS animations (gradient shift, floating shapes)
+- **Design**: Minimal, premium look with consistent navigation across all pages
+
+### v1.1 (2025-12-12) - Root Page Redirect
+
+- Replaced default Next.js template with redirect to `/automations`
+- Root page (`/`) automatically redirects to main marketing site
+- Simplified user experience - single entry point
+
+### v1.0 (2025-12-10) - Initial Implementation
+
+- Created Swedish marketing site at `/automations`
+- Implemented Tailwind v4 configuration
+- Integrated Formspree contact form
+- Production build working (dev mode has Turbopack bug)
 
 ## Metadata & SEO
 
 ```typescript
 {
-  title: "Khyte Automations – AI som tar hand om jobbet du inte vill göra",
-  description: "Khyte Automations hjälper företag att hitta tids­tjuvar i vardagen och bygga smarta automationer som frigör tid."
+  title: "KHYTE AUTOMATIONS | No Hype, Just Workflows",
+  description: "Jag bygger automationer som tar bort friktion i vardagen — utan hype, bara fungerande workflows."
 }
 ```
 
@@ -333,33 +435,35 @@ These are documented for future reference but not currently implemented:
 
 - [ ] Connect Formspree to custom email backend
 - [ ] Embed Calendly widget instead of external link
-- [ ] Add animations/transitions (Framer Motion, etc.)
+- [ ] Add page transitions (view transitions API)
 - [ ] Integrate analytics (Google Analytics, Plausible, etc.)
-- [ ] Add more detailed case studies
-- [ ] Create additional pages (blog, portfolio, detailed services)
+- [ ] Add more case studies (expand casePreviews array)
+- [ ] Create blog section
 - [ ] Fix Turbopack dev mode (requires Next.js update)
+- [ ] Add dark/light mode toggle (currently dark-only)
 
 ## Testing Checklist
 
 Before deployment, verify:
 
-**v1.2 Multi-Page:**
-- [x] `/` loads landing page with hero + animations
-- [x] `/cases` loads 3 case cards with Problem/Build/Result
-- [x] `/contact` loads Formspree form + email + Calendly
-- [x] `/automations` redirects to `/`
-- [x] Shared navigation (Hem/Case/Kontakt) appears on all pages
-- [x] CSS animations (gradient, floating shapes) work on hero
-- [x] Contact form submits to Formspree
-- [x] Email link opens mail client (mailto:hai@khyteteam.com)
-- [x] Calendly button opens in new tab (uses `<a>` tag)
-- [x] Responsive design works on mobile/tablet/desktop
-- [x] Dark theme applied correctly
-- [x] Swedish copy is accurate
-- [x] No TypeScript errors
-- [x] No ESLint warnings
-- [x] Production build succeeds
+**v1.3 Pixel-Perfect:**
+- [x] Design tokens match HTML v1 exactly (monochrome scheme)
+- [x] Border radius is 4px on all elements
+- [x] Section spacing is 120px (80px mobile)
+- [x] Hero typography uses clamp() sizing
+- [x] Nav has "Khyte" logo linking to `/`
+- [x] Landing page shows 2 case previews (data-driven)
+- [x] Process timeline has connecting line + 3 circle styles
+- [x] Footer CTA has 2-column layout with image
+- [x] Zero hard-coded hex values in components
 - [x] All routes statically generated
+- [x] Production build succeeds
+- [x] No TypeScript errors
+- [x] Formspree form works
+- [x] Responsive design (mobile/tablet/desktop)
+- [x] Swedish copy is accurate
+- [x] All buttons use Button component
+- [x] All cases use CaseCard component (where applicable)
 
 ## Support & Contact
 
@@ -374,30 +478,41 @@ Before deployment, verify:
 - **Tailwind CSS v4 Docs**: https://tailwindcss.com/docs
 - **Formspree Docs**: https://formspree.io/docs
 - **React 19 Docs**: https://react.dev
+- **HTML v1 Reference**: `opus4.5-merged.html` (design source file)
 
 ## Version History
 
-- **v1.2** (2025-12-12) - Multi-page redesign
+- **v1.3** (2025-12-14) - Pixel-Perfect HTML v1 Migration
+  - Complete design system overhaul (monochrome scheme)
+  - Replaced all color tokens: cyan accent → pure white accent
+  - Updated all border radius: 12-20px → 4px
+  - Created reusable components: Button, CaseCard, Container
+  - Rebuilt landing page: data-driven cases + timeline + footer CTA
+  - Updated Nav: added logo, removed "Hem"
+  - Updated all pages with consistent v1 styling
+  - Zero hard-coded colors (all via CSS variables)
+  - Production ready: all routes static, no TS errors
+
+- **v1.2** (2025-12-12) - Multi-Page Redesign
   - Replaced single-page site with multi-page structure
-  - **New pages**: `/` (hero-first landing), `/cases` (3 cards), `/contact` (Formspree form)
-  - **Redirect**: `/automations` now redirects to `/`
-  - **Components**: Created shared `Nav.tsx` component (Hem/Case/Kontakt)
-  - **Animations**: Added lightweight CSS animations (gradient shift, floating shapes)
-  - **Design**: Minimal, premium look with consistent navigation across all pages
-  - **Production ready**: All routes statically generated, no TS/lint errors
+  - New pages: `/` (hero-first), `/cases`, `/contact`
+  - Added shared Nav component
+  - Added CSS animations
+  - All routes statically generated
 
-- **v1.1** (2025-12-12) - Root page redirect
-  - Replaced default Next.js template with redirect to `/automations`
-  - Root page (`/`) automatically redirects to main marketing site
-  - Simplified user experience - single entry point
+- **v1.1** (2025-12-12) - Root Page Redirect
+  - Root page (`/`) redirects to `/automations`
+  - Simplified entry point
 
-- **v1.0** (2025-12-10) - Initial implementation
-  - Created Swedish marketing site at `/automations`
-  - Implemented Tailwind v4 configuration
-  - Integrated Formspree contact form
-  - Production build working (dev mode has Turbopack bug)
+- **v1.0** (2025-12-10) - Initial Implementation
+  - Swedish marketing site at `/automations`
+  - Tailwind v4 configuration
+  - Formspree contact form
+  - Production build working
 
 ---
 
-**Last Updated**: 2025-12-12
-**Status**: Production Ready ✅ (v1.2)
+**Last Updated**: 2025-12-14
+**Current Version**: v1.3
+**Status**: Production Ready ✅
+**Commit**: `b8afe4e` - Pixel-perfect HTML v1 migration with monochrome design system
