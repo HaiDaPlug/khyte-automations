@@ -34,7 +34,8 @@ khyte-automations/
 │       ├── Nav.tsx                # Navigation with active state (logo + Case/Om/Kontakt)
 │       ├── Button.tsx             # Primary/secondary button variants
 │       ├── CaseCard.tsx           # Reusable case card
-│       └── Container.tsx          # Layout wrapper (1100px max-width)
+│       ├── Container.tsx          # Layout wrapper (1100px max-width)
+│       └── DnaWeaveSvg.tsx        # Animated DNA weave SVG component
 ├── docs/
 │   └── CONTEXT.md                 # This file
 ├── public/
@@ -128,6 +129,16 @@ khyte-automations/
 - Spacing: 32px between links (gap-8)
 - **Note**: Pages need `pt-32` to account for fixed nav height
 
+**5. DnaWeaveSvg.tsx** - Animated DNA weave component
+- **Type**: SVG component with CSS animations
+- **ViewBox**: `0 0 800 200` (horizontal aspect ratio)
+- **Animation**: Horizontal slide (16s linear infinite loop)
+- **Styling**: Uses `currentColor` for theme-aware stroke
+- **Props**: Accepts standard `React.SVGProps<SVGSVGElement>`
+- **Usage**: Footer CTA decoration with `opacity-[0.18]` and `var(--color-muted)`
+- **Performance**: Inline SVG (no HTTP request), scalable at any resolution
+- Border radius: 4px (consistent with design system)
+
 ### Contact Information (Production Data)
 
 ⚠️ **CRITICAL - Do Not Change Without Authorization**
@@ -210,11 +221,15 @@ The contact form at `/contact` uses **Formspree** for submissions:
    - Step titles: 18px, weight 500
    - Step descriptions: 15px, muted, line-height 1.6
 
-5. **Footer CTA** (2-column layout)
-   - Left: "Redo att automatisera bort tråkiga uppgifter?" + subtext + CTA button
-   - Right: DNA weave GIF animation (`/dna-weave.gif`)
-   - Mobile: Single column, image first
-   - Padding: 100px vertical
+5. **Footer CTA** (centered single-column layout)
+   - Heading: "Redo att automatisera bort tråkiga uppgifter?" (clamp 2rem to 2.5rem)
+   - Subtext: max-width 2xl for readability
+   - CTA button: "Boka ett samtal" (primary variant)
+   - DNA weave SVG animation below CTA (DnaWeaveSvg component)
+   - Animation: Horizontal slide only (16s), opacity 0.18, color var(--color-muted)
+   - Spacing: mt-6 (24px) between button and animation
+   - Max height: 320px (80 on mobile), 4px border radius
+   - Padding: 100px vertical, border-top
 
 ### `/cases` - Cases List Page
 
@@ -384,6 +399,31 @@ Route (app)
 
 **Routes Added:**
 - `/about` - Static route for About page
+
+### v1.6 (2025-12-15) - DNA Weave SVG Component & Footer CTA Redesign
+
+**New Components:**
+1. **src/components/DnaWeaveSvg.tsx** (new file) - Animated DNA weave SVG:
+   - Horizontal slide animation (16s linear infinite loop)
+   - ViewBox: `0 0 800 200` (horizontal aspect ratio)
+   - Theme-aware using `currentColor` for stroke
+   - Accepts standard `React.SVGProps<SVGSVGElement>` props
+   - No vertical movement (removed gentleWave animation)
+   - Optimized for performance (inline SVG, no HTTP request)
+
+**Updated Pages:**
+1. **src/app/page.tsx**:
+   - Imported DnaWeaveSvg component
+   - Redesigned footer CTA from 2-column grid to centered single-column layout
+   - Moved DNA weave animation below CTA button
+   - Applied opacity-[0.18] and color var(--color-muted) to animation
+   - Spacing: mt-6 (24px) between button and animation
+   - Removed old GIF image reference
+
+**Visual Changes:**
+- Footer CTA now fully centered with animation as decorative element below
+- DNA weave appears more subtle with lower opacity
+- Animation positioned closer to button for tighter visual grouping
 
 ### v1.4 (2025-12-15) - Fixed Navigation & Page Header Refinements
 
@@ -625,6 +665,6 @@ Before deployment, verify:
 ---
 
 **Last Updated**: 2025-12-15
-**Current Version**: v1.5
+**Current Version**: v1.6
 **Status**: Production Ready ✅
-**Commit**: `fa82249` - Add About page (Om) with active nav state
+**Commit**: `839a739` - Refine footer CTA layout and DNA weave animation
