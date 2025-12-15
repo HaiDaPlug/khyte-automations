@@ -58,6 +58,21 @@ export default function Contact() {
 
                 <div>
                   <label
+                    htmlFor="phone"
+                    className="block text-xs font-medium text-[var(--color-muted)] mb-2"
+                  >
+                    Telefon
+                  </label>
+                  <input
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    className="w-full px-4 py-3 bg-[var(--color-bg)] border border-[var(--color-border)] rounded-[4px] text-[var(--color-text)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:border-transparent"
+                  />
+                </div>
+
+                <div>
+                  <label
                     htmlFor="email"
                     className="block text-xs font-medium text-[var(--color-muted)] mb-2"
                   >
@@ -111,6 +126,18 @@ export default function Contact() {
                       className="text-lg text-[var(--color-accent)] hover:opacity-80 transition-opacity"
                     >
                       hai@khyteteam.com
+                    </a>
+                  </div>
+
+                  <div>
+                    <p className="text-xs font-medium text-[var(--color-muted)] mb-2">
+                      Telefon
+                    </p>
+                    <a
+                      href="tel:070-099 68 38"
+                      className="text-lg text-[var(--color-accent)] hover:opacity-80 transition-opacity"
+                    >
+                      070-099 68 38
                     </a>
                   </div>
 
