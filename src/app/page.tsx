@@ -130,23 +130,21 @@ export default function Home() {
 
         {/* Footer CTA */}
         <footer className="py-[100px] border-t border-[var(--color-border)]">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
-            <div className="order-2 md:order-1">
-              <h2 className="text-[clamp(2rem,3vw,2.5rem)] font-medium mb-4 text-[var(--color-text)]">
-                Redo att automatisera bort tråkiga uppgifter?
-              </h2>
-              <p className="text-[var(--color-muted)] text-base leading-[1.6] mb-8">
-                Boka ett samtal så går vi igenom hur automation kan frigöra tid
-                i din verksamhet.
-              </p>
-              <Button variant="primary" href="/contact">
-                Boka ett samtal
-              </Button>
-            </div>
+          <div className="flex flex-col items-center text-center">
+            <h2 className="text-[clamp(2rem,3vw,2.5rem)] font-medium mb-4 text-[var(--color-text)]">
+              Redo att automatisera bort tråkiga uppgifter?
+            </h2>
+            <p className="text-[var(--color-muted)] text-base leading-[1.6] mb-8 max-w-2xl">
+              Boka ett samtal så går vi igenom hur automation kan frigöra tid
+              i din verksamhet.
+            </p>
+            <Button variant="primary" href="/contact">
+              Boka ett samtal
+            </Button>
 
-            <div className="order-1 md:order-2 flex justify-center md:justify-end">
+            <div className="mt-6 w-full flex justify-center">
               <DnaWeaveSvg
-                className="max-w-full h-auto rounded-[4px] max-h-80 md:max-h-[320px]"
+                className="max-w-full h-auto rounded-[4px] max-h-80 md:max-h-[320px] opacity-[0.18]"
                 style={{ color: 'var(--color-muted)' }}
                 aria-label="DNA weave animation"
               />
