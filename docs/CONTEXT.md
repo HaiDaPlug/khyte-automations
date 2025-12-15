@@ -144,6 +144,7 @@ khyte-automations/
 ⚠️ **CRITICAL - Do Not Change Without Authorization**
 
 - **Email**: `hai@khyteteam.com`
+- **Phone**: `070-099 68 38`
 - **Calendly**: `https://calendly.com/hai-khyteteam/30min`
 - **Formspree Endpoint**: `https://formspree.io/f/xzznjaly`
 
@@ -173,6 +174,7 @@ The contact form at `/contact` uses **Formspree** for submissions:
 <form action="https://formspree.io/f/xzznjaly" method="POST">
   <input type="text" name="name" required />
   <input type="text" name="company" />
+  <input type="tel" name="phone" />
   <input type="email" name="email" required />
   <textarea name="message" required></textarea>
   <Button variant="primary">Skicka förfrågan</Button>
@@ -196,8 +198,8 @@ The contact form at `/contact` uses **Formspree** for submissions:
    - Active state highlights current page
 
 2. **Hero Section** (85vh min-height)
-   - H1: "AI som tar hand om jobbet du inte vill göra."
-   - Subtext: "Jag bygger automationer som tar bort friktion i vardagen — utan hype, bara fungerande workflows."
+   - H1: "AI som tar hand om jobbet som du inte behöver göra."
+   - Subtext: "Vi bygger automationer som tar bort friktion i vardagen - kundnära effektivt, med fungerande workflows."
    - CTA buttons: "Boka ett samtal" (primary) + "Se hur det funkar" (secondary)
    - Max-width: 900px
 
@@ -209,9 +211,9 @@ The contact form at `/contact` uses **Formspree** for submissions:
      2. AI-driven inbox triage
    - Uses CaseCard component
 
-4. **Process Section** ("Så jobbar jag")
+4. **Process Section** ("Så jobbar vi")
    - Border top + padding top (120px spacing)
-   - Intro text (max-width 600px)
+   - Intro text: "En simpel process utan onödigt skit. Från problem till lösning på kortast möjliga tid." (max-width 600px)
    - **Timeline with connecting line**:
      - 3-column grid (responsive to 1-column mobile)
      - Horizontal line connecting circles (desktop only)
@@ -249,10 +251,11 @@ The contact form at `/contact` uses **Formspree** for submissions:
 2. **Page Header** - Large H1 "Kontakt" (2.5rem) with descriptive subtitle
    - Spacing: `pt-32` to account for fixed nav
 3. **2-Column Layout**:
-   - Left: Formspree form (4 fields: name, company, email, message)
-   - Right: Direct contact options (email + Calendly)
+   - Left: Formspree form (5 fields: name, company, phone, email, message)
+   - Right: Direct contact options (email, phone, Calendly)
 4. **Form Styling**: 4px border radius, token colors, focus ring on accent
-5. **Calendly Button**: Uses `<a>` tag (not next/link) with `target="_blank"`
+5. **Direct Contact Options**: Email (hai@khyteteam.com), Phone (070-099 68 38), Calendly link
+6. **Calendly Button**: Uses `<a>` tag (not next/link) with `target="_blank"`
 
 ### `/about` - About Page
 
@@ -399,6 +402,29 @@ Route (app)
 
 **Routes Added:**
 - `/about` - Static route for About page
+
+### v1.7 (2025-12-15) - Contact Form Phone Field & Landing Page Copy Updates
+
+**Updated Pages:**
+1. **src/app/contact/page.tsx**:
+   - Added phone number field (Telefon) to Formspree contact form
+   - Phone field positioned between Company and Email fields
+   - Input type: `tel` for mobile keyboard optimization
+   - Optional field (not required)
+   - Added phone number (070-099 68 38) to direct contact options
+   - Phone displays between Email and "Boka möte" with tel: link for click-to-call
+
+2. **src/app/page.tsx**:
+   - Updated hero H1: "vill göra" → "behöver göra"
+   - Changed voice from singular to plural: "Jag bygger" → "Vi bygger"
+   - Updated subtext: Added "kundnära effektivt" messaging
+   - Process section header: "Så jobbar jag" → "Så jobbar vi"
+   - Process intro: "rak process utan onödiga möten" → "simpel process utan onödigt skit"
+   - Replaced em-dashes with hyphens in step titles for consistency
+   - Added "och" in step 2 title for better flow
+
+**Contact Information Added:**
+- Phone: 070-099 68 38 (clickable tel: link)
 
 ### v1.6 (2025-12-15) - DNA Weave SVG Component & Footer CTA Redesign
 
@@ -611,6 +637,23 @@ Before deployment, verify:
 
 ## Version History
 
+- **v1.7** (2025-12-15) - Contact Form Phone Field & Landing Page Copy Updates
+  - Added phone number field to contact form (Telefon, optional, type="tel")
+  - Added phone number (070-099 68 38) to direct contact options with tel: link
+  - Updated landing page copy to use plural voice ("vi" instead of "jag")
+  - Changed hero H1: "vill göra" → "behöver göra"
+  - Updated subtext with "kundnära effektivt" messaging
+  - Process section: "Så jobbar jag" → "Så jobbar vi"
+  - Process intro: More casual tone ("simpel process utan onödigt skit")
+  - Replaced em-dashes with hyphens in step titles for consistency
+
+- **v1.6** (2025-12-15) - DNA Weave SVG Component & Footer CTA Redesign
+  - Created DnaWeaveSvg component with horizontal slide animation (16s loop)
+  - Redesigned footer CTA from 2-column to centered single-column layout
+  - DNA weave animation positioned below CTA button with subtle opacity (0.18)
+  - Removed vertical oscillation for cleaner animation
+  - Inline SVG for instant loading and scalability
+
 - **v1.5** (2025-12-15) - About Page Implementation
   - Added new `/about` route (Swedish: "Om Khyte")
   - Implemented three-section About page:
@@ -665,6 +708,6 @@ Before deployment, verify:
 ---
 
 **Last Updated**: 2025-12-15
-**Current Version**: v1.6
+**Current Version**: v1.7
 **Status**: Production Ready ✅
-**Commit**: `839a739` - Refine footer CTA layout and DNA weave animation
+**Commit**: `f921b10` - Update landing page copy to use 'vi' and refine messaging
