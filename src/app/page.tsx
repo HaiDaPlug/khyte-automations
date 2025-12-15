@@ -2,6 +2,7 @@ import Nav from "@/components/Nav";
 import Button from "@/components/Button";
 import CaseCard from "@/components/CaseCard";
 import Container from "@/components/Container";
+import { DnaWeaveSvg } from "@/components/DnaWeaveSvg";
 
 const casePreviews = [
   {
@@ -144,10 +145,10 @@ export default function Home() {
             </div>
 
             <div className="order-1 md:order-2 flex justify-center md:justify-end">
-              <img
-                src="/dna-weave.gif"
-                alt="DNA weave animation"
-                className="max-w-full h-auto rounded-[4px] max-h-80 md:max-h-[320px] object-cover"
+              <DnaWeaveSvg
+                className="max-w-full h-auto rounded-[4px] max-h-80 md:max-h-[320px]"
+                style={{ color: 'var(--color-muted)' }}
+                aria-label="DNA weave animation"
               />
             </div>
           </div>
