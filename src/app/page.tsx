@@ -31,15 +31,15 @@ export default function Home() {
             className="text-[clamp(3rem,5vw,4.5rem)] font-medium leading-[1.1] tracking-[-0.03em] mb-8 text-[var(--color-text)]"
             style={{ fontWeight: 500 }}
           >
-            AI som tar hand om jobbet du inte vill göra.
+            AI som tar hand om jobbet som du inte behöver göra.
           </h1>
 
           <p
             className="text-[clamp(1.1rem,2vw,1.25rem)] text-[var(--color-muted)] max-w-[600px] mb-12"
             style={{ fontWeight: 300 }}
           >
-            Jag bygger automationer som tar bort friktion i vardagen — utan
-            hype, bara fungerande workflows.
+            Vi bygger automationer som tar bort friktion i vardagen - kundnära
+            effektivt, med fungerande workflows.
           </p>
 
           <div className="flex gap-4">
@@ -72,10 +72,10 @@ export default function Home() {
         <section className="section-border mb-[var(--spacing-section)]">
           <div className="max-w-[600px] mb-16">
             <h2 className="text-2xl font-medium text-[var(--color-text)] mb-3">
-              Så jobbar jag
+              Så jobbar vi
             </h2>
             <p className="text-[var(--color-muted)] text-[15px] leading-[1.6]">
-              En rak process utan onödiga möten. Från problem till lösning på
+              En simpel process utan onödigt skit. Från problem till lösning på
               kortast möjliga tid.
             </p>
           </div>
@@ -90,7 +90,7 @@ export default function Home() {
                 1
               </div>
               <h3 className="text-lg font-medium mb-4 text-[var(--color-text)]">
-                Kartlägger flödet – vi hittar tidstjuvarna
+                Kartlägger flödet - vi hittar tidstjuvarna
               </h3>
               <p className="text-[var(--color-muted)] text-[15px] leading-[1.6]">
                 Vi går igenom era processer och identifierar var energin läcker.
@@ -104,10 +104,10 @@ export default function Home() {
                 2
               </div>
               <h3 className="text-lg font-medium mb-4 text-[var(--color-text)]">
-                Bygger en prototyp – testar snabbt
+                Bygger en prototyp och testar snabbt
               </h3>
               <p className="text-[var(--color-muted)] text-[15px] leading-[1.6]">
-                Inget evighetsplanerande. Jag bygger en fungerande version som
+                Inget evighetsplanerande. Vi bygger en fungerande version som
                 vi testar mot verkligheten direkt.
               </p>
             </div>
@@ -118,7 +118,7 @@ export default function Home() {
                 3
               </div>
               <h3 className="text-lg font-medium mb-4 text-[var(--color-text)]">
-                Implementerar skarpt – justerar tills det sitter
+                Implementerar skarpt - justerar tills det sitter
               </h3>
               <p className="text-[var(--color-muted)] text-[15px] leading-[1.6]">
                 Vi driftsätter lösningen. Jag finns kvar och trimmar systemet
