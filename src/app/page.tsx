@@ -144,7 +144,7 @@ export default function Home() {
 
             <div className="mt-6 w-full flex justify-center">
               <DnaWeaveSvg
-                className="max-w-full h-auto rounded-[4px] max-h-80 md:max-h-[320px] opacity-[0.18]"
+                className="max-w-full h-auto rounded-[4px] max-h-80 md:max-h-[320px] opacity-[0.24]"
                 style={{ color: 'var(--color-muted)' }}
                 aria-label="DNA weave animation"
               />
