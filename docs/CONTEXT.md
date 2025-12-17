@@ -39,6 +39,7 @@ khyte-automations/
 ├── docs/
 │   └── CONTEXT.md                 # This file
 ├── public/
+│   ├── Hai Bui.png                # Profile image for Hai Bui (1414x2000)
 │   └── dna-weave.gif              # DNA weave animation (footer CTA)
 ├── opus4.5-merged.html            # HTML v1 reference (design source)
 ├── package.json
@@ -207,7 +208,7 @@ The contact form at `/contact` uses **Formspree** for submissions:
    - Section header: Uppercase, 14px, tracking 0.05em
    - **Exactly 2 case previews** (data-driven, expandable via array)
    - Cases:
-     1. Automatiserad orderhantering
+     1. Automatiserad informationsförädling (allabolag.se automation)
      2. AI-driven inbox triage
    - Uses CaseCard component
 
@@ -228,7 +229,7 @@ The contact form at `/contact` uses **Formspree** for submissions:
    - Subtext: max-width 2xl for readability
    - CTA button: "Boka ett samtal" (primary variant)
    - DNA weave SVG animation below CTA (DnaWeaveSvg component)
-   - Animation: Horizontal slide only (16s), opacity 0.18, color var(--color-muted)
+   - Animation: Horizontal slide only (16s), opacity 0.24, color var(--color-muted)
    - Spacing: mt-6 (24px) between button and animation
    - Max height: 320px (80 on mobile), 4px border radius
    - Padding: 100px vertical, border-top
@@ -277,7 +278,9 @@ The contact form at `/contact` uses **Formspree** for submissions:
    - Section H2: "Vi bakom Khyte" (24px, medium weight)
    - Two profile cards in grid layout (stacks on mobile)
    - Each card includes:
-     - Placeholder image block (4:5 aspect ratio, card-style frame)
+     - Profile image (4:5 aspect ratio, card-style frame)
+       - Hai: Uses /Hai Bui.png (1414x2000, Next.js Image component)
+       - Abdi: Placeholder block
      - Name (H3, 20px)
      - Role (small, muted text)
      - Description paragraph (15px, muted)
@@ -402,6 +405,25 @@ Route (app)
 
 **Routes Added:**
 - `/about` - Static route for About page
+
+### v1.8 (2025-12-17) - Profile Image & Case Preview Updates
+
+**New Assets:**
+1. **public/Hai Bui.png** (new file) - Profile photo for Hai Bui (1414x2000px)
+
+**Updated Pages:**
+1. **src/app/about/page.tsx**:
+   - Added Next.js Image component import
+   - Replaced Hai's profile placeholder with actual profile image
+   - Image uses full resolution (1414x2000) with 4:5 aspect ratio display
+   - Maintains card-style border and overflow-hidden for proper cropping
+
+2. **src/app/page.tsx**:
+   - Updated first case preview copy
+   - Changed from "Automatiserad orderhantering" to "Automatiserad informationsförädling"
+   - Updated problem statement: "Jag jobbar mycket med allabolag."
+   - Updated description to reference allabolag.se automation workflow
+   - Increased DNA weave opacity from 0.18 to 0.24 for better visibility
 
 ### v1.7 (2025-12-15) - Contact Form Phone Field & Landing Page Copy Updates
 
@@ -637,6 +659,13 @@ Before deployment, verify:
 
 ## Version History
 
+- **v1.8** (2025-12-17) - Profile Image & Case Preview Updates
+  - Added Hai Bui profile photo (PNG, 1414x2000) to About page
+  - Replaced profile placeholder with Next.js Image component
+  - Updated first case preview: "Automatiserad informationsförädling"
+  - Changed case description to reference allabolag.se automation
+  - Increased DNA weave opacity from 0.18 to 0.24
+
 - **v1.7** (2025-12-15) - Contact Form Phone Field & Landing Page Copy Updates
   - Added phone number field to contact form (Telefon, optional, type="tel")
   - Added phone number (070-099 68 38) to direct contact options with tel: link
@@ -707,7 +736,7 @@ Before deployment, verify:
 
 ---
 
-**Last Updated**: 2025-12-15
-**Current Version**: v1.7
+**Last Updated**: 2025-12-17
+**Current Version**: v1.8
 **Status**: Production Ready ✅
-**Commit**: `f921b10` - Update landing page copy to use 'vi' and refine messaging
+**Commit**: `d1d3ef9` - Add Hai Bui profile image and update case preview copy
