@@ -659,6 +659,32 @@ Before deployment, verify:
 
 ## Version History
 
+- **v1.10** (2025-12-17) - Timeline Scan Animation Implementation (IN PROGRESS)
+  - **GOAL**: Add animated scan light traveling across timeline connector with circle pulse effects
+  - **IMPLEMENTED ✅**:
+    - Created `TimelineProcess.tsx` client component with IntersectionObserver scroll detection
+    - Animation triggers when user scrolls to section (20% visibility threshold)
+    - Scan light travels 80% across timeline connector line before fading out
+    - Scan animation: 3640ms duration, left-to-right movement
+    - Uses `color-mix()` with existing `--color-accent` token (no new hex values)
+    - Respects `prefers-reduced-motion` accessibility setting
+    - Scan light: 200px wide, 4px height, 1px blur, 0.9 opacity at peak
+  - **NOT WORKING ❌**:
+    - **Circle pulse animation not visible**
+    - **Diagnosed Issue**: The `circlePulse` keyframe animation is defined and CSS selectors are correct, but visual effect not appearing
+    - **CSS Applied**: `.timeline-step--1/2/3.timeline-animate .timeline-circle` with proper delays (500ms, 2120ms, 3540ms)
+    - **Animation Properties**: `box-shadow` glow + `filter: brightness(1.3)` + 800ms duration
+    - **Possible Causes**:
+      1. `filter: brightness()` may be conflicting with Tailwind CSS resets
+      2. `box-shadow` color using `color-mix()` may not render correctly
+      3. Circle elements might have inline styles or classes overriding animation
+      4. Z-index stacking context issues preventing glow visibility
+  - **Files Modified**:
+    - `src/components/TimelineProcess.tsx` (new) - Client component with scroll detection
+    - `src/app/globals.css` - Added `timelineScan` and `circlePulse` keyframes
+    - `src/app/page.tsx` - Replaced process section with TimelineProcess component
+  - **Next Steps**: Debug circle pulse animation visibility issue
+
 - **v1.9** (2025-12-17) - Hero Layout Refinements & Centered Cover Design
   - **Centered Hero Layout**: Added `mx-auto`, `text-center`, `items-center` to hero for centered "cover" presentation
   - **Full-Width Divider**: Implemented viewport-wide border separator after hero using full-bleed technique

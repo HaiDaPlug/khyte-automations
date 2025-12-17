@@ -3,6 +3,7 @@ import Button from "@/components/Button";
 import CaseCard from "@/components/CaseCard";
 import Container from "@/components/Container";
 import { DnaWeaveSvg } from "@/components/DnaWeaveSvg";
+import TimelineProcess from "@/components/TimelineProcess";
 
 const casePreviews = [
   {
@@ -95,64 +96,7 @@ export default function Home() {
         </section>
 
         {/* Process Section */}
-        <section className="section-border mb-[var(--spacing-section)]">
-          <div className="max-w-[600px] mb-16">
-            <h2 className="text-2xl font-medium text-[var(--color-text)] mb-3">
-              Så jobbar vi
-            </h2>
-            <p className="text-[var(--color-muted)] text-[15px] leading-[1.6]">
-              En simpel process utan onödigt skit. Från problem till lösning på
-              kortast möjliga tid.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative">
-            {/* Timeline connecting line - only visible on desktop */}
-            <div className="hidden md:block absolute top-6 left-6 right-6 h-[2px] bg-[var(--color-border)] z-0" />
-
-            {/* Step 1 */}
-            <div className="relative z-10">
-              <div className="w-12 h-12 rounded-full flex items-center justify-center text-base font-semibold mb-6 bg-[var(--color-accent)] text-[var(--color-bg)]">
-                1
-              </div>
-              <h3 className="text-lg font-medium mb-4 text-[var(--color-text)]">
-                Kartlägger flödet - vi hittar tidstjuvarna
-              </h3>
-              <p className="text-[var(--color-muted)] text-[15px] leading-[1.6]">
-                Vi går igenom era processer och identifierar var energin läcker.
-                Vi letar efter upprepning och friktion.
-              </p>
-            </div>
-
-            {/* Step 2 */}
-            <div className="relative z-10">
-              <div className="w-12 h-12 rounded-full flex items-center justify-center text-base font-semibold mb-6 bg-[var(--color-bg)] border-2 border-[var(--color-accent)] text-[var(--color-accent)]">
-                2
-              </div>
-              <h3 className="text-lg font-medium mb-4 text-[var(--color-text)]">
-                Bygger en prototyp och testar snabbt
-              </h3>
-              <p className="text-[var(--color-muted)] text-[15px] leading-[1.6]">
-                Inget evighetsplanerande. Vi bygger en fungerande version som
-                vi testar mot verkligheten direkt.
-              </p>
-            </div>
-
-            {/* Step 3 */}
-            <div className="relative z-10">
-              <div className="w-12 h-12 rounded-full flex items-center justify-center text-base font-semibold mb-6 bg-[var(--color-bg)] border border-[var(--color-border)] text-[var(--color-muted)]">
-                3
-              </div>
-              <h3 className="text-lg font-medium mb-4 text-[var(--color-text)]">
-                Implementerar skarpt - justerar tills det sitter
-              </h3>
-              <p className="text-[var(--color-muted)] text-[15px] leading-[1.6]">
-                Vi driftsätter lösningen. Jag finns kvar och trimmar systemet
-                tills det rullar av sig själv.
-              </p>
-            </div>
-          </div>
-        </section>
+        <TimelineProcess />
 
         {/* Footer CTA */}
         <footer className="py-[100px] border-t border-[var(--color-border)]">
