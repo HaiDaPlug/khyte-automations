@@ -6,10 +6,10 @@ import { DnaWeaveSvg } from "@/components/DnaWeaveSvg";
 
 const casePreviews = [
   {
-    problem: '"Vi lägger timmar på att flytta data manuellt."',
-    title: "Automatiserad orderhantering",
+    problem: '"Jag jobbar mycket med allabolag."',
+    title: "Automatiserad informationsförädling",
     description:
-      "Kopplade ihop e-handelsplattformen med affärssystemet. Resultatet blev noll manuell inmatning och realtidsuppdaterat lager.",
+      "Kunden jobbar mycket med informationssökning manuellt på allabolag. Istället gjorde vi hela processen automatisk.",
   },
   {
     problem: '"Inkorgen är ett svart hål av frågor."',

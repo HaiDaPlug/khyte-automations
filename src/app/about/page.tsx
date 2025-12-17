@@ -1,5 +1,6 @@
 import Nav from "@/components/Nav";
 import Container from "@/components/Container";
+import Image from "next/image";
 
 export default function AboutPage() {
   return (
@@ -10,7 +11,7 @@ export default function AboutPage() {
           {/* Page header */}
           <div className="mb-16">
             <h1 className="text-[2.5rem] font-medium text-[var(--color-text)] mb-4 tracking-[-0.02em]">
-              Om Khyte
+              Om Khyte Automations
             </h1>
           </div>
 
@@ -20,7 +21,7 @@ export default function AboutPage() {
               {/* Left column - Copy */}
               <div>
                 <p className="text-[15px] leading-[1.6] text-[var(--color-muted)]">
-                  Khyte finns för att göra arbete lättare att bära. Många företag sitter fast i manuella rutiner som "bara blev så" — klipp-och-klistra, dubbelarbete och saker som tar energi utan att skapa värde. Vi bygger automationer som tar bort friktion i vardagen så att ni får mer tid, mer fokus och färre onödiga moment. Inga stora ord. Bara lösningar som fungerar.
+                  Khyte Automations finns för att göra arbete lättare att bära. Många företag sitter fast i manuella rutiner som "bara blev så" — klipp-och-klistra, dubbelarbete och saker som tar energi utan att skapa värde. Vi bygger automationer som tar bort friktion i vardagen så att ni får mer tid, mer fokus och färre onödiga moment. Inga stora ord. Bara lösningar som fungerar.
                 </p>
               </div>
               {/* Right column - Placeholder image */}
@@ -64,8 +65,16 @@ export default function AboutPage() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
               {/* Profile 1 - Hai */}
               <div className="bg-[var(--color-card-bg)] border border-[var(--color-border)] p-10 rounded-[4px] transition-colors duration-300 hover:border-[var(--color-muted)]">
-                {/* Profile placeholder */}
-                <div className="bg-[var(--color-card-bg)] border border-[var(--color-border)] rounded-[4px] aspect-[4/5] mb-6"></div>
+                {/* Profile image */}
+                <div className="border border-[var(--color-border)] rounded-[4px] aspect-[4/5] mb-6 overflow-hidden">
+                  <Image
+                    src="/Hai Bui.png"
+                    alt="Hai Bui"
+                    width={1414}
+                    height={2000}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
 
                 {/* Name */}
                 <h3 className="text-xl font-medium text-[var(--color-text)] mb-1">
