@@ -12,10 +12,10 @@ const casePreviews = [
       "Kunden jobbar mycket med informationssökning manuellt på allabolag. Istället gjorde vi hela processen automatisk.",
   },
   {
-    problem: '"Inkorgen är ett svart hål av frågor."',
-    title: "AI-driven inbox triage",
+    problem: '"Kan man hitta företag utanför top 5 på Google?"',
+    title: "SEO-Research på potentiella leads",
     description:
-      "Ett system som läser, kategoriserar och utkast-svarar på inkommande kundmail. Kunden godkänner bara svaret innan det skickas.",
+      "Ett system som hittar hemsidor utanför top 5, researchar sidan, kommer tillbaka med svagheter och styrkor samt förbättringar.",
   },
 ];
 
@@ -26,7 +26,7 @@ export default function Home() {
         <Nav />
 
         {/* Hero Section */}
-        <header className="min-h-[85vh] flex flex-col justify-center max-w-[900px]">
+        <header className="relative min-h-[92svh] md:min-h-[100svh] flex flex-col justify-center max-w-[900px] pb-10 md:pb-12 mx-auto text-center items-center">
           <h1
             className="text-[clamp(3rem,5vw,4.5rem)] font-medium leading-[1.1] tracking-[-0.03em] mb-8 text-[var(--color-text)]"
             style={{ fontWeight: 500 }}
@@ -50,7 +50,33 @@ export default function Home() {
               Se hur det funkar
             </Button>
           </div>
+
+          {/* Scroll cue chevron */}
+          <div className="absolute bottom-10 left-1/2 -translate-x-1/2 h-10 w-10 rounded-full border border-[var(--color-border)] bg-[var(--color-card-bg)] opacity-70 hover:opacity-100 transition flex items-center justify-center">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 16 16"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
+            >
+              <path
+                d="M4 6L8 10L12 6"
+                stroke="var(--color-muted)"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </div>
         </header>
+
+        {/* Full-width divider */}
+        <div className="relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] w-screen border-b border-[var(--color-border)]"></div>
+
+        {/* Spacer */}
+        <div className="h-12 md:h-16"></div>
 
         {/* Cases Section */}
         <section className="section">

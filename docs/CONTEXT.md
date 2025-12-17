@@ -659,6 +659,15 @@ Before deployment, verify:
 
 ## Version History
 
+- **v1.9** (2025-12-17) - Hero Layout Refinements & Centered Cover Design
+  - **Centered Hero Layout**: Added `mx-auto`, `text-center`, `items-center` to hero for centered "cover" presentation
+  - **Full-Width Divider**: Implemented viewport-wide border separator after hero using full-bleed technique
+  - **Scroll Cue Chevron**: Added subtle inline SVG chevron in circle at hero bottom (no JS, naturally disappears on scroll)
+  - **Hero Height**: Adjusted to `min-h-[92svh] md:min-h-[100svh]` to prevent cases section visibility on initial load
+  - **Responsive Spacing**: Added spacer element (`h-12 md:h-16`) between hero and cases for clean separation
+  - **Bottom Padding**: Added `pb-10 md:pb-12` to hero for subtle "continuation cue"
+  - Hero now feels like a distinct, centered "cover" chapter with clear visual separation from content sections
+
 - **v1.8** (2025-12-17) - Profile Image & Case Preview Updates
   - Added Hai Bui profile photo (PNG, 1414x2000) to About page
   - Replaced profile placeholder with Next.js Image component
@@ -737,6 +746,5 @@ Before deployment, verify:
 ---
 
 **Last Updated**: 2025-12-17
-**Current Version**: v1.8
+**Current Version**: v1.9
 **Status**: Production Ready ✅
-**Commit**: `d1d3ef9` - Add Hai Bui profile image and update case preview copy
