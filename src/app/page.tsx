@@ -7,7 +7,7 @@ import TimelineProcess from "@/components/TimelineProcess";
 
 const casePreviews = [
   {
-    problem: '"Jag jobbar mycket med allabolag."',
+    problem: '"Jag jobbar mycket med Allabolag."',
     title: "Automatiserad informationsförädling",
     description:
       "Kunden jobbar mycket med informationssökning manuellt på allabolag. Istället gjorde vi hela processen automatisk.",
@@ -39,7 +39,7 @@ export default function Home() {
             className="text-[clamp(1.1rem,2vw,1.25rem)] text-[var(--color-muted)] max-w-[600px] mb-12"
             style={{ fontWeight: 300 }}
           >
-            Vi bygger automationer som tar bort friktion i vardagen - kundnära
+            Vi bygger automationer som tar bort friktion i vardagen - kundnära,
             effektivt, med fungerande workflows.
           </p>
 

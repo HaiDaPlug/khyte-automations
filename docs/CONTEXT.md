@@ -659,31 +659,37 @@ Before deployment, verify:
 
 ## Version History
 
-- **v1.10** (2025-12-17) - Timeline Scan Animation Implementation (IN PROGRESS)
-  - **GOAL**: Add animated scan light traveling across timeline connector with circle pulse effects
-  - **IMPLEMENTED ✅**:
-    - Created `TimelineProcess.tsx` client component with IntersectionObserver scroll detection
-    - Animation triggers when user scrolls to section (20% visibility threshold)
-    - Scan light travels 80% across timeline connector line before fading out
-    - Scan animation: 3640ms duration, left-to-right movement
-    - Uses `color-mix()` with existing `--color-accent` token (no new hex values)
-    - Respects `prefers-reduced-motion` accessibility setting
-    - Scan light: 200px wide, 4px height, 1px blur, 0.9 opacity at peak
-  - **NOT WORKING ❌**:
-    - **Circle pulse animation not visible**
-    - **Diagnosed Issue**: The `circlePulse` keyframe animation is defined and CSS selectors are correct, but visual effect not appearing
-    - **CSS Applied**: `.timeline-step--1/2/3.timeline-animate .timeline-circle` with proper delays (500ms, 2120ms, 3540ms)
-    - **Animation Properties**: `box-shadow` glow + `filter: brightness(1.3)` + 800ms duration
-    - **Possible Causes**:
-      1. `filter: brightness()` may be conflicting with Tailwind CSS resets
-      2. `box-shadow` color using `color-mix()` may not render correctly
-      3. Circle elements might have inline styles or classes overriding animation
-      4. Z-index stacking context issues preventing glow visibility
-  - **Files Modified**:
-    - `src/components/TimelineProcess.tsx` (new) - Client component with scroll detection
-    - `src/app/globals.css` - Added `timelineScan` and `circlePulse` keyframes
-    - `src/app/page.tsx` - Replaced process section with TimelineProcess component
-  - **Next Steps**: Debug circle pulse animation visibility issue
+- **v1.10** (2025-12-17) - Timeline Scan Animation with Outline Snap (ITERATION 2 - NOT FINAL)
+  - **GOAL**: Electricity pulsing through - scan light traveling across timeline with sharp outline snap on circles
+  - **SCAN ANIMATION ✅** (Working as intended):
+    - Scan light travels 80% across timeline connector (300ms delay, 3640ms duration)
+    - 200px wide, 4px height, 1px blur, 0.9 opacity at peak
+    - Uses `color-mix()` with `--color-accent` token
+  - **CIRCLE OUTLINE SNAP ⚠️** (Implemented but not desired effect):
+    - **Issue**: Creates a "pop" effect whenever scan passes through circles
+    - **Problem**: Timing is delayed and doesn't feel like continuous electricity flow
+    - **Step 1 Issue**: Step 1 circle (solid white) should not have outline snap effect
+    - **Current Implementation**:
+      - Outline ring pseudo-element (`::after`) with `inset: -6px`
+      - 240ms snap animation with scale 0.98 → 1.02 → 1.06
+      - Semi-transparent white border via `color-mix(in oklab, var(--color-accent) 55%, transparent)`
+      - Timing via CSS variables: `--timeline-hit-1/2/3` (500ms, 2120ms, 3540ms)
+      - Uses `calc(var(--timeline-scan-delay) + var(--timeline-hit-X))` for delays
+  - **TIMING SYSTEM ✅**:
+    - Shared timing variables scoped to `.timeline-line, .timeline-step`
+    - `--timeline-scan-delay: 0ms` (avoids double-counting with scan's 300ms delay)
+    - `--timeline-scan-duration: 3640ms`
+    - Single source of truth for all timeline animations
+  - **FILES MODIFIED**:
+    - `src/components/TimelineProcess.tsx` (new) - Client component with IntersectionObserver
+    - `src/app/globals.css` - Timing variables, `circleOutlineSnap` keyframe, `::after` pseudo-element
+    - `src/app/page.tsx` - Replaced static process section with TimelineProcess component
+    - Added `overflow-visible` to grid and step containers
+  - **NEXT ITERATION**:
+    - Refine circle pulse effect to feel like continuous electricity wave
+    - Fix timing to sync perfectly with scan arrival
+    - Exclude Step 1 (solid white circle) from pulse effect
+    - Explore alternative visual approaches (border glow, expanding ring, etc.)
 
 - **v1.9** (2025-12-17) - Hero Layout Refinements & Centered Cover Design
   - **Centered Hero Layout**: Added `mx-auto`, `text-center`, `items-center` to hero for centered "cover" presentation
@@ -772,5 +778,5 @@ Before deployment, verify:
 ---
 
 **Last Updated**: 2025-12-17
-**Current Version**: v1.9
-**Status**: Production Ready ✅
+**Current Version**: v1.10 (iteration 2 - in progress)
+**Status**: Timeline animation in development, core site production ready ✅

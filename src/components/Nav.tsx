@@ -34,7 +34,7 @@ export default function Nav() {
                 : "text-[var(--color-muted)]"
             }`}
           >
-            Om
+            Om oss
           </Link>
           <Link
             href="/contact"

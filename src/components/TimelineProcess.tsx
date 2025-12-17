@@ -44,7 +44,7 @@ export default function TimelineProcess() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative overflow-visible">
         {/* Timeline connecting line - only visible on desktop */}
         <div
           className={`hidden md:block absolute top-6 left-6 right-6 h-[2px] bg-[var(--color-border)] z-0 timeline-line ${
@@ -54,7 +54,7 @@ export default function TimelineProcess() {
 
         {/* Step 1 */}
         <div
-          className={`relative z-10 timeline-step timeline-step--1 ${
+          className={`relative z-10 timeline-step timeline-step--1 overflow-visible ${
             isVisible ? "timeline-animate" : ""
           }`}
         >
@@ -72,7 +72,7 @@ export default function TimelineProcess() {
 
         {/* Step 2 */}
         <div
-          className={`relative z-10 timeline-step timeline-step--2 ${
+          className={`relative z-10 timeline-step timeline-step--2 overflow-visible ${
             isVisible ? "timeline-animate" : ""
           }`}
         >
@@ -90,7 +90,7 @@ export default function TimelineProcess() {
 
         {/* Step 3 */}
         <div
-          className={`relative z-10 timeline-step timeline-step--3 ${
+          className={`relative z-10 timeline-step timeline-step--3 overflow-visible ${
             isVisible ? "timeline-animate" : ""
           }`}
         >
