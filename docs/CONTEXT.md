@@ -659,7 +659,35 @@ Before deployment, verify:
 
 ## Version History
 
-- **v1.10** (2025-12-17) - Timeline Scan Animation with Outline Snap (ITERATION 2 - NOT FINAL)
+- **v1.11** (2025-12-18) - Timeline SVG Circle Integration (SHELVED - NOT SHIPPING)
+  - **GOAL**: Electricity traveling through circles as part of conductor path
+  - **HORIZONTAL SCAN ✅** (Working perfectly - KEEPING):
+    - Scan light travels 80% across timeline connector (300ms delay, 3640ms duration)
+    - 200px wide, 4px height, 1px blur, 0.9 opacity at peak
+    - Uses `color-mix()` with `--color-accent` token
+    - Timing system working correctly
+  - **SVG CIRCLE LOOPS ❌** (Not working, shelving for now):
+    - **Issue**: Green flash appears on page reload (debug stroke visible)
+    - **Root cause**: Debug strokes (`stroke="lime"`, `opacity: 1`) were added for testing
+    - **Attempted fixes**:
+      - Fixed coordinate space mismatch (trackRef vs sectionRef)
+      - Fixed var owner mismatch (closest with data attribute)
+      - Added double rAF for stable timing
+      - Added px units to dashoffset keyframes
+    - **Current state**: Debug code still in place, circles show but don't animate correctly
+    - **Decision**: Shelve circle animation work, keep only horizontal scan
+  - **REMOVED OLD ANIMATIONS** (keeping this cleanup):
+    - Deleted circle pop effect (`.timeline-circle::after` + `circleOutlineSnap`)
+    - Deleted step outline effect (`.timeline-step::before` + `stepOutlineScan`)
+    - Deleted bridge segment (`.timeline-step--2::after` + `bridgeScan`)
+    - All ~126 lines of old animation code removed
+  - **FILES TO CLEAN UP BEFORE SHIPPING**:
+    - `src/components/TimelineCircles.tsx` - Remove or disable component
+    - `src/components/TimelineProcess.tsx` - Remove TimelineCircles import/usage, remove debug logging
+    - `src/app/globals.css` - Remove SVG circle CSS (lines 267-331)
+  - **SHIPPING**: Timeline with horizontal scan only (v1.9 state + cleanup)
+
+- **v1.10** (2025-12-17) - Timeline Scan Animation with Outline Snap (ITERATION 2 - DEPRECATED)
   - **GOAL**: Electricity pulsing through - scan light traveling across timeline with sharp outline snap on circles
   - **SCAN ANIMATION ✅** (Working as intended):
     - Scan light travels 80% across timeline connector (300ms delay, 3640ms duration)
@@ -777,6 +805,6 @@ Before deployment, verify:
 
 ---
 
-**Last Updated**: 2025-12-17
-**Current Version**: v1.10 (iteration 2 - in progress)
-**Status**: Timeline animation in development, core site production ready ✅
+**Last Updated**: 2025-12-18
+**Current Version**: v1.11 (shelving circle animation, shipping with scan only)
+**Status**: Timeline horizontal scan working perfectly, ready to ship after cleanup ✅
