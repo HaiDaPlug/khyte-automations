@@ -66,7 +66,7 @@ export default function AboutPage() {
               {/* Profile 1 - Hai */}
               <div className="bg-[var(--color-card-bg)] border border-[var(--color-border)] p-10 rounded-[4px] transition-colors duration-300 hover:border-[var(--color-muted)]">
                 {/* Profile image */}
-                <div className="border border-[var(--color-border)] rounded-[4px] aspect-[4/5] mb-6 overflow-hidden">
+                <div className="border border-[var(--color-border)] rounded-[4px] aspect-[4/7] mb-6 overflow-hidden">
                   <Image
                     src="/Hai Bui.png"
                     alt="Hai Bui"
@@ -103,7 +103,7 @@ export default function AboutPage() {
               {/* Profile 2 - Abdi */}
               <div className="bg-[var(--color-card-bg)] border border-[var(--color-border)] p-10 rounded-[4px] transition-colors duration-300 hover:border-[var(--color-muted)]">
                 {/* Profile image */}
-                <div className="border border-[var(--color-border)] rounded-[4px] aspect-[4/5] mb-6 overflow-hidden">
+                <div className="border border-[var(--color-border)] rounded-[4px] aspect-[4/7] mb-6 overflow-hidden">
                   <Image
                     src="/Abdi.png"
                     alt="Abdimajiid Mohamud"
@@ -125,13 +125,16 @@ export default function AboutPage() {
 
                 {/* Description */}
                 <p className="text-[15px] leading-[1.6] text-[var(--color-muted)] mb-4">
-                  Hjälper till som en "högra hand", och har en extremt bra känsla för lösningar. En social kille som har mycket att säga. 
+                  Hjälper till som en "högra hand", och har en extremt bra känsla för lösningar. En social kille med mycket att erbjuda. 
                 </p>
 
                 {/* Contact placeholder */}
-                <p className="text-[15px] text-[var(--color-muted)]">
-                  (lägg till Abdis kontakt när ni vill)
-                </p>
+                <a
+                  href="mailto:abdimajiidmohamud@gmail.com"
+                  className="text-[15px] text-[var(--color-accent)] hover:opacity-80 transition-opacity duration-200"
+                >
+                  abdimajiidmohamud@gmail.com
+                </a>
               </div>
             </div>
           </section>
