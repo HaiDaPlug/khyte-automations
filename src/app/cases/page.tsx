@@ -4,22 +4,16 @@ import Button from "@/components/Button";
 
 const cases = [
   {
-    title: "Prospektmotor för sälj",
-    problem: "Manuell datainsamling tar för lång tid",
+    title: "Lead Engine för sälj",
+    problem: "Manuell datainsamling från Allabolag tar för lång tid",
     build: "Automatisk hämtning av företagsdata till Google Sheets",
     result: "Säljteam får färdiga listor utan manuellt arbete",
   },
   {
-    title: "Research-motor för byrå",
-    problem: "Research om kunder tar timmar av arbetsveckan",
-    build: "Automatisk insamling av bransch- och konkurrentdata",
+    title: "SEO-Research för potentiella kunder",
+    problem: "Research tar timmar ur arbetsveckan",
+    build: "Automatisk insamling av leadsinformation med analys av digital närvaro och förbättringar",
     result: "Byrån kan fokusera på strategi istället för datainsamling",
-  },
-  {
-    title: "Interna admin-flöden",
-    problem: "Manuell datahantering mellan verktyg",
-    build: "Automatiserade flöden för påminnelser och dataförflyttning",
-    result: "Mindre manuellt arbete, färre fel",
   },
 ];
 
@@ -34,7 +28,7 @@ export default function Cases() {
               Case
             </h1>
             <p className="text-[var(--color-muted)] text-[17px] leading-[1.6] max-w-2xl">
-              Exempel på automationer jag har byggt
+              Exempel på automationer vi har byggt
             </p>
           </div>
 
