@@ -64,11 +64,11 @@ export default function AboutPage() {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
               {/* Profile 1 - Hai */}
-              <div className="bg-[var(--color-card-bg)] border border-[var(--color-border)] p-10 rounded-[4px] transition-colors duration-300 hover:border-[var(--color-muted)]">
+              <div className="bg-[var(--color-card-bg)] border border-[var(--color-border)] pt-6 px-10 pb-10 rounded-[4px] transition-colors duration-300 hover:border-[var(--color-muted)]">
                 {/* Profile image */}
-                <div className="border border-[var(--color-border)] rounded-[4px] aspect-[4/7] mb-6 overflow-hidden">
+                <div className="border border-[var(--color-border)] rounded-[4px] aspect-[5/6] mb-6 overflow-hidden">
                   <Image
-                    src="/Hai Bui.png"
+                    src="/Hai Bui 2.png"
                     alt="Hai Bui"
                     width={1414}
                     height={2000}
@@ -101,11 +101,11 @@ export default function AboutPage() {
               </div>
 
               {/* Profile 2 - Abdi */}
-              <div className="bg-[var(--color-card-bg)] border border-[var(--color-border)] p-10 rounded-[4px] transition-colors duration-300 hover:border-[var(--color-muted)]">
+              <div className="bg-[var(--color-card-bg)] border border-[var(--color-border)] pt-6 px-10 pb-10 rounded-[4px] transition-colors duration-300 hover:border-[var(--color-muted)]">
                 {/* Profile image */}
-                <div className="border border-[var(--color-border)] rounded-[4px] aspect-[4/7] mb-6 overflow-hidden">
+                <div className="border border-[var(--color-border)] rounded-[4px] aspect-[5/6] mb-6 overflow-hidden">
                   <Image
-                    src="/Abdi.png"
+                    src="/Abdi 2.png"
                     alt="Abdimajiid Mohamud"
                     width={1414}
                     height={2000}

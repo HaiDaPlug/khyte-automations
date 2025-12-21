@@ -39,7 +39,10 @@ khyte-automations/
 ├── docs/
 │   └── CONTEXT.md                 # This file
 ├── public/
-│   ├── Hai Bui.png                # Profile image for Hai Bui (1414x2000)
+│   ├── Hai Bui 2.png              # Profile image for Hai Bui (cropped version, 1414x2000)
+│   ├── Abdi 2.png                 # Profile image for Abdimajiid Mohamud (cropped version, 1414x2000)
+│   ├── Hai Bui.png                # Backup: original Hai Bui image (898KB)
+│   ├── Abdi.png                   # Backup: original Abdi image
 │   └── dna-weave.gif              # DNA weave animation (footer CTA)
 ├── opus4.5-merged.html            # HTML v1 reference (design source)
 ├── package.json
@@ -278,13 +281,14 @@ The contact form at `/contact` uses **Formspree** for submissions:
    - Section H2: "Vi bakom Khyte" (24px, medium weight)
    - Two profile cards in grid layout (stacks on mobile)
    - Each card includes:
-     - Profile image (4:5 aspect ratio, card-style frame)
-       - Hai: Uses /Hai Bui.png (1414x2000, Next.js Image component)
-       - Abdi: Placeholder block
+     - Profile image (5:6 aspect ratio, card-style frame)
+       - Hai: Uses /Hai Bui 2.png (1414x2000, cropped version, Next.js Image component)
+       - Abdi: Uses /Abdi 2.png (1414x2000, cropped version, Next.js Image component)
      - Name (H3, 20px)
      - Role (small, muted text)
      - Description paragraph (15px, muted)
-     - Contact info (email link for Hai, placeholder text for Abdi)
+     - Contact info (email link for both Hai and Abdi)
+   - Card padding: `pt-6 px-10 pb-10` (reduced top padding for tighter layout)
    - Grid gap: 48px (gap-12)
 6. **Spacing**: `mb-20` between major sections for consistent rhythm
 
@@ -659,6 +663,37 @@ Before deployment, verify:
 
 ## Version History
 
+- **v1.13** (2025-12-21) - About Page Image Optimization
+  - **Profile Images**:
+    - Replaced profile images with cropped versions: `Hai Bui 2.png` and `Abdi 2.png`
+    - Changed aspect ratio from `aspect-[4/7]` to `aspect-[5/6]` (shorter, more compact frames)
+    - Images are pre-cropped to remove top headroom (manual editing approach vs CSS cropping)
+    - Original images kept as backups: `Hai Bui.png` and `Abdi.png`
+  - **Card Styling**:
+    - Reduced top padding on profile cards from `p-10` (40px all sides) to `pt-6 px-10 pb-10`
+    - Top padding: 24px (reduced from 40px)
+    - Left/right/bottom padding: 40px (unchanged)
+    - Creates tighter visual presentation with less empty space above images
+  - **Technical Notes**:
+    - CSS `object-position` cropping was attempted but didn't produce desired results
+    - Manual image editing with new aspect ratio proved more effective
+    - All images maintain `object-cover` for proper scaling
+
+- **v1.12** (2025-12-19) - About Page Profile Updates
+  - **Profile Images**:
+    - Added Abdi.png (1414x2000) for Abdimajiid Mohamud profile
+    - Optimized Hai Bui.png to smaller file size (898KB)
+    - Changed profile image aspect ratio from `aspect-[4/5]` to `aspect-[4/7]` (taller containers to show full body)
+  - **Content Updates**:
+    - Updated about page opening copy with clearer messaging about AI automation
+    - Refined company philosophy section with more direct language
+    - Updated Hai's profile description (Grundare och Automationsansvarig)
+    - Updated Abdi's profile description and added email contact (abdimajiidmohamud@gmail.com)
+    - Changed Abdi's role to "Partner - Säljare"
+  - **Design**:
+    - Profile images now use 4:7 aspect ratio for better full-body presentation
+    - All profile cards maintain consistent styling and hover effects
+
 - **v1.11** (2025-12-18) - Timeline SVG Circle Integration (SHELVED - NOT SHIPPING)
   - **GOAL**: Electricity traveling through circles as part of conductor path
   - **HORIZONTAL SCAN ✅** (Working perfectly - KEEPING):
@@ -805,6 +840,6 @@ Before deployment, verify:
 
 ---
 
-**Last Updated**: 2025-12-18
-**Current Version**: v1.11 (shelving circle animation, shipping with scan only)
-**Status**: Timeline horizontal scan working perfectly, ready to ship after cleanup ✅
+**Last Updated**: 2025-12-21
+**Current Version**: v1.13 (about page image optimization)
+**Status**: Production ready - About page optimized with cropped profile images ✅
