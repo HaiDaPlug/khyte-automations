@@ -9,10 +9,10 @@ export default function Contact() {
       <Container>
         <main className="pt-32 pb-20">
           <div className="mb-16">
-            <h1 className="text-[2.5rem] font-medium text-[var(--color-text)] mb-4 tracking-[-0.02em]">
+            <h1 className="text-[clamp(3rem,5vw,4rem)] font-bold text-[var(--color-text)] mb-4 tracking-[-0.03em] leading-[1.1]">
               Kontakt
             </h1>
-            <p className="text-[var(--color-muted)] text-[17px] leading-[1.6] max-w-2xl">
+            <p className="text-[var(--color-text-body)] text-[1.25rem] leading-[1.6] max-w-[65ch]">
               Låt oss prata om din automation
             </p>
           </div>
@@ -28,7 +28,7 @@ export default function Contact() {
                 <div>
                   <label
                     htmlFor="name"
-                    className="block text-xs font-medium text-[var(--color-muted)] mb-2"
+                    className="block text-sm font-bold text-[var(--color-text)] mb-2 tracking-[0.02em]"
                   >
                     Namn *
                   </label>
@@ -44,7 +44,7 @@ export default function Contact() {
                 <div>
                   <label
                     htmlFor="company"
-                    className="block text-xs font-medium text-[var(--color-muted)] mb-2"
+                    className="block text-sm font-bold text-[var(--color-text)] mb-2 tracking-[0.02em]"
                   >
                     Företag
                   </label>
@@ -59,7 +59,7 @@ export default function Contact() {
                 <div>
                   <label
                     htmlFor="phone"
-                    className="block text-xs font-medium text-[var(--color-muted)] mb-2"
+                    className="block text-sm font-bold text-[var(--color-text)] mb-2 tracking-[0.02em]"
                   >
                     Telefon
                   </label>
@@ -74,7 +74,7 @@ export default function Contact() {
                 <div>
                   <label
                     htmlFor="email"
-                    className="block text-xs font-medium text-[var(--color-muted)] mb-2"
+                    className="block text-sm font-bold text-[var(--color-text)] mb-2 tracking-[0.02em]"
                   >
                     E-post *
                   </label>
@@ -90,7 +90,7 @@ export default function Contact() {
                 <div>
                   <label
                     htmlFor="message"
-                    className="block text-xs font-medium text-[var(--color-muted)] mb-2"
+                    className="block text-sm font-bold text-[var(--color-text)] mb-2 tracking-[0.02em]"
                   >
                     Meddelande *
                   </label>
@@ -112,37 +112,37 @@ export default function Contact() {
             {/* Direct Contact Options */}
             <div className="space-y-8">
               <div>
-                <h2 className="text-2xl font-medium text-[var(--color-text)] mb-6">
+                <h2 className="text-[2rem] font-semibold text-[var(--color-text)] mb-6 tracking-[-0.01em] leading-[1.2]">
                   Andra sätt att nå mig
                 </h2>
 
                 <div className="space-y-6">
                   <div>
-                    <p className="text-xs font-medium text-[var(--color-muted)] mb-2">
+                    <p className="text-sm font-bold text-[var(--color-text)] mb-2 tracking-[0.02em]">
                       E-post
                     </p>
                     <a
                       href="mailto:hai@khyteteam.com"
-                      className="text-lg text-[var(--color-accent)] hover:opacity-80 transition-opacity"
+                      className="text-[1.25rem] text-[var(--color-accent)] hover:opacity-80 transition-opacity"
                     >
                       hai@khyteteam.com
                     </a>
                   </div>
 
                   <div>
-                    <p className="text-xs font-medium text-[var(--color-muted)] mb-2">
+                    <p className="text-sm font-bold text-[var(--color-text)] mb-2 tracking-[0.02em]">
                       Telefon
                     </p>
                     <a
                       href="tel:070-099 68 38"
-                      className="text-lg text-[var(--color-accent)] hover:opacity-80 transition-opacity"
+                      className="text-[1.25rem] text-[var(--color-accent)] hover:opacity-80 transition-opacity"
                     >
                       070-099 68 38
                     </a>
                   </div>
 
                   <div>
-                    <p className="text-xs font-medium text-[var(--color-muted)] mb-3">
+                    <p className="text-sm font-bold text-[var(--color-text)] mb-3 tracking-[0.02em]">
                       Boka möte
                     </p>
                     <a
@@ -158,7 +158,7 @@ export default function Contact() {
               </div>
 
               <div className="pt-8 border-t border-[var(--color-border)]">
-                <p className="text-sm text-[var(--color-muted)] leading-relaxed">
+                <p className="text-base text-[var(--color-text-body)] leading-[1.5]">
                   Jag svarar vanligtvis inom 24 timmar. Berätta gärna lite om
                   vilka processer eller arbetsflöden du vill automatisera, så
                   kan vi se om det är en bra match.

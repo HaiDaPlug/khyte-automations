@@ -1,12 +1,13 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-bg: #0F0F10;
+  --color-bg: #0A0A0A;
   --color-card-bg: #18181B;
-  --color-text: #EDEDEF;
+  --color-text: rgba(255, 255, 255, 1.0);
+  --color-text-body: rgba(255, 255, 255, 0.85);
   --color-muted: #A1A1AA;
   --color-accent: #FFFFFF;
-  --color-border: #27272A;
+  --color-border: rgba(255, 255, 255, 0.15);
 
   --radius-sm: 4px;
   --shadow-soft: 0 18px 45px rgba(0, 0, 0, 0.08);

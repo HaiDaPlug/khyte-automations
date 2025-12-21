@@ -24,10 +24,10 @@ export default function Cases() {
       <Container>
         <main className="pt-32 pb-20">
           <div className="mb-16">
-            <h1 className="text-[2.5rem] font-medium text-[var(--color-text)] mb-4 tracking-[-0.02em]">
+            <h1 className="text-[clamp(3rem,5vw,4rem)] font-bold text-[var(--color-text)] mb-4 tracking-[-0.03em] leading-[1.1]">
               Case
             </h1>
-            <p className="text-[var(--color-muted)] text-[17px] leading-[1.6] max-w-2xl">
+            <p className="text-[var(--color-text-body)] text-[1.25rem] leading-[1.6] max-w-[65ch]">
               Exempel på automationer vi har byggt
             </p>
           </div>
@@ -36,33 +36,33 @@ export default function Cases() {
             {cases.map((caseItem, index) => (
               <div
                 key={index}
-                className="bg-[var(--color-card-bg)] border border-[var(--color-border)] p-10 rounded-[4px] transition-colors duration-300 hover:border-[var(--color-muted)]"
+                className="bg-[var(--color-card-bg)] border border-[var(--color-border)] p-8 rounded-[4px] transition-colors duration-300 hover:border-[var(--color-muted)]"
               >
-                <h2 className="text-2xl font-medium text-[var(--color-text)] mb-6">
+                <h2 className="text-[2rem] font-semibold text-[var(--color-text)] mb-6 tracking-[-0.01em] leading-[1.2]">
                   {caseItem.title}
                 </h2>
                 <div className="space-y-4 text-[15px]">
                   <div>
-                    <p className="text-[var(--color-accent)] font-medium mb-1">
+                    <p className="text-[var(--color-accent)] font-bold mb-2 text-sm tracking-[0.02em]">
                       Problem
                     </p>
-                    <p className="text-[var(--color-muted)] leading-[1.6]">
+                    <p className="text-[var(--color-text-body)] leading-[1.5] text-base max-w-[460px]">
                       {caseItem.problem}
                     </p>
                   </div>
                   <div>
-                    <p className="text-[var(--color-accent)] font-medium mb-1">
+                    <p className="text-[var(--color-accent)] font-bold mb-2 text-sm tracking-[0.02em]">
                       Build
                     </p>
-                    <p className="text-[var(--color-muted)] leading-[1.6]">
+                    <p className="text-[var(--color-text-body)] leading-[1.5] text-base max-w-[460px]">
                       {caseItem.build}
                     </p>
                   </div>
                   <div>
-                    <p className="text-[var(--color-accent)] font-medium mb-1">
+                    <p className="text-[var(--color-accent)] font-bold mb-2 text-sm tracking-[0.02em]">
                       Result
                     </p>
-                    <p className="text-[var(--color-muted)] leading-[1.6]">
+                    <p className="text-[var(--color-text-body)] leading-[1.5] text-base max-w-[460px]">
                       {caseItem.result}
                     </p>
                   </div>
@@ -73,7 +73,7 @@ export default function Cases() {
 
           {/* Bottom CTA */}
           <div className="text-center pt-8">
-            <p className="text-[18px] text-[var(--color-text)] mb-6 font-medium">
+            <p className="text-[1.25rem] text-[var(--color-text)] mb-6 font-medium leading-[1.6]">
               Vill du ha en liknande lösning?
             </p>
             <Button variant="primary" href="/contact">

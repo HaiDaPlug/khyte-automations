@@ -663,6 +663,44 @@ Before deployment, verify:
 
 ## Version History
 
+- **v1.14** (2025-12-21) - Typography & Spacing Design System Implementation
+  - **Font Loading**:
+    - Added Inter font via `next/font/google` for premium geometric look across all OS
+    - Applied site-wide to replace dated system fonts (especially on Windows/Android)
+  - **Design Tokens (globals.css)**:
+    - Background: `#0F0F10` → `#0A0A0A` (softer black, OLED-safe)
+    - Text: `#EDEDEF` → `rgba(255,255,255,1.0)` (pure white for headings)
+    - NEW: `--color-text-body: rgba(255,255,255,0.85)` (body text with 85% opacity)
+    - Borders: `#27272A` → `rgba(255,255,255,0.15)` (opacity-based)
+  - **Typography System (all pages except homepage)**:
+    - H1: `clamp(3rem,5vw,4rem)`, weight 700, tracking -0.03em, leading 1.1
+    - H2: 2rem (32px), weight 600, tracking -0.01em, leading 1.2
+    - H3: 1.5rem (24px), weight 500, leading 1.3
+    - Body intro: 1.25rem (20px), lh 1.6, opacity white
+    - Body base: 1rem (16px), lh 1.5, opacity white
+    - Labels: 14px (text-sm), weight 700, tracking 0.02em, pure white
+  - **Spacing & Readability**:
+    - Card padding: p-10 (40px) → p-8 (32px) across all cards
+    - Body text max-width: 460px (cards), 65ch (sections)
+    - Label spacing: mb-1 → mb-2 (4px → 8px)
+  - **Pages Updated**:
+    - `/cases`: Card titles larger, labels bold, body text crisp
+    - `/about`: H1 bolder, body 20px, profile cards tighter
+    - `/contact`: Form labels bold white, contact info prominent
+  - **Visual Impact**:
+    - "Light shining through" effect with opacity whites vs grey hex
+    - Bolder hierarchy (H1 700 weight immediately grabs attention)
+    - Clearer sections (H2 32px vs 24px with semi-bold weight)
+    - Better readability (max-widths prevent eye strain)
+    - Premium tighter spacing (32px card padding)
+  - **Files Modified**:
+    - `layout.tsx`: Inter font loading
+    - `globals.css`: Design tokens (background, text colors, borders)
+    - `cases/page.tsx`: Typography & spacing (13 changes)
+    - `about/page.tsx`: Typography & spacing (11 changes)
+    - `contact/page.tsx`: Typography & spacing (11 changes)
+  - **Note**: Homepage (/) intentionally not touched per requirements
+
 - **v1.13** (2025-12-21) - About Page Image Optimization
   - **Profile Images**:
     - Replaced profile images with cropped versions: `Hai Bui 2.png` and `Abdi 2.png`
