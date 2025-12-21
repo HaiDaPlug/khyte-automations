@@ -178,68 +178,9 @@ html {
   animation-delay: 300ms;
 }
 
-/* SVG Circle Overlays */
-.timeline-circles {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-  z-index: 0;
-}
-
-/* Circle energy layer - uses currentColor */
-.circles-energy {
-  color: var(--color-accent);
-}
-
-/* Circle energy - initial state (hidden) */
-.circle-energy {
-  opacity: 0;
-  /* dasharray/dashoffset set via JS */
-}
-
-/* Circle 2 loop - delay = 300ms + hit offset */
-.timeline-animate .circle-energy--2 {
-  animation: circleLoop 380ms ease-out 1 both;
-  animation-delay: calc(300ms + var(--timeline-hit-2));
-}
-
-/* Circle 3 loop - delay = 300ms + hit offset */
-.timeline-animate .circle-energy--3 {
-  animation: circleLoop 380ms ease-out 1 both;
-  animation-delay: calc(300ms + var(--timeline-hit-3));
-}
-
-@keyframes circleLoop {
-  0% {
-    stroke-dashoffset: 150.8px; /* Circumference = 2π × 24 */
-    opacity: 0;
-  }
-  10% {
-    opacity: 0.9;
-  }
-  90% {
-    opacity: 0.9;
-  }
-  100% {
-    stroke-dashoffset: 0px; /* Complete 360° loop */
-    opacity: 0;
-  }
-}
-
-/* Mobile - hide SVG circles */
-@media (max-width: 768px) {
-  .timeline-circles {
-    display: none;
-  }
-}
-
 /* Reduced motion - disable animations */
 @media (prefers-reduced-motion: reduce) {
-  .timeline-line.timeline-animate::after,
-  .circle-energy {
+  .timeline-line.timeline-animate::after {
     animation: none !important;
   }
 }

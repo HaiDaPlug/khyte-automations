@@ -1,11 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import TimelineCircles from "./TimelineCircles";
 
 export default function TimelineProcess() {
   const sectionRef = useRef<HTMLElement>(null);
-  const trackRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -14,54 +12,6 @@ export default function TimelineProcess() {
         entries.forEach((entry) => {
           if (entry.isIntersecting && !isVisible) {
             setIsVisible(true);
-
-            // Only measure on desktop (line is hidden on mobile)
-            if (!window.matchMedia("(min-width: 768px)").matches) return;
-
-            // Measure geometry after next paint
-            requestAnimationFrame(() => {
-              if (!trackRef.current) return;
-
-              // Scope queries to track wrapper (where SVG is inset-0)
-              const line = trackRef.current.querySelector('.timeline-line');
-              const circles = trackRef.current.querySelectorAll('.timeline-circle');
-
-              if (!line || circles.length === 0) return;
-
-              const lineRect = line.getBoundingClientRect();
-              const scanTravel = lineRect.width * 0.8; // matches 80% animation
-
-              circles.forEach((circle, i) => {
-                const circleRect = circle.getBoundingClientRect();
-                const circleCenter = circleRect.left + circleRect.width / 2 - lineRect.left;
-
-                // Clamp ratio to prevent negative/overshoot delays
-                const ratio = Math.min(1, Math.max(0, circleCenter / scanTravel));
-                const hitMs = Math.round(ratio * 3640); // 3640ms = scan duration
-
-                // FIXED: Compute circle center positions relative to track wrapper (not section)
-                const trackRect = trackRef.current!.getBoundingClientRect();
-                const circleCenterX = circleRect.left + circleRect.width / 2 - trackRect.left;
-                const circleCenterY = circleRect.top + circleRect.height / 2 - trackRect.top;
-
-                // Set all vars on track wrapper (where SVG is inset-0)
-                trackRef.current?.style.setProperty(
-                  `--timeline-hit-${i + 1}`,
-                  `${hitMs}ms`
-                );
-                trackRef.current?.style.setProperty(
-                  `--timeline-cx-${i + 1}`,
-                  `${Math.round(circleCenterX)}px`
-                );
-                trackRef.current?.style.setProperty(
-                  `--timeline-cy-${i + 1}`,
-                  `${Math.round(circleCenterY)}px`
-                );
-
-                // Debug logging (remove after testing)
-                console.log(`Circle ${i + 1} - hit: ${hitMs}ms, cx: ${Math.round(circleCenterX)}px, cy: ${Math.round(circleCenterY)}px`);
-              });
-            });
           }
         });
       },
@@ -94,22 +44,13 @@ export default function TimelineProcess() {
         </p>
       </div>
 
-      <div ref={trackRef} data-timeline-track="true" className="relative">
+      <div className="relative">
         {/* Timeline connecting line - only visible on desktop */}
         <div
           className={`hidden md:block absolute top-6 left-6 right-6 h-[2px] bg-[var(--color-border)] z-0 timeline-line ${
             isVisible ? "timeline-animate" : ""
           }`}
         />
-
-        {/* SVG circle overlays wrapper - receives CSS vars from parent section */}
-        <div
-          className={`hidden md:block absolute inset-0 pointer-events-none z-0 timeline-svg-wrapper ${
-            isVisible ? "timeline-animate" : ""
-          }`}
-        >
-          <TimelineCircles isVisible={isVisible} />
-        </div>
 
         {/* Grid with steps */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative overflow-visible z-10">

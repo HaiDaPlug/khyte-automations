@@ -876,8 +876,37 @@ Before deployment, verify:
   - Formspree contact form
   - Production build working
 
+- **v1.15** (2025-12-22) - Timeline Animation Cleanup (SVG Circle Removal)
+  - **Goal**: Remove non-functional SVG circle animations while preserving horizontal scan
+  - **Removed Components**:
+    - Deleted `src/components/TimelineCircles.tsx` (entire file)
+    - Removed TimelineCircles import and usage from TimelineProcess.tsx
+    - Removed SVG wrapper div from timeline markup
+    - Removed all geometry measurement code (circle position calculations)
+    - Simplified IntersectionObserver to only trigger visibility state
+  - **CSS Cleanup**:
+    - Removed all SVG circle-related CSS from globals.css:
+      - `.timeline-circles` styles
+      - `.circles-energy` styles
+      - `.circle-energy` animation classes
+      - `circleLoop` keyframe animation
+      - SVG-specific media queries
+  - **Preserved**:
+    - Horizontal timeline scan animation (perfect working state)
+    - `timelineScan` keyframe animation
+    - `.timeline-line::after` pseudo-element
+    - 200px scan light traveling 80% across timeline
+    - All timing (3640ms duration, 300ms delay)
+  - **Result**: Clean timeline with only horizontal scan, no debug circles visible
+  - **Files Modified**:
+    - `src/components/TimelineProcess.tsx` - Removed SVG code and geometry logic
+    - `src/app/globals.css` - Removed ~65 lines of SVG circle CSS
+  - **Files Deleted**:
+    - `src/components/TimelineCircles.tsx`
+  - **Build Status**: ✅ Production build successful, no TypeScript errors
+
 ---
 
-**Last Updated**: 2025-12-21
-**Current Version**: v1.13 (about page image optimization)
-**Status**: Production ready - About page optimized with cropped profile images ✅
+**Last Updated**: 2025-12-22
+**Current Version**: v1.15 (timeline animation cleanup)
+**Status**: Production ready - Timeline cleaned up with horizontal scan only ✅
