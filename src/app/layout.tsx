@@ -1,12 +1,6 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { GeistSans } from "geist/font/sans";
 import "./globals.css";
-
-const inter = Inter({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-inter",
-});
 
 export const metadata: Metadata = {
   title: "KHYTE AUTOMATIONS | No Hype, Just Workflows",
@@ -20,8 +14,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="sv">
-      <body className={`main-wrapper ${inter.className}`}>{children}</body>
+    <html lang="sv" className={GeistSans.variable}>
+      <body className="main-wrapper">{children}</body>
     </html>
   );
 }

@@ -38,7 +38,7 @@ export default function TimelineProcess() {
         <h2 className="text-2xl font-medium text-[var(--color-text)] mb-3">
           Så jobbar vi
         </h2>
-        <p className="text-[var(--color-muted)] text-[15px] leading-[1.6]">
+        <p className="text-[var(--color-text-body)] text-base leading-[1.6] max-w-[65ch]">
           En simpel process utan onödigt skit. Från problem till lösning på
           kortast möjliga tid.
         </p>
@@ -64,10 +64,10 @@ export default function TimelineProcess() {
           <div className="timeline-circle w-12 h-12 rounded-full flex items-center justify-center text-base font-semibold mb-6 bg-[var(--color-accent)] text-[var(--color-bg)]">
             1
           </div>
-          <h3 className="text-lg font-medium mb-4 text-[var(--color-text)]">
+          <h3 className="text-[1.5rem] font-medium mb-4 text-[var(--color-text)] leading-[1.3]">
             Kartlägger flödet - vi hittar tidstjuvarna
           </h3>
-          <p className="text-[var(--color-muted)] text-[15px] leading-[1.6]">
+          <p className="text-[var(--color-text-body)] text-base leading-[1.5] max-w-[460px]">
             Vi går igenom era processer och identifierar var energin läcker. Vi
             letar efter upprepning och friktion.
           </p>
@@ -82,10 +82,10 @@ export default function TimelineProcess() {
           <div className="timeline-circle w-12 h-12 rounded-full flex items-center justify-center text-base font-semibold mb-6 bg-[var(--color-bg)] border-2 border-[var(--color-accent)] text-[var(--color-accent)]">
             2
           </div>
-          <h3 className="text-lg font-medium mb-4 text-[var(--color-text)]">
+          <h3 className="text-[1.5rem] font-medium mb-4 text-[var(--color-text)] leading-[1.3]">
             Bygger en prototyp och testar snabbt
           </h3>
-          <p className="text-[var(--color-muted)] text-[15px] leading-[1.6]">
+          <p className="text-[var(--color-text-body)] text-base leading-[1.5] max-w-[460px]">
             Inget evighetsplanerande. Vi bygger en fungerande version som vi
             testar mot verkligheten direkt.
           </p>
@@ -100,10 +100,10 @@ export default function TimelineProcess() {
           <div className="timeline-circle w-12 h-12 rounded-full flex items-center justify-center text-base font-semibold mb-6 bg-[var(--color-bg)] border border-[var(--color-border)] text-[var(--color-muted)]">
             3
           </div>
-          <h3 className="text-lg font-medium mb-4 text-[var(--color-text)]">
+          <h3 className="text-[1.5rem] font-medium mb-4 text-[var(--color-text)] leading-[1.3]">
             Implementerar skarpt - justerar tills det sitter
           </h3>
-          <p className="text-[var(--color-muted)] text-[15px] leading-[1.6]">
+          <p className="text-[var(--color-text-body)] text-base leading-[1.5] max-w-[460px]">
             Vi driftsätter lösningen. Jag finns kvar och trimmar systemet tills
             det rullar av sig själv.
           </p>

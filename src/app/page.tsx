@@ -13,8 +13,8 @@ const casePreviews = [
       "Kunden jobbar mycket med informationssökning manuellt på allabolag. Istället gjorde vi hela processen automatisk.",
   },
   {
-    problem: '"Kan man hitta företag utanför top 5 på Google?"',
-    title: "SEO-Research på potentiella leads",
+    problem: '"Kan man hitta företag utanför topp 5 på Google?"',
+    title: "SEO-research på potentiella leads",
     description:
       "Ett system som hittar hemsidor utanför top 5, researchar sidan, kommer tillbaka med svagheter och styrkor samt förbättringar.",
   },
@@ -28,22 +28,16 @@ export default function Home() {
 
         {/* Hero Section */}
         <header className="relative min-h-[92svh] md:min-h-[100svh] flex flex-col justify-center max-w-[900px] pb-10 md:pb-12 mx-auto text-center items-center">
-          <h1
-            className="text-[clamp(3rem,5vw,4.5rem)] font-medium leading-[1.1] tracking-[-0.03em] mb-8 text-[var(--color-text)]"
-            style={{ fontWeight: 500 }}
-          >
+          <h1 className="text-hero text-5xl md:text-7xl mb-6 drop-shadow-sm text-[var(--color-text)]">
             AI som tar hand om jobbet som du inte behöver göra.
           </h1>
 
-          <p
-            className="text-[clamp(1.1rem,2vw,1.25rem)] text-[var(--color-muted)] max-w-[600px] mb-12"
-            style={{ fontWeight: 300 }}
-          >
+          <p className="text-[1.25rem] text-[var(--color-text-body)] max-w-[540px] mb-10 leading-[1.6]">
             Vi bygger automationer som tar bort friktion i vardagen - kundnära,
             effektivt, med fungerande workflows.
           </p>
 
-          <div className="flex gap-4">
+          <div className="flex gap-4 mt-10">
             <Button variant="primary" href="/contact">
               Boka ett samtal
             </Button>
@@ -81,7 +75,7 @@ export default function Home() {
 
         {/* Cases Section */}
         <section className="section">
-          <span className="section-header">Nyliga projekt</span>
+          <span className="text-label mb-8">Senaste projekt</span>
 
           <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-6 mb-[var(--spacing-section)]">
             {casePreviews.slice(0, 2).map((caseItem, index) => (
@@ -101,10 +95,10 @@ export default function Home() {
         {/* Footer CTA */}
         <footer className="py-[100px] border-t border-[var(--color-border)]">
           <div className="flex flex-col items-center text-center">
-            <h2 className="text-[clamp(2rem,3vw,2.5rem)] font-medium mb-4 text-[var(--color-text)]">
+            <h2 className="text-5xl md:text-6xl font-semibold mb-4 text-[var(--color-text)] tracking-[-0.01em] leading-[1.2]">
               Redo att automatisera bort tråkiga uppgifter?
             </h2>
-            <p className="text-[var(--color-muted)] text-base leading-[1.6] mb-8 max-w-2xl">
+            <p className="text-[var(--color-text-body)] text-base leading-[1.6] mb-10 max-w-2xl">
               Boka ett samtal så går vi igenom hur automation kan frigöra tid
               i din verksamhet.
             </p>

@@ -24,10 +24,10 @@ export default function Cases() {
       <Container>
         <main className="pt-32 pb-20">
           <div className="mb-16">
-            <h1 className="text-[clamp(3rem,5vw,4rem)] font-bold text-[var(--color-text)] mb-4 tracking-[-0.03em] leading-[1.1]">
-              Case
+            <h1 className="text-hero text-5xl md:text-7xl text-[var(--color-text)] mb-4 tracking-[-0.03em]">
+              Utvalda Case
             </h1>
-            <p className="text-[var(--color-text-body)] text-[1.25rem] leading-[1.6] max-w-[65ch]">
+            <p className="text-[var(--color-text-body)] text-xl leading-[1.6] max-w-[60ch]">
               Exempel på automationer vi har byggt
             </p>
           </div>
@@ -43,7 +43,7 @@ export default function Cases() {
                 </h2>
                 <div className="space-y-4 text-[15px]">
                   <div>
-                    <p className="text-[var(--color-accent)] font-bold mb-2 text-sm tracking-[0.02em]">
+                    <p className="text-label mb-2">
                       Problem
                     </p>
                     <p className="text-[var(--color-text-body)] leading-[1.5] text-base max-w-[460px]">
@@ -51,7 +51,7 @@ export default function Cases() {
                     </p>
                   </div>
                   <div>
-                    <p className="text-[var(--color-accent)] font-bold mb-2 text-sm tracking-[0.02em]">
+                    <p className="text-label mb-2">
                       Build
                     </p>
                     <p className="text-[var(--color-text-body)] leading-[1.5] text-base max-w-[460px]">
@@ -59,7 +59,7 @@ export default function Cases() {
                     </p>
                   </div>
                   <div>
-                    <p className="text-[var(--color-accent)] font-bold mb-2 text-sm tracking-[0.02em]">
+                    <p className="text-label mb-2">
                       Result
                     </p>
                     <p className="text-[var(--color-text-body)] leading-[1.5] text-base max-w-[460px]">
@@ -72,13 +72,15 @@ export default function Cases() {
           </div>
 
           {/* Bottom CTA */}
-          <div className="text-center pt-8">
-            <p className="text-[1.25rem] text-[var(--color-text)] mb-6 font-medium leading-[1.6]">
+          <div className="text-center pt-8 pb-20">
+            <p className="text-4xl md:text-5xl text-[var(--color-text)] mb-6 font-bold tracking-tight leading-[1.6]">
               Vill du ha en liknande lösning?
             </p>
-            <Button variant="primary" href="/contact">
-              Kontakta mig
-            </Button>
+            <div className="mt-8">
+              <Button variant="primary" href="/contact">
+                Kontakta mig
+              </Button>
+            </div>
           </div>
         </main>
       </Container>
