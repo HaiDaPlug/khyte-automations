@@ -10,9 +10,12 @@ export default function AboutPage() {
         <main className="pt-32 pb-20">
           {/* Page header */}
           <div className="mb-16">
-            <h1 className="text-[clamp(3rem,5vw,4rem)] font-bold text-[var(--color-text)] mb-4 tracking-[-0.03em] leading-[1.1]">
+            <h1 className="text-hero text-5xl md:text-7xl text-[var(--color-text)] mb-6">
               Om Khyte Automations
             </h1>
+            <p className="text-xl text-[var(--color-text-body)] max-w-2xl leading-[1.6]">
+              Vi bygger automationer som tar bort friktion - så företag kan fokusera på tillväxt istället för manuellt arbete.
+            </p>
           </div>
 
           {/* Section 1: Varför Khyte finns */}
@@ -26,7 +29,7 @@ export default function AboutPage() {
               </div>
               {/* Right column - Placeholder image */}
               <div>
-                <div className="bg-[var(--color-card-bg)] border border-[var(--color-border)] rounded-[4px] aspect-[16/10]"></div>
+                <div className="bg-white/5 border border-white/10 rounded-[4px] aspect-[16/10]"></div>
               </div>
             </div>
           </section>
@@ -38,7 +41,7 @@ export default function AboutPage() {
                 Vi tror inte att AI kan göra allt. Däremot kan den göra mycket, rätt byggt kan det ta hand om repetitivt arbete och göra flöden mer effektiva.
               </p>
 
-              <p className="text-[var(--color-text)] font-medium mb-3">
+              <p className="text-[var(--color-text)] font-semibold mb-3">
                 Du kan förvänta dig att vi:
               </p>
 
@@ -58,7 +61,7 @@ export default function AboutPage() {
 
           {/* Section 3: Vi bakom Khyte */}
           <section>
-            <h2 className="text-[2rem] font-semibold text-[var(--color-text)] mb-8 tracking-[-0.01em] leading-[1.2]">
+            <h2 className="text-4xl font-bold text-[var(--color-text)] mb-10 tracking-tight leading-[1.2]">
               Vi bakom Khyte
             </h2>
 
@@ -77,12 +80,12 @@ export default function AboutPage() {
                 </div>
 
                 {/* Name */}
-                <h3 className="text-[1.5rem] font-medium text-[var(--color-text)] mb-1 leading-[1.3]">
+                <h3 className="text-2xl font-bold text-white mb-2 tracking-tight leading-[1.3]">
                   Hai Bui
                 </h3>
 
                 {/* Role */}
-                <p className="text-sm text-[var(--color-text-body)] mb-4">
+                <p className="text-label mb-4">
                   Grundare och Automationsansvarig
                 </p>
 
@@ -94,7 +97,7 @@ export default function AboutPage() {
                 {/* Contact */}
                 <a
                   href="mailto:hai@khyteteam.com"
-                  className="text-base text-[var(--color-accent)] hover:opacity-80 transition-opacity duration-200"
+                  className="text-base text-white hover:text-white/80 transition-colors duration-200 underline underline-offset-2"
                 >
                   hai@khyteteam.com
                 </a>
@@ -114,12 +117,12 @@ export default function AboutPage() {
                 </div>
 
                 {/* Name */}
-                <h3 className="text-[1.5rem] font-medium text-[var(--color-text)] mb-1 leading-[1.3]">
+                <h3 className="text-2xl font-bold text-white mb-2 tracking-tight leading-[1.3]">
                   Abdimajiid Mohamud
                 </h3>
 
                 {/* Role */}
-                <p className="text-sm text-[var(--color-text-body)] mb-4">
+                <p className="text-label mb-4">
                   Partner - Säljare
                 </p>
 
@@ -131,7 +134,7 @@ export default function AboutPage() {
                 {/* Contact placeholder */}
                 <a
                   href="mailto:abdimajiidmohamud@gmail.com"
-                  className="text-base text-[var(--color-accent)] hover:opacity-80 transition-opacity duration-200"
+                  className="text-base text-white hover:text-white/80 transition-colors duration-200 underline underline-offset-2"
                 >
                   abdimajiidmohamud@gmail.com
                 </a>

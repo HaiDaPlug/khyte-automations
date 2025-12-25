@@ -62,23 +62,42 @@ khyte-automations/
 - **Location**: All Tailwind config is in `src/app/globals.css`
 - **Syntax**: Uses `@theme inline { ... }` directive
 
-#### Design Tokens (v1.3 - Monochrome Scheme)
+#### Design Tokens (v1.17 - Obsidian System)
 
 ```css
 @theme inline {
-  --color-bg: #0F0F10;              /* Deep charcoal */
-  --color-card-bg: #18181B;         /* Card background */
-  --color-text: #EDEDEF;            /* Off-white text */
-  --color-muted: #A1A1AA;           /* Muted grey */
+  --color-bg: #0A0A0A;              /* OLED-safe black */
+  --color-card-bg: #121212;         /* Softer card background */
+  --color-text: #FFFFFF;            /* Pure white (headings) */
+  --color-text-body: rgba(255, 255, 255, 0.85); /* Body text (85% opacity) */
+  --color-muted: rgba(255, 255, 255, 0.50);     /* Muted/labels (50% opacity) */
   --color-accent: #FFFFFF;          /* Pure white accent */
-  --color-border: #27272A;          /* Dark border */
+  --color-border: rgba(255, 255, 255, 0.15);    /* Opacity-based border */
+
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
 
   --radius-sm: 4px;                 /* Small border radius */
   --shadow-soft: 0 18px 45px rgba(0, 0, 0, 0.08);
 }
 
+@layer utilities {
+  .text-hero {
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+  }
+
+  .text-label {
+    font-size: 0.8125rem; /* 13px */
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: #FFFFFF;
+  }
+}
+
 :root {
-  --spacing-section: 120px;         /* Section spacing (desktop) */
+  --spacing-section: 128px;         /* Section spacing (desktop) */
 }
 
 @media (max-width: 768px) {
@@ -94,10 +113,11 @@ khyte-automations/
 
 ### Typography
 
-- **Font Stack**: System fonts (no web fonts for faster loading)
-- **CSS**: `system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif`
-- **Hero H1**: `clamp(3rem, 5vw, 4.5rem)` with weight 500, tracking -0.03em
-- **Body Text**: 15px with line-height 1.6 for optimal readability
+- **Font**: Geist Sans (Linear-like premium aesthetic)
+- **Implementation**: Next.js font optimization with CSS variable `--font-geist-sans`
+- **Hero H1**: `text-5xl md:text-7xl` (48px → 72px) with `.text-hero` utility (700 weight, -0.03em tracking, 1.1 leading)
+- **Body Text**: 16px with line-height 1.5, uses `--color-text-body` (85% opacity white)
+- **Labels**: 13px uppercase, 700 weight, 0.05em tracking via `.text-label` utility
 
 ### Shared Components (v1.3)
 
@@ -905,8 +925,180 @@ Before deployment, verify:
     - `src/components/TimelineCircles.tsx`
   - **Build Status**: ✅ Production build successful, no TypeScript errors
 
+- **v1.16** (2025-12-22) - Landing Page Typography Enhancement
+  - **Goal**: Apply decisive typography system to landing page (homepage)
+  - **Typography Changes**:
+    - **Hero H1**:
+      - Weight: 500 (medium) → 700 (bold) for stronger presence
+      - Size: Kept original `clamp(3rem,5vw,4.5rem)` (user preference)
+      - Removed inline fontWeight style
+    - **Hero Subtitle**:
+      - Color: `--color-muted` → `--color-text-body` (opacity white)
+      - Size: `clamp(1.1rem,2vw,1.25rem)` → fixed `1.25rem` (20px)
+      - Removed inline fontWeight style, added explicit leading
+    - **Section Header** ("Nyliga projekt"):
+      - Color: `--color-muted` → `--color-text` (pure white)
+      - Weight: Added 700 (bold) for stronger label presence
+    - **Footer CTA H2**:
+      - Size: Restored to `clamp(2rem,3vw,2.5rem)` (user preferred hierarchy)
+      - Weight: medium → 600 (semibold)
+      - Added tracking -0.01em and leading 1.2
+    - **Footer Text**:
+      - Color: `--color-muted` → `--color-text-body` (opacity white)
+      - Size: Kept `text-base` (16px) for better hierarchy with larger H2
+      - Max-width: Kept `max-w-2xl` (original preference)
+  - **Timeline Section Updates** ([TimelineProcess.tsx](src/components/TimelineProcess.tsx)):
+    - **Section Intro**: Opacity white (`--color-text-body`), 16px, max-w-[65ch]
+    - **Step Titles (H3)**: Size 18px → 24px (`1.5rem`), added leading-[1.3]
+    - **Step Descriptions**: Opacity white, 16px, leading-[1.5], max-w-[460px]
+  - **Case Card Component** ([CaseCard.tsx](src/components/CaseCard.tsx)):
+    - **Card Padding**: p-10 (40px) → p-8 (32px) for tighter, premium feel
+    - **H3 Title**: Size 20px → 24px (`1.5rem`), added leading-[1.3]
+    - **Description**: Color muted → text-body (opacity white), size 15px → 16px, leading 1.6 → 1.5, added max-w-[460px]
+  - **Global CSS** ([globals.css](src/app/globals.css)):
+    - `.section-header`: Added font-weight 700, changed color from muted to pure white
+  - **Visual Impact**:
+    - Bolder hero with original preferred size
+    - Footer CTA maintains strong hierarchy (large heading, smaller text)
+    - Timeline steps more prominent with larger titles
+    - Opacity white creates "light shining through" effect throughout
+    - Tighter card spacing (32px) feels more premium
+  - **Files Modified**:
+    - `src/app/page.tsx` - Hero, footer CTA typography
+    - `src/components/TimelineProcess.tsx` - Timeline section typography
+    - `src/components/CaseCard.tsx` - Card padding and typography
+    - `src/app/globals.css` - Section header styling
+  - **Backtrack Reference**: `.backtrack-landing-page-v1.15.md` created with original values
+  - **Build Status**: ✅ Production build successful, no TypeScript errors
+
+- **v1.17** (2025-12-25) - P0 Micro-Polish: Obsidian Design System (Geist Sans + Physics Update)
+  - **Goal**: Tighten design physics (typography, spacing, contrast) and switch from Inter to Geist Sans
+  - **Phase 1: Typography Upgrade**:
+    - Installed `geist` package (v1.5.1)
+    - Updated `layout.tsx`: Replaced Inter with GeistSans from `geist/font/sans`
+    - Applied `--font-geist-sans` CSS variable to `<html>` tag
+    - Kept Swedish `lang="sv"` attribute
+  - **Phase 2: Design Tokens (Obsidian System)**:
+    - **Background**: `#0A0A0A` (richer, OLED-safe black)
+    - **Card Background**: `#18181B` → `#121212` (softer lift)
+    - **Text**: `rgba(255,255,255,1.0)` → `#FFFFFF` (pure white for headings)
+    - **Text Body**: `rgba(255, 255, 255, 0.85)` (high-contrast body text)
+    - **Muted**: `#A1A1AA` → `rgba(255, 255, 255, 0.50)` (opacity-based)
+    - **Border**: `rgba(255, 255, 255, 0.15)` (opacity-based)
+    - **Font Stack**: Added `--font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif`
+    - **Spacing**: `--spacing-section: 120px` → `128px` (tighter, more premium)
+    - **Body Font**: Updated to use `var(--font-sans)`
+  - **Phase 3: Utility Layer**:
+    - Added `.text-hero` utility: 700 weight, -0.03em tracking, 1.1 leading
+    - Added `.text-label` utility: 13px, 700 weight, 0.05em tracking, uppercase, pure white
+  - **Phase 4: Homepage Physics** ([page.tsx](src/app/page.tsx)):
+    - **Hero H1**: Applied `.text-hero`, upgraded to `text-5xl md:text-7xl`, added `drop-shadow-sm`, `mb-8` → `mb-6`
+    - **Hero Subtitle**: Reduced `max-w-[600px]` → `max-w-[540px]`, `mb-12` → `mb-10`
+    - **Button Container**: Added `mt-10` spacing
+    - **Section Label**: Replaced `.section-header` with `.text-label mb-8`, changed "Nyliga projekt" → "Senaste projekt"
+    - **Footer CTA H2**: Scaled up to `text-5xl md:text-6xl`
+    - **Footer Subtext**: Updated margin `mb-8` → `mb-10`
+  - **Visual Impact**:
+    - Premium Linear-like aesthetic with Geist Sans typography
+    - Sharper hierarchy: pure white headings vs 85% opacity body text
+    - "Light through darkness" effect with opacity-based muted colors
+    - Tighter, more premium spacing (128px sections, mb-6/mb-10 rhythm)
+    - Larger hero and footer headlines create strong visual impact
+  - **Files Modified**:
+    - `src/app/layout.tsx` - Geist Sans integration
+    - `src/app/globals.css` - Obsidian tokens + utility layer
+    - `src/app/page.tsx` - Hero, section label, footer CTA physics
+  - **Build Status**: ✅ Production build successful, TypeScript clean
+
+- **v1.18** (2025-12-25) - Cases Page: Obsidian Design System Polish
+  - **Goal**: Apply Obsidian design system to `/cases` page with engineering data aesthetic
+  - **Page Header (Hero Treatment)** ([cases/page.tsx:27-32](src/app/cases/page.tsx#L27-L32)):
+    - **H1**: Applied `.text-hero` utility, changed "Case" → "Utvalda Case", upgraded to `text-5xl md:text-7xl`
+    - **Subtitle**: Scaled to `text-xl`, tightened max-width to `max-w-[60ch]` (consistency with homepage)
+  - **Case Cards (Engineering Data Aesthetic)** ([cases/page.tsx:46,54,62](src/app/cases/page.tsx#L46)):
+    - **Labels**: Applied `.text-label` utility to Problem/Build/Result labels
+    - **Visual Impact**: Uppercase, 13px, bold, pure white color creates engineering data look
+    - **Hierarchy**: Clear contrast between white labels and 85% opacity body text
+    - **Preserved**: All hover animations (`hover:border-[var(--color-muted)]`)
+  - **Bottom CTA** ([cases/page.tsx:75-84](src/app/cases/page.tsx#L75-L84)):
+    - **Headline**: Scaled up dramatically to `text-4xl md:text-5xl`
+    - **Weight**: Updated from `font-medium` → `font-bold` with `tracking-tight`
+    - **Spacing**: Added generous bottom padding (`pb-20`) and button separation (`mt-8`)
+  - **Visual Outcome**:
+    - Massive headline "Utvalda Case" (7xl on desktop) matches homepage hero treatment
+    - Engineering data aesthetic with crisp uppercase labels
+    - Dramatic CTA scale-up creates strong visual finale
+    - Consistent with Obsidian system (pure white vs opacity whites)
+  - **Files Modified**:
+    - `src/app/cases/page.tsx` - Header, labels, bottom CTA
+  - **Build Status**: ✅ Production build successful (12.1s), TypeScript clean
+
+- **v1.19** (2025-12-26) - About Page: Obsidian Design System Polish
+  - **Goal**: Apply Obsidian design system to `/about` page matching homepage/cases aesthetic
+  - **Page Header (Hero Treatment)** ([about/page.tsx:13-18](src/app/about/page.tsx#L13-L18)):
+    - Updated H1 from clamp() to `.text-hero text-5xl md:text-7xl`
+    - Added subtitle paragraph: "Vi bygger automationer som tar bort friktion..."
+    - Subtitle styling: `text-xl text-[var(--color-text-body)] max-w-2xl`
+  - **Section 1 - Placeholder Div** ([about/page.tsx:32](src/app/about/page.tsx#L32)):
+    - Changed from card-style to intentional placeholder
+    - Updated: `bg-[var(--color-card-bg)]` → `bg-white/5`
+    - Updated: `border-[var(--color-border)]` → `border-white/10`
+    - Creates subtle, non-intrusive placeholder appearance
+  - **Section 2 - Philosophy Card** ([about/page.tsx:44](src/app/about/page.tsx#L44)):
+    - Updated headline from `font-medium` → `font-semibold`
+    - Card already had correct p-8 padding and design tokens
+  - **Section 3 - Team Section Header** ([about/page.tsx:61](src/app/about/page.tsx#L61)):
+    - Upgraded from `text-[2rem]` to `text-4xl`
+    - Changed `font-semibold` → `font-bold tracking-tight`
+    - Increased margin from `mb-8` → `mb-10`
+  - **Team Profile Cards** ([about/page.tsx:67-138](src/app/about/page.tsx#L67-L138)):
+    - **Names** (L80, L117): `text-[1.5rem] font-medium` → `text-2xl font-bold text-white tracking-tight`
+    - **Role Labels** (L85, L122): Applied `.text-label` utility (13px, bold, uppercase)
+    - **Email Links** (L95-100, L132-137): Updated to `text-white hover:text-white/80` with underline
+  - **Visual Impact**:
+    - Massive hero headline matches homepage/cases
+    - Engineering data aesthetic with `.text-label` on role badges
+    - Clearer hierarchy with bolder names and tighter tracking
+    - Premium email link treatment with underlines
+  - **Files Modified**: `src/app/about/page.tsx` (8 change locations)
+  - **Build Status**: ✅ Production build successful (9.3s), TypeScript clean
+
+- **v1.20** (2025-12-26) - Contact Page: Obsidian Polish + Card Container (Final 5%)
+  - **Goal**: Apply Obsidian design system to `/contact` page and add card container for visual balance
+  - **Page Header (Hero Treatment)** ([contact/page.tsx:12-17](src/app/contact/page.tsx#L12-L17)):
+    - Updated H1 from clamp() to `.text-hero text-5xl md:text-7xl`
+    - Updated subtitle: `text-xl text-[var(--color-text-body)] max-w-[60ch]`
+  - **Form Labels** ([contact/page.tsx:31,47,62,77,93](src/app/contact/page.tsx#L31)):
+    - Applied `.text-label` utility to all 5 form field labels
+    - Replaced `text-sm font-bold tracking-[0.02em]` with centralized utility
+    - Creates engineering data aesthetic matching cases/about pages
+  - **Direct Contact Section** ([contact/page.tsx:113-165](src/app/contact/page.tsx#L113-L165)):
+    - **Section Header** (L114): Upgraded to `text-4xl font-bold tracking-tight`
+    - **Contact Labels** (L120, L132, L144): Applied `.text-label` utility
+    - **Email/Phone Links** (L125, L137): Updated to `text-xl text-white hover:text-white/80 underline`
+    - **Bottom Text** (L159): Changed "Jag svarar" → "Vi svarar" for plural consistency
+  - **Card Container (Final Polish)** ([contact/page.tsx:113](src/app/contact/page.tsx#L113)):
+    - Wrapped entire right column in card container
+    - Added: `bg-[var(--color-card-bg)] border border-[var(--color-border)] p-8 rounded-[4px]`
+    - Added: `hover:border-[var(--color-muted)]` for subtle interaction
+    - Removed nested wrapper div - H2 sits directly inside card
+    - Added `mb-8` to contact options div for proper spacing
+    - **Visual Impact**: Eliminates "sidebar drift", creates balanced Input Area (left) vs Info Area (right)
+  - **Input Field Backgrounds** ([contact/page.tsx:40,55,70,86,102](src/app/contact/page.tsx#L40)):
+    - Updated all 5 inputs/textarea: `bg-[var(--color-bg)]` → `bg-[var(--color-card-bg)]`
+    - Creates subtle "inlaid" effect (#121212 inside #0A0A0A)
+    - Better defines clickable areas and enhances tactile feel
+  - **Visual Impact**:
+    - Right column card container matches visual weight of form on left
+    - Balanced two-column layout with equal structural presence
+    - Input fields have premium "inlaid" effect
+    - Consistent card aesthetic across all pages
+  - **Files Modified**: `src/app/contact/page.tsx` (9 change locations)
+  - **Build Status**: ✅ Production build successful (7.5s), TypeScript clean
+
 ---
 
-**Last Updated**: 2025-12-22
-**Current Version**: v1.15 (timeline animation cleanup)
-**Status**: Production ready - Timeline cleaned up with horizontal scan only ✅
+**Last Updated**: 2025-12-26
+**Current Version**: v1.20 (Contact page Obsidian polish + card container)
+**Status**: Production ready - ALL pages (Home, Cases, About, Contact) have complete Obsidian design system ✅
+**Next**: Site is fully polished and ready for deployment
