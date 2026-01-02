@@ -136,7 +136,7 @@ html {
 /* Timeline animation timing variables */
 .timeline-line,
 .timeline-step {
-  --timeline-scan-duration: 3640ms;
+  --timeline-scan-duration: 5096ms;
 
   /* Circle hit offsets - computed dynamically by JS, fallback values below */
   --timeline-hit-1: 500ms;
@@ -192,7 +192,7 @@ html {
 }
 
 .timeline-line.timeline-animate::after {
-  animation: timelineScan 3640ms ease-in-out 1 both;
+  animation: timelineScan 5096ms ease-in-out 1 both;
   animation-delay: 300ms;
 }
 
