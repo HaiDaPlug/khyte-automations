@@ -17,9 +17,9 @@ export default function Nav() {
           <Image
             src="/khyte-logo.png"
             alt="Khyte"
-            width={120}
-            height={32}
-            className="h-7 w-auto"
+            width={180}
+            height={48}
+            className="h-10 w-auto"
             priority
           />
         </Link>
