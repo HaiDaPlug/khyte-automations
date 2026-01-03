@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 
 export default function Nav() {
@@ -11,9 +12,16 @@ export default function Nav() {
       <div className="max-w-[1100px] mx-auto px-6 flex justify-between items-center text-sm font-medium">
         <Link
           href="/"
-          className="font-bold tracking-[0.05em] uppercase text-sm transition-opacity duration-200 hover:opacity-80"
+          className="transition-opacity duration-200 hover:opacity-80"
         >
-          Khyte
+          <Image
+            src="/khyte-logo.png"
+            alt="Khyte"
+            width={120}
+            height={32}
+            className="h-7 w-auto"
+            priority
+          />
         </Link>
         <div className="flex gap-8 tracking-[-0.02em]">
           <Link
