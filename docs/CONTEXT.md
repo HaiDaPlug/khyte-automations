@@ -685,6 +685,50 @@ Before deployment, verify:
 
 ## Version History
 
+- **v1.22** (2026-01-07) - P0 SEO Fundamentals (H1, Metadata, Structured Data, Internal Linking)
+  - **Goal**: World-class SEO implementation - keyword optimization, structured data, internal linking
+  - **Homepage H1 Optimization** ([page.tsx](src/app/page.tsx)):
+    - **BEFORE**: "AI som tar hand om jobbet som du inte behöver göra." (poetic, zero keywords)
+    - **AFTER**: "AI-automation som frigör tid från repetitivt arbete" (keyword-optimized)
+    - Original poetic line preserved as subheading to maintain brand voice
+    - Added supporting copy for clarity
+  - **Page Metadata Updates** (All 4 pages - keyword-rich, non-hype Swedish):
+    - **Home**: "AI-automation för företag – Frigör tid från manuellt arbete"
+    - **Cases**: "Automation Case – Verkliga resultat från säljautomation & research"
+    - **About**: "Om oss – teamet bakom Khyte Automations"
+    - **Contact**: "Boka ett intro (30 min) eller berätta om era arbetsflöden"
+    - Descriptions updated to emphasize process/results, avoid unmeasured claims (no "ROI" without proof)
+  - **Structured Data (JSON-LD)** ([layout.tsx](src/app/layout.tsx) - NEW):
+    - Added Organization schema: Company name, URL, email, company LinkedIn
+    - Added WebSite schema: Connects site to organization, helps Google understand "official site"
+    - Added Person schema: Hai Pham Bui with personal LinkedIn, worksFor relationship
+    - **Minimal, accurate data only** - No fake LocalBusiness, no fake openingHours, no breadcrumbs without UI
+  - **Internal Linking Improvements**:
+    - Homepage → About page: "Läs mer om teamet bakom Khyte →" link added
+    - Case cards → Cases page: "Se fler case →" link added (Option B: explicit text link, NOT wrapped cards)
+    - About page → Cases page: "Se exempel på våra automationer →" link added
+    - Fixed dead-end navigation (About page was isolated before)
+  - **Consistency Fixes**:
+    - Cases page CTA: "Kontakta mig" → "Kontakta oss" (matches plural "vi" voice site-wide)
+  - **Semantic HTML**:
+    - Wrapped case cards in `<article>` tags for better semantic structure
+  - **SEO Impact (Expected 30-90 days)**:
+    - ✅ Better keyword rankings (H1 + title optimization)
+    - ✅ Improved crawlability (internal linking fixes)
+    - ✅ Higher CTR from SERPs (better titles/descriptions)
+    - ⏳ Possible Knowledge Graph/logo appearance (Organization + WebSite schemas)
+    - ❌ NO guaranteed rich snippets (FAQ, breadcrumbs - not implemented per reality check)
+  - **Files Modified**: 6 (layout.tsx, page.tsx, cases/page.tsx, about/page.tsx, contact/page.tsx, CaseCard.tsx)
+  - **What We're NOT Shipping** (Reality-Checked):
+    - ❌ BreadcrumbList schema (no UI breadcrumbs)
+    - ❌ LocalBusiness schema (remote business, no physical address)
+    - ❌ FAQ section (that's P1)
+    - ❌ Rich snippet promises
+  - **Next Steps (P1)**:
+    - Add FAQ section to homepage (3-5 questions)
+    - Add "What Happens Next" section to contact page
+    - Add service category labels to cases page
+
 - **v1.21** (2026-01-07) - P0 SEO Implementation (Production-Grade Fundamentals)
   - **Goal**: Implement Google-recommended SEO fundamentals for search discoverability
   - **Global Metadata Foundation** ([layout.tsx](src/app/layout.tsx)):
