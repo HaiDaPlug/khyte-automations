@@ -4,9 +4,9 @@ import Container from "@/components/Container";
 import Button from "@/components/Button";
 
 export const metadata: Metadata = {
-  title: "Case",
+  title: "Automation Case – Verkliga resultat från säljautomation & research",
   description:
-    "Exempel på automationer vi byggt: effektivare flöden, färre manuella moment och tydligare processer. Se senaste projekt.",
+    "Se hur vi automatiserat säljprocesser och research för svenska företag. Konkreta exempel på effektivare arbetsflöden.",
   alternates: {
     canonical: "/cases",
   },
@@ -44,7 +44,7 @@ export default function Cases() {
 
           <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-6 mb-16">
             {cases.map((caseItem, index) => (
-              <div
+              <article
                 key={index}
                 className="bg-[var(--color-card-bg)] border border-[var(--color-border)] p-8 rounded-[4px] transition-colors duration-300 hover:border-[var(--color-muted)]"
               >
@@ -77,7 +77,7 @@ export default function Cases() {
                     </p>
                   </div>
                 </div>
-              </div>
+              </article>
             ))}
           </div>
 
@@ -88,7 +88,7 @@ export default function Cases() {
             </p>
             <div className="mt-8">
               <Button variant="primary" href="/contact">
-                Kontakta mig
+                Kontakta oss
               </Button>
             </div>
           </div>

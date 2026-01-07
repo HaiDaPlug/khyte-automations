@@ -4,9 +4,9 @@ import Container from "@/components/Container";
 import Image from "next/image";
 
 export const metadata: Metadata = {
-  title: "Om Khyte",
+  title: "Om oss – teamet bakom Khyte Automations",
   description:
-    "Läs om hur vi jobbar: snabb analys, tydlig scope och automationer som passar era befintliga verktyg och processer.",
+    "Möt Hai och Abdi – teamet som bygger automationer för svenska företag. Transparent process, snabb leverans, långsiktigt samarbete.",
   alternates: {
     canonical: "/about",
   },
@@ -66,6 +66,12 @@ export default function AboutPage() {
               <p className="text-base leading-[1.5] text-[var(--color-text-body)]">
                 Målet är alltid: mindre friktion, färre fel och mer tid för tillväxt.
               </p>
+            </div>
+
+            <div className="text-center mt-8">
+              <a href="/cases" className="text-[var(--color-text)] hover:text-[var(--color-muted)] underline transition-colors">
+                Se exempel på våra automationer →
+              </a>
             </div>
           </section>
 

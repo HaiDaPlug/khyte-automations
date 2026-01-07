@@ -4,9 +4,9 @@ import Container from "@/components/Container";
 import Button from "@/components/Button";
 
 export const metadata: Metadata = {
-  title: "Kontakt",
+  title: "Boka ett intro (30 min) eller berätta om era arbetsflöden",
   description:
-    "Boka ett intro eller berätta vad ni vill automatisera. Vi svarar snabbt och hjälper er hitta rätt nästa steg.",
+    "Boka ett 30-minuters intro eller berätta om era arbetsflöden. Vi svarar inom 24h med en första bedömning och nästa steg.",
   alternates: {
     canonical: "/contact",
   },

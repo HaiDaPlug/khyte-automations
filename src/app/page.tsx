@@ -7,9 +7,9 @@ import { DnaWeaveSvg } from "@/components/DnaWeaveSvg";
 import TimelineProcess from "@/components/TimelineProcess";
 
 export const metadata: Metadata = {
-  title: "AI-automation i Sverige",
+  title: "AI-automation för företag – Frigör tid från manuellt arbete",
   description:
-    "Khyte Automations bygger AI-automationer som tar bort manuellt arbete, minskar fel och frigör tid. Se case och boka ett intro.",
+    "Vi bygger AI-automationer som eliminerar repetitivt arbete i er verksamhet. Snabb implementering, tydlig process. Se konkreta exempel från säljautomation och research.",
   alternates: {
     canonical: "/",
   },
@@ -39,12 +39,15 @@ export default function Home() {
         {/* Hero Section */}
         <header className="relative min-h-[92svh] md:min-h-[100svh] flex flex-col justify-center max-w-[900px] pb-10 md:pb-12 mx-auto text-center items-center">
           <h1 className="text-hero text-5xl md:text-7xl mb-6 drop-shadow-sm text-[var(--color-text)]">
-            AI som tar hand om jobbet som du inte behöver göra.
+            AI-automation som frigör tid från repetitivt arbete
           </h1>
 
-          <p className="text-[1.25rem] text-[var(--color-text-body)] max-w-[540px] mb-10 leading-[1.6]">
-            Vi bygger automationer som tar bort friktion i vardagen - kundnära,
-            effektivt, med fungerande workflows.
+          <p className="text-[1.25rem] text-[var(--color-text-body)] max-w-[540px] mb-4 leading-[1.6]">
+            Vi tar hand om jobbet som du inte behöver göra - kundnära, effektivt, med fungerande workflows.
+          </p>
+
+          <p className="text-base text-[var(--color-text-body)] max-w-[540px] mb-10 leading-[1.6]">
+            Vi bygger automationer som tar bort friktion i vardagen.
           </p>
 
           <div className="flex gap-4 mt-10">
@@ -87,7 +90,7 @@ export default function Home() {
         <section className="section">
           <span className="text-label mb-8">Senaste projekt</span>
 
-          <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-6 mb-[var(--spacing-section)]">
+          <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-6 mb-8">
             {casePreviews.slice(0, 2).map((caseItem, index) => (
               <CaseCard
                 key={index}
@@ -97,6 +100,12 @@ export default function Home() {
               />
             ))}
           </div>
+
+          <p className="text-center mt-8 mb-[var(--spacing-section)]">
+            <a href="/about" className="text-[var(--color-muted)] hover:text-[var(--color-text)] underline transition-colors">
+              Läs mer om teamet bakom Khyte →
+            </a>
+          </p>
         </section>
 
         {/* Process Section */}

@@ -47,6 +47,42 @@ export const metadata: Metadata = {
   },
 };
 
+// Structured Data (JSON-LD) for SEO
+const SITE_URL = "https://khyteautomations.com";
+const CONTACT_EMAIL = "hai@khyteteam.com";
+const LINKEDIN_PERSONAL = "https://www.linkedin.com/in/hai-pham-bui-8a9893395";
+const LINKEDIN_COMPANY = "https://www.linkedin.com/company/khyte-automations";
+
+const structuredData = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "@id": `${SITE_URL}/#organization`,
+    name: "Khyte Automations",
+    url: SITE_URL,
+    email: CONTACT_EMAIL,
+    sameAs: [LINKEDIN_COMPANY],
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": `${SITE_URL}/#website`,
+    url: SITE_URL,
+    name: "Khyte Automations",
+    publisher: { "@id": `${SITE_URL}/#organization` },
+    inLanguage: "sv-SE",
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "@id": `${SITE_URL}/#hai`,
+    name: "Hai Pham Bui",
+    url: SITE_URL,
+    sameAs: [LINKEDIN_PERSONAL],
+    worksFor: { "@id": `${SITE_URL}/#organization` },
+  },
+];
+
 export default function RootLayout({
   children,
 }: {
@@ -54,6 +90,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="sv" className={GeistSans.variable}>
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        />
+      </head>
       <body className="main-wrapper">{children}</body>
     </html>
   );
