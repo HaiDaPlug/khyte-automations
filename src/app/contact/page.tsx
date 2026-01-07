@@ -1,6 +1,16 @@
+import type { Metadata } from "next";
 import Nav from "@/components/Nav";
 import Container from "@/components/Container";
 import Button from "@/components/Button";
+
+export const metadata: Metadata = {
+  title: "Kontakt",
+  description:
+    "Boka ett intro eller berätta vad ni vill automatisera. Vi svarar snabbt och hjälper er hitta rätt nästa steg.",
+  alternates: {
+    canonical: "/contact",
+  },
+};
 
 export default function Contact() {
   return (
@@ -112,7 +122,7 @@ export default function Contact() {
             {/* Direct Contact Options */}
             <div className="bg-[var(--color-card-bg)] border border-[var(--color-border)] p-8 rounded-[4px] transition-colors duration-300 hover:border-[var(--color-muted)]">
               <h2 className="text-4xl font-bold text-[var(--color-text)] mb-8 tracking-tight leading-[1.2]">
-                Andra sätt att nå mig
+                Andra sätt att nå oss
               </h2>
 
               <div className="space-y-6 mb-8">

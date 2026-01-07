@@ -1,6 +1,16 @@
+import type { Metadata } from "next";
 import Nav from "@/components/Nav";
 import Container from "@/components/Container";
 import Image from "next/image";
+
+export const metadata: Metadata = {
+  title: "Om Khyte",
+  description:
+    "Läs om hur vi jobbar: snabb analys, tydlig scope och automationer som passar era befintliga verktyg och processer.",
+  alternates: {
+    canonical: "/about",
+  },
+};
 
 export default function AboutPage() {
   return (

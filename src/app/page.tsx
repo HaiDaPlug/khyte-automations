@@ -1,9 +1,19 @@
+import type { Metadata } from "next";
 import Nav from "@/components/Nav";
 import Button from "@/components/Button";
 import CaseCard from "@/components/CaseCard";
 import Container from "@/components/Container";
 import { DnaWeaveSvg } from "@/components/DnaWeaveSvg";
 import TimelineProcess from "@/components/TimelineProcess";
+
+export const metadata: Metadata = {
+  title: "AI-automation i Sverige",
+  description:
+    "Khyte Automations bygger AI-automationer som tar bort manuellt arbete, minskar fel och frigör tid. Se case och boka ett intro.",
+  alternates: {
+    canonical: "/",
+  },
+};
 
 const casePreviews = [
   {

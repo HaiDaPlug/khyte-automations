@@ -28,7 +28,9 @@ khyte-automations/
 │   │   ├── contact/
 │   │   │   └── page.tsx          # Contact page (Formspree form)
 │   │   ├── page.tsx               # Landing page (hero + timeline + CTA)
-│   │   ├── layout.tsx             # Root layout (Swedish metadata)
+│   │   ├── layout.tsx             # Root layout (global metadata, Swedish lang)
+│   │   ├── sitemap.ts             # Dynamic sitemap generation
+│   │   ├── robots.ts              # Robots.txt generation
 │   │   └── globals.css            # Design tokens + animations
 │   └── components/
 │       ├── Nav.tsx                # Navigation with active state (logo + Case/Om/Kontakt)
@@ -683,6 +685,47 @@ Before deployment, verify:
 
 ## Version History
 
+- **v1.21** (2026-01-07) - P0 SEO Implementation (Production-Grade Fundamentals)
+  - **Goal**: Implement Google-recommended SEO fundamentals for search discoverability
+  - **Global Metadata Foundation** ([layout.tsx](src/app/layout.tsx)):
+    - Added `metadataBase: new URL("https://khyteautomations.com")` for absolute URL resolution
+    - Implemented title template system: `"%s | Khyte Automations"` (consistent branding)
+    - Updated description to plural voice: "Vi bygger" (matches site content)
+    - Removed old domain (`khyteteam.com`) from OpenGraph configuration
+    - Removed `openGraph.url` property to prevent inheritance issues
+  - **Page-Specific Metadata** (all 4 pages):
+    - **Home** ([page.tsx](src/app/page.tsx)): Title "AI-automation i Sverige", canonical "/"
+    - **Cases** ([cases/page.tsx](src/app/cases/page.tsx)): Title "Case", canonical "/cases"
+    - **About** ([about/page.tsx](src/app/about/page.tsx)): Title "Om Khyte", canonical "/about"
+    - **Contact** ([contact/page.tsx](src/app/contact/page.tsx)): Title "Kontakt", canonical "/contact"
+    - Each page has unique, keyword-rich Swedish descriptions
+    - All canonical URLs explicitly set per page (prevents duplicate content issues)
+  - **Sitemap Generation** ([sitemap.ts](src/app/sitemap.ts) - NEW):
+    - Dynamic sitemap with 4 routes (/, /about, /cases, /contact)
+    - Homepage: `changeFrequency: weekly`, `priority: 1.0`
+    - Other pages: `changeFrequency: monthly`, `priority: 0.7`
+    - Accessible at `/sitemap.xml`
+  - **Robots Configuration** ([robots.ts](src/app/robots.ts) - NEW):
+    - Allows all user agents to crawl all paths
+    - References sitemap location for automatic discovery
+    - Accessible at `/robots.txt`
+  - **SEO Impact**:
+    - ✅ Unique titles per page (Google's explicit recommendation)
+    - ✅ Unique meta descriptions for rich snippets
+    - ✅ Canonical tags prevent query-param duplicates
+    - ✅ Sitemap helps search engines discover all pages
+    - ✅ Robots.txt guides crawler behavior
+    - ✅ Absolute URLs via metadataBase (proper OG/Twitter sharing)
+    - ✅ Consistent brand voice (plural "Vi" throughout metadata)
+  - **Files Modified**: 5 (layout.tsx, page.tsx, cases/page.tsx, about/page.tsx, contact/page.tsx)
+  - **Files Created**: 2 (sitemap.ts, robots.ts)
+  - **Production Domain**: https://khyteautomations.com (canonical)
+  - **Post-Deployment Actions**:
+    - Submit sitemap to Google Search Console
+    - Verify robots.txt accessibility
+    - Test social media preview cards (LinkedIn, Twitter, Facebook)
+  - **Build Status**: ✅ Production build successful, all routes static
+
 - **v1.14** (2025-12-21) - Typography & Spacing Design System Implementation
   - **Font Loading**:
     - Added Inter font via `next/font/google` for premium geometric look across all OS
@@ -1098,7 +1141,7 @@ Before deployment, verify:
 
 ---
 
-**Last Updated**: 2025-12-26
-**Current Version**: v1.20 (Contact page Obsidian polish + card container)
-**Status**: Production ready - ALL pages (Home, Cases, About, Contact) have complete Obsidian design system ✅
-**Next**: Site is fully polished and ready for deployment
+**Last Updated**: 2026-01-07
+**Current Version**: v1.21 (P0 SEO implementation)
+**Status**: Production ready - Complete Obsidian design system + production-grade SEO ✅
+**Next**: Deploy to production and submit sitemap to Google Search Console

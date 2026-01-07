@@ -3,9 +3,15 @@ import { GeistSans } from "geist/font/sans";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "KHYTE AUTOMATIONS | No Hype, Just Workflows",
+  metadataBase: new URL("https://khyteautomations.com"),
+
+  title: {
+    default: "Khyte Automations",
+    template: "%s | Khyte Automations",
+  },
+
   description:
-    "Jag bygger automationer som tar bort friktion i vardagen — utan hype, bara fungerande workflows.",
+    "Vi bygger AI-automationer som tar bort manuellt arbete, minskar fel och frigör tid — utan hype, bara fungerande workflows.",
 
   // Icons configuration (complements file-based detection)
   icons: {
@@ -17,8 +23,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "KHYTE AUTOMATIONS | No Hype, Just Workflows",
     description:
-      "Jag bygger automationer som tar bort friktion i vardagen — utan hype, bara fungerande workflows.",
-    url: "https://khyteteam.com",
+      "Vi bygger AI-automationer som tar bort manuellt arbete, minskar fel och frigör tid — utan hype, bara fungerande workflows.",
     siteName: "Khyte Automations",
     images: [
       {
@@ -37,7 +42,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "KHYTE AUTOMATIONS | No Hype, Just Workflows",
     description:
-      "Jag bygger automationer som tar bort friktion i vardagen — utan hype, bara fungerande workflows.",
+      "Vi bygger AI-automationer som tar bort manuellt arbete, minskar fel och frigör tid — utan hype, bara fungerande workflows.",
     images: ["/opengraph-image.jpg"],
   },
 };

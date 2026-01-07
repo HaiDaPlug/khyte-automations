@@ -1,6 +1,16 @@
+import type { Metadata } from "next";
 import Nav from "@/components/Nav";
 import Container from "@/components/Container";
 import Button from "@/components/Button";
+
+export const metadata: Metadata = {
+  title: "Case",
+  description:
+    "Exempel på automationer vi byggt: effektivare flöden, färre manuella moment och tydligare processer. Se senaste projekt.",
+  alternates: {
+    canonical: "/cases",
+  },
+};
 
 const cases = [
   {
