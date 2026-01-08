@@ -5,6 +5,7 @@ import CaseCard from "@/components/CaseCard";
 import Container from "@/components/Container";
 import { DnaWeaveSvg } from "@/components/DnaWeaveSvg";
 import TimelineProcess from "@/components/TimelineProcess";
+import ToolsTicker from "@/components/ToolsTicker";
 
 export const metadata: Metadata = {
   title: "AI-automation för företag – Frigör tid från manuellt arbete",
@@ -38,16 +39,12 @@ export default function Home() {
 
         {/* Hero Section */}
         <header className="relative min-h-[92svh] md:min-h-[100svh] flex flex-col justify-center max-w-[900px] pb-10 md:pb-12 mx-auto text-center items-center">
-          <h1 className="text-hero text-5xl md:text-7xl mb-6 drop-shadow-sm text-[var(--color-text)]">
-            AI-automation som frigör tid från repetitivt arbete
+          <h1 className="text-hero text-5xl md:text-7xl mb-8 drop-shadow-sm text-[var(--color-text)]">
+            AI som tar hand om jobbet du inte behöver göra.
           </h1>
 
-          <p className="text-[1.25rem] text-[var(--color-text-body)] max-w-[540px] mb-4 leading-[1.6]">
-            Vi tar hand om jobbet som du inte behöver göra - kundnära, effektivt, med fungerande workflows.
-          </p>
-
-          <p className="text-base text-[var(--color-text-body)] max-w-[540px] mb-10 leading-[1.6]">
-            Vi bygger automationer som tar bort friktion i vardagen.
+          <p className="text-xl text-[var(--color-text-body)] max-w-[580px] mx-auto leading-relaxed mb-12">
+            Vi eliminerar manuella fel och frigör tid för det som faktiskt skapar värde. Kundnära, effektivt och byggt för att hålla.
           </p>
 
           <div className="flex gap-4 mt-10">
@@ -57,6 +54,11 @@ export default function Home() {
             <Button variant="secondary" href="/cases">
               Se hur det funkar
             </Button>
+          </div>
+
+          {/* Tools Ticker */}
+          <div className="mt-[calc(6rem+36px)]">
+            <ToolsTicker />
           </div>
 
           {/* Scroll cue chevron */}

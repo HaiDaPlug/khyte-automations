@@ -59,6 +59,7 @@ body {
   color: var(--color-text);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
 }
 
 .main-wrapper {
@@ -200,5 +201,27 @@ html {
 @media (prefers-reduced-motion: reduce) {
   .timeline-line.timeline-animate::after {
     animation: none !important;
+  }
+}
+
+/* Tools Ticker Scroll Animation */
+@keyframes tickerScroll {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.animate-ticker {
+  animation: tickerScroll 240s linear infinite;
+}
+
+/* Respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .animate-ticker {
+    animation: none;
+    transform: none;
   }
 }

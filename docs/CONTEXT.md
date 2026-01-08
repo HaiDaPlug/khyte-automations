@@ -1183,9 +1183,51 @@ Before deployment, verify:
   - **Files Modified**: `src/app/contact/page.tsx` (9 change locations)
   - **Build Status**: ✅ Production build successful (7.5s), TypeScript clean
 
+- **v1.23** (2026-01-08) - Homepage Hero Copy Update + Tools Ticker Component
+  - **Goal**: Update hero messaging with value-focused copy and add trust signal ticker
+  - **Hero Copy Updates** ([page.tsx](src/app/page.tsx:42-48)):
+    - **H1 Headline**: "AI-automationer som tar bort manuellt arbete." → "AI som tar hand om jobbet du inte behöver göra."
+    - **Subtext**: Replaced two-paragraph structure with single tight 2-line block
+    - New copy: "Vi eliminerar manuella fel och frigör tid för det som faktiskt skapar värde. Kundnära, effektivt och byggt för att hålla."
+    - Typography: `text-xl text-[var(--color-text-body)] max-w-[580px] mx-auto leading-relaxed mb-12`
+    - Spacing: H1 `mb-8` (increased from `mb-6`), subtext `mb-12`
+    - **2-line constraint**: `max-w-[580px]` prevents widow to third line
+  - **New Component: ToolsTicker** ([components/ToolsTicker.tsx](src/components/ToolsTicker.tsx) - NEW FILE):
+    - **Purpose**: Trust signal showing technology stack with infinite scroll
+    - **Content**: 5 tools - "n8n", "OpenAI", "Anthropic", "Microsoft", "Google"
+    - **Layout**: Full-bleed viewport width (breaks out of container for "infrastructure horizon line" effect)
+    - **Animation**: Truly infinite seamless scroll (240s duration, no visible seam or stops)
+    - **Technical Implementation**:
+      - Creates row with 10 repeats (50 total items) via `Array.from({ length: 10 }, () => TOOLS).flat()`
+      - Renders two identical rows back-to-back for seamless loop
+      - Animation: `translate3d(0, 0, 0)` → `translate3d(-50%, 0, 0)` (perfect loop point)
+      - Hardware acceleration: `will-change-transform` on track container only
+      - Accessibility: `@media (prefers-reduced-motion)` support
+    - **Styling**:
+      - Typography: `text-2xl font-bold tracking-widest uppercase`
+      - Colors: `text-white/30` (default), `hover:text-white/80` (interactive)
+      - Bullet separators: `mx-6 text-white/15` (always rendered, no conditional)
+      - Container: `border-t border-white/5 bg-white/[0.02] py-8`
+    - **Placement**: Below CTA buttons with `mt-[calc(6rem+36px)]` (132px spacing)
+  - **CSS Animation** ([globals.css](src/app/globals.css:206-226)):
+    - Added `@keyframes tickerScroll` with `translate3d` for hardware acceleration
+    - Animation class: `.animate-ticker` (240s linear infinite)
+    - Added `overflow-x: hidden` to body (prevents Windows scrollbar glitch)
+    - Reduced motion support: Disables animation for accessibility
+  - **Strategic Rationale**:
+    - **Hero copy**: Shifted from feature-focused to value-focused messaging (eliminating mistakes, creating value)
+    - **Ticker placement**: 132px spacing keeps ticker above fold on laptop screens
+    - **Trust signal**: Users see "Headline → Buttons → Tools" without scrolling
+    - **Engineering aesthetic**: Full-width ticker creates "conveyor belt" infrastructure vibe
+    - **Performance**: CSS-only animation (no JS), hardware-accelerated with `translate3d`
+  - **Files Created**: 1 ([src/components/ToolsTicker.tsx](src/components/ToolsTicker.tsx))
+  - **Files Modified**: 2 ([src/app/page.tsx](src/app/page.tsx), [src/app/globals.css](src/app/globals.css))
+  - **Build Status**: ✅ Production build successful, TypeScript clean
+  - **Animation Quality**: Tested 60+ seconds - perfectly seamless infinite scroll with no stops or jumps
+
 ---
 
-**Last Updated**: 2026-01-07
-**Current Version**: v1.21 (P0 SEO implementation)
-**Status**: Production ready - Complete Obsidian design system + production-grade SEO ✅
-**Next**: Deploy to production and submit sitemap to Google Search Console
+**Last Updated**: 2026-01-08
+**Current Version**: v1.23 (Hero copy update + Tools ticker)
+**Status**: Production ready - Value-focused messaging with trust signal ticker ✅
+**Next**: Deploy to production
