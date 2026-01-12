@@ -15,13 +15,12 @@ export default function Button({
   className = "",
 }: ButtonProps) {
   const baseStyles =
-    "inline-block px-8 py-4 rounded-[4px] text-[15px] font-medium transition-all duration-200 cursor-pointer";
+    "inline-flex h-12 px-8 rounded-md text-base font-semibold whitespace-nowrap transition-all duration-200 cursor-pointer items-center justify-center active:scale-[0.98] no-underline";
 
   const variantStyles = {
-    primary:
-      "bg-[var(--color-accent)] text-[var(--color-bg)] border border-[var(--color-accent)] hover:bg-[#ccc] hover:border-[#ccc]",
+    primary: "bg-white text-black hover:bg-gray-200",
     secondary:
-      "bg-transparent text-[var(--color-text)] border border-[var(--color-border)] hover:border-[var(--color-text)]",
+      "bg-transparent border border-white/20 text-white hover:bg-white/10",
   };
 
   const combinedClassName = `${baseStyles} ${variantStyles[variant]} ${className}`;

@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   },
 
   description:
-    "Vi bygger AI-automationer som tar bort manuellt arbete, minskar fel och frigör tid — utan hype, bara fungerande workflows.",
+    "Vi bygger AI-automationer som tar bort manuellt arbete, minskar fel och frigör tid - utan hype, bara fungerande workflows.",
 
   // Icons configuration (complements file-based detection)
   icons: {
@@ -21,7 +21,7 @@ export const metadata: Metadata = {
 
   // OpenGraph for social media previews
   openGraph: {
-    title: "KHYTE AUTOMATIONS | No Hype, Just Workflows",
+    title: "Khyte Automations | Inget onödigt skit, bara automationer som håller",
     description:
       "Vi bygger AI-automationer som tar bort manuellt arbete, minskar fel och frigör tid — utan hype, bara fungerande workflows.",
     siteName: "Khyte Automations",

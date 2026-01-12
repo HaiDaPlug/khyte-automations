@@ -17,15 +17,9 @@ export default function CaseCard({
       <h3 className="text-[1.5rem] font-medium mb-3 text-[var(--color-text)] leading-[1.3]">
         {title}
       </h3>
-      <p className="text-[var(--color-text-body)] text-base leading-[1.5] max-w-[460px] mb-4">
+      <p className="text-[var(--color-text-body)] text-base leading-[1.5] max-w-[460px]">
         {description}
       </p>
-      <a
-        href="/cases"
-        className="text-[var(--color-muted)] hover:text-[var(--color-text)] underline text-sm inline-block transition-colors"
-      >
-        Se fler case →
-      </a>
     </div>
   );
 }

@@ -38,26 +38,28 @@ export default function Home() {
         <Nav />
 
         {/* Hero Section */}
-        <header className="relative min-h-[92svh] md:min-h-[100svh] flex flex-col justify-center max-w-[900px] pb-10 md:pb-12 mx-auto text-center items-center">
-          <h1 className="text-hero text-5xl md:text-7xl mb-8 drop-shadow-sm text-[var(--color-text)]">
-            AI som tar hand om jobbet du inte behöver göra.
-          </h1>
+        <section className="min-h-[100dvh] flex flex-col justify-center items-center pt-32 pb-20 px-4 relative overflow-hidden">
+          <div className="max-w-[900px] mx-auto text-center">
+            <h1 className="text-hero text-5xl md:text-7xl mb-8 drop-shadow-sm text-[var(--color-text)]">
+              AI som tar hand om jobbet du inte behöver göra.
+            </h1>
 
-          <p className="text-xl text-[var(--color-text-body)] max-w-[580px] mx-auto leading-relaxed mb-12">
-            Vi eliminerar manuella fel och frigör tid för det som faktiskt skapar värde. Kundnära, effektivt och byggt för att hålla.
-          </p>
+            <p className="text-xl text-[var(--color-text-body)] max-w-[580px] mx-auto leading-relaxed mb-12">
+              Vi eliminerar manuella fel och frigör tid för det som faktiskt skapar värde. Kundnära, effektivt och byggt för att hålla.
+            </p>
 
-          <div className="flex gap-4 mt-10">
-            <Button variant="primary" href="/contact">
-              Boka ett samtal
-            </Button>
-            <Button variant="secondary" href="/cases">
-              Se hur det funkar
-            </Button>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-10">
+              <Button variant="primary" href="/contact">
+                Boka ett samtal
+              </Button>
+              <Button variant="secondary" href="/cases">
+                Se hur det funkar
+              </Button>
+            </div>
           </div>
 
           {/* Tools Ticker */}
-          <div className="mt-[calc(6rem+36px)]">
+          <div className="mt-20">
             <ToolsTicker />
           </div>
 
@@ -80,7 +82,7 @@ export default function Home() {
               />
             </svg>
           </div>
-        </header>
+        </section>
 
         {/* Full-width divider */}
         <div className="relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] w-screen border-b border-[var(--color-border)]"></div>
@@ -104,8 +106,8 @@ export default function Home() {
           </div>
 
           <p className="text-center mt-8 mb-[var(--spacing-section)]">
-            <a href="/about" className="text-[var(--color-muted)] hover:text-[var(--color-text)] underline transition-colors">
-              Läs mer om teamet bakom Khyte →
+            <a href="/cases" className="text-[var(--color-muted)] hover:text-[var(--color-text)] underline transition-colors">
+              Se mer av våra cases →
             </a>
           </p>
         </section>

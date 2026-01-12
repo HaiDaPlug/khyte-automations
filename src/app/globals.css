@@ -215,34 +215,11 @@ html {
 }
 
 .animate-ticker {
-  animation: tickerScroll 240s linear infinite;
-}
-
-/* Ticker Logo - Full Color with Drop Shadow */
-@layer utilities {
-  .ticker-logo {
-    opacity: 0.6;
-    transition: opacity 200ms ease, filter 200ms ease, transform 200ms ease;
-    filter: drop-shadow(0 0 0 rgba(0, 0, 0, 0));
-  }
-
-  .ticker-logo:hover {
-    opacity: 1;
-    filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.35));
-    transform: translateY(-1px);
-  }
+  animation: tickerScroll 480s linear infinite;
 }
 
 /* Respect reduced motion preference */
 @media (prefers-reduced-motion: reduce) {
-  .ticker-logo {
-    transition: none;
-  }
-
-  .ticker-logo:hover {
-    transform: none;
-  }
-
   .animate-ticker {
     animation: none;
     transform: none;
