@@ -15,8 +15,8 @@ export const metadata: Metadata = {
 
   // Icons configuration (complements file-based detection)
   icons: {
-    icon: "/icon.png",
-    apple: "/apple-icon.png",
+    icon: "/icon.svg",
+    apple: "/apple-icon.svg",
   },
 
   // OpenGraph for social media previews
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     siteName: "Khyte Automations",
     images: [
       {
-        url: "/opengraph-image.jpg",
+        url: "/opengraph-image.svg",
         width: 1200,
         height: 630,
         alt: "Khyte Automations",
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
     title: "KHYTE AUTOMATIONS | No Hype, Just Workflows",
     description:
       "Vi bygger AI-automationer som tar bort manuellt arbete, minskar fel och frigör tid — utan hype, bara fungerande workflows.",
-    images: ["/opengraph-image.jpg"],
+    images: ["/opengraph-image.svg"],
   },
 };
 
