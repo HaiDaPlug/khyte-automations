@@ -8,53 +8,58 @@ export default function Nav() {
   const pathname = usePathname();
 
   return (
-    <nav className="fixed top-0 left-0 right-0 w-full py-8 bg-[var(--color-bg)] z-50 backdrop-blur-sm bg-opacity-95">
-      <div className="max-w-[1100px] mx-auto px-6 flex justify-between items-center text-sm font-medium">
+    <nav className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-full max-w-[92%] md:max-w-[900px]">
+      <div className="flex items-center justify-between px-8 py-4 rounded-full bg-[#0A0A0A]/60 backdrop-blur-md border border-white/10 shadow-lg shadow-black/20">
+        {/* Logo - Left */}
         <Link
           href="/"
-          className="transition-opacity duration-200 hover:opacity-80"
+          className="transition-opacity duration-200 hover:opacity-80 shrink-0"
         >
           <Image
             src="/khyte-logo.svg"
             alt="Khyte"
-            width={252}
-            height={67}
-            className="h-14 w-auto"
+            width={160}
+            height={40}
+            className="h-10 w-auto"
             priority
           />
         </Link>
-        <div className="flex gap-8 tracking-[-0.02em]">
+
+        {/* Nav Links - Center (hidden mobile) */}
+        <div className="hidden md:flex items-center gap-6 text-sm font-medium tracking-[-0.02em]">
           <Link
             href="/cases"
-            className={`transition-colors duration-200 hover:text-[var(--color-text)] ${
-              pathname === "/cases"
-                ? "text-[var(--color-text)]"
-                : "text-[var(--color-muted)]"
+            className={`transition-colors duration-200 hover:text-white ${
+              pathname === "/cases" ? "text-white" : "text-white/70"
             }`}
           >
             Case
           </Link>
           <Link
             href="/about"
-            className={`transition-colors duration-200 hover:text-[var(--color-text)] ${
-              pathname === "/about"
-                ? "text-[var(--color-text)]"
-                : "text-[var(--color-muted)]"
+            className={`transition-colors duration-200 hover:text-white ${
+              pathname === "/about" ? "text-white" : "text-white/70"
             }`}
           >
             Om oss
           </Link>
           <Link
             href="/contact"
-            className={`transition-colors duration-200 hover:text-[var(--color-text)] ${
-              pathname === "/contact"
-                ? "text-[var(--color-text)]"
-                : "text-[var(--color-muted)]"
+            className={`transition-colors duration-200 hover:text-white ${
+              pathname === "/contact" ? "text-white" : "text-white/70"
             }`}
           >
             Kontakt
           </Link>
         </div>
+
+        {/* CTA Button - Right */}
+        <Link
+          href="/contact"
+          className="bg-white text-black text-sm font-bold px-6 py-2.5 rounded-full hover:bg-gray-100 transition-all shadow-sm hover:shadow-md shrink-0"
+        >
+          Boka samtal
+        </Link>
       </div>
     </nav>
   );

@@ -1384,9 +1384,45 @@ Before deployment, verify:
   - **QA Approval**: ✅ APPROVED - Ready for production deployment
   - **Design Impact**: Transformed from "Bootstrap Template" → "Modern SaaS Premium" aesthetic
 
+- **v1.27** (2026-01-14) - Floating Glass Capsule Navigation
+  - **Goal**: Transform full-width sticky header into Linear/Apple-style floating island navigation
+  - **Nav.tsx Complete Rewrite** ([src/components/Nav.tsx](src/components/Nav.tsx)):
+    - **Position**: `fixed top-0 left-0 right-0 w-full` → `fixed top-6 left-1/2 -translate-x-1/2`
+    - **Width**: Full-width → `max-w-[92%] md:max-w-[900px]` (floating capsule)
+    - **Shape**: Rectangle → `rounded-full` (pill shape)
+    - **Material**: Glass morphism effect:
+      - `bg-[#0A0A0A]/60` (60% opacity dark background)
+      - `backdrop-blur-md` (12px blur vs previous 4px)
+      - `border border-white/10` (subtle highlight)
+      - `shadow-lg shadow-black/20` (lift off page)
+    - **Padding**: `py-8 px-6` → `py-4 px-8` (compact, dense)
+    - **Logo**: `h-14` (56px) → `h-10` (40px) - fits capsule proportions
+  - **3-Column Layout**:
+    - **Left**: Logo (shrink-0, links to `/`)
+    - **Center**: Nav links (hidden on mobile: `hidden md:flex`)
+    - **Right**: CTA button "Boka samtal"
+  - **Nav Links Styling**:
+    - Color: `text-white/70` (default), `text-white` (active/hover)
+    - Spacing: `gap-6` (tighter for capsule)
+    - Active state via `usePathname()` preserved
+  - **CTA Button (NEW)**:
+    - Style: `bg-white text-black text-sm font-bold px-6 py-2.5 rounded-full`
+    - Hover: `hover:bg-gray-100 shadow-sm hover:shadow-md` (lift effect)
+    - Links to `/contact` - always-visible conversion action
+  - **Responsive Behavior**:
+    - Mobile: Logo + CTA only (center links hidden)
+    - Desktop (md+): Full 3-column layout
+  - **Visual Impact**:
+    - "Floating island" aesthetic with 24px gap from viewport top
+    - Glass blur visible when scrolling over content
+    - Premium Linear/Apple-style navigation
+    - CTA in nav increases conversion visibility
+  - **Files Modified**: 1 ([src/components/Nav.tsx](src/components/Nav.tsx))
+  - **Build Status**: ✅ Production build successful, TypeScript clean
+
 ---
 
-**Last Updated**: 2026-01-12
-**Current Version**: v1.26 (Premium Polish + Smart Invert - QA APPROVED ✅)
-**Status**: Production ready - Modern SaaS premium quality achieved
+**Last Updated**: 2026-01-14
+**Current Version**: v1.27 (Floating Glass Capsule Navigation)
+**Status**: Production ready - Premium floating nav implemented
 **Next**: Deploy to production
