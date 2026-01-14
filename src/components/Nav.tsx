@@ -15,7 +15,7 @@ export default function Nav() {
           className="transition-opacity duration-200 hover:opacity-80"
         >
           <Image
-            src="/Khyte logo.svg"
+            src="/khyte-logo.svg"
             alt="Khyte"
             width={252}
             height={67}
