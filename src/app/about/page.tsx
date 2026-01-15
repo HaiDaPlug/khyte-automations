@@ -111,12 +111,24 @@ export default function AboutPage() {
                 </p>
 
                 {/* Contact */}
-                <a
-                  href="mailto:hai@khyteteam.com"
-                  className="text-base text-white hover:text-white/80 transition-colors duration-200 underline underline-offset-2"
-                >
-                  hai@khyteteam.com
-                </a>
+                <div className="mt-4 flex items-center gap-4">
+                  <a
+                    href="mailto:hai@khyteteam.com"
+                    className="inline-flex items-center gap-2 text-white/80 hover:text-white transition"
+                  >
+                    <Image src="/icons/mail.svg" alt="" width={18} height={18} />
+                    <span className="underline">Email</span>
+                  </a>
+                  <a
+                    href="https://www.linkedin.com/in/hai-pham-bui-8a9893395"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-2 text-white/80 hover:text-white transition"
+                  >
+                    <Image src="/icons/linkedin.svg" alt="" width={18} height={18} />
+                    <span className="underline">LinkedIn</span>
+                  </a>
+                </div>
               </div>
 
               {/* Profile 2 - Abdi */}
@@ -147,13 +159,25 @@ export default function AboutPage() {
                   Hjälper till som en "högra hand", och har en extremt bra känsla för lösningar. En social kille med mycket att erbjuda.
                 </p>
 
-                {/* Contact placeholder */}
-                <a
-                  href="mailto:abdimajiidmohamud@gmail.com"
-                  className="text-base text-white hover:text-white/80 transition-colors duration-200 underline underline-offset-2"
-                >
-                  abdimajiidmohamud@gmail.com
-                </a>
+                {/* Contact */}
+                <div className="mt-4 flex items-center gap-4">
+                  <a
+                    href="mailto:abdimajiidmohamud@gmail.com"
+                    className="inline-flex items-center gap-2 text-white/80 hover:text-white transition"
+                  >
+                    <Image src="/icons/mail.svg" alt="" width={18} height={18} />
+                    <span className="underline">Email</span>
+                  </a>
+                  <a
+                    href="https://www.linkedin.com/in/abdimajiid-mohamud-233539329/"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-2 text-white/80 hover:text-white transition"
+                  >
+                    <Image src="/icons/linkedin.svg" alt="" width={18} height={18} />
+                    <span className="underline">LinkedIn</span>
+                  </a>
+                </div>
               </div>
             </div>
           </section>

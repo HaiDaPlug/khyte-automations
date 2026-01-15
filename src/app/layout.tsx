@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { GeistSans } from "geist/font/sans";
 import "./globals.css";
+import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://khyteautomations.com"),
@@ -106,7 +107,10 @@ export default function RootLayout({
           async
         />
       </head>
-      <body className="main-wrapper">{children}</body>
+      <body className="main-wrapper">
+        {children}
+        <Footer />
+      </body>
     </html>
   );
 }
