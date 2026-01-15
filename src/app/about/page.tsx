@@ -18,13 +18,13 @@ export default function AboutPage() {
       <Nav />
       <Container>
         <main className="pt-32 pb-20">
-          {/* Page header */}
-          <div className="mb-16">
+          {/* Page header - Centered */}
+          <div className="flex flex-col items-center text-center mb-16">
             <h1 className="text-hero text-5xl md:text-7xl text-[var(--color-text)] mb-6">
               Om Khyte Automations
             </h1>
             <p className="text-xl text-[var(--color-text-body)] max-w-2xl leading-[1.6]">
-              Vi bygger automationer som tar bort friktion - så företag kan fokusera på tillväxt istället för manuellt arbete.
+              Vilka vi är, vad vi står för och varför vi finns.
             </p>
           </div>
 

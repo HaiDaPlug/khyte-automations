@@ -1442,9 +1442,62 @@ Before deployment, verify:
   - **Files Modified**: 1 ([src/components/Nav.tsx](src/components/Nav.tsx))
   - **Build Status**: ✅ Production build successful, TypeScript clean
 
+- **v1.29** (2026-01-15) - Centered Mini Hero Headers on Sub-Pages
+  - **Goal**: Center-align page headers on /cases, /about, and /contact for premium "Mini Hero" aesthetic
+  - **Pattern Applied**: `flex flex-col items-center text-center` wrapper on all page headers
+  - **Cases Page** ([src/app/cases/page.tsx:36-43](src/app/cases/page.tsx#L36-L43)):
+    - Wrapped H1 "Utvalda Case" + subtitle in centered container
+    - Kept `pt-32` spacing (no change to vertical position)
+    - Case cards grid remains left-aligned below
+  - **About Page** ([src/app/about/page.tsx:22-29](src/app/about/page.tsx#L22-L29)):
+    - Wrapped H1 "Om Khyte Automations" + subtitle in centered container
+    - Content sections (Mission/Team) flow naturally below
+  - **Contact Page** ([src/app/contact/page.tsx:21-28](src/app/contact/page.tsx#L21-L28)):
+    - Wrapped H1 "Kontakt" + subtitle in centered container
+    - Creates "Funnel Effect": Centered header → Two-column form/info below
+  - **Visual Impact**:
+    - Consistent "Mini Hero" look across all sub-pages
+    - Headers grab attention with centered prominence
+    - Content below remains functional (left-aligned grids, forms)
+    - Matches premium SaaS aesthetic (Linear, Vercel, Stripe)
+  - **Files Modified**: 3 ([src/app/cases/page.tsx](src/app/cases/page.tsx), [src/app/about/page.tsx](src/app/about/page.tsx), [src/app/contact/page.tsx](src/app/contact/page.tsx))
+  - **Build Status**: ✅ Production build successful, TypeScript clean
+
+- **v1.30** (2026-01-15) - Calendly Popup Integration
+  - **Goal**: Replace external Calendly links with native popup widget for better UX
+  - **Global Setup** ([src/app/layout.tsx:98-107](src/app/layout.tsx#L98-L107)):
+    - Added Calendly widget CSS: `https://assets.calendly.com/assets/external/widget.css`
+    - Added Calendly widget JS: `https://assets.calendly.com/assets/external/widget.js` (async)
+    - Scripts loaded globally for all pages
+  - **New Component** ([src/components/CalendlyButton.tsx](src/components/CalendlyButton.tsx) - NEW FILE):
+    - Client component with `"use client"` directive
+    - TypeScript declaration for `window.Calendly` global
+    - Reuses Button component styling (primary/secondary variants)
+    - Calls `Calendly.initPopupWidget({ url: CALENDLY_URL })` on click
+    - Calendly URL: `https://calendly.com/hai-khyteteam/30min`
+  - **Nav Component** ([src/components/Nav.tsx:20-25,57-62](src/components/Nav.tsx#L20-L25)):
+    - Added `handleCalendlyClick` function
+    - CTA button "Boka kostnadsfritt samtal" triggers popup (not link)
+    - Preserved original styling (rounded-full, white bg, shadow)
+  - **Homepage** ([src/app/page.tsx:52-54,128-130](src/app/page.tsx#L52-L54)):
+    - Hero CTA: Regular Button → `/contact` with "Kontakta oss" text
+    - Footer CTA: CalendlyButton with "Boka kostnadsfritt samtal"
+  - **Cases Page** ([src/app/cases/page.tsx:90-92](src/app/cases/page.tsx#L90-L92)):
+    - Bottom CTA: CalendlyButton with "Kontakta oss"
+  - **Contact Page** ([src/app/contact/page.tsx:157-159](src/app/contact/page.tsx#L157-L159)):
+    - "Boka möte" section: CalendlyButton (secondary) with "Boka 30 min"
+    - Replaces external `<a>` tag with popup trigger
+  - **CTA Strategy**:
+    - Hero CTA → Contact page (lower friction, form option)
+    - All other CTAs → Calendly popup (direct booking)
+    - Nav CTA → Calendly popup (always visible conversion)
+  - **Files Created**: 1 ([src/components/CalendlyButton.tsx](src/components/CalendlyButton.tsx))
+  - **Files Modified**: 5 (layout.tsx, page.tsx, cases/page.tsx, contact/page.tsx, Nav.tsx)
+  - **Build Status**: ✅ Production build successful, TypeScript clean
+
 ---
 
 **Last Updated**: 2026-01-15
-**Current Version**: v1.28 (Command Center Navigation Upgrade)
-**Status**: Production ready - Logo visibility and nav dimensions optimized
+**Current Version**: v1.30 (Calendly Popup Integration)
+**Status**: Production ready - All booking CTAs trigger Calendly popup
 **Next**: Deploy to production
