@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Nav from "@/components/Nav";
 import Container from "@/components/Container";
 import Button from "@/components/Button";
+import CalendlyButton from "@/components/CalendlyButton";
 
 export const metadata: Metadata = {
   title: "Boka ett intro (30 min) eller berätta om era arbetsflöden",
@@ -18,12 +19,12 @@ export default function Contact() {
       <Nav />
       <Container>
         <main className="pt-32 pb-20">
-          <div className="mb-16">
+          <div className="flex flex-col items-center text-center mb-16">
             <h1 className="text-hero text-5xl md:text-7xl text-[var(--color-text)] mb-6">
               Kontakt
             </h1>
             <p className="text-xl text-[var(--color-text-body)] max-w-[60ch] leading-[1.6]">
-              Låt oss prata om din automation
+              Osäker på vart du ska börja? Boka ett kostnadsfritt samtal så tjötar vi idéer.
             </p>
           </div>
 
@@ -154,14 +155,9 @@ export default function Contact() {
                     <p className="text-label mb-3">
                       Boka möte
                     </p>
-                    <a
-                      href="https://calendly.com/hai-khyteteam/30min"
-                      target="_blank"
-                      rel="noreferrer"
-                      className="inline-block px-8 py-3 border border-[var(--color-border)] text-[var(--color-text)] font-medium rounded-[4px] hover:border-[var(--color-text)] transition-colors"
-                    >
+                    <CalendlyButton variant="secondary">
                       Boka 30 min
-                    </a>
+                    </CalendlyButton>
                   </div>
                 </div>
 

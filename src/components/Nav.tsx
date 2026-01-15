@@ -4,8 +4,25 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 
+declare global {
+  interface Window {
+    Calendly?: {
+      initPopupWidget: (options: { url: string }) => void;
+    };
+  }
+}
+
+const CALENDLY_URL = "https://calendly.com/hai-khyteteam/30min";
+
 export default function Nav() {
   const pathname = usePathname();
+
+  const handleCalendlyClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (window.Calendly) {
+      window.Calendly.initPopupWidget({ url: CALENDLY_URL });
+    }
+  };
 
   return (
     <nav className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-full max-w-[94%] md:max-w-[1150px]">
@@ -54,12 +71,12 @@ export default function Nav() {
         </div>
 
         {/* CTA Button - Right */}
-        <Link
-          href="/contact"
-          className="bg-white text-black text-sm font-bold px-6 py-2.5 rounded-full hover:bg-gray-100 transition-all shadow-sm hover:shadow-md shrink-0"
+        <button
+          onClick={handleCalendlyClick}
+          className="bg-white text-black text-sm font-bold px-6 py-2.5 rounded-full hover:bg-gray-100 transition-all shadow-sm hover:shadow-md shrink-0 cursor-pointer"
         >
-          Boka samtal
-        </Link>
+          Boka kostnadsfritt samtal
+        </button>
       </div>
     </nav>
   );

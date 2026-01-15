@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Nav from "@/components/Nav";
 import Button from "@/components/Button";
+import CalendlyButton from "@/components/CalendlyButton";
 import CaseCard from "@/components/CaseCard";
 import Container from "@/components/Container";
 import { DnaWeaveSvg } from "@/components/DnaWeaveSvg";
@@ -50,7 +51,7 @@ export default function Home() {
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-10">
               <Button variant="primary" href="/contact">
-                Boka ett samtal
+                Kontakta oss
               </Button>
               <Button variant="secondary" href="/cases">
                 Se hur det funkar
@@ -125,9 +126,9 @@ export default function Home() {
               Boka ett samtal så går vi igenom hur automation kan frigöra tid
               i din verksamhet.
             </p>
-            <Button variant="primary" href="/contact">
-              Boka ett samtal
-            </Button>
+            <CalendlyButton variant="primary">
+              Boka kostnadsfritt samtal
+            </CalendlyButton>
 
             <div className="mt-6 w-full flex justify-center">
               <DnaWeaveSvg

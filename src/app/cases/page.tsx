@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Nav from "@/components/Nav";
 import Container from "@/components/Container";
-import Button from "@/components/Button";
+import CalendlyButton from "@/components/CalendlyButton";
 
 export const metadata: Metadata = {
   title: "Automation Case – Verkliga resultat från säljautomation & research",
@@ -33,12 +33,12 @@ export default function Cases() {
       <Nav />
       <Container>
         <main className="pt-32 pb-20">
-          <div className="mb-16">
+          <div className="flex flex-col items-center text-center mb-16">
             <h1 className="text-hero text-5xl md:text-7xl text-[var(--color-text)] mb-4 tracking-[-0.03em]">
               Utvalda Case
             </h1>
             <p className="text-[var(--color-text-body)] text-xl leading-[1.6] max-w-[60ch]">
-              Exempel på automationer vi har byggt
+              Exempel på handplockade automationer vi är extra stolta över!
             </p>
           </div>
 
@@ -87,9 +87,9 @@ export default function Cases() {
               Vill du ha en liknande lösning?
             </p>
             <div className="mt-8">
-              <Button variant="primary" href="/contact">
+              <CalendlyButton variant="primary">
                 Kontakta oss
-              </Button>
+              </CalendlyButton>
             </div>
           </div>
         </main>
