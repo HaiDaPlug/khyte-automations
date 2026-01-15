@@ -1420,9 +1420,31 @@ Before deployment, verify:
   - **Files Modified**: 1 ([src/components/Nav.tsx](src/components/Nav.tsx))
   - **Build Status**: ✅ Production build successful, TypeScript clean
 
+- **v1.28** (2026-01-15) - Command Center Navigation Upgrade
+  - **Goal**: Evolve floating capsule into wider "Command Center" with improved logo visibility
+  - **Dimension Updates** ([src/components/Nav.tsx](src/components/Nav.tsx)):
+    - **Width**: `max-w-[92%] md:max-w-[900px]` → `max-w-[94%] md:max-w-[1150px]` (wider desktop presence)
+    - **Padding**: `py-2.5` → `py-3` (slightly taller, balanced)
+  - **Logo Visibility Fix**:
+    - **Size**: `h-10` → `h-16` (64px) - massive increase for subtext legibility
+    - **Breakout**: `-my-2` negative margin keeps navbar compact while logo renders larger
+    - **CSS Filters**: `brightness-110 contrast-125 saturate-110` boosts grey "AUTOMATIONS" text
+    - **Result**: Thin subtext now legible against dark glass background
+  - **Nav Links Upgrade**:
+    - **Typography**: `text-sm font-medium` → `text-base font-semibold` (16px, 600 weight)
+    - **Color**: `text-white/70` → `text-white/80` (brighter default state)
+    - **Spacing**: `gap-6` → `gap-8` (more breathing room)
+  - **Visual Impact**:
+    - Wider "command center" header anchors large desktop screens
+    - Logo "breakout" technique: visually 64px, layout impact only 48px
+    - Bolder nav links match increased logo presence
+    - Professional hierarchy maintained with compact padding
+  - **Files Modified**: 1 ([src/components/Nav.tsx](src/components/Nav.tsx))
+  - **Build Status**: ✅ Production build successful, TypeScript clean
+
 ---
 
-**Last Updated**: 2026-01-14
-**Current Version**: v1.27 (Floating Glass Capsule Navigation)
-**Status**: Production ready - Premium floating nav implemented
+**Last Updated**: 2026-01-15
+**Current Version**: v1.28 (Command Center Navigation Upgrade)
+**Status**: Production ready - Logo visibility and nav dimensions optimized
 **Next**: Deploy to production

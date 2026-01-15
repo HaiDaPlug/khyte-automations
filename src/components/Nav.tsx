@@ -8,29 +8,29 @@ export default function Nav() {
   const pathname = usePathname();
 
   return (
-    <nav className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-full max-w-[92%] md:max-w-[900px]">
-      <div className="flex items-center justify-between px-8 py-4 rounded-full bg-[#0A0A0A]/60 backdrop-blur-md border border-white/10 shadow-lg shadow-black/20">
-        {/* Logo - Left */}
+    <nav className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-full max-w-[94%] md:max-w-[1150px]">
+      <div className="flex items-center justify-between px-8 py-3 rounded-full bg-[#0A0A0A]/60 backdrop-blur-md border border-white/10 shadow-lg shadow-black/20">
+        {/* Logo - Left (h-14, natural fit in taller container) */}
         <Link
           href="/"
-          className="transition-opacity duration-200 hover:opacity-80 shrink-0"
+          className="shrink-0 relative z-20 transition-opacity duration-200 hover:opacity-80"
         >
           <Image
-            src="/khyte-logo.svg"
+            src="/khyte-logo-text.svg"
             alt="Khyte"
-            width={160}
-            height={40}
-            className="h-10 w-auto"
+            width={240}
+            height={64}
+            className="h-16 w-auto -my-2 brightness-110 contrast-125 saturate-110"
             priority
           />
         </Link>
 
         {/* Nav Links - Center (hidden mobile) */}
-        <div className="hidden md:flex items-center gap-6 text-sm font-medium tracking-[-0.02em]">
+        <div className="hidden md:flex items-center gap-8 text-base font-semibold tracking-[-0.02em]">
           <Link
             href="/cases"
             className={`transition-colors duration-200 hover:text-white ${
-              pathname === "/cases" ? "text-white" : "text-white/70"
+              pathname === "/cases" ? "text-white" : "text-white/80"
             }`}
           >
             Case
@@ -38,7 +38,7 @@ export default function Nav() {
           <Link
             href="/about"
             className={`transition-colors duration-200 hover:text-white ${
-              pathname === "/about" ? "text-white" : "text-white/70"
+              pathname === "/about" ? "text-white" : "text-white/80"
             }`}
           >
             Om oss
@@ -46,7 +46,7 @@ export default function Nav() {
           <Link
             href="/contact"
             className={`transition-colors duration-200 hover:text-white ${
-              pathname === "/contact" ? "text-white" : "text-white/70"
+              pathname === "/contact" ? "text-white" : "text-white/80"
             }`}
           >
             Kontakt
