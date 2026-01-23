@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import Container from "./Container";
 
@@ -12,8 +13,13 @@ const Footer = () => {
             {/* Brand Column */}
             <div className="lg:w-1/3 flex flex-col items-start">
               <Link href="/" className="mb-6 block">
-                {/* TODO: Replace with <Image src="/khyte-logo.svg" ... /> */}
-                <div className="h-8 w-auto text-white font-bold text-xl">[LOGO]</div>
+                <Image
+                  src="/khyte-logo-text.svg"
+                  alt="Khyte Automations"
+                  width={120}
+                  height={32}
+                  className="h-8 w-auto"
+                />
               </Link>
 
               <p className="text-white/65 text-[15px] leading-relaxed font-medium max-w-[38ch]">
@@ -27,9 +33,14 @@ const Footer = () => {
                   href="https://www.linkedin.com/company/khyte-automations"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-sm text-white/60 hover:text-white transition-colors hover:underline underline-offset-4 decoration-white/20 hover:decoration-white/50"
+                  className="opacity-60 hover:opacity-100 transition-opacity"
                 >
-                  LinkedIn
+                  <Image
+                    src="/LinkedIn_icon.svg"
+                    alt="LinkedIn"
+                    width={24}
+                    height={24}
+                  />
                 </a>
               </div>
             </div>
@@ -67,32 +78,16 @@ const Footer = () => {
                 </ul>
               </div>
 
-              {/* Kontakt */}
+              {/* Företag */}
               <div className="flex flex-col gap-5">
-                <h4 className="text-label text-white/70">Kontakt</h4>
+                <h4 className="text-label text-white/70">Företag</h4>
                 <ul className="flex flex-col gap-3">
-                  <li>
-                    <a
-                      href="mailto:hai@khyteteam.com"
-                      className="text-[14px] text-white/55 hover:text-white transition-colors hover:underline underline-offset-4 decoration-white/20 hover:decoration-white/50"
-                    >
-                      hai@khyteteam.com
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="tel:+46700996838"
-                      className="text-[14px] text-white/55 hover:text-white transition-colors hover:underline underline-offset-4 decoration-white/20 hover:decoration-white/50"
-                    >
-                      070-099 68 38
-                    </a>
-                  </li>
                   <li>
                     <Link
                       href="/contact"
                       className="text-[14px] text-white/55 hover:text-white transition-colors hover:underline underline-offset-4 decoration-white/20 hover:decoration-white/50"
                     >
-                      Boka ett samtal
+                      Kontakt
                     </Link>
                   </li>
                 </ul>
