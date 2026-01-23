@@ -34,9 +34,6 @@ const Footer = () => {
               </div>
             </div>
 
-            {/* Horizontal Divider (desktop only) */}
-            <div className="hidden lg:block h-px bg-white/[0.08] w-full my-4" />
-
             {/* Links Grid */}
             <div className="lg:w-2/3 grid grid-cols-2 sm:grid-cols-3 gap-8 sm:gap-12">
               {/* Utforska */}
