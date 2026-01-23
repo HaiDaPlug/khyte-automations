@@ -125,7 +125,7 @@ export default function AboutPage() {
                     rel="noreferrer"
                     className="inline-flex items-center gap-2 text-white/80 hover:text-white transition"
                   >
-                    <Image src="/icons/linkedin.svg" alt="" width={18} height={18} />
+                    <Image src="/LinkedIn_icon.svg" alt="" width={18} height={18} />
                     <span className="underline">LinkedIn</span>
                   </a>
                 </div>
@@ -174,7 +174,7 @@ export default function AboutPage() {
                     rel="noreferrer"
                     className="inline-flex items-center gap-2 text-white/80 hover:text-white transition"
                   >
-                    <Image src="/icons/linkedin.svg" alt="" width={18} height={18} />
+                    <Image src="/LinkedIn_icon.svg" alt="" width={18} height={18} />
                     <span className="underline">LinkedIn</span>
                   </a>
                 </div>

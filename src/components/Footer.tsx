@@ -54,25 +54,9 @@ const Footer = () => {
                   <li>
                     <Link
                       href="/cases"
-                      className="text-[14px] text-white/55 hover:text-white transition-colors hover:underline underline-offset-4 decoration-white/20 hover:decoration-white/50"
+                      className="text-[14px] font-medium text-white/70 hover:text-white transition-colors hover:underline underline-offset-4 decoration-white/20 hover:decoration-white/50"
                     >
                       Case
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="/about"
-                      className="text-[14px] text-white/55 hover:text-white transition-colors hover:underline underline-offset-4 decoration-white/20 hover:decoration-white/50"
-                    >
-                      Om oss
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="/contact"
-                      className="text-[14px] text-white/55 hover:text-white transition-colors hover:underline underline-offset-4 decoration-white/20 hover:decoration-white/50"
-                    >
-                      Kontakt
                     </Link>
                   </li>
                 </ul>
@@ -84,8 +68,16 @@ const Footer = () => {
                 <ul className="flex flex-col gap-3">
                   <li>
                     <Link
+                      href="/about"
+                      className="text-[14px] font-medium text-white/70 hover:text-white transition-colors hover:underline underline-offset-4 decoration-white/20 hover:decoration-white/50"
+                    >
+                      Om oss
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
                       href="/contact"
-                      className="text-[14px] text-white/55 hover:text-white transition-colors hover:underline underline-offset-4 decoration-white/20 hover:decoration-white/50"
+                      className="text-[14px] font-medium text-white/70 hover:text-white transition-colors hover:underline underline-offset-4 decoration-white/20 hover:decoration-white/50"
                     >
                       Kontakt
                     </Link>
@@ -98,13 +90,13 @@ const Footer = () => {
                 <h4 className="text-label text-white/70">Juridik</h4>
                 <ul className="flex flex-col gap-3">
                   <li>
-                    <span className="text-[14px] text-white/40">
+                    <span className="text-[14px] font-medium text-white/40">
                       Integritetspolicy{" "}
                       <span className="text-white/25">(kommer snart)</span>
                     </span>
                   </li>
                   <li>
-                    <span className="text-[14px] text-white/40">
+                    <span className="text-[14px] font-medium text-white/40">
                       Villkor{" "}
                       <span className="text-white/25">(kommer snart)</span>
                     </span>
