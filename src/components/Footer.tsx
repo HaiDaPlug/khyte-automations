@@ -16,31 +16,27 @@ const Footer = () => {
                 <Image
                   src="/khyte-logo-text.svg"
                   alt="Khyte Automations"
-                  width={120}
-                  height={32}
-                  className="h-8 w-auto"
+                  width={180}
+                  height={48}
+                  className="h-12 w-auto"
                 />
               </Link>
-
-              <p className="text-white/65 text-[15px] leading-relaxed font-medium max-w-[38ch]">
-                AI-assistans för företag. På svenska.
-                <br />
-                Vi bygger automationer som frigör tid.
-              </p>
 
               <div className="mt-6">
                 <a
                   href="https://www.linkedin.com/company/khyte-automations"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="opacity-60 hover:opacity-100 transition-opacity"
+                  aria-label="Khyte Automations på LinkedIn"
+                  className="inline-flex items-center gap-2 text-white/70 hover:text-white transition-colors"
                 >
-                  <Image
-                    src="/LinkedIn_icon.svg"
-                    alt="LinkedIn"
-                    width={24}
-                    height={24}
+                  <img
+                    src="/icons/linkedin.svg"
+                    alt=""
+                    aria-hidden="true"
+                    className="h-5 w-5 opacity-80 hover:opacity-100 transition-opacity"
                   />
+                  <span className="text-sm whitespace-nowrap font-medium">LinkedIn</span>
                 </a>
               </div>
             </div>

@@ -1,4 +1,4 @@
-# Khyte Automations - Current State (v1.30)
+# Khyte Automations - Current State (v1.31)
 
 ## Tech Stack
 - **Next.js** 16.0.9 (App Router)
@@ -65,7 +65,16 @@ public/
 - Width: `max-w-[94%] md:max-w-[1150px]`
 - Glass: `bg-[#0A0A0A]/60 backdrop-blur-md border-white/10`
 - Shape: `rounded-full`
+- Layout: `justify-between` with absolutely-centered nav links
+- Logo left, CTA right, links centered (desktop)
 - CTA triggers Calendly popup
+
+### Footer.tsx
+- Structure: Left brand block + three link columns
+- Brand: Logo (h-12) + LinkedIn link with icon
+- Columns: Utforska, Företag, Juridik
+- LinkedIn: Icon + text pattern using `/icons/linkedin.svg`
+- Bottom bar: Copyright with year
 
 ### Form Inputs
 - Height: `h-12` (matches buttons)
@@ -114,6 +123,8 @@ npm run dev                     # Dev mode (Turbopack bug exists)
 3. Ticker uses CSS-only animation (240s loop, translate3d)
 4. Swedish language throughout (`lang="sv"`)
 5. No tailwind.config.ts - all config in globals.css `@theme`
+6. Nav uses absolute positioning for centered links (requires `relative` on parent)
+7. Small SVG icons use plain `<img>` instead of Next Image for simplicity
 
 ## Files to Know
 | Purpose | File |
