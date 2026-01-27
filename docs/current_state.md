@@ -1,4 +1,4 @@
-# Khyte Automations - Current State (v1.31)
+# Khyte Automations - Current State (v1.32)
 
 ## Tech Stack
 - **Next.js** 16.0.9 (App Router)
@@ -70,11 +70,24 @@ public/
 - CTA triggers Calendly popup
 
 ### Footer.tsx
-- Structure: Left brand block + three link columns
-- Brand: Logo (h-12) + LinkedIn link with icon
+- Structure: Left brand block + three link columns + LinkedIn icon far right
+- Brand: Logo only (h-24, doubled from h-12)
 - Columns: Utforska, Företag, Juridik
-- LinkedIn: Icon + text pattern using `/icons/linkedin.svg`
+- LinkedIn: Icon-only (h-8 w-8) positioned far right above copyright bar
+  - Path: `/icons/linkedin.svg`
+  - Hover: opacity 70% → 100%
+  - No text label
 - Bottom bar: Copyright with year
+
+### About Page People Cards
+- Contact details format (stacked, text-sm):
+  - **FavoritX**: Custom label per person (e.g., "Favoritsport: Golf")
+  - **Mobil**: Phone with `tel:+46...` link (displayed as 070-xxx xx xx)
+  - **Mejl**: Email with `mailto:` link
+- Styling: `mt-6 space-y-2 text-white/80`
+- Links: `underline underline-offset-4 hover:text-white`
+- Labels: `font-semibold`
+- No icon-based contact links (Email/LinkedIn removed)
 
 ### Form Inputs
 - Height: `h-12` (matches buttons)

@@ -110,24 +110,29 @@ export default function AboutPage() {
                   Har grundat Khyte Automations och driver bolaget idag. Värderar ärlighet, sårbarhet och gillar att ha kul. Väldigt nyfiken och är alltid öppen för nytt.
                 </p>
 
-                {/* Contact */}
-                <div className="mt-4 flex items-center gap-4">
-                  <a
-                    href="mailto:hai@khyteteam.com"
-                    className="inline-flex items-center gap-2 text-white/80 hover:text-white transition"
-                  >
-                    <Image src="/icons/mail.svg" alt="" width={18} height={18} />
-                    <span className="underline">Email</span>
-                  </a>
-                  <a
-                    href="https://www.linkedin.com/in/hai-pham-bui-8a9893395"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center gap-2 text-white/80 hover:text-white transition"
-                  >
-                    <img src="/icons/linkedin.svg" alt="" aria-hidden="true" className="h-[18px] w-[18px]" />
-                    <span className="underline">LinkedIn</span>
-                  </a>
+                {/* Contact Details */}
+                <div className="mt-6 space-y-2 text-sm text-white/80">
+                  <div>
+                    <span className="font-semibold">Favoritsport:</span> Golf
+                  </div>
+                  <div>
+                    <span className="font-semibold">Mobil:</span>{" "}
+                    <a
+                      className="underline underline-offset-4 hover:text-white transition-colors"
+                      href="tel:+46700996838"
+                    >
+                      070-099 68 38
+                    </a>
+                  </div>
+                  <div>
+                    <span className="font-semibold">Mejl:</span>{" "}
+                    <a
+                      className="underline underline-offset-4 hover:text-white transition-colors"
+                      href="mailto:hai@khyteteam.com"
+                    >
+                      hai@khyteteam.com
+                    </a>
+                  </div>
                 </div>
               </div>
 
@@ -159,24 +164,29 @@ export default function AboutPage() {
                   Hjälper till som en "högra hand", och har en extremt bra känsla för lösningar. En social kille med mycket att erbjuda.
                 </p>
 
-                {/* Contact */}
-                <div className="mt-4 flex items-center gap-4">
-                  <a
-                    href="mailto:abdimajiidmohamud@gmail.com"
-                    className="inline-flex items-center gap-2 text-white/80 hover:text-white transition"
-                  >
-                    <Image src="/icons/mail.svg" alt="" width={18} height={18} />
-                    <span className="underline">Email</span>
-                  </a>
-                  <a
-                    href="https://www.linkedin.com/in/abdimajiid-mohamud-233539329/"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center gap-2 text-white/80 hover:text-white transition"
-                  >
-                    <img src="/icons/linkedin.svg" alt="" aria-hidden="true" className="h-[18px] w-[18px]" />
-                    <span className="underline">LinkedIn</span>
-                  </a>
+                {/* Contact Details */}
+                <div className="mt-6 space-y-2 text-sm text-white/80">
+                  <div>
+                    <span className="font-semibold">Favoritsport:</span> Tennis
+                  </div>
+                  <div>
+                    <span className="font-semibold">Mobil:</span>{" "}
+                    <a
+                      className="underline underline-offset-4 hover:text-white transition-colors"
+                      href="tel:+46701234567"
+                    >
+                      070-123 45 67
+                    </a>
+                  </div>
+                  <div>
+                    <span className="font-semibold">Mejl:</span>{" "}
+                    <a
+                      className="underline underline-offset-4 hover:text-white transition-colors"
+                      href="mailto:abdimajiidmohamud@gmail.com"
+                    >
+                      abdimajiidmohamud@gmail.com
+                    </a>
+                  </div>
                 </div>
               </div>
             </div>
