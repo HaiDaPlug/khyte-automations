@@ -72,7 +72,7 @@ export default function Nav() {
   return (
     <>
     <nav className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-full max-w-[94%] md:max-w-[1150px]">
-      <div className="flex items-center justify-between px-8 py-3 rounded-full bg-[#0A0A0A]/60 backdrop-blur-md border border-white/10 shadow-lg shadow-black/20">
+      <div className="flex items-center justify-between md:grid md:grid-cols-[auto,1fr,auto] px-4 sm:px-8 py-3 rounded-full bg-[#0A0A0A]/60 backdrop-blur-md border border-white/10 shadow-lg shadow-black/20">
         {/* Logo - Left (h-14, natural fit in taller container) */}
         <Link
           href="/"
@@ -83,13 +83,13 @@ export default function Nav() {
             alt="Khyte"
             width={240}
             height={64}
-            className="h-16 w-auto -my-2 brightness-110 contrast-125 saturate-110"
+            className="h-16 w-auto -my-2 ml-3 brightness-110 contrast-125 saturate-110"
             priority
           />
         </Link>
 
         {/* Nav Links - Center (hidden mobile) */}
-        <div className="hidden md:flex items-center gap-8 text-base font-semibold tracking-[-0.02em]">
+        <div className="hidden md:flex justify-center items-center gap-8 text-base font-semibold tracking-[-0.02em]">
           <Link
             href="/cases"
             className={`transition-colors duration-200 hover:text-white ${
@@ -116,13 +116,15 @@ export default function Nav() {
           </Link>
         </div>
 
-        {/* CTA Button - Right */}
-        <button
-          onClick={handleCalendlyClick}
-          className="hidden md:inline-flex bg-white text-black text-sm font-bold px-6 py-2.5 rounded-full hover:bg-gray-100 transition-all shadow-sm hover:shadow-md shrink-0 cursor-pointer"
-        >
-          Boka kostnadsfritt samtal
-        </button>
+        {/* CTA Button - Right (desktop only) */}
+        <div className="hidden md:flex justify-end items-center">
+          <button
+            onClick={handleCalendlyClick}
+            className="bg-white text-black text-sm font-bold px-6 py-2.5 rounded-full hover:bg-gray-100 transition-all shadow-sm hover:shadow-md shrink-0 cursor-pointer"
+          >
+            Boka kostnadsfritt samtal
+          </button>
+        </div>
 
         {/* Hamburger - Mobile only (JS-gated for bulletproof behavior) */}
         {isMobile && (

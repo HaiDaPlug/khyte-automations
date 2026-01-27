@@ -91,7 +91,7 @@ export default function AboutPage() {
                     alt="Hai Bui"
                     width={1414}
                     height={2000}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover object-top"
                   />
                 </div>
 
@@ -140,7 +140,7 @@ export default function AboutPage() {
                     alt="Abdimajiid Mohamud"
                     width={1414}
                     height={2000}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover object-top"
                   />
                 </div>
 
