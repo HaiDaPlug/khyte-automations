@@ -83,7 +83,23 @@ export default function AboutPage() {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
               {/* Profile 1 - Hai */}
-              <div className="bg-[var(--color-card-bg)] border border-[var(--color-border)] p-8 rounded-[4px] transition-colors duration-300 hover:border-[var(--color-muted)]">
+              <div className="bg-[var(--color-card-bg)] border border-[var(--color-border)] p-8 rounded-[4px] transition-colors duration-300 hover:border-[var(--color-muted)] relative">
+                {/* LinkedIn Icon - Bottom Right */}
+                <a
+                  href="https://www.linkedin.com/in/hai-pham-bui-8a9893395"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Hai Bui på LinkedIn"
+                  className="absolute bottom-8 right-8 opacity-80 hover:opacity-100 transition-opacity"
+                >
+                  <img
+                    src="/icons/linkedin.svg"
+                    alt=""
+                    aria-hidden="true"
+                    className="h-6 w-6"
+                  />
+                </a>
+
                 {/* Profile image */}
                 <div className="border border-[var(--color-border)] rounded-[4px] aspect-[5/6] mb-6 overflow-hidden">
                   <Image
@@ -137,7 +153,23 @@ export default function AboutPage() {
               </div>
 
               {/* Profile 2 - Abdi */}
-              <div className="bg-[var(--color-card-bg)] border border-[var(--color-border)] p-8 rounded-[4px] transition-colors duration-300 hover:border-[var(--color-muted)]">
+              <div className="bg-[var(--color-card-bg)] border border-[var(--color-border)] p-8 rounded-[4px] transition-colors duration-300 hover:border-[var(--color-muted)] relative">
+                {/* LinkedIn Icon - Bottom Right */}
+                <a
+                  href="https://www.linkedin.com/in/abdimajiid-mohamud-233539329/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Abdimajiid Mohamud på LinkedIn"
+                  className="absolute bottom-8 right-8 opacity-80 hover:opacity-100 transition-opacity"
+                >
+                  <img
+                    src="/icons/linkedin.svg"
+                    alt=""
+                    aria-hidden="true"
+                    className="h-6 w-6"
+                  />
+                </a>
+
                 {/* Profile image */}
                 <div className="border border-[var(--color-border)] rounded-[4px] aspect-[5/6] mb-6 overflow-hidden">
                   <Image
