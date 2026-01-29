@@ -16,11 +16,26 @@ const Footer = () => {
                 <Image
                   src="/khyte-logo-text.svg"
                   alt="Khyte Automations"
-                  width={360}
-                  height={96}
-                  className="h-24 w-auto"
+                  width={180}
+                  height={48}
+                  className="h-12 w-auto"
                 />
               </Link>
+
+              <a
+                href="https://www.linkedin.com/company/khyte-automations"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Khyte Automations på LinkedIn"
+                className="opacity-70 hover:opacity-100 transition-opacity"
+              >
+                <img
+                  src="/icons/linkedin.svg"
+                  alt=""
+                  aria-hidden="true"
+                  className="h-8 w-8"
+                />
+              </a>
             </div>
 
             {/* Links Grid */}
@@ -82,24 +97,6 @@ const Footer = () => {
                 </ul>
               </div>
             </div>
-          </div>
-
-          {/* LinkedIn Icon - Far Right */}
-          <div className="mt-10 flex justify-end">
-            <a
-              href="https://www.linkedin.com/company/khyte-automations"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Khyte Automations på LinkedIn"
-              className="opacity-70 hover:opacity-100 transition-opacity"
-            >
-              <img
-                src="/icons/linkedin.svg"
-                alt=""
-                aria-hidden="true"
-                className="h-8 w-8"
-              />
-            </a>
           </div>
 
           {/* Bottom Bar */}

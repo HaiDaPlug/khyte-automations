@@ -34,7 +34,7 @@ export default function AboutPage() {
               {/* Left column - Copy */}
               <div>
                 <p className="text-[1.25rem] leading-[1.6] text-[var(--color-text-body)] max-w-[65ch]">
-                  Khyte Automations finns för att göra arbetet lättare. Många företag sitter med onödigt manuellt arbete som människan egentligen inte behöver göra - uppgifter som dataförflyttning, klipp-och-klistra och arbete som tar energi men inte ger tillbaka. Därför fokuserar vi på att bygga och integrera AI i flöden för att eliminera friktionen i vardagen - så att företag får mer tid och fokus, med färre onödiga moment.
+                  Khyte Automations finns för att göra arbetet lättare. Många företag sitter med onödigt manuellt arbete som människan egentligen inte behöver göra. Uppgifter som dataförflyttning, klipp-och-klistra och arbete som tar energi men inte ger tillbaka. Därför fokuserar vi på att bygga och integrera AI i flöden för att eliminera friktionen i vardagen - så att företag får mer tid och fokus, med färre onödiga moment.
                 </p>
               </div>
               {/* Right column - Placeholder image */}
@@ -113,7 +113,7 @@ export default function AboutPage() {
                 {/* Contact Details */}
                 <div className="mt-6 space-y-2 text-sm text-white/80">
                   <div>
-                    <span className="font-semibold">Favoritsport:</span> Golf
+                    <span className="font-semibold">Favorittuggummi:</span> Melon Mint
                   </div>
                   <div>
                     <span className="font-semibold">Mobil:</span>{" "}
@@ -156,18 +156,18 @@ export default function AboutPage() {
 
                 {/* Role */}
                 <p className="text-label mb-4">
-                  Partner - Säljare
+                  Operativt ansvarig - Säljare
                 </p>
 
                 {/* Description */}
                 <p className="text-base leading-[1.5] text-[var(--color-text-body)] mb-4 max-w-[460px]">
-                  Hjälper till som en "högra hand", och har en extremt bra känsla för lösningar. En social kille med mycket att erbjuda.
+                  Hjälper till som en "högra hand", och har en extremt bra känsla för lösningar. En social kille med ett stort driv och engagemang för att skapa värde för kunderna.
                 </p>
 
                 {/* Contact Details */}
                 <div className="mt-6 space-y-2 text-sm text-white/80">
                   <div>
-                    <span className="font-semibold">Favoritsport:</span> Tennis
+                    <span className="font-semibold">Favoritaktivitet:</span> ICA Maxi
                   </div>
                   <div>
                     <span className="font-semibold">Mobil:</span>{" "}
