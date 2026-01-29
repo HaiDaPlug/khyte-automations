@@ -1,4 +1,4 @@
-# Khyte Automations - Current State (v1.32)
+# Khyte Automations - Current State (v1.33)
 
 ## Tech Stack
 - **Next.js** 16.0.9 (App Router)
@@ -70,24 +70,37 @@ public/
 - CTA triggers Calendly popup
 
 ### Footer.tsx
-- Structure: Left brand block + three link columns + LinkedIn icon far right
-- Brand: Logo only (h-24, doubled from h-12)
+- Structure: Left brand block + three link columns
+- Brand: Logo (h-18, 50% bigger than original h-12) + LinkedIn icon underneath
+  - Logo: 270×72px dimensions
+  - LinkedIn: Icon-only (h-8 w-8) positioned under logo
+    - Path: `/icons/linkedin.svg`
+    - Opacity: 80% → 100% on hover
+    - No text label
 - Columns: Utforska, Företag, Juridik
-- LinkedIn: Icon-only (h-8 w-8) positioned far right above copyright bar
-  - Path: `/icons/linkedin.svg`
-  - Hover: opacity 70% → 100%
-  - No text label
 - Bottom bar: Copyright with year
 
 ### About Page People Cards
+- Layout: 2-column grid (1 col mobile, 2 cols lg+)
+- Each card includes:
+  - Profile image (5:6 aspect ratio)
+  - Name (h3, text-2xl font-bold)
+  - Role (.text-label class)
+  - Description paragraph
+  - Contact details (stacked format)
+  - LinkedIn icon (bottom-right corner)
 - Contact details format (stacked, text-sm):
-  - **FavoritX**: Custom label per person (e.g., "Favoritsport: Golf")
+  - **FavoritX**: Custom label per person (e.g., "Favorittuggummi: Melon Mint")
   - **Mobil**: Phone with `tel:+46...` link (displayed as 070-xxx xx xx)
   - **Mejl**: Email with `mailto:` link
 - Styling: `mt-6 space-y-2 text-white/80`
 - Links: `underline underline-offset-4 hover:text-white`
 - Labels: `font-semibold`
-- No icon-based contact links (Email/LinkedIn removed)
+- LinkedIn icon:
+  - Position: `absolute bottom-8 right-8`
+  - Size: h-6 w-6 (24px)
+  - Opacity: 80% → 100% on hover
+  - Links to individual LinkedIn profiles
 
 ### Form Inputs
 - Height: `h-12` (matches buttons)
