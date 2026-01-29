@@ -16,9 +16,9 @@ const Footer = () => {
                 <Image
                   src="/khyte-logo-text.svg"
                   alt="Khyte Automations"
-                  width={180}
-                  height={48}
-                  className="h-12 w-auto"
+                  width={270}
+                  height={72}
+                  className="h-18 w-auto"
                 />
               </Link>
 
@@ -27,7 +27,7 @@ const Footer = () => {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Khyte Automations på LinkedIn"
-                className="opacity-70 hover:opacity-100 transition-opacity"
+                className="opacity-80 hover:opacity-100 transition-opacity"
               >
                 <img
                   src="/icons/linkedin.svg"
