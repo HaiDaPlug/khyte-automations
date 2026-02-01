@@ -1,4 +1,4 @@
-# Khyte Automations - Current State (v1.33)
+# Khyte Automations - Current State (v1.34)
 
 ## Tech Stack
 - **Next.js** 16.0.9 (App Router)
@@ -15,6 +15,10 @@ src/
 │   ├── about/page.tsx    # About page
 │   ├── cases/page.tsx    # Case studies
 │   ├── contact/page.tsx  # Contact form
+│   ├── services/
+│   │   ├── page.tsx      # Services & pricing page
+│   │   ├── audit/page.tsx          # Förstudie detail (stub)
+│   │   └── custom-build/page.tsx   # Automation detail (stub)
 │   ├── layout.tsx        # Root layout + metadata + Calendly scripts
 │   ├── globals.css       # Design tokens + animations
 │   ├── sitemap.ts        # Dynamic sitemap
@@ -102,6 +106,15 @@ public/
   - Opacity: 80% → 100% on hover
   - Links to individual LinkedIn profiles
 
+### Services Page
+- Route: `/services` (not in nav yet - access via direct URL or internal links)
+- Layout: Hero + 2 offer cards + process timeline + qualification section + CTA
+- Offer cards:
+  - **Förstudie**: Secondary CTA + "Läs mer" link to `/services/audit`
+  - **Automation**: Secondary CTA + "Läs mer" link to `/services/custom-build`
+- Pricing: Placeholder constants `{AUDIT_PRICE_SEK}` and `{BUILD_FROM_SEK}` (update in page.tsx)
+- Stub pages (`/services/audit`, `/services/custom-build`): Minimal premium placeholders with CTAs
+
 ### Form Inputs
 - Height: `h-12` (matches buttons)
 - Background: `var(--color-card-bg)` (inlaid effect)
@@ -158,5 +171,6 @@ npm run dev                     # Dev mode (Turbopack bug exists)
 | Design tokens | `src/app/globals.css` |
 | Global metadata | `src/app/layout.tsx` |
 | Homepage | `src/app/page.tsx` |
+| Services & pricing | `src/app/services/page.tsx` |
 | Navigation | `src/components/Nav.tsx` |
 | Buttons | `src/components/Button.tsx` |
