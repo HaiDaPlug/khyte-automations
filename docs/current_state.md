@@ -1,4 +1,4 @@
-# Khyte Automations - Current State (v1.34)
+# Khyte Automations - Current State (v1.36)
 
 ## Tech Stack
 - **Next.js** 16.0.9 (App Router)
@@ -17,7 +17,7 @@ src/
 │   ├── contact/page.tsx  # Contact form
 │   ├── services/
 │   │   ├── page.tsx      # Services & pricing page
-│   │   ├── audit/page.tsx          # Förstudie detail (stub)
+│   │   ├── audit/page.tsx          # Förstudie detail (full page)
 │   │   └── custom-build/page.tsx   # Automation detail (stub)
 │   ├── layout.tsx        # Root layout + metadata + Calendly scripts
 │   ├── globals.css       # Design tokens + animations
@@ -106,14 +106,30 @@ public/
   - Opacity: 80% → 100% on hover
   - Links to individual LinkedIn profiles
 
-### Services Page
-- Route: `/services` (not in nav yet - access via direct URL or internal links)
+### Services Pages
+**Parent Route**: `/services` (not in nav yet - access via direct URL or internal links)
 - Layout: Hero + 2 offer cards + process timeline + qualification section + CTA
 - Offer cards:
   - **Förstudie**: Secondary CTA + "Läs mer" link to `/services/audit`
   - **Automation**: Secondary CTA + "Läs mer" link to `/services/custom-build`
 - Pricing: Placeholder constants `{AUDIT_PRICE_SEK}` and `{BUILD_FROM_SEK}` (update in page.tsx)
-- Stub pages (`/services/audit`, `/services/custom-build`): Minimal premium placeholders with CTAs
+
+**Audit Detail Page**: `/services/audit` (full production page)
+- Layout: Hero + Deliverables (6 cards) + For/Not For + Timeline & Price + FAQ (5 items) + CTA
+- Structure: `<main><Container>` (no Nav wrapper - global in layout)
+- Design tokens: Uses `bg-[var(--color-card-bg)]`, `rounded-[4px]` for cards
+- Accessibility: Semantic FAQ (`<dl><dt><dd>`), proper heading hierarchy (h1 → h2 → h3)
+- CTAs: Multiple conversion paths to `/contact`, `/services`, `/services/custom-build`
+- Constants: `AUDIT_PRICE_SEK` (15 000 kr), `CREDIT_WINDOW_DAYS` (30), `AUDIT_TIMELINE_DAYS` (5-10)
+
+**Custom-Build Detail Page**: `/services/custom-build` (full production page)
+- Layout: Hero + Always Included (7 features) + Pricing + Scope Factors + Process (4 steps) + Trust Elements + FAQ (5 items) + CTA
+- Structure: `<main><Container>` (no Nav wrapper - matches audit pattern)
+- Design tokens: Uses `bg-[var(--color-card-bg)]`, `border-[var(--color-border)]`, `rounded-[4px]` consistently
+- Accessibility: Semantic lists (`<ul><li>` for features/process), proper heading hierarchy (h1 → h2 → h3)
+- CTAs: Multiple conversion paths to `/contact`, `/services/audit`, `/services`
+- Constants: `BUILD_FROM_SEK` (45 000 kr), `BUILD_RANGE_SEK` (60 000 - 150 000 kr), `SUPPORT_WINDOW_DAYS` (30)
+- Emerald accent: Used for feature checkmarks and support highlight card
 
 ### Form Inputs
 - Height: `h-12` (matches buttons)
