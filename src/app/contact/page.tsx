@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Nav from "@/components/Nav";
 import Container from "@/components/Container";
 import Button from "@/components/Button";
 import CalendlyButton from "@/components/CalendlyButton";
@@ -16,7 +15,6 @@ export const metadata: Metadata = {
 export default function Contact() {
   return (
     <div>
-      <Nav />
       <Container>
         <main className="pt-32 pb-20">
           <div className="flex flex-col items-center text-center mb-16">

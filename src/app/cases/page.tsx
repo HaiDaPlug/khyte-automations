@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Nav from "@/components/Nav";
 import Container from "@/components/Container";
 import CalendlyButton from "@/components/CalendlyButton";
 
@@ -30,7 +29,6 @@ const cases = [
 export default function Cases() {
   return (
     <div>
-      <Nav />
       <Container>
         <main className="pt-32 pb-20">
           <div className="flex flex-col items-center text-center mb-16">

@@ -1,4 +1,4 @@
-# Khyte Automations - Current State (v1.36)
+# Khyte Automations - Current State (v1.37)
 
 ## Tech Stack
 - **Next.js** 16.0.9 (App Router)
@@ -18,8 +18,8 @@ src/
 │   ├── services/
 │   │   ├── page.tsx      # Services & pricing page
 │   │   ├── audit/page.tsx          # Förstudie detail (full page)
-│   │   └── custom-build/page.tsx   # Automation detail (stub)
-│   ├── layout.tsx        # Root layout + metadata + Calendly scripts
+│   │   └── custom-build/page.tsx   # Automation detail (full page)
+│   ├── layout.tsx        # Root layout + metadata + Calendly scripts + Nav
 │   ├── globals.css       # Design tokens + animations
 │   ├── sitemap.ts        # Dynamic sitemap
 │   └── robots.ts         # Robots.txt
@@ -65,12 +65,20 @@ public/
 - Secondary: `border border-white/20 bg-transparent`
 
 ### Nav.tsx (Floating Capsule)
+- **Rendered globally** in layout.tsx (single instance across all pages)
 - Position: `fixed top-6 left-1/2 -translate-x-1/2`
 - Width: `max-w-[94%] md:max-w-[1150px]`
 - Glass: `bg-[#0A0A0A]/60 backdrop-blur-md border-white/10`
 - Shape: `rounded-full`
 - Layout: `justify-between` with absolutely-centered nav links
 - Logo left, CTA right, links centered (desktop)
+- Desktop links (4): Case, Om oss, **Tjänster** (dropdown), Kontakt
+  - **Tjänster dropdown**: Native `<details>` element with 2 links
+    - Förstudie (Audit) → `/services/audit`
+    - Skräddarsydd Automation → `/services/custom-build`
+    - Active when `pathname.startsWith("/services")`
+    - No click-outside-close (toggles or navigates to close)
+- Mobile drawer: Same 4 items, Tjänster shown as parent label + indented sublinks
 - CTA triggers Calendly popup
 
 ### Footer.tsx
@@ -107,7 +115,7 @@ public/
   - Links to individual LinkedIn profiles
 
 ### Services Pages
-**Parent Route**: `/services` (not in nav yet - access via direct URL or internal links)
+**Parent Route**: `/services` (accessible via "Tjänster" dropdown in nav)
 - Layout: Hero + 2 offer cards + process timeline + qualification section + CTA
 - Offer cards:
   - **Förstudie**: Secondary CTA + "Läs mer" link to `/services/audit`
@@ -173,13 +181,15 @@ npm run dev                     # Dev mode (Turbopack bug exists)
 ```
 
 ## Key Implementation Notes
-1. All pages need `pt-32` for fixed nav clearance
-2. Hero uses `min-h-[100dvh]` (dynamic viewport height)
-3. Ticker uses CSS-only animation (240s loop, translate3d)
-4. Swedish language throughout (`lang="sv"`)
-5. No tailwind.config.ts - all config in globals.css `@theme`
-6. Nav uses absolute positioning for centered links (requires `relative` on parent)
-7. Small SVG icons use plain `<img>` instead of Next Image for simplicity
+1. **Nav is global** - rendered once in layout.tsx, no per-page `<Nav />` needed
+2. All pages need `pt-32` for fixed nav clearance
+3. Hero uses `min-h-[100dvh]` (dynamic viewport height)
+4. Ticker uses CSS-only animation (240s loop, translate3d)
+5. Swedish language throughout (`lang="sv"`)
+6. No tailwind.config.ts - all config in globals.css `@theme`
+7. Nav uses absolute positioning for centered links (requires `relative` on parent)
+8. Small SVG icons use plain `<img>` instead of Next Image for simplicity
+9. Nav dropdown uses native `<details>` (no external state, no click-outside handler)
 
 ## Files to Know
 | Purpose | File |

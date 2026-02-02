@@ -106,6 +106,32 @@ export default function Nav() {
           >
             Om oss
           </Link>
+
+          {/* Tjänster dropdown */}
+          <details className="relative group">
+            <summary
+              className={`cursor-pointer list-none transition-colors duration-200 hover:text-white ${
+                pathname.startsWith("/services") ? "text-white" : "text-white/80"
+              }`}
+            >
+              Tjänster
+            </summary>
+            <div className="absolute top-full left-0 mt-2 min-w-[220px] bg-[#0A0A0A]/90 backdrop-blur-md border border-white/10 rounded-md shadow-lg py-2 z-50">
+              <Link
+                href="/services/audit"
+                className="block px-4 py-2 text-sm text-white/80 hover:text-white hover:bg-white/5 transition-colors"
+              >
+                Förstudie (Audit)
+              </Link>
+              <Link
+                href="/services/custom-build"
+                className="block px-4 py-2 text-sm text-white/80 hover:text-white hover:bg-white/5 transition-colors"
+              >
+                Skräddarsydd Automation
+              </Link>
+            </div>
+          </details>
+
           <Link
             href="/contact"
             className={`transition-colors duration-200 hover:text-white ${
@@ -173,6 +199,26 @@ export default function Nav() {
           <nav className="flex flex-col px-6 py-4 gap-4">
             <Link href="/cases" className="text-white/80 hover:text-white text-lg" onClick={() => setOpen(false)}>Case</Link>
             <Link href="/about" className="text-white/80 hover:text-white text-lg" onClick={() => setOpen(false)}>Om oss</Link>
+
+            {/* Tjänster parent + sublinks */}
+            <div className="flex flex-col gap-2">
+              <span className="text-white/60 text-sm font-semibold uppercase tracking-wide">Tjänster</span>
+              <Link
+                href="/services/audit"
+                className="text-white/80 hover:text-white text-base pl-4"
+                onClick={() => setOpen(false)}
+              >
+                Förstudie (Audit)
+              </Link>
+              <Link
+                href="/services/custom-build"
+                className="text-white/80 hover:text-white text-base pl-4"
+                onClick={() => setOpen(false)}
+              >
+                Skräddarsydd Automation
+              </Link>
+            </div>
+
             <Link href="/contact" className="text-white/80 hover:text-white text-lg" onClick={() => setOpen(false)}>Kontakt</Link>
           </nav>
           {/* CTA */}

@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Nav from "@/components/Nav";
 import Button from "@/components/Button";
 import CalendlyButton from "@/components/CalendlyButton";
 import CaseCard from "@/components/CaseCard";
@@ -36,8 +35,6 @@ export default function Home() {
   return (
     <div>
       <Container>
-        <Nav />
-
         {/* Hero Section */}
         <section className="min-h-[100dvh] flex flex-col justify-center items-center pt-32 pb-20 px-4 relative overflow-hidden">
           <div className="max-w-[900px] mx-auto text-center">

@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Nav from "@/components/Nav";
 import Container from "@/components/Container";
 import Image from "next/image";
 
@@ -15,7 +14,6 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <div>
-      <Nav />
       <Container>
         <main className="pt-32 pb-20">
           {/* Page header - Centered */}
