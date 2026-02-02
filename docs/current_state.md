@@ -1,4 +1,4 @@
-# Khyte Automations - Current State (v1.37)
+# Khyte Automations - Current State (v1.38)
 
 ## Tech Stack
 - **Next.js** 16.0.9 (App Router)
@@ -73,11 +73,20 @@ public/
 - Layout: `justify-between` with absolutely-centered nav links
 - Logo left, CTA right, links centered (desktop)
 - Desktop links (4): Case, Om oss, **Tjänster** (dropdown), Kontakt
-  - **Tjänster dropdown**: Native `<details>` element with 2 links
+  - **Tjänster dropdown**: World-class native `<details>` implementation
     - Förstudie (Audit) → `/services/audit`
     - Skräddarsydd Automation → `/services/custom-build`
     - Active when `pathname.startsWith("/services")`
-    - No click-outside-close (toggles or navigates to close)
+    - **Enhanced interactions**:
+      - Click-outside-to-close (pointerdown with capture)
+      - Escape key closes dropdown + returns focus
+      - Auto-close on link click
+      - Auto-close on route change
+    - **Visual polish**:
+      - Animated chevron icon (rotates 180° on open)
+      - Smooth slide-down animation (150ms fadeIn + translateY)
+      - Respects prefers-reduced-motion
+    - State sync via toggle event for React re-renders
 - Mobile drawer: Same 4 items, Tjänster shown as parent label + indented sublinks
 - CTA triggers Calendly popup
 

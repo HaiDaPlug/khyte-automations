@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -34,6 +34,10 @@ export default function Nav() {
   const [open, setOpen] = useState(false);
   const isMobile = useIsMobile(768);
 
+  // Ref and state for the services dropdown
+  const servicesDetailsRef = useRef<HTMLDetailsElement>(null);
+  const [servicesOpen, setServicesOpen] = useState(false);
+
   // Close drawer on route change
   useEffect(() => {
     setOpen(false);
@@ -50,7 +54,7 @@ export default function Nav() {
     };
   }, [open, isMobile]);
 
-  // Escape key handler
+  // Escape key handler (for mobile drawer)
   useEffect(() => {
     if (!open) return;
 
@@ -61,6 +65,66 @@ export default function Nav() {
     document.addEventListener("keydown", handleEscape);
     return () => document.removeEventListener("keydown", handleEscape);
   }, [open]);
+
+  // Sync native details state with React state for chevron rotation
+  useEffect(() => {
+    const details = servicesDetailsRef.current;
+    if (!details) return;
+
+    const handleToggle = () => {
+      setServicesOpen(details.open);
+    };
+
+    details.addEventListener('toggle', handleToggle);
+    return () => details.removeEventListener('toggle', handleToggle);
+  }, []);
+
+  // Click-outside-to-close for services dropdown
+  useEffect(() => {
+    const handleClickOutside = (event: PointerEvent) => {
+      // Only act if dropdown is open
+      if (!servicesDetailsRef.current?.open) return;
+
+      // Check if click was outside the details element
+      const clickedInside = servicesDetailsRef.current.contains(event.target as Node);
+
+      if (!clickedInside) {
+        servicesDetailsRef.current.open = false;
+      }
+    };
+
+    // Use pointerdown (fires earlier than click) with capture phase
+    // IMPORTANT: Use boolean true for capture in BOTH add and remove (not object)
+    document.addEventListener('pointerdown', handleClickOutside, true);
+
+    return () => {
+      document.removeEventListener('pointerdown', handleClickOutside, true);
+    };
+  }, []); // Empty deps - always listening, checks state inside
+
+  // Escape key to close services dropdown
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && servicesDetailsRef.current?.open) {
+        servicesDetailsRef.current.open = false;
+        // Optional: return focus to summary for better UX
+        servicesDetailsRef.current.querySelector('summary')?.focus();
+      }
+    };
+
+    document.addEventListener('keydown', handleEscape);
+
+    return () => {
+      document.removeEventListener('keydown', handleEscape);
+    };
+  }, []);
+
+  // Close dropdown on route change (polish)
+  useEffect(() => {
+    if (servicesDetailsRef.current?.open) {
+      servicesDetailsRef.current.open = false;
+    }
+  }, [pathname]);
 
   const handleCalendlyClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -108,23 +172,44 @@ export default function Nav() {
           </Link>
 
           {/* Tjänster dropdown */}
-          <details className="relative group">
+          <details ref={servicesDetailsRef} className="relative group">
             <summary
-              className={`cursor-pointer list-none transition-colors duration-200 hover:text-white ${
+              className={`cursor-pointer list-none transition-colors duration-200 hover:text-white flex items-center gap-1 ${
                 pathname.startsWith("/services") ? "text-white" : "text-white/80"
               }`}
             >
               Tjänster
+              <svg
+                className={`w-3 h-3 transition-transform duration-200 ${
+                  servicesOpen ? 'rotate-180' : 'rotate-0'
+                }`}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
+              </svg>
             </summary>
             <div className="absolute top-full left-0 mt-2 min-w-[220px] bg-[#0A0A0A]/90 backdrop-blur-md border border-white/10 rounded-md shadow-lg py-2 z-50">
               <Link
                 href="/services/audit"
+                onClick={() => {
+                  if (servicesDetailsRef.current) {
+                    servicesDetailsRef.current.open = false;
+                  }
+                }}
                 className="block px-4 py-2 text-sm text-white/80 hover:text-white hover:bg-white/5 transition-colors"
               >
                 Förstudie (Audit)
               </Link>
               <Link
                 href="/services/custom-build"
+                onClick={() => {
+                  if (servicesDetailsRef.current) {
+                    servicesDetailsRef.current.open = false;
+                  }
+                }}
                 className="block px-4 py-2 text-sm text-white/80 hover:text-white hover:bg-white/5 transition-colors"
               >
                 Skräddarsydd Automation
