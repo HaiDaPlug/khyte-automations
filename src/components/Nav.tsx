@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -34,9 +34,6 @@ export default function Nav() {
   const [open, setOpen] = useState(false);
   const isMobile = useIsMobile(768);
 
-  // Ref and state for the services dropdown
-  const servicesDetailsRef = useRef<HTMLDetailsElement>(null);
-  const [servicesOpen, setServicesOpen] = useState(false);
 
   // Close drawer on route change
   useEffect(() => {
@@ -66,65 +63,6 @@ export default function Nav() {
     return () => document.removeEventListener("keydown", handleEscape);
   }, [open]);
 
-  // Sync native details state with React state for chevron rotation
-  useEffect(() => {
-    const details = servicesDetailsRef.current;
-    if (!details) return;
-
-    const handleToggle = () => {
-      setServicesOpen(details.open);
-    };
-
-    details.addEventListener('toggle', handleToggle);
-    return () => details.removeEventListener('toggle', handleToggle);
-  }, []);
-
-  // Click-outside-to-close for services dropdown
-  useEffect(() => {
-    const handleClickOutside = (event: PointerEvent) => {
-      // Only act if dropdown is open
-      if (!servicesDetailsRef.current?.open) return;
-
-      // Check if click was outside the details element
-      const clickedInside = servicesDetailsRef.current.contains(event.target as Node);
-
-      if (!clickedInside) {
-        servicesDetailsRef.current.open = false;
-      }
-    };
-
-    // Use pointerdown (fires earlier than click) with capture phase
-    // IMPORTANT: Use boolean true for capture in BOTH add and remove (not object)
-    document.addEventListener('pointerdown', handleClickOutside, true);
-
-    return () => {
-      document.removeEventListener('pointerdown', handleClickOutside, true);
-    };
-  }, []); // Empty deps - always listening, checks state inside
-
-  // Escape key to close services dropdown
-  useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && servicesDetailsRef.current?.open) {
-        servicesDetailsRef.current.open = false;
-        // Optional: return focus to summary for better UX
-        servicesDetailsRef.current.querySelector('summary')?.focus();
-      }
-    };
-
-    document.addEventListener('keydown', handleEscape);
-
-    return () => {
-      document.removeEventListener('keydown', handleEscape);
-    };
-  }, []);
-
-  // Close dropdown on route change (polish)
-  useEffect(() => {
-    if (servicesDetailsRef.current?.open) {
-      servicesDetailsRef.current.open = false;
-    }
-  }, [pathname]);
 
   const handleCalendlyClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -136,7 +74,7 @@ export default function Nav() {
   return (
     <>
     <nav className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-full max-w-[94%] md:max-w-[1150px]">
-      <div className="relative flex items-center justify-between px-4 sm:px-8 py-3 rounded-full bg-[#0A0A0A]/60 backdrop-blur-md border border-white/10 shadow-lg shadow-black/20">
+      <div className="relative flex items-center justify-between px-4 sm:px-8 py-3 rounded-full bg-[#f4f1ef]/80 backdrop-blur-md border border-[rgba(58,51,48,0.12)] shadow-lg shadow-black/10">
         {/* Logo - Left (h-14, natural fit in taller container) */}
         <Link
           href="/"
@@ -156,71 +94,34 @@ export default function Nav() {
         <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-6 text-base font-semibold tracking-[-0.02em]">
           <Link
             href="/cases"
-            className={`transition-colors duration-200 hover:text-white ${
-              pathname === "/cases" ? "text-white" : "text-white/80"
+            className={`transition-colors duration-200 hover:text-[#3A3330] ${
+              pathname === "/cases" ? "text-[#3A3330]" : "text-[#9C8E82]"
             }`}
           >
             Case
           </Link>
           <Link
             href="/about"
-            className={`transition-colors duration-200 hover:text-white ${
-              pathname === "/about" ? "text-white" : "text-white/80"
+            className={`transition-colors duration-200 hover:text-[#3A3330] ${
+              pathname === "/about" ? "text-[#3A3330]" : "text-[#9C8E82]"
             }`}
           >
             Om oss
           </Link>
 
-          {/* Tjänster dropdown */}
-          <details ref={servicesDetailsRef} className="relative group">
-            <summary
-              className={`cursor-pointer list-none transition-colors duration-200 hover:text-white flex items-center gap-1 ${
-                pathname.startsWith("/services") ? "text-white" : "text-white/80"
-              }`}
-            >
-              Tjänster
-              <svg
-                className={`w-3 h-3 transition-transform duration-200 ${
-                  servicesOpen ? 'rotate-180' : 'rotate-0'
-                }`}
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                aria-hidden="true"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
-              </svg>
-            </summary>
-            <div className="absolute top-full left-0 mt-2 min-w-[220px] bg-[#0A0A0A]/90 backdrop-blur-md border border-white/10 rounded-md shadow-lg py-2 z-50">
-              <Link
-                href="/services/audit"
-                onClick={() => {
-                  if (servicesDetailsRef.current) {
-                    servicesDetailsRef.current.open = false;
-                  }
-                }}
-                className="block px-4 py-2 text-sm text-white/80 hover:text-white hover:bg-white/5 transition-colors"
-              >
-                Förstudie (Audit)
-              </Link>
-              <Link
-                href="/services/custom-build"
-                onClick={() => {
-                  if (servicesDetailsRef.current) {
-                    servicesDetailsRef.current.open = false;
-                  }
-                }}
-                className="block px-4 py-2 text-sm text-white/80 hover:text-white hover:bg-white/5 transition-colors"
-              >
-                Skräddarsydd Automation
-              </Link>
-            </div>
-          </details>
+          <Link
+            href="/services"
+            className={`transition-colors duration-200 hover:text-[#3A3330] ${
+              pathname.startsWith("/services") ? "text-[#3A3330]" : "text-[#9C8E82]"
+            }`}
+          >
+            Tjänster
+          </Link>
 
           <Link
             href="/contact"
-            className={`transition-colors duration-200 hover:text-white ${
-              pathname === "/contact" ? "text-white" : "text-white/80"
+            className={`transition-colors duration-200 hover:text-[#3A3330] ${
+              pathname === "/contact" ? "text-[#3A3330]" : "text-[#9C8E82]"
             }`}
           >
             Kontakt
@@ -231,7 +132,7 @@ export default function Nav() {
         <div className="hidden md:flex items-center">
           <button
             onClick={handleCalendlyClick}
-            className="bg-white text-black text-sm font-bold px-6 py-2.5 rounded-full hover:bg-gray-100 transition-all shadow-sm hover:shadow-md shrink-0 cursor-pointer whitespace-nowrap"
+            className="bg-[#D4622B] text-white text-sm font-bold px-6 py-2.5 rounded-full hover:bg-[#C0541F] transition-all shadow-sm hover:shadow-md shrink-0 cursor-pointer whitespace-nowrap"
           >
             Boka kostnadsfritt samtal
           </button>
@@ -242,11 +143,11 @@ export default function Nav() {
           <button
             type="button"
             onClick={() => setOpen(true)}
-            className="inline-flex items-center justify-center rounded-full border border-white/15 bg-white/5 hover:bg-white/10 transition w-10 h-10"
+            className="inline-flex items-center justify-center rounded-full border border-[rgba(58,51,48,0.12)] bg-[rgba(58,51,48,0.05)] hover:bg-[rgba(58,51,48,0.08)] transition w-10 h-10"
             aria-label="Öppna meny"
             aria-expanded={open}
           >
-            <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 text-[#3A3330]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           </button>
@@ -261,18 +162,18 @@ export default function Nav() {
         <button
           type="button"
           aria-label="Stäng meny"
-          className="fixed inset-0 bg-black/60 z-40"
+          className="fixed inset-0 bg-[rgba(58,51,48,0.40)] z-40"
           onClick={() => setOpen(false)}
         />
         {/* Panel - glass blur matching pill aesthetic */}
-        <div className="fixed top-0 right-0 h-full w-72 bg-[#0A0A0A]/80 backdrop-blur-md border-l border-white/10 z-50 flex flex-col">
+        <div className="fixed top-0 right-0 h-full w-72 bg-[#f4f1ef]/95 backdrop-blur-md border-l border-[rgba(58,51,48,0.12)] z-50 flex flex-col">
           {/* Header */}
-          <div className="flex items-center justify-between px-6 py-4 border-b border-white/10">
-            <span className="text-white font-semibold">Meny</span>
+          <div className="flex items-center justify-between px-6 py-4 border-b border-[rgba(58,51,48,0.12)]">
+            <span className="text-[#3A3330] font-semibold">Meny</span>
             <button
               type="button"
               onClick={() => setOpen(false)}
-              className="p-2 text-white/80 hover:text-white"
+              className="p-2 text-[#9C8E82] hover:text-[#3A3330]"
               aria-label="Stäng meny"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -282,36 +183,19 @@ export default function Nav() {
           </div>
           {/* Links */}
           <nav className="flex flex-col px-6 py-4 gap-4">
-            <Link href="/cases" className="text-white/80 hover:text-white text-lg" onClick={() => setOpen(false)}>Case</Link>
-            <Link href="/about" className="text-white/80 hover:text-white text-lg" onClick={() => setOpen(false)}>Om oss</Link>
+            <Link href="/cases" className="text-[#9C8E82] hover:text-[#3A3330] text-lg" onClick={() => setOpen(false)}>Case</Link>
+            <Link href="/about" className="text-[#9C8E82] hover:text-[#3A3330] text-lg" onClick={() => setOpen(false)}>Om oss</Link>
 
-            {/* Tjänster parent + sublinks */}
-            <div className="flex flex-col gap-2">
-              <span className="text-white/60 text-sm font-semibold uppercase tracking-wide">Tjänster</span>
-              <Link
-                href="/services/audit"
-                className="text-white/80 hover:text-white text-base pl-4"
-                onClick={() => setOpen(false)}
-              >
-                Förstudie (Audit)
-              </Link>
-              <Link
-                href="/services/custom-build"
-                className="text-white/80 hover:text-white text-base pl-4"
-                onClick={() => setOpen(false)}
-              >
-                Skräddarsydd Automation
-              </Link>
-            </div>
+            <Link href="/services" className="text-[#9C8E82] hover:text-[#3A3330] text-lg" onClick={() => setOpen(false)}>Tjänster</Link>
 
-            <Link href="/contact" className="text-white/80 hover:text-white text-lg" onClick={() => setOpen(false)}>Kontakt</Link>
+            <Link href="/contact" className="text-[#9C8E82] hover:text-[#3A3330] text-lg" onClick={() => setOpen(false)}>Kontakt</Link>
           </nav>
           {/* CTA */}
-          <div className="mt-auto px-6 py-6 border-t border-white/10">
+          <div className="mt-auto px-6 py-6 border-t border-[rgba(58,51,48,0.12)]">
             <Link
               href="/contact"
               onClick={() => setOpen(false)}
-              className="block w-full text-center bg-white text-black font-bold py-3 rounded-full"
+              className="block w-full text-center bg-[#D4622B] text-white font-bold py-3 rounded-full hover:bg-[#C0541F]"
             >
               Kontakta oss
             </Link>

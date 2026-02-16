@@ -1,16 +1,15 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Container from "@/components/Container";
-import Button from "@/components/Button";
+import CalendlyButton from "@/components/CalendlyButton";
 
 export const metadata: Metadata = {
-  title: "Tjänster & Erbjudande",
-  description: "Från förstudie till fullskalig automation. Se våra priser och processer.",
+  title: "Tjänster – Automationer för svenska företag",
+  description: "Vi automatiserar manuella processer. Transparent prissättning, fast pris, ingen vendor lock-in.",
+  alternates: {
+    canonical: "/services",
+  },
 };
-
-// Pricing Constants - Easily adjustable
-const AUDIT_PRICE = "{AUDIT_PRICE_SEK}";
-const BUILD_PRICE_FROM = "{BUILD_FROM_SEK}";
 
 export default function ServicesPage() {
   return (
@@ -19,231 +18,388 @@ export default function ServicesPage() {
 
         {/* 1. HERO SECTION */}
         <div className="flex flex-col items-center text-center mb-24 md:mb-32">
-          <h1 className="text-hero text-5xl md:text-7xl text-white mb-8 max-w-[800px]">
-            Vi bygger bort manuellt arbete.
+          <h1 className="text-hero text-5xl md:text-7xl text-[var(--color-text)] mb-8 max-w-[800px]">
+            Våra tjänster
           </h1>
-          <p className="text-xl text-white/60 max-w-[540px] leading-relaxed">
-            Från kaotiska processer till självgående system. Välj hur du vill börja samarbetet.
+          <p className="text-xl text-[var(--color-text-body)] max-w-[640px] leading-relaxed mb-10">
+            Vi bygger automationer som tar hand av manuellt arbete. Ni äger koden, ni bestämmer takten.
           </p>
-        </div>
-
-        {/* 2. TWO OFFERS GRID */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-32">
-
-          {/* Card A: Förstudie (Audit) */}
-          <div className="bg-[var(--color-card-bg)] border border-[var(--color-border)] rounded-[4px] p-8 md:p-12 flex flex-col h-full hover:border-white/20 transition-colors duration-300">
-            <div className="mb-8">
-              <span className="text-label text-white/40 mb-4 block">Insteg</span>
-              <h2 className="text-3xl font-bold text-white tracking-tight mb-2">
-                Förstudie & Blueprint
-              </h2>
-              <div className="text-xl text-white font-medium">
-                {AUDIT_PRICE} <span className="text-base text-white/40 font-normal">exkl. moms</span>
-              </div>
-            </div>
-
-            <p className="text-white/60 text-[15px] leading-relaxed mb-8 min-h-[3rem]">
-              Vi kartlägger era processer och designar lösningen tekniskt innan vi bygger en enda rad kod.
-            </p>
-
-            <ul className="flex flex-col gap-3 mb-10 flex-grow">
-              {[
-                "Genomgång av nuvarande tech-stack",
-                "Identifiering av flaskhalsar",
-                "Teknisk lösningsarkitektur (Blueprint)",
-                "Fast prisoffert för implementation"
-              ].map((item, i) => (
-                <li key={i} className="flex items-start gap-3 text-[15px] text-white/80">
-                  <span className="mt-1.5 w-1 h-1 rounded-full bg-white flex-shrink-0" />
-                  {item}
-                </li>
-              ))}
-            </ul>
-
-            <div className="mt-auto">
-              <div className="bg-white/[0.03] border border-white/5 rounded-[4px] p-4 mb-6">
-                <p className="text-xs text-white/60 font-medium">
-                  <span className="text-white font-bold">Garanti:</span> Beloppet krediteras till 100% om ni väljer att gå vidare med implementationen.
-                </p>
-              </div>
-              <div className="flex flex-col gap-3">
-                 {/* Secondary button style to keep audit low-pressure */}
-                 <Button variant="secondary" href="/contact" className="w-full sm:w-auto">
-                   Boka förstudie
-                 </Button>
-                 <Link href="/services/audit" className="text-sm text-white/60 hover:text-white underline underline-offset-4 text-center transition-colors duration-200">
-                   Läs mer om förstudien →
-                 </Link>
-              </div>
-            </div>
-          </div>
-
-          {/* Card B: Implementation (Build) */}
-          <div className="bg-[var(--color-card-bg)] border border-[var(--color-border)] rounded-[4px] p-8 md:p-12 flex flex-col h-full hover:border-white/20 transition-colors duration-300 relative overflow-hidden">
-            {/* Subtle "glow" effect for the core offer */}
-            <div className="absolute top-0 right-0 w-32 h-32 bg-white/[0.02] blur-3xl rounded-full -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
-
-            <div className="mb-8 relative z-10">
-              <span className="text-label text-white mb-4 block">Kärnaffär</span>
-              <h2 className="text-3xl font-bold text-white tracking-tight mb-2">
-                Skräddarsydd Automation
-              </h2>
-              <div className="text-xl text-white font-medium">
-                Från {BUILD_PRICE_FROM} <span className="text-base text-white/40 font-normal">beroende på omfattning</span>
-              </div>
-            </div>
-
-            <p className="text-white/60 text-[15px] leading-relaxed mb-8 min-h-[3rem] relative z-10">
-              Vi bygger, testar och driftsätter er infrastruktur. Nyckelfärdigt system som ägs av er.
-            </p>
-
-            <ul className="flex flex-col gap-3 mb-10 flex-grow relative z-10">
-              {[
-                "Utveckling i n8n / Python / AI-modeller",
-                "Integrationer mot era system (CRM, ERP)",
-                "Omfattande testning & error handling",
-                "Överlämning och utbildning"
-              ].map((item, i) => (
-                <li key={i} className="flex items-start gap-3 text-[15px] text-white/80">
-                  <span className="mt-1.5 w-1 h-1 rounded-full bg-white flex-shrink-0" />
-                  {item}
-                </li>
-              ))}
-            </ul>
-
-            <div className="mt-auto relative z-10">
-              <div className="bg-transparent p-4 mb-6 border border-transparent">
-                 {/* Empty spacer to align buttons with left card if guarantee text is long,
-                     or generic trust text */}
-                 <p className="text-xs text-white/40 font-medium">
-                   Alltid fast pris baserat på förstudien. Inga löpande timmar.
-                 </p>
-              </div>
-              <div className="flex flex-col gap-3">
-                <Button variant="secondary" href="/cases" className="w-full sm:w-auto">
-                  Se nyliga case
-                </Button>
-                <Link href="/services/custom-build" className="text-sm text-white/60 hover:text-white underline underline-offset-4 text-center transition-colors duration-200">
-                  Läs mer om automation →
-                </Link>
-              </div>
-            </div>
+          <div className="flex flex-col sm:flex-row gap-4 items-center">
+            <CalendlyButton variant="primary">
+              Boka intro (15 min)
+            </CalendlyButton>
+            <a
+              href="#sa-jobbar-vi"
+              className="text-[var(--color-muted)] hover:text-[var(--color-text)] text-base underline underline-offset-4 transition-colors"
+            >
+              Se hur vi jobbar
+            </a>
           </div>
         </div>
 
-        {/* 3. PROCESS SECTION */}
-        <div className="border-t border-white/10 pt-24 mb-32">
-          <div className="mb-16">
-            <h3 className="text-label text-white mb-2">Processen</h3>
-            <h2 className="text-3xl font-bold text-white tracking-tight">Så går det till</h2>
+        {/* 2. VAD VI AUTOMATISERAR */}
+        <div className="mb-32">
+          <div className="mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-[var(--color-text)] tracking-tight mb-4">
+              Vad vi automatiserar
+            </h2>
+            <p className="text-[var(--color-text-body)] text-lg max-w-2xl">
+              Typ av processer vi brukar ta hand av.
+            </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-12 md:gap-8 relative">
-            {/* Connecting line (Desktop only) */}
-            <div className="hidden md:block absolute top-[2.25rem] left-0 w-full h-[1px] bg-white/10 -z-10" />
-
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
-              {
-                step: "01",
-                title: "Intro",
-                desc: "Vi tar ett kort samtal för att se om vi är en bra match tekniskt och kulturellt. (Gratis)"
-              },
-              {
-                step: "02",
-                title: "Audit",
-                desc: "Vi dyker ner i verksamheten, hittar problemen och ritar kartan för lösningen."
-              },
-              {
-                step: "03",
-                title: "Bygge",
-                desc: "Vi utvecklar automationerna i iterationer. Ni godkänner varje delsteg."
-              },
-              {
-                step: "04",
-                title: "Drift",
-                desc: "Systemet överlämnas. Vi säkerställer att teamet förstår hur det används."
-              }
+              { label: "Leads", desc: "Hämta och förädla data från Allabolag och andra källorna" },
+              { label: "CRM", desc: "Synka och uppdatera poster mellan era system" },
+              { label: "Uppföljning", desc: "Automatisk e-post research och uppföljning på leads" },
+              { label: "Bokföring", desc: "Faktura- och bokföringsflöden som sköter sig själv" },
+              { label: "Rapporter", desc: "Sammanställning och rapportgenerering från era data" },
+              { label: "Monitoring", desc: "Automatiska alerts och notifikationer vid fel eller händelser" },
+              { label: "Dokumenter", desc: "Förädling och hantering av filer och dokument" },
+              { label: "Validering", desc: "Kvalitets- och datakontroll innan data når nästa steg" },
             ].map((item, i) => (
-              <div key={i} className="flex flex-col items-start bg-[var(--color-bg)] pr-4">
-                 <div className="text-xs font-bold text-white/30 mb-6 bg-[var(--color-bg)] pr-2">
-                   {item.step}
-                 </div>
-                 <h4 className="text-xl font-bold text-white mb-3">
-                   {item.title}
-                 </h4>
-                 <p className="text-[15px] text-white/60 leading-relaxed">
-                   {item.desc}
-                 </p>
+              <div
+                key={i}
+                className="bg-[var(--color-card-bg)] border border-[var(--color-border)] rounded-[4px] p-6 hover:border-[rgba(58,51,48,0.20)] transition-colors"
+              >
+                <p className="text-label mb-2">{item.label}</p>
+                <p className="text-[var(--color-text-body)] text-[15px] leading-relaxed">{item.desc}</p>
               </div>
             ))}
           </div>
         </div>
 
-        {/* 4. QUALIFICATION / COMPARISON */}
-        <div className="bg-[var(--color-card-bg)] border border-[var(--color-border)] rounded-[4px] p-8 md:p-12 mb-32">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-            <div className="lg:col-span-4">
-              <h3 className="text-2xl font-bold text-white tracking-tight mb-4">
-                Vad ingår i ett samtal?
-              </h3>
-              <p className="text-white/60 text-[15px] leading-relaxed">
-                Vi är måna om att inte sälja på er något ni inte behöver. Därför skiljer vi tydligt på det första samtalet och en betald förstudie.
-              </p>
+        {/* 3. SÅ JOBBAR VI */}
+        <div id="sa-jobbar-vi" className="border-t border-[var(--color-border)] pt-24 mb-32">
+          <div className="mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-[var(--color-text)] tracking-tight mb-4">
+              Så jobbar vi
+            </h2>
+            <p className="text-[var(--color-text-body)] text-lg max-w-2xl">
+              Vi tar ett projekt i taget. Inga parallella uppdrag, inga halv-implementationer. Er automation får full fokus från start till mål.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {[
+              {
+                step: "01",
+                title: "Kvalificeringssamtal (gratis)",
+                desc: "Ett 15-minuters intro där vi diskuterar era flöden på hög nivå. Inga slides, ingen försäljning – vi avgör tillsammans om vi kan hjälpa er."
+              },
+              {
+                step: "02",
+                title: "Förstudie (fast pris)",
+                desc: "Vi går in i era system, kartlägger flöden, och designar den tekniska lösningen. Ni får en blueprint och ett fast pris för implementation. Priset diskuteras vid kontakt."
+              },
+              {
+                step: "03",
+                title: "Implementation (fast pris efter förstudie)",
+                desc: "Vi bygger automationen i iterationer. Ni godkänner varje milestone innan vi går vidare. Transparenta kostnader, inga överraskningar."
+              },
+              {
+                step: "04",
+                title: "Överlämning & Drift",
+                desc: "Vi tränar ert team, överlämnar dokumentation, och ger er full äganderätt. Ni får också en supportperiod där vi fixar eventuella buggar."
+              }
+            ].map((item, i) => (
+              <div key={i} className="bg-[var(--color-card-bg)] border border-[var(--color-border)] rounded-[4px] p-8">
+                <div className="text-xs font-bold text-[var(--color-muted)] mb-4">
+                  {item.step}
+                </div>
+                <h3 className="text-xl font-bold text-[var(--color-text)] mb-3">
+                  {item.title}
+                </h3>
+                <p className="text-[15px] text-[var(--color-text-body)] leading-relaxed">
+                  {item.desc}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* 4. SKRÄDDARSYDD AUTOMATION */}
+        <div className="border-t border-[var(--color-border)] pt-24 mb-32">
+          <div className="mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-[var(--color-text)] tracking-tight mb-4">
+              Skräddarsydd automation
+            </h2>
+            <p className="text-[var(--color-text-body)] text-lg max-w-2xl">
+              Vi bygger, integrar och levererar automationer anpassade till era system och flöden. Alltid ett projekt i taget – alltid skräddarsydda, alltid med fast pris.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* Price card */}
+            <div className="bg-[var(--color-card-bg)] border border-[rgba(58,51,48,0.25)] rounded-[4px] p-8">
+              <div className="text-3xl font-bold text-[var(--color-text)] mb-1">25 000 – 120 000 kr</div>
+              <p className="text-[var(--color-text-body)] text-sm mb-6">Fast pris efter scope</p>
+              <p className="text-[var(--color-muted)] text-xs font-bold uppercase tracking-wider mb-3">Vad som påverkar priset</p>
+              <ul className="space-y-2">
+                {[
+                  "Antal system och integrationspunkter",
+                  "Datakvalitet i era nuläge",
+                  "Antal steg i flödet",
+                  "Edge cases och undantagsfall",
+                  "Godkännandesteg och inblandade parter",
+                ].map((item, i) => (
+                  <li key={i} className="text-[15px] text-[var(--color-text-body)] leading-relaxed">– {item}</li>
+                ))}
+              </ul>
             </div>
 
-            <div className="lg:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 pt-2">
-              {/* Intro Call */}
-              <div>
-                <h4 className="text-base font-bold text-white mb-4 flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-white/20"></span>
-                  Kvalificeringssamtal (0 kr)
-                </h4>
-                <ul className="space-y-3">
-                  <li className="text-[14px] text-white/60">
-                    <strong className="text-white/90">Syfte:</strong> Att avgöra om vi kan hjälpa er.
-                  </li>
-                  <li className="text-[14px] text-white/60">
-                    Vi diskuterar era problem på en hög nivå.
-                  </li>
-                  <li className="text-[14px] text-white/60">
-                    Ingen teknisk rådgivning eller lösningsskiss.
-                  </li>
-                </ul>
-              </div>
-
-              {/* Audit */}
-              <div>
-                <h4 className="text-base font-bold text-white mb-4 flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-white"></span>
-                  Förstudie ({AUDIT_PRICE})
-                </h4>
-                <ul className="space-y-3">
-                  <li className="text-[14px] text-white/60">
-                    <strong className="text-white/90">Syfte:</strong> Att designa den exakta lösningen.
-                  </li>
-                  <li className="text-[14px] text-white/60">
-                    Vi går in i era system och analyserar dataflöden.
-                  </li>
-                  <li className="text-[14px] text-white/60">
-                    Levereras som en PDF-blueprint med offert.
-                  </li>
-                </ul>
+            {/* What's included card */}
+            <div className="bg-[var(--color-card-bg)] border border-[var(--color-border)] rounded-[4px] p-8">
+              <p className="text-[var(--color-muted)] text-xs font-bold uppercase tracking-wider mb-3">Vad ingår</p>
+              <ul className="space-y-2">
+                {[
+                  "Kickoff och scope-definition",
+                  "Byggande av automationen",
+                  "Testing och quality check",
+                  "Grundläggande logging och synlighet",
+                  "Dokumentation",
+                  "Kort supportfönster efter leverans",
+                ].map((item, i) => (
+                  <li key={i} className="text-[15px] text-[var(--color-text-body)] leading-relaxed">– {item}</li>
+                ))}
+              </ul>
+              <div className="mt-8">
+                <CalendlyButton variant="primary">Diskutera ert projekt</CalendlyButton>
               </div>
             </div>
           </div>
         </div>
 
-        {/* 5. CLOSING CTA */}
-        <div className="flex flex-col items-center text-center">
-          <h2 className="text-3xl font-bold text-white tracking-tight mb-6">
-            Osäker på vad ni behöver?
-          </h2>
-          <p className="text-white/60 text-lg mb-8">
-            Börja med ett intro, så tar vi det därifrån.
+        {/* 5. SUPPORT & FÖRBÄTTRING */}
+        <div className="border-t border-[var(--color-border)] pt-24 mb-32">
+          <div className="mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-[var(--color-text)] tracking-tight mb-4">
+              Support & förbättring (valfritt)
+            </h2>
+            <p className="text-[var(--color-text-body)] text-lg max-w-2xl">
+              Efter leverans kan ni köra själva — eller så hjälper vi er hålla flödet stabilt och göra små förbättringar när processen ändras.
+            </p>
+          </div>
+
+          <div className="bg-[var(--color-card-bg)] border border-[var(--color-border)] rounded-[4px] p-8">
+            <p className="text-[var(--color-muted)] text-xs font-bold uppercase tracking-wider mb-3">Vad ingår i support</p>
+            <ul className="space-y-2">
+              {[
+                "Justeringar när er process ändras",
+                "Felsökning om något stannar upp",
+                "Små förbättringar baserade på verklig användning",
+                "Månatlig avstämning och grundläggande monitoring",
+                "Dokumentationsuppdateringar vid ändrat flöde",
+                "Mindre tillägg kan göras vid behov",
+              ].map((item, i) => (
+                <li key={i} className="text-[15px] text-[var(--color-text-body)] leading-relaxed">– {item}</li>
+              ))}
+            </ul>
+          </div>
+
+          <p className="text-[var(--color-muted)] text-sm mt-6">
+            Prissätts efter leverans beroende på omfattning — vi sätter ett fast månadsbelopp efter en kort avstämning.
           </p>
-          <Button href="/contact" variant="primary">
-            Boka intro (15 min)
-          </Button>
+          <div className="mt-4">
+            <Link
+              href="/contact"
+              className="text-[var(--color-muted)] hover:text-[var(--color-text)] text-base underline underline-offset-4 transition-colors"
+            >
+              Prata om support
+            </Link>
+          </div>
+        </div>
+
+        {/* 6. AUTOMATIONSRESA */}
+        <div className="border-t border-[var(--color-border)] pt-24 mb-32">
+          <div className="mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-[var(--color-text)] tracking-tight mb-4">
+              Automationsresa (3 / 6 / 12 månader)
+            </h2>
+            <p className="text-[var(--color-text-body)] text-lg max-w-2xl">
+              För team som vill jobba stegvis över tid. Vi bygger en automation i taget, mäter effekten, och fortsätter där det ger mest värde.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[
+              {
+                duration: "3 månader",
+                subtitle: "Snabba vinster",
+                bullets: [
+                  "Identifiera och bygga er första automation",
+                  "Kartläggning av var det ger snabbast effekt",
+                  "Uppföljning och justeringar efter första veckor i drift",
+                ],
+              },
+              {
+                duration: "6 månader",
+                subtitle: "Systematisera",
+                bullets: [
+                  "Ofta 2–3 automationer på plats",
+                  "Systematisk uppföljning på varje flöde",
+                  "Nästa steg baserat på verklig data",
+                  "Dokumentation och teamutbildning löpande",
+                ],
+              },
+              {
+                duration: "12 månader",
+                subtitle: "Långsiktig partner",
+                bullets: [
+                  "En hel automationssvit på plats",
+                  "Löpande optimering och nya flöden",
+                  "En sak i taget — tydligt scope hela vägen",
+                  "Vi säger om det inte är värt att bygga",
+                ],
+              },
+            ].map((tier, i) => (
+              <div
+                key={i}
+                className="bg-[var(--color-card-bg)] border border-[var(--color-border)] rounded-[4px] p-8 hover:border-[rgba(58,51,48,0.20)] transition-colors"
+              >
+                <h3 className="text-xl font-bold text-[var(--color-text)] mb-1">{tier.duration}</h3>
+                <p className="text-label mb-3">{tier.subtitle}</p>
+                <ul className="space-y-2 mt-4">
+                  {tier.bullets.map((b, j) => (
+                    <li key={j} className="text-[15px] text-[var(--color-text-body)] leading-relaxed">– {b}</li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+
+          <p className="text-[var(--color-muted)] text-sm mt-8">
+            Fast månadsupplägg efter scope — vi föreslår ett upplägg efter en kort genomgång.
+          </p>
+          <div className="mt-4">
+            <Link
+              href="/contact"
+              className="text-[var(--color-muted)] hover:text-[var(--color-text)] text-base underline underline-offset-4 transition-colors"
+            >
+              Prata om en automationsresa
+            </Link>
+          </div>
+        </div>
+
+        {/* 7. RESULTAT / VAD NI BRUKAR FÅ */}
+        <div className="bg-[var(--color-card-bg)] border border-[var(--color-border)] rounded-[4px] p-8 md:p-12 mb-32">
+          <div className="mb-8">
+            <h2 className="text-3xl md:text-4xl font-bold text-[var(--color-text)] tracking-tight mb-4">
+              Resultat / vad ni brukar få
+            </h2>
+            <p className="text-[var(--color-text-body)] text-lg max-w-2xl">
+              Typiska resultat. Alla siffror beror på er specifika process – vi är alltid öppna med vad som är realistiskt.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+              <div className="text-3xl md:text-4xl font-bold text-[var(--color-text)] mb-2">5–20h/vecka</div>
+              <p className="text-[15px] text-[var(--color-text-body)]">
+                Sparade timmar per automation, beroende på process och volym.
+              </p>
+            </div>
+            <div>
+              <div className="text-3xl md:text-4xl font-bold text-[var(--color-text)] mb-2">Färre fel</div>
+              <p className="text-[15px] text-[var(--color-text-body)]">
+                Automation följer regler konsekvent, men resultaten beror på datakvalitet.
+              </p>
+            </div>
+            <div>
+              <div className="text-3xl md:text-4xl font-bold text-[var(--color-text)] mb-2">2–6 veckor</div>
+              <p className="text-[15px] text-[var(--color-text-body)]">
+                Från förstudie till drift, beroende på komplexitet och integrationskrav.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* 8. FAQ */}
+        <div className="mb-32">
+          <div className="mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-[var(--color-text)] tracking-tight mb-4">
+              Vanliga frågor
+            </h2>
+            <p className="text-[var(--color-text-body)] text-lg max-w-2xl">
+              Svar på frågor vi får ofta.
+            </p>
+          </div>
+
+          <div>
+            {[
+              {
+                q: "Varför ska vi betala för en förstudie?",
+                a: "Förstudien är djup teknisk analys och design – inte ett försäljningssamtal. Vi går in i era system, kartlägger dataflöden, och ritar en exakt lösning. Det tar tid och kräver expertis. Beloppet ger er en konkret plan och ett fast pris för bygget."
+              },
+              {
+                q: "Hur lång tid tar en implementation?",
+                a: "Det beror på komplexitet. Små automationer kan vara klara på 2-3 veckor, större projekt tar 4-6 veckor. Vi ger er en tidsplan i förstudien så ni vet exakt vad som gäller."
+              },
+              {
+                q: "Vad händer om det inte är värt att automatisera?",
+                a: "Då säger vi det direkt. Vi säljer inte på er något som inte ger värde. Om ROI inte är tydlig eller processen är för komplex, är vi öppna med det redan i kvalificeringssamtalet."
+              },
+              {
+                q: "Vilka system kan ni jobba med?",
+                a: "De flesta moderna verktyg med API:er – CRM (HubSpot, Pipedrive), bokföring (Fortnox, Visma), e-post (Gmail, Outlook), databaser, och webbapplikationer. Om systemet har ett API eller kan skrapas, kan vi ofta integrera det."
+              },
+              {
+                q: "Vad ingår efter leverans?",
+                a: "Ni får dokumentation, utbildning för ert team, och en supportperiod där vi fixar buggar kostnadsfritt. Ni äger koden och kan drifta allt själva. Om ni vill ha löpande support senare kan vi diskutera det separat."
+              },
+              {
+                q: "Kan vi bara köpa implementationen utan förstudie?",
+                a: "Nej. Förstudien är avgörande för att förstå era system och ge ett fast pris. Utan den riskerar vi att bygga fel sak eller att kostnaderna spårar ur. Vi vill inte ta den risken – och ni bör inte heller göra det."
+              },
+              {
+                q: "Hur mycket kostar det typiskt?",
+                a: "Vi jobbar med fast pris i intervallet 25 000–120 000 kr, beroende på scope. Exakt pris bestäms i förstudien – så ni vet vad det kostar innan ni bestämmer er."
+              },
+              {
+                q: "Vem äger automationen efteråt?",
+                a: "Ni gör. All kod, all dokumentation, alla inloggningsuppgifter. Ni kan drifta, ändra, och vidareutveckla systemet själva. Ingen vendor lock-in."
+              }
+            ].map((item, i, arr) => (
+              <details
+                key={i}
+                className={`${i !== arr.length - 1 ? 'border-b border-[var(--color-border)]' : ''}`}
+              >
+                <summary className="flex justify-between items-center py-10 cursor-pointer list-none focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(58,51,48,0.30)] rounded">
+                  <span className="text-lg font-bold text-[var(--color-text)]">{item.q}</span>
+                  <span className="faq-chevron transition-transform duration-200 text-[var(--color-muted)] flex-shrink-0 ml-4">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                      <path d="M4 6L8 10L12 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </span>
+                </summary>
+                <div className="pb-10">
+                  <p className="text-[15px] text-[var(--color-text-body)] leading-relaxed">{item.a}</p>
+                </div>
+              </details>
+            ))}
+          </div>
+        </div>
+
+        {/* 9. CTA SECTION */}
+        <div className="flex flex-col items-center text-center">
+          <h2 className="text-3xl md:text-4xl font-bold text-[var(--color-text)] tracking-tight mb-6">
+            Redo att eliminera manuellt arbete?
+          </h2>
+          <p className="text-[var(--color-text-body)] text-lg mb-8 max-w-xl">
+            Visa oss ett flöde – vi säger om vi kan hjälpa.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 items-center">
+            <CalendlyButton variant="primary">
+              Boka intro (15 min)
+            </CalendlyButton>
+            <Link
+              href="/cases"
+              className="text-[var(--color-muted)] hover:text-[var(--color-text)] text-base underline underline-offset-4 transition-colors"
+            >
+              Se case
+            </Link>
+          </div>
         </div>
 
       </Container>

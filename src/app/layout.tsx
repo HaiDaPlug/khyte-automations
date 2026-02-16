@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { GeistSans } from "geist/font/sans";
 import "./globals.css";
 import Nav from "@/components/Nav";
+import PreFooterCTA from "@/components/PreFooterCTA";
 import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
@@ -111,7 +112,10 @@ export default function RootLayout({
       <body className="main-wrapper">
         <Nav />
         {children}
-        <Footer />
+        <div className="base-band">
+          <PreFooterCTA />
+          <Footer />
+        </div>
       </body>
     </html>
   );

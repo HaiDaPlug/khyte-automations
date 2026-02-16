@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Button from "@/components/Button";
-import CalendlyButton from "@/components/CalendlyButton";
 import CaseCard from "@/components/CaseCard";
 import Container from "@/components/Container";
 import { DnaWeaveSvg } from "@/components/DnaWeaveSvg";
@@ -113,8 +112,8 @@ export default function Home() {
         {/* Process Section */}
         <TimelineProcess />
 
-        {/* Footer CTA */}
-        <footer className="py-[100px] border-t border-[var(--color-border)]">
+        {/* Visual Section */}
+        <section className="py-[100px] border-t border-[var(--color-border)]">
           <div className="flex flex-col items-center text-center">
             <h2 className="text-5xl md:text-6xl font-semibold mb-4 text-[var(--color-text)] tracking-[-0.01em] leading-[1.2]">
               Redo att automatisera bort tråkiga uppgifter?
@@ -123,9 +122,6 @@ export default function Home() {
               Boka ett samtal så går vi igenom hur automation kan frigöra tid
               i din verksamhet.
             </p>
-            <CalendlyButton variant="primary">
-              Boka kostnadsfritt samtal
-            </CalendlyButton>
 
             <div className="mt-6 w-full flex justify-center">
               <DnaWeaveSvg
@@ -135,7 +131,7 @@ export default function Home() {
               />
             </div>
           </div>
-        </footer>
+        </section>
       </Container>
     </div>
   );

@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Container from "@/components/Container";
-import CalendlyButton from "@/components/CalendlyButton";
 
 export const metadata: Metadata = {
   title: "Automation Case – Verkliga resultat från säljautomation & research",
@@ -77,18 +76,6 @@ export default function Cases() {
                 </div>
               </article>
             ))}
-          </div>
-
-          {/* Bottom CTA */}
-          <div className="text-center pt-8 pb-20">
-            <p className="text-4xl md:text-5xl text-[var(--color-text)] mb-6 font-bold tracking-tight leading-[1.6]">
-              Vill du ha en liknande lösning?
-            </p>
-            <div className="mt-8">
-              <CalendlyButton variant="primary">
-                Kontakta oss
-              </CalendlyButton>
-            </div>
           </div>
         </main>
       </Container>

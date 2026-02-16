@@ -18,9 +18,9 @@ export default function Button({
     "inline-flex h-12 px-8 rounded-md text-base font-semibold whitespace-nowrap transition-all duration-200 cursor-pointer items-center justify-center active:scale-[0.98] no-underline";
 
   const variantStyles = {
-    primary: "bg-white text-black hover:bg-gray-200",
+    primary: "bg-[#D4622B] text-white hover:bg-[#C0541F]",
     secondary:
-      "bg-transparent border border-white/20 text-white hover:bg-white/10",
+      "bg-transparent border border-[rgba(58,51,48,0.20)] text-[#3A3330] hover:bg-[rgba(58,51,48,0.06)]",
   };
 
   const combinedClassName = `${baseStyles} ${variantStyles[variant]} ${className}`;

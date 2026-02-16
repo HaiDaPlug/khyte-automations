@@ -131,7 +131,7 @@ export default function Contact() {
                     </p>
                     <a
                       href="mailto:hai@khyteteam.com"
-                      className="text-xl text-white hover:text-white/80 transition-colors underline underline-offset-2"
+                      className="text-xl text-[var(--color-text)] hover:text-[var(--color-muted)] transition-colors underline underline-offset-2"
                     >
                       hai@khyteteam.com
                     </a>
@@ -143,7 +143,7 @@ export default function Contact() {
                     </p>
                     <a
                       href="tel:070-099 68 38"
-                      className="text-xl text-white hover:text-white/80 transition-colors underline underline-offset-2"
+                      className="text-xl text-[var(--color-text)] hover:text-[var(--color-muted)] transition-colors underline underline-offset-2"
                     >
                       070-099 68 38
                     </a>

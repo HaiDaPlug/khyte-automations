@@ -1,18 +1,39 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-bg: #0A0A0A;
-  --color-card-bg: #121212;
-  --color-text: #FFFFFF;
-  --color-text-body: rgba(255, 255, 255, 0.85);
-  --color-muted: rgba(255, 255, 255, 0.50);
-  --color-accent: #FFFFFF;
-  --color-border: rgba(255, 255, 255, 0.15);
+  --color-bg: #f4f1ef;
+  --color-card-bg: #EDEAE6;
+  --color-text: #3A3330;
+  --color-text-body: #5A4F48;
+  --color-muted: #9C8E82;
+  --color-accent: #E8833A;
+  --color-border: rgba(58, 51, 48, 0.12);
 
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
 
   --radius-sm: 4px;
   --shadow-soft: 0 18px 45px rgba(0, 0, 0, 0.08);
+
+  /* Warm palette (PreFooterCTA + footer fade) */
+  --color-warm-bg: #FBF7F2;
+  --color-warm-surface: #FFF1E6;
+  --color-warm-wash: #FFE2C6;
+  --color-warm-text: #1E1A16;
+  --color-warm-text-muted: #6B5F55;
+  --color-warm-accent: #E8833A;
+  --color-warm-accent-hover: #D4622B;
+  --color-warm-ink: #12100E;
+
+  /* Base band: shared background for PreFooter + Footer */
+  --base-band-bg: linear-gradient(
+    180deg,
+    #F5EDE3 0%,
+    #F5C070 28%,
+    #F0803A 52%,
+    #C04010 72%,
+    #6A1E06 88%,
+    #180C06 100%
+  );
 }
 
 @layer utilities {
@@ -27,7 +48,45 @@
     font-weight: 700;
     letter-spacing: 0.05em;
     text-transform: uppercase;
-    color: #FFFFFF;
+    color: var(--color-text);
+  }
+
+  .base-band {
+    position: relative;
+    width: min(1440px, calc(100% - 32px));
+    margin: clamp(40px, 6vw, 88px) auto clamp(20px, 4vw, 36px);
+    border-radius: 24px;
+    overflow: hidden;
+    isolation: isolate;
+    background: #180C06;
+  }
+
+  .base-band::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--base-band-bg);
+    border: 1px solid rgba(42, 31, 26, 0.18);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.32),
+      0 18px 44px rgba(22, 14, 11, 0.2);
+  }
+
+  .base-band::after {
+    content: "";
+    position: absolute;
+    inset: -40% -12% 35%;
+    background: radial-gradient(
+      80% 60% at 50% 0%,
+      rgba(255, 255, 255, 0.34) 0%,
+      rgba(255, 255, 255, 0) 72%
+    );
+    pointer-events: none;
+  }
+
+  .base-band > * {
+    position: relative;
+    z-index: 1;
   }
 }
 
@@ -38,6 +97,12 @@
 @media (max-width: 768px) {
   :root {
     --spacing-section: 80px;
+  }
+
+  .base-band {
+    width: calc(100% - 20px);
+    margin-top: 28px;
+    border-radius: 18px;
   }
 }
 
@@ -246,5 +311,16 @@ details[open] > div {
 @media (prefers-reduced-motion: reduce) {
   details[open] > div {
     animation: none;
+  }
+}
+
+/* FAQ chevron rotation */
+details[open] > summary .faq-chevron {
+  transform: rotate(180deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .faq-chevron {
+    transition: none;
   }
 }

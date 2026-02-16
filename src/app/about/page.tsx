@@ -37,7 +37,7 @@ export default function AboutPage() {
               </div>
               {/* Right column - Placeholder image */}
               <div>
-                <div className="bg-white/5 border border-white/10 rounded-[4px] aspect-[16/10]"></div>
+                <div className="bg-[rgba(58,51,48,0.05)] border border-[rgba(58,51,48,0.10)] rounded-[4px] aspect-[16/10]"></div>
               </div>
             </div>
           </section>
@@ -110,7 +110,7 @@ export default function AboutPage() {
                 </div>
 
                 {/* Name */}
-                <h3 className="text-2xl font-bold text-white mb-2 tracking-tight leading-[1.3]">
+                <h3 className="text-2xl font-bold text-[var(--color-text)] mb-2 tracking-tight leading-[1.3]">
                   Hai Bui
                 </h3>
 
@@ -125,14 +125,14 @@ export default function AboutPage() {
                 </p>
 
                 {/* Contact Details */}
-                <div className="mt-6 space-y-2 text-sm text-white/80">
+                <div className="mt-6 space-y-2 text-sm text-[var(--color-text-body)]">
                   <div>
                     <span className="font-semibold">Favorittuggummi:</span> Melon Mint
                   </div>
                   <div>
                     <span className="font-semibold">Mobil:</span>{" "}
                     <a
-                      className="underline underline-offset-4 hover:text-white transition-colors"
+                      className="underline underline-offset-4 hover:text-[var(--color-text)] transition-colors"
                       href="tel:+46700996838"
                     >
                       070-099 68 38
@@ -141,7 +141,7 @@ export default function AboutPage() {
                   <div>
                     <span className="font-semibold">Mejl:</span>{" "}
                     <a
-                      className="underline underline-offset-4 hover:text-white transition-colors"
+                      className="underline underline-offset-4 hover:text-[var(--color-text)] transition-colors"
                       href="mailto:hai@khyteteam.com"
                     >
                       hai@khyteteam.com
@@ -180,7 +180,7 @@ export default function AboutPage() {
                 </div>
 
                 {/* Name */}
-                <h3 className="text-2xl font-bold text-white mb-2 tracking-tight leading-[1.3]">
+                <h3 className="text-2xl font-bold text-[var(--color-text)] mb-2 tracking-tight leading-[1.3]">
                   Abdimajiid Mohamud
                 </h3>
 
@@ -195,23 +195,23 @@ export default function AboutPage() {
                 </p>
 
                 {/* Contact Details */}
-                <div className="mt-6 space-y-2 text-sm text-white/80">
+                <div className="mt-6 space-y-2 text-sm text-[var(--color-text-body)]">
                   <div>
                     <span className="font-semibold">Favoritaktivitet:</span> ICA Maxi
                   </div>
                   <div>
                     <span className="font-semibold">Mobil:</span>{" "}
                     <a
-                      className="underline underline-offset-4 hover:text-white transition-colors"
+                      className="underline underline-offset-4 hover:text-[var(--color-text)] transition-colors"
                       href="tel:+46701234567"
                     >
-                      070-123 45 67
+                      070-676 69 52
                     </a>
                   </div>
                   <div>
                     <span className="font-semibold">Mejl:</span>{" "}
                     <a
-                      className="underline underline-offset-4 hover:text-white transition-colors"
+                      className="underline underline-offset-4 hover:text-[var(--color-text)] transition-colors"
                       href="mailto:abdimajiidmohamud@gmail.com"
                     >
                       abdimajiidmohamud@gmail.com
