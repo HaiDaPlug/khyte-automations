@@ -1,7 +1,7 @@
-# Khyte Automations - Current State (v1.50)
+# Khyte Automations - Current State (v1.51)
 
 ## Tech Stack
-- **Next.js** 16.0.9 (App Router)
+- **Next.js** 16.1.6 (App Router)
 - **React** 19.2.1
 - **TypeScript** 5 (Strict mode)
 - **Tailwind CSS** v4 (config via `@theme` in globals.css)
@@ -15,6 +15,8 @@ src/
 │   ├── about/page.tsx    # About page
 │   ├── cases/page.tsx    # Case studies
 │   ├── contact/page.tsx  # Contact form
+│   ├── integritetspolicy/page.tsx  # Integritetspolicy (legal page)
+│   ├── villkor/page.tsx  # Användarvillkor (legal page)
 │   ├── services/
 │   │   ├── page.tsx      # Services & pricing page
 │   │   ├── audit/page.tsx          # Redirects to /services
@@ -27,6 +29,8 @@ src/
 │   ├── Nav.tsx           # Floating glass capsule nav (Client)
 │   ├── Button.tsx        # Primary/secondary variants
 │   ├── CalendlyButton.tsx # Calendly popup trigger (Client)
+│   ├── PreFooterCTA.tsx  # Global pre-footer CTA
+│   ├── Footer.tsx        # Global footer
 │   ├── CaseCard.tsx      # Case card component
 │   ├── Container.tsx     # 1100px max-width wrapper
 │   ├── DnaWeaveSvg.tsx   # Animated SVG
@@ -68,33 +72,37 @@ Price card border: rgba(58,51,48,0.25)  — heavier, signals hierarchy
 
 ### Warm Palette (PreFooterCTA — top zone of base-band)
 ```css
---color-warm-text: #1E1A16;        /* Charcoal (primary heading) */
---color-warm-text-muted: #6B5F55;  /* Muted body text */
---color-warm-accent: #E8833A;      /* CTA button background */
---color-warm-accent-hover: #D4622B; /* CTA button hover */
---color-warm-ink: #12100E;         /* Near-black (button text) */
+/* Default (classic) */
+--color-warm-text: #1E1A16;
+--color-warm-text-muted: #6B5F55;
+--color-warm-accent: #E8833A;
+--color-warm-accent-hover: #D4622B;
+--color-warm-ink: #12100E;
+
+/* Active concept in layout.tsx: data-theme="espresso" */
+--color-warm-text: #F4F1EF;
+--color-warm-text-muted: rgba(244,241,239,0.78);
+--color-cta-primary: #1B0803;
+--color-cta-primary-hover: #5E1E10;
+--color-cta-text: #F4F1EF;
 ```
 
-### Base Band Gradient (PreFooterCTA + Footer — "Sunset" palette)
+### Base Band Gradient (PreFooterCTA + Footer — Espresso layered surface)
 ```css
---base-band-bg: linear-gradient(
-  180deg,
-  #F5EDE3 0%,   /* Warm cream (PreFooterCTA top — dark text readable) */
-  #F5C070 28%,  /* Golden amber */
-  #F0803A 52%,  /* Vivid orange peak */
-  #C04010 72%,  /* Deep burnt orange */
-  #6A1E06 88%,  /* Dark mahogany */
-  #180C06 100%  /* Near-black warm (Footer bottom — white text readable) */
-);
+--base-band-bg:
+  radial-gradient(112% 72% at 50% 106%, rgba(212,98,43,0.65) 0%, rgba(212,98,43,0) 50%),
+  radial-gradient(90% 70% at 18% -10%, rgba(244,241,239,0.10) 0%, rgba(244,241,239,0) 60%),
+  radial-gradient(90% 70% at 88% 0%, rgba(244,241,239,0.06) 0%, rgba(244,241,239,0) 65%),
+  linear-gradient(180deg, #1B0803 0%, #1B0803 34%, #5E1E10 85%, #D4622B 100%);
 ```
-- `.base-band` is a **centered rounded slab card**: `width: min(1440px, calc(100% - 32px))`, `border-radius: 24px`, `overflow: hidden`, `background: #3A3330` (corner anti-alias fill)
-- `::before`: applies gradient + `border: 1px solid rgba(42,31,26,0.18)` + `box-shadow`
-- `::after`: subtle radial glow at top (stops at 62% from bottom — stays in PreFooterCTA zone only)
-- Footer has `border-t border-white/[0.18]` as mid-card seam divider
+- `.base-band` is a **centered rounded slab card**: `width: min(1440px, calc(100% - 32px))`, `margin: clamp(28px, 5vw, 64px) auto clamp(14px, 3vw, 28px)`, `border-radius: 24px`, `overflow: hidden`.
+- `::before`: applies layered gradient + `border: 1px solid var(--base-band-border)` + warm shadow/highlight tokens.
+- `::after`: subtle grain overlay (not top glow) via repeating-linear-gradient.
+- Footer seam uses tokenized color: `--color-footer-seam: rgba(244,241,239,0.12)`.
 
 ## globals.css Utilities, Animations & Overlays
-- `.base-band`: Rounded slab card with gradient via `::before`, glow via `::after`, children `z-index: 1`
-- `.text-label`: 13px, 700 weight, 0.05em tracking, uppercase, **`color: var(--color-text)`** (overridden to `text-white/80` in Footer)
+- `.base-band`: Rounded slab card with layered gradient via `::before`, grain overlay via `::after`, children `z-index: 1`
+- `.text-label`: 13px, 700 weight, 0.05em tracking, uppercase, **`color: var(--color-text)`** (overridden in footer with `!text-white/95`)
 - `slideDown` (150ms ease-out): fires on `details[open] > div` — FAQ accordion. Reduced-motion guard included.
 - `.faq-chevron`: rotates 180° on `details[open] > summary .faq-chevron`.
 
@@ -108,7 +116,7 @@ Price card border: rgba(58,51,48,0.25)  — heavier, signals hierarchy
 - Height: `h-12` (48px fixed)
 - Padding: `px-8`
 - Radius: `rounded-md`
-- Primary: `bg-[#D4622B] text-white hover:bg-[#C0541F]`
+- Primary: `bg-[var(--color-cta-primary)] text-[var(--color-cta-text)] hover:bg-[var(--color-cta-primary-hover)]`
 - Secondary: `bg-transparent border border-[rgba(58,51,48,0.20)] text-[#3A3330] hover:bg-[rgba(58,51,48,0.06)]`
 
 ### CalendlyButton.tsx (Client Component)
@@ -116,7 +124,7 @@ Price card border: rgba(58,51,48,0.25)  — heavier, signals hierarchy
 - Padding: `px-8`
 - Radius: `rounded-md`
 - **Three variants:**
-  - `primary`: `bg-[#D4622B] text-white hover:bg-[#C0541F]` (used on light backgrounds — pages, services, etc.)
+  - `primary`: `bg-[var(--color-cta-primary)] text-[var(--color-cta-text)] hover:bg-[var(--color-cta-primary-hover)]` (theme-aware)
   - `secondary`: `bg-transparent border border-[rgba(58,51,48,0.20)] text-[#3A3330] hover:bg-[rgba(58,51,48,0.06)]`
   - `warm`: `bg-[var(--color-warm-accent)] text-[var(--color-warm-ink)] hover:bg-[var(--color-warm-accent-hover)]` (for PreFooterCTA — gradient background)
 - Triggers Calendly popup via `window.Calendly.initPopupWidget()`
@@ -124,46 +132,51 @@ Price card border: rgba(58,51,48,0.25)  — heavier, signals hierarchy
 ### Nav.tsx (Floating Capsule)
 - **Rendered globally** in layout.tsx (single instance across all pages)
 - Position: `fixed top-6 left-1/2 -translate-x-1/2`
-- Width: `max-w-[94%] md:max-w-[1150px]`
-- Glass: `bg-[#f4f1ef]/80 backdrop-blur-md border-[rgba(58,51,48,0.12)]`
+- Width: `max-w-[96%] md:max-w-[1280px] xl:max-w-[1400px]`
+- Glass: `bg-[#0A0A0A]/72 backdrop-blur-md border-white/10`
 - Shape: `rounded-full`
 - Layout: `justify-between` with absolutely-centered nav links
 - Logo left, CTA right, links centered (desktop)
 - Desktop links (4): Case, Om oss, **Tjänster**, Kontakt
-  - Active: `text-[#3A3330]`, inactive: `text-[#9C8E82]`, hover: `text-[#3A3330]`
+  - Active: `text-white`, inactive: `text-white/65`, hover: `text-white`
   - **Tjänster**: Simple link to `/services`, active when `pathname.startsWith("/services")`
-- Desktop CTA: `bg-[#D4622B] text-white hover:bg-[#C0541F] rounded-full`
-- Mobile drawer: `bg-[#f4f1ef]/95`, warm borders, same link colors, orange CTA
-- Mobile backdrop: `bg-[rgba(58,51,48,0.40)]`
+- Desktop CTA: tokenized (`--color-cta-primary`, `--color-cta-text`) and rounded-full
+- Mobile drawer: dark (`bg-[#0A0A0A]/95`) with white text hierarchy
+- Mobile backdrop: `bg-black/60`
 
 ### Base Band (Shared Background Wrapper)
 - **Wrapper in layout.tsx**: `<div className="base-band">` wraps both PreFooterCTA + Footer
 - **Shape**: Centered rounded slab card (`max-w: 1440px`, `border-radius: 24px`)
-- **Gradient**: Sunset — cream → golden → orange → burnt orange → mahogany → near-black warm
-- **Seam**: `border-t border-white/[0.18]` on Footer's inner div (subtle divider between sections)
-- **Corner fill**: `background: #3A3330` on `.base-band` prevents sub-pixel fringe at rounded corners
+- **Theme switch**: `layout.tsx` sets `data-theme="espresso"` (reversible with `classic`)
+- **Gradient**: layered espresso surface (dark top + controlled orange bottom glow)
+- **Seam**: `border-t border-[var(--color-footer-seam)]` on Footer's inner div
+- **Corner fill**: `background: var(--base-band-fill)`
 
 ### PreFooterCTA.tsx (Global)
 - **Rendered globally** inside `.base-band` wrapper in layout.tsx
 - Server component (CalendlyButton handles client interactions)
 - Design: Centered CTA block with heading, subtext, and Calendly button
-- Copy: "Visa oss en process – vi visar vad som går att automatisera"
-- **Transparent background**: gradient from `.base-band` shows through (top zone = cream)
-  - Heading: `text-[var(--color-warm-text)]` (charcoal #1E1A16)
-  - Body: `text-[var(--color-warm-text-muted)]` (muted #6B5F55)
-  - Button: `CalendlyButton variant="warm"` with `className` override for dark pill (`bg-[#3A3330] text-white hover:bg-[#2A2320]`)
+- Copy: "Visa oss en process - vi visar vad som går att automatisera"
+- **Compact rhythm**: `py-14 md:py-16`, heading `text-4xl md:text-5xl`, body `max-w-[60ch]`
+- **Transparent background**: gradient from `.base-band` shows through (espresso mode = light text)
+  - Heading: `text-[var(--color-warm-text)]` (espresso active: `#F4F1EF`)
+  - Body: `text-[var(--color-warm-text-muted)]`
+  - Button: `CalendlyButton variant="warm"` with custom dark pill + subtle border/shadow
 
 ### Footer.tsx
 - **Rendered globally** inside `.base-band` wrapper in layout.tsx
-- Structure: Left brand block + three link columns (Utforska, Företag, Juridik)
-- Brand: Logo (`h-18 w-auto`) + LinkedIn icon underneath (`h-8 w-8`, opacity 80%→100%)
-- **Transparent background**: gradient from `.base-band` shows through (bottom zone = near-black warm)
+- Structure: Left brand/contact block + two link columns (Utforska, Företag)
+- Brand block: Logo (`h-16 w-auto`) + **Kontakt** details (phone + email) + LinkedIn icon (`h-7 w-7`)
+- **Transparent background**: gradient from `.base-band` shows through (espresso bottom)
 - All text uses `text-white/*` opacity — intentional, sits on dark lower gradient
-  - Column headings: `text-label text-white/80`
-  - Links: `text-white/85 hover:text-white`
-  - Copyright: `text-white/60`
-- Top seam: `border-t border-white/[0.18]`
-- Bottom bar: `border-t border-white/[0.12]`
+  - Column headings: `text-label !text-white/95`
+  - Links: `text-white/90 hover:text-white`
+  - Copyright: `text-white/66`
+- Top seam: `border-t border-[var(--color-footer-seam)]`
+- Bottom bar: `border-t border-[var(--color-footer-seam-soft)]`
+- Bottom bar legal links:
+  - `Användarvillkor` → `/villkor`
+  - `Integritetspolicy` → `/integritetspolicy`
 
 ### About Page People Cards
 - Layout: 2-column grid (1 col mobile, 2 cols lg+)
@@ -228,15 +241,16 @@ npm run dev                     # Dev mode (Turbopack bug exists)
 1. **Nav is global** - rendered once in layout.tsx, no per-page `<Nav />` needed
 2. **Base Band wrapper is global** - `<div className="base-band">` wraps PreFooterCTA + Footer in layout.tsx
 3. **PreFooterCTA + Footer share one background** - both `bg-transparent`, gradient from `.base-band` shows through
-4. **Sunset gradient** - cream (#F5EDE3) → golden → vivid orange (#F0803A) → mahogany → near-black warm (#180C06)
-5. **Footer text stays white** — sits on dark lower gradient; do NOT change `text-white/*` values in Footer
-6. **`.text-label` is `var(--color-text)`** — dark on page sections; Footer overrides with `text-white/80`
+4. **Theme mode is explicit** - `<html data-theme="espresso">` is set in layout.tsx (reversible to `classic`)
+5. **Base-band is layered** - dark espresso top + controlled orange glow bottom + subtle grain overlay
+6. **Footer text stays white** — sits on dark lower gradient; footer labels currently use `!text-white/95`
 7. All pages use `pt-32` for fixed nav clearance
 8. Swedish language throughout (`lang="sv"`)
 9. No tailwind.config.ts — all config in globals.css `@theme`
 10. Nav uses absolute positioning for centered links (requires `relative` on parent)
 11. Small SVG icons use plain `<img>` instead of Next Image for simplicity
 12. Pricing on /services: "25 000–120 000 kr, fast pris efter scope". Exact number set in förstudie.
+13. Legal pages are live at `/integritetspolicy` and `/villkor`.
 
 ## Files to Know
 | Purpose | File |

@@ -73,8 +73,8 @@ export default function Nav() {
 
   return (
     <>
-    <nav className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-full max-w-[94%] md:max-w-[1150px]">
-      <div className="relative flex items-center justify-between px-4 sm:px-8 py-3 rounded-full bg-[#f4f1ef]/80 backdrop-blur-md border border-[rgba(58,51,48,0.12)] shadow-lg shadow-black/10">
+    <nav className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-full max-w-[96%] md:max-w-[1280px] xl:max-w-[1400px]">
+      <div className="relative flex items-center justify-between px-4 sm:px-8 py-3 rounded-full bg-[#0A0A0A]/72 backdrop-blur-md border border-white/10 shadow-lg shadow-black/30">
         {/* Logo - Left (h-14, natural fit in taller container) */}
         <Link
           href="/"
@@ -85,7 +85,7 @@ export default function Nav() {
             alt="Khyte"
             width={240}
             height={64}
-            className="h-16 w-auto -my-2 ml-3 brightness-110 contrast-125 saturate-110"
+            className="h-16 w-auto -my-2 ml-3"
             priority
           />
         </Link>
@@ -94,16 +94,16 @@ export default function Nav() {
         <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-6 text-base font-semibold tracking-[-0.02em]">
           <Link
             href="/cases"
-            className={`transition-colors duration-200 hover:text-[#3A3330] ${
-              pathname === "/cases" ? "text-[#3A3330]" : "text-[#9C8E82]"
+            className={`transition-colors duration-200 hover:text-white ${
+              pathname === "/cases" ? "text-white" : "text-white/65"
             }`}
           >
             Case
           </Link>
           <Link
             href="/about"
-            className={`transition-colors duration-200 hover:text-[#3A3330] ${
-              pathname === "/about" ? "text-[#3A3330]" : "text-[#9C8E82]"
+            className={`transition-colors duration-200 hover:text-white ${
+              pathname === "/about" ? "text-white" : "text-white/65"
             }`}
           >
             Om oss
@@ -111,8 +111,8 @@ export default function Nav() {
 
           <Link
             href="/services"
-            className={`transition-colors duration-200 hover:text-[#3A3330] ${
-              pathname.startsWith("/services") ? "text-[#3A3330]" : "text-[#9C8E82]"
+            className={`transition-colors duration-200 hover:text-white ${
+              pathname.startsWith("/services") ? "text-white" : "text-white/65"
             }`}
           >
             Tjänster
@@ -120,8 +120,8 @@ export default function Nav() {
 
           <Link
             href="/contact"
-            className={`transition-colors duration-200 hover:text-[#3A3330] ${
-              pathname === "/contact" ? "text-[#3A3330]" : "text-[#9C8E82]"
+            className={`transition-colors duration-200 hover:text-white ${
+              pathname === "/contact" ? "text-white" : "text-white/65"
             }`}
           >
             Kontakt
@@ -132,7 +132,7 @@ export default function Nav() {
         <div className="hidden md:flex items-center">
           <button
             onClick={handleCalendlyClick}
-            className="bg-[#D4622B] text-white text-sm font-bold px-6 py-2.5 rounded-full hover:bg-[#C0541F] transition-all shadow-sm hover:shadow-md shrink-0 cursor-pointer whitespace-nowrap"
+            className="bg-[var(--color-cta-primary)] text-[var(--color-cta-text)] text-sm font-bold px-6 py-2.5 rounded-full hover:bg-[var(--color-cta-primary-hover)] transition-all shadow-sm hover:shadow-md shrink-0 cursor-pointer whitespace-nowrap"
           >
             Boka kostnadsfritt samtal
           </button>
@@ -143,11 +143,11 @@ export default function Nav() {
           <button
             type="button"
             onClick={() => setOpen(true)}
-            className="inline-flex items-center justify-center rounded-full border border-[rgba(58,51,48,0.12)] bg-[rgba(58,51,48,0.05)] hover:bg-[rgba(58,51,48,0.08)] transition w-10 h-10"
+            className="inline-flex items-center justify-center rounded-full border border-white/20 bg-white/5 hover:bg-white/10 transition w-10 h-10"
             aria-label="Öppna meny"
             aria-expanded={open}
           >
-            <svg className="w-5 h-5 text-[#3A3330]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           </button>
@@ -162,18 +162,18 @@ export default function Nav() {
         <button
           type="button"
           aria-label="Stäng meny"
-          className="fixed inset-0 bg-[rgba(58,51,48,0.40)] z-40"
+          className="fixed inset-0 bg-black/60 z-40"
           onClick={() => setOpen(false)}
         />
         {/* Panel - glass blur matching pill aesthetic */}
-        <div className="fixed top-0 right-0 h-full w-72 bg-[#f4f1ef]/95 backdrop-blur-md border-l border-[rgba(58,51,48,0.12)] z-50 flex flex-col">
+        <div className="fixed top-0 right-0 h-full w-72 bg-[#0A0A0A]/95 backdrop-blur-md border-l border-white/10 z-50 flex flex-col">
           {/* Header */}
-          <div className="flex items-center justify-between px-6 py-4 border-b border-[rgba(58,51,48,0.12)]">
-            <span className="text-[#3A3330] font-semibold">Meny</span>
+          <div className="flex items-center justify-between px-6 py-4 border-b border-white/10">
+            <span className="text-white font-semibold">Meny</span>
             <button
               type="button"
               onClick={() => setOpen(false)}
-              className="p-2 text-[#9C8E82] hover:text-[#3A3330]"
+              className="p-2 text-white/65 hover:text-white"
               aria-label="Stäng meny"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -183,19 +183,19 @@ export default function Nav() {
           </div>
           {/* Links */}
           <nav className="flex flex-col px-6 py-4 gap-4">
-            <Link href="/cases" className="text-[#9C8E82] hover:text-[#3A3330] text-lg" onClick={() => setOpen(false)}>Case</Link>
-            <Link href="/about" className="text-[#9C8E82] hover:text-[#3A3330] text-lg" onClick={() => setOpen(false)}>Om oss</Link>
+            <Link href="/cases" className="text-white/70 hover:text-white text-lg" onClick={() => setOpen(false)}>Case</Link>
+            <Link href="/about" className="text-white/70 hover:text-white text-lg" onClick={() => setOpen(false)}>Om oss</Link>
 
-            <Link href="/services" className="text-[#9C8E82] hover:text-[#3A3330] text-lg" onClick={() => setOpen(false)}>Tjänster</Link>
+            <Link href="/services" className="text-white/70 hover:text-white text-lg" onClick={() => setOpen(false)}>Tjänster</Link>
 
-            <Link href="/contact" className="text-[#9C8E82] hover:text-[#3A3330] text-lg" onClick={() => setOpen(false)}>Kontakt</Link>
+            <Link href="/contact" className="text-white/70 hover:text-white text-lg" onClick={() => setOpen(false)}>Kontakt</Link>
           </nav>
           {/* CTA */}
-          <div className="mt-auto px-6 py-6 border-t border-[rgba(58,51,48,0.12)]">
+          <div className="mt-auto px-6 py-6 border-t border-white/10">
             <Link
               href="/contact"
               onClick={() => setOpen(false)}
-              className="block w-full text-center bg-[#D4622B] text-white font-bold py-3 rounded-full hover:bg-[#C0541F]"
+              className="block w-full text-center bg-[var(--color-cta-primary)] text-[var(--color-cta-text)] font-bold py-3 rounded-full hover:bg-[var(--color-cta-primary-hover)]"
             >
               Kontakta oss
             </Link>

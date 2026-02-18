@@ -55,6 +55,7 @@ const SITE_URL = "https://khyteautomations.com";
 const CONTACT_EMAIL = "hai@khyteteam.com";
 const LINKEDIN_PERSONAL = "https://www.linkedin.com/in/hai-pham-bui-8a9893395";
 const LINKEDIN_COMPANY = "https://www.linkedin.com/company/khyte-automations";
+const COLOR_CONCEPT = "espresso";
 
 const structuredData = [
   {
@@ -92,7 +93,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="sv" className={GeistSans.variable}>
+    <html lang="sv" className={GeistSans.variable} data-theme={COLOR_CONCEPT}>
       <head>
         <script
           type="application/ld+json"
