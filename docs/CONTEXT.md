@@ -4,6 +4,26 @@
 
 **Khyte Automations** is a Swedish-language marketing website for an AI consulting business that helps small to medium-sized companies automate workflows and eliminate time-wasting manual tasks.
 
+## Session Update (2026-02-18)
+
+This session focused on premium footer/base-band refinement, tighter spacing, legal page rollout, and final footer IA polish.
+
+- Added reversible concept theming via `data-theme="espresso"` in `src/app/layout.tsx`.
+- Upgraded `src/app/globals.css` with tokenized base-band surface physics (gradient, seam, shadow, highlight, grain) and a dark-top to orange-bottom espresso treatment.
+- Refined `src/components/Nav.tsx` to dark glass styling and expanded width for desktop command-center presence.
+- Iterated `src/components/PreFooterCTA.tsx` and `src/components/Footer.tsx` to improve hierarchy, then compressed spacing for better viewport efficiency.
+- Footer IA updates in `src/components/Footer.tsx`:
+  - Added contact block under logo (phone + email).
+  - Removed the old Juridik column.
+  - Moved legal links to the bottom bar, right-aligned on desktop and stacked gracefully on mobile.
+  - Updated legal route target from `/anvandarvillkor` to `/villkor`.
+- Added two new legal pages with shared quiet-competence layout:
+  - `src/app/integritetspolicy/page.tsx`
+  - `src/app/villkor/page.tsx`
+  Both include: title, "Senast uppdaterad", short TL;DR, practical sections, and contact box.
+- Privacy copy is intentionally honest/conditional for analytics wording (`analysverktyg (om aktiverat)`) to avoid false implementation claims.
+- Build checks passed repeatedly (`npm run build`) after each major step.
+
 ## Tech Stack
 
 - **Framework**: Next.js 16.0.9 (App Router)
@@ -684,6 +704,28 @@ Before deployment, verify:
 - **HTML v1 Reference**: `opus4.5-merged.html` (design source file)
 
 ## Version History
+
+- **v1.51** (2026-02-18) - Espresso Footer System + Legal Pages + Footer IA Update
+  - **Theme system & base-band**:
+    - Added reversible concept theming via `data-theme` (`classic`/`espresso`) in `layout.tsx`.
+    - Tokenized base-band visuals in `globals.css`: seam, gradient layers, warm shadow, highlight, grain.
+    - Final espresso treatment: dark top, controlled orange bottom, reduced seam harshness, reduced "flat pool" effect.
+  - **Navigation**:
+    - Reintroduced dark glass nav treatment and expanded desktop width for stronger top-level presence.
+  - **PreFooter/Footer polish**:
+    - Improved typography hierarchy (headline, labels, links, legal text), CTA presence, and mobile-safe spacing.
+    - Compressed vertical rhythm for better on-screen density without layout refactor.
+  - **Footer information architecture update**:
+    - Added contact block under logo (phone + email).
+    - Removed Juridik column from main grid.
+    - Bottom bar now places legal links on the far right (desktop), stacked gracefully on small screens.
+  - **Legal pages added**:
+    - New routes: `/integritetspolicy` and `/villkor`.
+    - Shared page skeleton: title, updated date, TL;DR, concise sectioned body, and contact box.
+    - Privacy page uses neutral analytics wording ("analysverktyg (om aktiverat)") unless tooling is explicitly confirmed.
+  - **Footer routing update**:
+    - `Användarvillkor` link now points to `/villkor`.
+  - **Build status**: ✅ Production build successful, routes statically generated.
 
 - **v1.22** (2026-01-07) - P0 SEO Fundamentals (H1, Metadata, Structured Data, Internal Linking)
   - **Goal**: World-class SEO implementation - keyword optimization, structured data, internal linking
@@ -1497,7 +1539,7 @@ Before deployment, verify:
 
 ---
 
-**Last Updated**: 2026-01-15
-**Current Version**: v1.30 (Calendly Popup Integration)
-**Status**: Production ready - All booking CTAs trigger Calendly popup
-**Next**: Deploy to production
+**Last Updated**: 2026-02-18
+**Current Version**: v1.51 (Espresso Footer System + Legal Pages)
+**Status**: Production ready - legal routes added and footer IA updated
+**Next**: Add final legal/entity details + optional cookie/analytics disclosure hardening

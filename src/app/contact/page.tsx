@@ -19,7 +19,7 @@ export default function Contact() {
         <main className="pt-32 pb-20">
           <div className="flex flex-col items-center text-center mb-16">
             <h1 className="text-hero text-5xl md:text-7xl text-[var(--color-text)] mb-6">
-              Kontakt
+              Berätta om era processer.
             </h1>
             <p className="text-xl text-[var(--color-text-body)] max-w-[60ch] leading-[1.6]">
               Osäker på vart du ska börja? Boka ett kostnadsfritt samtal så tjötar vi idéer.
@@ -46,7 +46,7 @@ export default function Contact() {
                     id="name"
                     name="name"
                     required
-                    className="w-full h-12 px-4 bg-[var(--color-card-bg)] border border-[var(--color-border)] rounded-[4px] text-[var(--color-text)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:border-transparent"
+                    className="w-full h-12 px-4 bg-[var(--color-card-bg)] border border-[var(--color-border)] rounded-[4px] text-[var(--color-text)] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:border-transparent"
                   />
                 </div>
 
@@ -61,7 +61,7 @@ export default function Contact() {
                     type="text"
                     id="company"
                     name="company"
-                    className="w-full h-12 px-4 bg-[var(--color-card-bg)] border border-[var(--color-border)] rounded-[4px] text-[var(--color-text)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:border-transparent"
+                    className="w-full h-12 px-4 bg-[var(--color-card-bg)] border border-[var(--color-border)] rounded-[4px] text-[var(--color-text)] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:border-transparent"
                   />
                 </div>
 
@@ -76,7 +76,7 @@ export default function Contact() {
                     type="tel"
                     id="phone"
                     name="phone"
-                    className="w-full h-12 px-4 bg-[var(--color-card-bg)] border border-[var(--color-border)] rounded-[4px] text-[var(--color-text)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:border-transparent"
+                    className="w-full h-12 px-4 bg-[var(--color-card-bg)] border border-[var(--color-border)] rounded-[4px] text-[var(--color-text)] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:border-transparent"
                   />
                 </div>
 
@@ -92,7 +92,7 @@ export default function Contact() {
                     id="email"
                     name="email"
                     required
-                    className="w-full h-12 px-4 bg-[var(--color-card-bg)] border border-[var(--color-border)] rounded-[4px] text-[var(--color-text)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:border-transparent"
+                    className="w-full h-12 px-4 bg-[var(--color-card-bg)] border border-[var(--color-border)] rounded-[4px] text-[var(--color-text)] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:border-transparent"
                   />
                 </div>
 
@@ -112,14 +112,14 @@ export default function Contact() {
                   ></textarea>
                 </div>
 
-                <Button variant="primary" className="w-full">
+                <Button variant="primary">
                   Skicka förfrågan
                 </Button>
               </form>
             </div>
 
             {/* Direct Contact Options */}
-            <div className="bg-[var(--color-card-bg)] border border-[var(--color-border)] p-8 rounded-[4px] transition-colors duration-300 hover:border-[var(--color-muted)]">
+            <div className="bg-[var(--color-card-bg)] border border-[rgba(58,51,48,0.25)] p-8 rounded-[4px] transition-colors duration-300 hover:border-[var(--color-muted)]">
               <h2 className="text-4xl font-bold text-[var(--color-text)] mb-8 tracking-tight leading-[1.2]">
                 Andra sätt att nå oss
               </h2>
@@ -131,7 +131,7 @@ export default function Contact() {
                     </p>
                     <a
                       href="mailto:hai@khyteteam.com"
-                      className="text-xl text-[var(--color-text)] hover:text-[var(--color-muted)] transition-colors underline underline-offset-2"
+                      className="text-xl text-[var(--color-text)] hover:text-[var(--color-accent)] transition-colors underline underline-offset-2"
                     >
                       hai@khyteteam.com
                     </a>
@@ -143,7 +143,7 @@ export default function Contact() {
                     </p>
                     <a
                       href="tel:070-099 68 38"
-                      className="text-xl text-[var(--color-text)] hover:text-[var(--color-muted)] transition-colors underline underline-offset-2"
+                      className="text-xl text-[var(--color-text)] hover:text-[var(--color-accent)] transition-colors underline underline-offset-2"
                     >
                       070-099 68 38
                     </a>
@@ -153,7 +153,7 @@ export default function Contact() {
                     <p className="text-label mb-3">
                       Boka möte
                     </p>
-                    <CalendlyButton variant="secondary">
+                    <CalendlyButton variant="primary">
                       Boka 30 min
                     </CalendlyButton>
                   </div>

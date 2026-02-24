@@ -1,4 +1,4 @@
-# Khyte Automations - Current State (v1.51)
+# Khyte Automations - Current State (v1.61)
 
 ## Tech Stack
 - **Next.js** 16.1.6 (App Router)
@@ -26,16 +26,27 @@ src/
 │   ├── sitemap.ts        # Dynamic sitemap
 │   └── robots.ts         # Robots.txt
 ├── components/
-│   ├── Nav.tsx           # Floating glass capsule nav (Client)
-│   ├── Button.tsx        # Primary/secondary variants
-│   ├── CalendlyButton.tsx # Calendly popup trigger (Client)
-│   ├── PreFooterCTA.tsx  # Global pre-footer CTA
-│   ├── Footer.tsx        # Global footer
-│   ├── CaseCard.tsx      # Case card component
-│   ├── Container.tsx     # 1100px max-width wrapper
-│   ├── DnaWeaveSvg.tsx   # Animated SVG
-│   ├── TimelineProcess.tsx # Timeline with scan animation (Client)
-│   └── ToolsTicker.tsx   # Logo ticker (Client)
+│   ├── Nav.tsx              # Floating glass capsule nav (Client)
+│   ├── Button.tsx           # Primary/secondary/ghostDark variants
+│   ├── CalendlyButton.tsx   # Calendly popup trigger (Client)
+│   ├── PreFooterCTA.tsx     # Global pre-footer CTA
+│   ├── Footer.tsx           # Global footer
+│   ├── CaseCard.tsx         # Case card component
+│   ├── Container.tsx        # 1100px max-width wrapper
+│   ├── DnaWeaveSvg.tsx      # Animated SVG (unused on homepage)
+│   ├── TimelineProcess.tsx  # Timeline with scan animation (Client)
+│   ├── ToolsTicker.tsx      # Logo ticker (Client)
+│   ├── NodeGraph.tsx        # Archived: canvas node graph (replaced by KiteHero)
+│   ├── KiteHero.tsx         # Hero right-column: animated kite SVG (Client) ← ACTIVE
+│   ├── DataSweep.tsx        # Archived: chaos→order block sweep canvas (Client)
+│   ├── InteractiveGrid.tsx  # Archived: proximity dot field canvas (Client)
+│   ├── WorkflowVisual.tsx   # Archived: animated pipeline node row (Client)
+│   ├── VisualSection.tsx    # Archived: InteractiveGrid + WorkflowVisual wrapper (Client)
+│   └── sections/
+│       ├── PainOutcome.tsx  # Pain → Outcome 3-col cards
+│       ├── ROIBand.tsx      # Full-bleed stats band (3 numbers)
+│       ├── CasesSection.tsx # Testimonial card + "Läs mer" placeholder + dot indicator
+│       └── WhyKhyte.tsx     # 2×2 differentiator cards
 public/
 ├── khyte-logo-text.svg   # Main logo (white SVG, embedded PNG)
 ├── icons/                # Tool logos for ticker + social icons
@@ -118,6 +129,7 @@ Price card border: rgba(58,51,48,0.25)  — heavier, signals hierarchy
 - Radius: `rounded-md`
 - Primary: `bg-[var(--color-cta-primary)] text-[var(--color-cta-text)] hover:bg-[var(--color-cta-primary-hover)]`
 - Secondary: `bg-transparent border border-[rgba(58,51,48,0.20)] text-[#3A3330] hover:bg-[rgba(58,51,48,0.06)]`
+- **ghostDark** *(hero-only)*: `bg-white/5 border border-white/25 text-white hover:bg-white/10 hover:border-white/35` — for use on dark hero backgrounds only (currently: homepage hero secondary CTA)
 
 ### CalendlyButton.tsx (Client Component)
 - Height: `h-12` (48px fixed)
@@ -180,9 +192,15 @@ Price card border: rgba(58,51,48,0.25)  — heavier, signals hierarchy
 
 ### About Page People Cards
 - Layout: 2-column grid (1 col mobile, 2 cols lg+)
-- Each card includes profile image (5:6), name (h3), role (.text-label), description, contact details, LinkedIn icon
+- Card class `.profile-card` (globals.css): warm parchment gradient surface `#F0EBE5→#E8E0D8→#DDD4C8` (160°), layered shadow system, orange border bloom on hover (`rgba(212,98,43,0.22)`)
+- Profile images: `/1.svg` (Hai), `/2.svg` (Abdi) — SVGs are transparent (no white bg)
+- Image container: `aspect-[4/4]` square, `overflow-hidden`, layered orange gradient background (radial bottom bloom + linear `#C8B8A8→#D4A882→#D4622B→#A03A18`)
+- Image rendering: `object-contain object-bottom scale-[1.32–1.35] origin-bottom` — subjects scaled up from bottom anchor, no crop risk; hover bumps scale slightly
+- Name `h3`: `color: #1A120E` (near-black espresso, darker than body text)
+- Role `.text-label`: `color: var(--color-accent)` orange — brand hierarchy anchor
+- Hairline divider between bio and contact details: `rgba(58,51,48,0.10)`
 - Contact details: `text-sm text-[var(--color-text-body)]`, links `hover:text-[var(--color-text)]`
-- LinkedIn icon: `absolute bottom-8 right-8`, h-6 w-6, opacity 80%→100%
+- LinkedIn icon: `absolute bottom-8 right-8`, h-6 w-6, opacity 50%→90%
 
 ### Services Page (Consolidated)
 **Route**: `/services` (accessible via "Tjänster" link in nav)
@@ -194,6 +212,61 @@ Price card border: rgba(58,51,48,0.25)  — heavier, signals hierarchy
 - Anchor links use `text-[var(--color-muted)] hover:text-[var(--color-text)]`
 
 **Subpage Redirects**: `/services/audit` and `/services/custom-build` → redirect to `/services`
+
+### Homepage Hero (current state)
+- **Full-bleed section**: `<section>` uses viewport-escape trick (`relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] w-screen`) — not container-clipped
+- **Layout**: 2-column split — `max-w-[1200px] grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16 items-center`
+  - Left: copy (h1, body, CTAs) — `items-start text-left`
+  - Right: KiteHero — `hidden md:flex items-center justify-end` (no card wrapper — bare on gradient)
+- **Background**: `HERO_BG = "hero-gradient-v1"` — absolute `inset-y-0`, `w-screen`, `background-size: cover`, `background-position: center top`
+- **Text colors**: h1 `text-white`, body `text-white/85 font-medium`
+- **H1 rolling word**: animated gradient span replaced by `<RollingWord />` (Client Component)
+  - Cycles: "manuellt arbete" → "repetitivt arbete" → "det manuella" → "det onödiga" — 4s per word
+  - `AnimatePresence mode="wait"` — `y: 35%→0%→-35%`, `opacity: 0→1→0`
+  - Transition: `y` 0.36s expo-out `[0.16,1,0.3,1]`, `opacity` 0.24s ease-out
+  - Clip container: `inline-block overflow-hidden align-bottom min-width: 14ch` — h1 never reflows
+  - Gradient: `linear-gradient(95deg, #E8833A 0%, #F5A05A 45%, #D4622B 100%)`
+  - `useReducedMotion` guard — static "manuellt arbete" when reduced motion preferred
+- **CTAs**: primary (`Kontakta oss`) + `ghostDark` variant (`Se hur det funkar`)
+- **Trust strip**: above ToolsTicker — centered eyebrow text flanked by `bg-white/15` hairlines, `text-white/45`
+
+### Homepage Section Order (below hero)
+PainOutcome → ROIBand → CasesSection → TimelineProcess → WhyKhyte
+
+### CasesSection.tsx
+- **Layout**: 2-col grid — testimonial card (left) + "Läs mer" placeholder (right), matched height
+- **Testimonial card**: `bg-[var(--color-card-bg)] rounded-2xl overflow-hidden flex flex-col`
+  - **Image area** (top): `aspect-[16/9]`, 5-layer radial gradient (espresso → amber → cream) replicating a warm swirl texture + inline SVG `feTurbulence` grain overlay (`mixBlendMode: overlay, opacity 0.18`)
+  - **Collab lockup** (centered over image): stacked — "JaTack AB" (`32px`, `font-weight 600`, Geist Sans, white, `-0.02em` tracking) → `×` (`20px`, `font-weight 300`, `rgba(255,255,255,0.45)`) → Khyte logo (`height 32px`, brand orange via CSS filter chain: `brightness(0) saturate(0) invert(1) sepia(1) saturate(4) hue-rotate(340deg) brightness(1.15)`)
+  - **Note**: `khyte-logo-text.svg` is a rasterized PNG-in-SVG — recoloring requires CSS filter chain, not fill
+  - **Content area**: mono category label + quote text (`text-lg/xl`)
+  - **Attribution**: hairline divider `rgba(58,51,48,0.10)` + initials avatar + name/role
+- **Placeholder card**: `rounded-2xl border-2 border-dashed border-[var(--color-border)]` — arrow icon + "Läs mer om våra case", links to `/cases`
+- **Dot indicator**: 2 dots below cards — active `bg-[var(--color-text)]`, inactive `bg-[var(--color-border)]`
+- **Swap image**: replace gradient `<div>` with `<img src="/case-photo.jpg" className="w-full aspect-[16/9] object-cover shrink-0" />` when real photo is ready
+- **Hero gradient asset**: `public/gradients/hero-gradient-v1.svg`
+  - Pure vector, no raster/base64
+  - **12 layers**: linear base + bottom bloom (cy=88%) + dark crown + upper bloom (cx=62% cy=8%) + left ember + right ember + roaming mid bloom (31s) + bottom-left ember (34s) + vignette (strengthened: r=80%, opacity 0.72, mid-stop at 65%) + horizontal edge bars (crushes outer 14% each side) + dual grain layers
+  - **Animated**: bottom bloom 18s (`1↔0.62`), upper bloom 26s (`0.65↔1`), left ember 24s (`1↔0.45`), right ember 22s (`0.70↔1`), roaming bloom 31s (`0.5→1→0.3→1→0.5`), btm-left ember 34s — all offset phases, ease-in-out spline
+  - **Grain**: two layers — fine grain (`baseFrequency 0.72/0.75`, 4 octaves, `opacity 0.22`) + coarser grain (`0.38/0.42`, 2 octaves, `opacity 0.10`) for depth variation
+
+### KiteHero.tsx (Hero right column visual — ACTIVE)
+- **SVG-based** — motion/react `motion.g` groups, `useAnimationFrame` loop, `useReducedMotion` guard
+- **Geometry** (viewBox 0 0 400 560): Tip (200,60), Left (100,220), Right (300,220), Belly (200,400)
+- **4 face panels**: each a triangle with independent linearGradient (orange top → dark espresso bottom)
+- **Spar + spine**: white opacity lines; intersection dots at all 5 vertices
+- **Tail**: 4 `motion.rect` segments hanging from belly, width/opacity cascade downward, independent x+y sine float (phase 0.30→1.50)
+- **Tether string**: dashed bezier `M 200 400 C 170 480 80 550 -40 620` — sways inside main `motion.g`
+- **Drop shadow**: separate `motion.g` (same MotionValues, same origin) — offset diamond `+14/+22px`, `rgba(0,0,0,0.30)` opacity 0.6, no filter
+- **5 ember particles**: `motion.circle` rising upward from below kite, looping fade-in/out via modulo progress, independent sine sway, brand orange palette
+- **Float**: kite body sin float ±13px @ 0.55 Hz, rotation ±3.2° @ 0.38 Hz
+- **Reduced motion**: `useReducedMotion()` — early return in loop, static kite visible
+- **No card wrapper** — bare SVG floats directly on hero gradient
+- Mobile: `hidden md:flex` — not rendered on mobile
+
+### NodeGraph.tsx (Archived — replaced by KiteHero)
+- Canvas-based node graph — see git history for details
+- Still on disk at `src/components/NodeGraph.tsx`
 
 ### Form Inputs
 - Height: `h-12` (matches buttons)
@@ -217,6 +290,26 @@ Components requiring `"use client"`:
 - `CalendlyButton.tsx` - Calendly popup
 - `TimelineProcess.tsx` - IntersectionObserver
 - `ToolsTicker.tsx` - Animation
+- `NodeGraph.tsx` - rAF canvas loop (archived — replaced by KiteHero)
+- `KiteHero.tsx` - motion/react hooks + useAnimationFrame ← ACTIVE
+- `RollingWord.tsx` - AnimatePresence word cycle, useReducedMotion guard ← ACTIVE
+- `DataSweep.tsx` - rAF canvas loop (archived)
+- `InteractiveGrid.tsx` - rAF canvas loop (archived)
+- `WorkflowVisual.tsx` - motion/react + IntersectionObserver (archived)
+- `VisualSection.tsx` - useRef for mouse tracking (archived)
+
+## Motion Library
+- Package: `motion` v12.34.3
+- Import: `from "motion/react"` (always — no other path)
+- Design rules: see `.claude/motion-design.md`
+
+## Scroll & Performance
+- **Lenis** v1.3.17 — smooth scroll, mounted globally via `src/components/SmoothScroll.tsx` (Client, renders null)
+- Lenis ticks inside Motion's `frame.update` scheduler (`frame` from `motion/react`) — shares one RAF loop with KiteHero, no competing `requestAnimationFrame` calls
+- **SmoothScroll cleanup**: `frame.cancelUpdate` / `frame.cancel` do not exist on `Batcher` type — cleanup is `lenis.destroy()` only (safe; Lenis handles its own RAF teardown)
+- **KiteHero** pauses animation via `IntersectionObserver` when off-screen (`inView` state guard in `useAnimationFrame`)
+- Hero bg div: `backgroundColor: "#1B0803"` fallback + `willChange: transform` + `translateZ(0)` for GPU promotion
+- `html/body` baseline: `background-color: var(--color-bg)` set in globals.css to prevent white flash on first paint
 
 ## SEO Setup
 - `metadataBase`: `https://khyteautomations.com`
@@ -264,3 +357,26 @@ npm run dev                     # Dev mode (Turbopack bug exists)
 | Global footer | `src/components/Footer.tsx` |
 | Buttons | `src/components/Button.tsx` |
 | Calendly button | `src/components/CalendlyButton.tsx` |
+| Hero gradient asset | `public/gradients/hero-gradient-v1.svg` |
+| Hero right visual | `src/components/KiteHero.tsx` |
+| Hero rolling word | `src/components/RollingWord.tsx` |
+| Motion design rules | `.claude/motion-design.md` |
+| Archived — node graph | `src/components/NodeGraph.tsx` |
+| Archived — chaos→order sweep | `src/components/DataSweep.tsx` |
+| Archived — interactive dot grid | `src/components/InteractiveGrid.tsx` |
+| Archived — pipeline node row | `src/components/WorkflowVisual.tsx` |
+
+## Priorities (next up)
+
+### P1 — CasesSection: real content
+- Swap initials avatar `K` + "Kund" / "Ekonomiavdelningen" with real client name/role
+- Replace gradient image area with real case photo when available (`/case-photo.jpg`, `object-cover`)
+- Cases page refinement to match CasesSection visual language
+
+### P2 — Spacing audit
+- Visual pass on section gaps after all homepage sections added
+- Cases section dual spacing risk: `.section-border` + inner mb may stack too large on some viewports
+
+### P3 — KiteHero refinements (optional)
+- Particle count / speed tuning
+- String control point tuning for more natural sag at different viewport sizes

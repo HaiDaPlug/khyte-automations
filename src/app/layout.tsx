@@ -4,6 +4,7 @@ import "./globals.css";
 import Nav from "@/components/Nav";
 import PreFooterCTA from "@/components/PreFooterCTA";
 import Footer from "@/components/Footer";
+import SmoothScroll from "@/components/SmoothScroll";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://khyteautomations.com"),
@@ -111,6 +112,7 @@ export default function RootLayout({
         />
       </head>
       <body className="main-wrapper">
+        <SmoothScroll />
         <Nav />
         {children}
         <div className="base-band">

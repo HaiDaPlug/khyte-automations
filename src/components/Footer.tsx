@@ -12,7 +12,7 @@ const Footer = () => {
           <div className="flex flex-col lg:flex-row justify-between gap-12 lg:gap-24">
             {/* Brand Column */}
             <div className="lg:w-1/3 flex flex-col items-start">
-              <Link href="/" className="mb-6 block">
+              <Link href="/" className="mb-4 block">
                 <Image
                   src="/khyte-logo-text.svg"
                   alt="Khyte Automations"
@@ -21,6 +21,8 @@ const Footer = () => {
                   className="h-16 w-auto"
                 />
               </Link>
+
+              <p className="text-[13px] text-white/50 mb-6">Automatisering för svenska företag.</p>
 
               <div className="mb-6 flex flex-col gap-3">
                 <p className="text-label !text-white/95 tracking-[0.12em]">Kontakt</p>
@@ -49,7 +51,7 @@ const Footer = () => {
                   src="/icons/linkedin.svg"
                   alt=""
                   aria-hidden="true"
-                  className="h-7 w-7"
+                  className="h-5 w-5"
                 />
               </a>
             </div>
@@ -60,6 +62,14 @@ const Footer = () => {
               <div className="flex flex-col gap-5">
                 <h4 className="text-label !text-white/95 tracking-[0.12em]">Utforska</h4>
                 <ul className="flex flex-col gap-3">
+                  <li>
+                    <Link
+                      href="/services"
+                      className="text-[15px] leading-[1.35] font-medium text-white/90 hover:text-white transition-colors duration-200 hover:underline underline-offset-4 decoration-white/35 hover:decoration-white/70 focus-visible:outline-none focus-visible:text-white focus-visible:underline"
+                    >
+                      Tjänster
+                    </Link>
+                  </li>
                   <li>
                     <Link
                       href="/cases"

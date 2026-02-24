@@ -1,0 +1,197 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 810" preserveAspectRatio="xMidYMid slice" width="1440" height="810">
+  <defs>
+    <!-- Base espresso fill -->
+    <linearGradient id="base" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#3D1108"/>
+      <stop offset="22%"  stop-color="#4A160A"/>
+      <stop offset="48%"  stop-color="#5E1E10"/>
+      <stop offset="70%"  stop-color="#8B3A1A"/>
+      <stop offset="86%"  stop-color="#C8784A"/>
+      <stop offset="100%" stop-color="#1B0803"/>
+    </linearGradient>
+
+    <!-- Central warm bloom — orange energy from lower-center -->
+    <radialGradient id="bloom-center" cx="50%" cy="88%" r="65%" gradientUnits="objectBoundingBox">
+      <stop offset="0%"   stop-color="#E8813A" stop-opacity="0.82"/>
+      <stop offset="35%"  stop-color="#C4541E" stop-opacity="0.52"/>
+      <stop offset="70%"  stop-color="#8B2E0A" stop-opacity="0.20"/>
+      <stop offset="100%" stop-color="#1B0803" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Dark crown top-center -->
+    <radialGradient id="lift-top" cx="50%" cy="0%" r="65%" gradientUnits="objectBoundingBox">
+      <stop offset="0%"   stop-color="#0D0401" stop-opacity="0.38"/>
+      <stop offset="50%"  stop-color="#1B0803" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#1B0803" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Upper bloom — warm ember off-center top -->
+    <radialGradient id="bloom-top" cx="62%" cy="8%" r="52%" gradientUnits="objectBoundingBox">
+      <stop offset="0%"   stop-color="#C4541E" stop-opacity="0.48"/>
+      <stop offset="40%"  stop-color="#8B2E0A" stop-opacity="0.22"/>
+      <stop offset="75%"  stop-color="#5E1E10" stop-opacity="0.08"/>
+      <stop offset="100%" stop-color="#1B0803" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Ambient left ember -->
+    <radialGradient id="ember-left" cx="12%" cy="55%" r="50%" gradientUnits="objectBoundingBox">
+      <stop offset="0%"   stop-color="#C45020" stop-opacity="0.38"/>
+      <stop offset="55%"  stop-color="#8B2E0A" stop-opacity="0.14"/>
+      <stop offset="100%" stop-color="#1B0803" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Ambient right ember -->
+    <radialGradient id="ember-right" cx="88%" cy="45%" r="48%" gradientUnits="objectBoundingBox">
+      <stop offset="0%"   stop-color="#D46030" stop-opacity="0.30"/>
+      <stop offset="55%"  stop-color="#8B3010" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#1B0803" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- NEW: Roaming mid bloom — slowly drifts left↔right across center -->
+    <radialGradient id="bloom-roam" cx="50%" cy="50%" r="42%" gradientUnits="objectBoundingBox">
+      <stop offset="0%"   stop-color="#E8833A" stop-opacity="0.28"/>
+      <stop offset="45%"  stop-color="#C4541E" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#1B0803" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- NEW: Bottom-left ember — fills lower left quadrant -->
+    <radialGradient id="ember-btm-left" cx="18%" cy="82%" r="44%" gradientUnits="objectBoundingBox">
+      <stop offset="0%"   stop-color="#C84818" stop-opacity="0.32"/>
+      <stop offset="50%"  stop-color="#8B2E0A" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#1B0803" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Corner vignette — stronger crush -->
+    <radialGradient id="vignette" cx="50%" cy="50%" r="80%" gradientUnits="objectBoundingBox">
+      <stop offset="0%"   stop-color="#1B0803" stop-opacity="0"/>
+      <stop offset="65%"  stop-color="#0D0401" stop-opacity="0.20"/>
+      <stop offset="100%" stop-color="#0D0401" stop-opacity="0.72"/>
+    </radialGradient>
+
+    <!-- Horizontal edge bars — darkens left + right margins -->
+    <linearGradient id="edge-bars" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%"   stop-color="#0A0200" stop-opacity="0.62"/>
+      <stop offset="14%"  stop-color="#0A0200" stop-opacity="0"/>
+      <stop offset="86%"  stop-color="#0A0200" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#0A0200" stop-opacity="0.55"/>
+    </linearGradient>
+
+    <!-- Film grain — coarser, denser -->
+    <filter id="grain" x="0%" y="0%" width="100%" height="100%" color-interpolation-filters="sRGB">
+      <feTurbulence
+        type="fractalNoise"
+        baseFrequency="0.72 0.75"
+        numOctaves="4"
+        stitchTiles="stitch"
+        result="noise"
+      />
+      <feColorMatrix type="saturate" values="0" in="noise" result="greyNoise"/>
+      <feBlend in="SourceGraphic" in2="greyNoise" mode="overlay" result="blended"/>
+      <feComposite in="blended" in2="SourceGraphic" operator="in"/>
+    </filter>
+
+    <!-- Coarser secondary grain layer -->
+    <filter id="grain2" x="0%" y="0%" width="100%" height="100%" color-interpolation-filters="sRGB">
+      <feTurbulence
+        type="fractalNoise"
+        baseFrequency="0.38 0.42"
+        numOctaves="2"
+        stitchTiles="stitch"
+        result="noise2"
+      />
+      <feColorMatrix type="saturate" values="0" in="noise2" result="greyNoise2"/>
+      <feBlend in="SourceGraphic" in2="greyNoise2" mode="overlay" result="blended2"/>
+      <feComposite in="blended2" in2="SourceGraphic" operator="in"/>
+    </filter>
+  </defs>
+
+  <!-- Layer 1: base linear gradient (static) -->
+  <rect width="1440" height="810" fill="url(#base)"/>
+
+  <!-- Layer 2: central orange bloom — slow breathe, wider range -->
+  <rect width="1440" height="810" fill="url(#bloom-center)">
+    <animate
+      attributeName="opacity"
+      values="1;0.62;1"
+      dur="18s"
+      repeatCount="indefinite"
+      calcMode="spline"
+      keySplines="0.45 0 0.55 1; 0.45 0 0.55 1"
+    />
+  </rect>
+
+  <!-- Layer 3: dark crown (static) -->
+  <rect width="1440" height="810" fill="url(#lift-top)"/>
+
+  <!-- Layer 3b: upper bloom — wider breathe range, offset phase -->
+  <rect width="1440" height="810" fill="url(#bloom-top)">
+    <animate
+      attributeName="opacity"
+      values="0.65;1;0.65"
+      dur="26s"
+      repeatCount="indefinite"
+      calcMode="spline"
+      keySplines="0.45 0 0.55 1; 0.45 0 0.55 1"
+    />
+  </rect>
+
+  <!-- Layer 4: left ember — wider range -->
+  <rect width="1440" height="810" fill="url(#ember-left)">
+    <animate
+      attributeName="opacity"
+      values="1;0.45;1"
+      dur="24s"
+      repeatCount="indefinite"
+      calcMode="spline"
+      keySplines="0.45 0 0.55 1; 0.45 0 0.55 1"
+    />
+  </rect>
+
+  <!-- Layer 5: right ember — wider range, offset phase -->
+  <rect width="1440" height="810" fill="url(#ember-right)">
+    <animate
+      attributeName="opacity"
+      values="0.70;1;0.70"
+      dur="22s"
+      repeatCount="indefinite"
+      calcMode="spline"
+      keySplines="0.45 0 0.55 1; 0.45 0 0.55 1"
+    />
+  </rect>
+
+  <!-- Layer 6: NEW roaming mid bloom — translates horizontally using a rect + clipPath trick via transform -->
+  <rect width="1440" height="810" fill="url(#bloom-roam)">
+    <animate
+      attributeName="opacity"
+      values="0.5;1;0.3;1;0.5"
+      dur="31s"
+      repeatCount="indefinite"
+      calcMode="spline"
+      keySplines="0.45 0 0.55 1;0.45 0 0.55 1;0.45 0 0.55 1;0.45 0 0.55 1"
+    />
+  </rect>
+
+  <!-- Layer 7: NEW bottom-left ember — slow pulse, long cycle -->
+  <rect width="1440" height="810" fill="url(#ember-btm-left)">
+    <animate
+      attributeName="opacity"
+      values="0.4;1;0.4"
+      dur="34s"
+      repeatCount="indefinite"
+      calcMode="spline"
+      keySplines="0.45 0 0.55 1; 0.45 0 0.55 1"
+    />
+  </rect>
+
+  <!-- Layer 8: corner vignette -->
+  <rect width="1440" height="810" fill="url(#vignette)"/>
+
+  <!-- Layer 8b: horizontal edge bars — crushes far left + right -->
+  <rect width="1440" height="810" fill="url(#edge-bars)"/>
+
+  <!-- Layer 9: fine film grain (primary) — opacity doubled -->
+  <rect width="1440" height="810" filter="url(#grain)" opacity="0.22" fill="#8B4020"/>
+
+  <!-- Layer 10: coarser grain (secondary) — adds depth and texture variation -->
+  <rect width="1440" height="810" filter="url(#grain2)" opacity="0.10" fill="#6B3010"/>
+</svg>

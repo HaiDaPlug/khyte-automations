@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ReactNode } from "react";
 
 interface ButtonProps {
-  variant: "primary" | "secondary";
+  variant: "primary" | "secondary" | "ghostDark";
   children: ReactNode;
   href?: string;
   className?: string;
@@ -22,6 +22,8 @@ export default function Button({
       "bg-[var(--color-cta-primary)] text-[var(--color-cta-text)] hover:bg-[var(--color-cta-primary-hover)]",
     secondary:
       "bg-transparent border border-[rgba(58,51,48,0.20)] text-[#3A3330] hover:bg-[rgba(58,51,48,0.06)]",
+    ghostDark:
+      "bg-white/5 border border-white/25 text-white hover:bg-white/10 hover:border-white/35 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40",
   };
 
   const combinedClassName = `${baseStyles} ${variantStyles[variant]} ${className}`;

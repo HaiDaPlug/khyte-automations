@@ -81,141 +81,115 @@ export default function AboutPage() {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
               {/* Profile 1 - Hai */}
-              <div className="bg-[var(--color-card-bg)] border border-[var(--color-border)] p-8 rounded-[4px] transition-colors duration-300 hover:border-[var(--color-muted)] relative">
-                {/* LinkedIn Icon - Bottom Right */}
-                <a
-                  href="https://www.linkedin.com/in/hai-pham-bui-8a9893395"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Hai Bui på LinkedIn"
-                  className="absolute bottom-8 right-8 opacity-80 hover:opacity-100 transition-opacity"
-                >
-                  <img
-                    src="/icons/linkedin.svg"
-                    alt=""
-                    aria-hidden="true"
-                    className="h-6 w-6"
-                  />
-                </a>
-
-                {/* Profile image */}
-                <div className="border border-[var(--color-border)] rounded-[4px] aspect-[5/6] mb-6 overflow-hidden">
+              <div className="profile-card group relative rounded-2xl overflow-hidden">
+                {/* Profile image — full bleed with gradient backdrop */}
+                <div className="aspect-[4/4] overflow-hidden" style={{ background: "radial-gradient(80% 45% at 50% 100%, rgba(232,131,58,0.6) 0%, transparent 75%), linear-gradient(180deg, #C8B8A8 0%, #D4A882 30%, #D4622B 75%, #A03A18 100%)" }}>
                   <Image
-                    src="/Hai Bui 2.png"
+                    src="/1.svg"
                     alt="Hai Bui"
                     width={1414}
                     height={2000}
-                    className="w-full h-full object-cover object-top"
+                    className="w-full h-full object-contain object-bottom scale-[1.32] origin-bottom transition-transform duration-500 group-hover:scale-[1.36]"
                   />
                 </div>
 
-                {/* Name */}
-                <h3 className="text-2xl font-bold text-[var(--color-text)] mb-2 tracking-tight leading-[1.3]">
-                  Hai Bui
-                </h3>
+                {/* Content area */}
+                <div className="p-8 pt-7 relative">
+                  {/* LinkedIn Icon - Bottom Right */}
+                  <a
+                    href="https://www.linkedin.com/in/hai-pham-bui-8a9893395"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Hai Bui på LinkedIn"
+                    className="absolute bottom-8 right-8 opacity-50 hover:opacity-90 transition-opacity"
+                  >
+                    <img src="/icons/linkedin.svg" alt="" aria-hidden="true" className="h-6 w-6" />
+                  </a>
 
-                {/* Role */}
-                <p className="text-label mb-4">
-                  Grundare och Automationsansvarig
-                </p>
+                  {/* Name + role */}
+                  <h3 className="text-2xl font-bold mb-1 tracking-tight leading-[1.3]" style={{ color: "#1A120E" }}>
+                    Hai Bui
+                  </h3>
+                  <p className="text-label mb-5" style={{ color: "var(--color-accent)" }}>
+                    Grundare och Automationsansvarig
+                  </p>
 
-                {/* Description */}
-                <p className="text-base leading-[1.5] text-[var(--color-text-body)] mb-4 max-w-[460px]">
-                  Har grundat Khyte Automations och driver bolaget idag. Värderar ärlighet, sårbarhet och gillar att ha kul. Väldigt nyfiken och är alltid öppen för nytt.
-                </p>
+                  {/* Description */}
+                  <p className="text-base leading-[1.6] text-[var(--color-text-body)] mb-6 max-w-[460px]">
+                    Har grundat Khyte Automations och driver bolaget idag. Värderar ärlighet, sårbarhet och gillar att ha kul. Väldigt nyfiken och är alltid öppen för nytt.
+                  </p>
 
-                {/* Contact Details */}
-                <div className="mt-6 space-y-2 text-sm text-[var(--color-text-body)]">
-                  <div>
-                    <span className="font-semibold">Favorittuggummi:</span> Melon Mint
-                  </div>
-                  <div>
-                    <span className="font-semibold">Mobil:</span>{" "}
-                    <a
-                      className="underline underline-offset-4 hover:text-[var(--color-text)] transition-colors"
-                      href="tel:+46700996838"
-                    >
-                      070-099 68 38
-                    </a>
-                  </div>
-                  <div>
-                    <span className="font-semibold">Mejl:</span>{" "}
-                    <a
-                      className="underline underline-offset-4 hover:text-[var(--color-text)] transition-colors"
-                      href="mailto:hai@khyteteam.com"
-                    >
-                      hai@khyteteam.com
-                    </a>
+                  {/* Divider */}
+                  <div style={{ borderTop: "1px solid rgba(58,51,48,0.10)", marginBottom: "1rem" }} />
+
+                  {/* Contact Details */}
+                  <div className="space-y-2 text-sm text-[var(--color-text-body)]">
+                    <div><span className="font-semibold">Favorittuggummi:</span> Melon Mint</div>
+                    <div>
+                      <span className="font-semibold">Mobil:</span>{" "}
+                      <a className="underline underline-offset-4 hover:text-[var(--color-text)] transition-colors" href="tel:+46700996838">070-099 68 38</a>
+                    </div>
+                    <div>
+                      <span className="font-semibold">Mejl:</span>{" "}
+                      <a className="underline underline-offset-4 hover:text-[var(--color-text)] transition-colors" href="mailto:hai@khyteteam.com">hai@khyteteam.com</a>
+                    </div>
                   </div>
                 </div>
               </div>
 
               {/* Profile 2 - Abdi */}
-              <div className="bg-[var(--color-card-bg)] border border-[var(--color-border)] p-8 rounded-[4px] transition-colors duration-300 hover:border-[var(--color-muted)] relative">
-                {/* LinkedIn Icon - Bottom Right */}
-                <a
-                  href="https://www.linkedin.com/in/abdimajiid-mohamud-233539329/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Abdimajiid Mohamud på LinkedIn"
-                  className="absolute bottom-8 right-8 opacity-80 hover:opacity-100 transition-opacity"
-                >
-                  <img
-                    src="/icons/linkedin.svg"
-                    alt=""
-                    aria-hidden="true"
-                    className="h-6 w-6"
-                  />
-                </a>
-
-                {/* Profile image */}
-                <div className="border border-[var(--color-border)] rounded-[4px] aspect-[5/6] mb-6 overflow-hidden">
+              <div className="profile-card group relative rounded-2xl overflow-hidden">
+                {/* Profile image — full bleed with gradient backdrop */}
+                <div className="aspect-[4/4] overflow-hidden" style={{ background: "radial-gradient(80% 45% at 50% 100%, rgba(232,131,58,0.6) 0%, transparent 75%), linear-gradient(180deg, #C8B8A8 0%, #D4A882 30%, #D4622B 75%, #A03A18 100%)" }}>
                   <Image
-                    src="/Abdi 2.png"
+                    src="/2.svg"
                     alt="Abdimajiid Mohamud"
                     width={1414}
                     height={2000}
-                    className="w-full h-full object-cover object-top"
+                    className="w-full h-full object-contain object-bottom scale-[1.35] origin-bottom transition-transform duration-500 group-hover:scale-[1.38]"
                   />
                 </div>
 
-                {/* Name */}
-                <h3 className="text-2xl font-bold text-[var(--color-text)] mb-2 tracking-tight leading-[1.3]">
-                  Abdimajiid Mohamud
-                </h3>
+                {/* Content area */}
+                <div className="p-8 pt-7 relative">
+                  {/* LinkedIn Icon - Bottom Right */}
+                  <a
+                    href="https://www.linkedin.com/in/abdimajiid-mohamud-233539329/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Abdimajiid Mohamud på LinkedIn"
+                    className="absolute bottom-8 right-8 opacity-50 hover:opacity-90 transition-opacity"
+                  >
+                    <img src="/icons/linkedin.svg" alt="" aria-hidden="true" className="h-6 w-6" />
+                  </a>
 
-                {/* Role */}
-                <p className="text-label mb-4">
-                  Operativt ansvarig - Säljare
-                </p>
+                  {/* Name + role */}
+                  <h3 className="text-2xl font-bold mb-1 tracking-tight leading-[1.3]" style={{ color: "#1A120E" }}>
+                    Abdimajiid Mohamud
+                  </h3>
+                  <p className="text-label mb-5" style={{ color: "var(--color-accent)" }}>
+                    Operativt ansvarig – Säljare
+                  </p>
 
-                {/* Description */}
-                <p className="text-base leading-[1.5] text-[var(--color-text-body)] mb-4 max-w-[460px]">
-                  Hjälper till som en "högra hand", och har en extremt bra känsla för lösningar. En social kille med ett stort driv och engagemang för att skapa värde för kunderna.
-                </p>
+                  {/* Description */}
+                  <p className="text-base leading-[1.6] text-[var(--color-text-body)] mb-6 max-w-[460px]">
+                    Hjälper till som en "högra hand", och har en extremt bra känsla för lösningar. En social kille med ett stort driv och engagemang för att skapa värde för kunderna.
+                  </p>
 
-                {/* Contact Details */}
-                <div className="mt-6 space-y-2 text-sm text-[var(--color-text-body)]">
-                  <div>
-                    <span className="font-semibold">Favoritaktivitet:</span> ICA Maxi
-                  </div>
-                  <div>
-                    <span className="font-semibold">Mobil:</span>{" "}
-                    <a
-                      className="underline underline-offset-4 hover:text-[var(--color-text)] transition-colors"
-                      href="tel:+46701234567"
-                    >
-                      070-676 69 52
-                    </a>
-                  </div>
-                  <div>
-                    <span className="font-semibold">Mejl:</span>{" "}
-                    <a
-                      className="underline underline-offset-4 hover:text-[var(--color-text)] transition-colors"
-                      href="mailto:abdimajiidmohamud@gmail.com"
-                    >
-                      abdimajiidmohamud@gmail.com
-                    </a>
+                  {/* Divider */}
+                  <div style={{ borderTop: "1px solid rgba(58,51,48,0.10)", marginBottom: "1rem" }} />
+
+                  {/* Contact Details */}
+                  <div className="space-y-2 text-sm text-[var(--color-text-body)]">
+                    <div><span className="font-semibold">Favoritaktivitet:</span> ICA Maxi</div>
+                    <div>
+                      <span className="font-semibold">Mobil:</span>{" "}
+                      <a className="underline underline-offset-4 hover:text-[var(--color-text)] transition-colors" href="tel:+46701234567">070-676 69 52</a>
+                    </div>
+                    <div>
+                      <span className="font-semibold">Mejl:</span>{" "}
+                      <a className="underline underline-offset-4 hover:text-[var(--color-text)] transition-colors" href="mailto:abdimajiidmohamud@gmail.com">abdimajiidmohamud@gmail.com</a>
+                    </div>
                   </div>
                 </div>
               </div>

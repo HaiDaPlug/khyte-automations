@@ -1,10 +1,14 @@
 import type { Metadata } from "next";
 import Button from "@/components/Button";
-import CaseCard from "@/components/CaseCard";
 import Container from "@/components/Container";
-import { DnaWeaveSvg } from "@/components/DnaWeaveSvg";
+import KiteHero from "@/components/KiteHero";
+import RollingWord from "@/components/RollingWord";
 import TimelineProcess from "@/components/TimelineProcess";
 import ToolsTicker from "@/components/ToolsTicker";
+import PainOutcome from "@/components/sections/PainOutcome";
+import ROIBand from "@/components/sections/ROIBand";
+import WhyKhyte from "@/components/sections/WhyKhyte";
+import CasesSection from "@/components/sections/CasesSection";
 
 export const metadata: Metadata = {
   title: "AI-automation för företag – Frigör tid från manuellt arbete",
@@ -15,48 +19,67 @@ export const metadata: Metadata = {
   },
 };
 
-const casePreviews = [
-  {
-    problem: '"Jag jobbar mycket med Allabolag."',
-    title: "Automatiserad informationsförädling",
-    description:
-      "Kunden jobbar mycket med informationssökning manuellt på allabolag. Istället gjorde vi hela processen automatisk.",
-  },
-  {
-    problem: '"Kan man hitta företag utanför topp 5 på Google?"',
-    title: "SEO-research på potentiella leads",
-    description:
-      "Ett system som hittar hemsidor utanför top 5, researchar sidan, kommer tillbaka med svagheter och styrkor samt förbättringar.",
-  },
-];
 
 export default function Home() {
+  const HERO_BG = "hero-gradient-v1";
+
   return (
     <div>
       <Container>
         {/* Hero Section */}
-        <section className="min-h-[100dvh] flex flex-col justify-center items-center pt-32 pb-20 px-4 relative overflow-hidden">
-          <div className="max-w-[900px] mx-auto text-center">
-            <h1 className="text-hero text-5xl md:text-7xl mb-8 drop-shadow-sm text-[var(--color-text)]">
-              AI som tar hand om jobbet du inte behöver göra.
-            </h1>
+        <section className="relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] w-screen min-h-[100dvh] flex flex-col justify-center items-center pt-32 pb-20 px-4 overflow-hidden isolate">
+          <div
+            aria-hidden="true"
+            className="absolute inset-y-0 left-1/2 -translate-x-1/2 w-screen -z-10 pointer-events-none"
+            style={{
+              backgroundImage: `url("/gradients/${HERO_BG}.svg")`,
+              backgroundSize: "cover",
+              backgroundPosition: "center top",
+              backgroundRepeat: "no-repeat",
+              backgroundColor: "#1B0803",
+              willChange: "transform",
+              transform: "translateZ(0)",
+            }}
+          />
 
-            <p className="text-xl text-[var(--color-text-body)] max-w-[580px] mx-auto leading-relaxed mb-12">
-              Vi eliminerar manuella fel och frigör tid för det som faktiskt skapar värde. Kundnära, effektivt och byggt för att hålla.
-            </p>
+          <div className="w-full max-w-[1200px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16 items-center">
+            {/* Left: copy */}
+            <div className="flex flex-col items-start text-left">
+              <h1 className="text-hero text-5xl md:text-7xl mb-8 drop-shadow-sm text-white">
+                Automatisering som tar bort{" "}
+                <RollingWord />{" "}
+                - utan onödigt skit.
+              </h1>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-10">
-              <Button variant="primary" href="/contact">
-                Kontakta oss
-              </Button>
-              <Button variant="secondary" href="/cases">
-                Se hur det funkar
-              </Button>
+              <p className="text-xl text-white/85 font-medium max-w-[520px] leading-relaxed mb-10">
+                Vi eliminerar manuella fel och frigör tid för det som faktiskt skapar värde. Kundnära, effektivt och byggt för att hålla.
+              </p>
+
+              <div className="flex flex-col sm:flex-row items-start gap-4">
+                <Button variant="primary" href="/contact">
+                  Kontakta oss
+                </Button>
+                <Button variant="ghostDark" href="/cases">
+                  Se hur det funkar
+                </Button>
+              </div>
+            </div>
+
+            {/* Right: kite illustration — hidden on mobile */}
+            <div aria-hidden="true" className="hidden md:flex items-center justify-end">
+              <KiteHero />
             </div>
           </div>
 
-          {/* Tools Ticker */}
-          <div className="mt-20">
+          {/* Trust strip + Tools Ticker */}
+          <div className="mt-20 w-full">
+            <div className="flex items-center gap-4 mb-6 px-4 max-w-[520px] mx-auto">
+              <div className="flex-1 h-px bg-white/15" />
+              <span className="shrink-0 text-[11px] font-semibold tracking-[0.10em] uppercase text-white/45 whitespace-nowrap">
+                Bygger och integrerar med era verktyg
+              </span>
+              <div className="flex-1 h-px bg-white/15" />
+            </div>
             <ToolsTicker />
           </div>
 
@@ -87,51 +110,16 @@ export default function Home() {
         {/* Spacer */}
         <div className="h-12 md:h-16"></div>
 
-        {/* Cases Section */}
-        <section className="section">
-          <span className="text-label mb-8">Senaste projekt</span>
+        <PainOutcome />
+        <ROIBand />
 
-          <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-6 mb-8">
-            {casePreviews.slice(0, 2).map((caseItem, index) => (
-              <CaseCard
-                key={index}
-                problem={caseItem.problem}
-                title={caseItem.title}
-                description={caseItem.description}
-              />
-            ))}
-          </div>
-
-          <p className="text-center mt-8 mb-[var(--spacing-section)]">
-            <a href="/cases" className="text-[var(--color-muted)] hover:text-[var(--color-text)] underline transition-colors">
-              Se mer av våra cases →
-            </a>
-          </p>
-        </section>
+        <CasesSection />
 
         {/* Process Section */}
         <TimelineProcess />
 
-        {/* Visual Section */}
-        <section className="py-[100px] border-t border-[var(--color-border)]">
-          <div className="flex flex-col items-center text-center">
-            <h2 className="text-5xl md:text-6xl font-semibold mb-4 text-[var(--color-text)] tracking-[-0.01em] leading-[1.2]">
-              Redo att automatisera bort tråkiga uppgifter?
-            </h2>
-            <p className="text-[var(--color-text-body)] text-base leading-[1.6] mb-10 max-w-2xl">
-              Boka ett samtal så går vi igenom hur automation kan frigöra tid
-              i din verksamhet.
-            </p>
+        <WhyKhyte />
 
-            <div className="mt-6 w-full flex justify-center">
-              <DnaWeaveSvg
-                className="max-w-full h-auto rounded-[4px] max-h-80 md:max-h-[320px] opacity-[0.24]"
-                style={{ color: 'var(--color-muted)' }}
-                aria-label="DNA weave animation"
-              />
-            </div>
-          </div>
-        </section>
       </Container>
     </div>
   );

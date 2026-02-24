@@ -209,6 +209,8 @@ html,
 body {
   margin: 0;
   padding: 0;
+  /* Prevent white flash on scroll/paint before hero bg renders */
+  background-color: var(--color-bg);
 }
 
 body {
@@ -405,6 +407,18 @@ details[open] > div {
   details[open] > div {
     animation: none;
   }
+}
+
+/* Profile card — about page */
+.profile-card {
+  background: linear-gradient(160deg, #F0EBE5 0%, #E8E0D8 55%, #DDD4C8 100%);
+  border: 1px solid rgba(58, 51, 48, 0.10);
+  box-shadow: 0 2px 8px rgba(58, 51, 48, 0.06), 0 12px 32px rgba(58, 51, 48, 0.08);
+  transition: box-shadow 300ms ease, border-color 300ms ease;
+}
+.profile-card:hover {
+  box-shadow: 0 4px 16px rgba(58, 51, 48, 0.10), 0 20px 48px rgba(58, 51, 48, 0.13);
+  border-color: rgba(212, 98, 43, 0.22);
 }
 
 /* FAQ chevron rotation */
