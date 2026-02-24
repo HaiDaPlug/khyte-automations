@@ -12,10 +12,11 @@ const LOGO_TOOLS = [
   { src: "/Gmail_icon_(2020).svg", alt: "Gmail", invert: false },
 ];
 
+// Computed once at module load — never recreated on re-render
+const TICKER_ROW = Array.from({ length: 10 }, () => LOGO_TOOLS).flat();
+
 export default function ToolsTicker() {
-  // Make one row long enough that the animation never "runs out" on wide screens
-  const repeats = 10;
-  const row = Array.from({ length: repeats }, () => LOGO_TOOLS).flat();
+  const row = TICKER_ROW;
 
   const Row = ({ ariaHidden }: { ariaHidden?: boolean }) => (
     <div

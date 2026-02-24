@@ -389,15 +389,39 @@ npm run dev                     # Dev mode (Turbopack bug exists)
 
 ## Priorities (next up)
 
-### P1 — CasesSection: real content ✓ (done v1.63)
-- Sebastian Andersson photo, name, role, real testimonial — all live
-- Replace gradient image area with real case photo when available (`/case-photo.jpg`, `object-cover`)
+### P1 — World-class layout on all pages — make the design OURS
+- Full visual pass: every page should feel unmistakably Khyte (warm espresso palette, tight typography, editorial spacing)
+- Homepage: hero, sections, cards — all cohesive and premium
+- Services, About, Cases, Contact: apply design system consistently, no generic patterns
+- Replace any remaining placeholder UI, lorem spacing, or off-brand elements
+- CasesSection: swap gradient image for real case photo when available (`/case-photo.jpg`)
+
+### P2 — Add FAQ + social proof (COI) to homepage
+- **FAQ section**: expandable `<details>` accordion (reuse Services FAQ pattern), Swedish copy, placed after WhyKhyte
+- **COI / trust indicators**: logos, stats, or trust strip that signals credibility (client logos, numbers, badges)
+- Ensure both sections feel native to the homepage rhythm — not bolted on
+
+### P3 — Sharpen every page with our design system
+- Services, About, Cases, Contact: audit against design tokens (colors, spacing, typography, button variants)
+- Verify `.btn-cta` is on all primary actions, `text-label` on all eyebrows, section spacing consistent
+- Eliminate any one-off inline styles that should be tokenized
+- Mobile pass on all pages
+
+### P4 — Nail our communication on the website
+- Audit all copy for clarity, directness, and brand voice (confident, no hype, results-oriented)
+- Hero h1, subheadline, section headers, CTA labels — all should feel earned and specific
+- Replace placeholder/generic copy with real differentiators
+- Ensure Swedish is natural and professional throughout
+
+### P5 — CasesSection: real photo + Cases page
+- Replace gradient image area with real case photo (`/case-photo.jpg`, `object-cover`)
 - Cases page refinement to match CasesSection visual language
 
-### P2 — Spacing audit
-- Visual pass on section gaps after all homepage sections added
-- Cases section dual spacing risk: `.section-border` + inner mb may stack too large on some viewports
+### P6 — "Vår vision" page
+- New route `/vision` — standalone page communicating the long-term mission and values of Khyte
+- Should feel editorial and personal, not corporate — who we are, why we do this, where we're going
+- Add to nav or footer link as appropriate once live
 
-### P3 — KiteHero refinements (optional)
-- Particle count / speed tuning
+### Backlog
+- KiteHero: particle count / speed tuning (optional)
 - String control point tuning for more natural sag at different viewport sizes

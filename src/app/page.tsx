@@ -21,24 +21,52 @@ export const metadata: Metadata = {
 
 
 export default function Home() {
-  const HERO_BG = "hero-gradient-v1";
-
   return (
     <div>
       <Container>
         {/* Hero Section */}
         <section className="relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] w-screen min-h-[100dvh] flex flex-col justify-center items-center pt-32 pb-20 px-4 overflow-hidden isolate">
+          {/* Base gradient */}
           <div
             aria-hidden="true"
             className="absolute inset-y-0 left-1/2 -translate-x-1/2 w-screen -z-10 pointer-events-none"
             style={{
-              backgroundImage: `url("/gradients/${HERO_BG}.svg")`,
+              backgroundImage: `url("/gradients/hero-gradient-v1.webp")`,
               backgroundSize: "cover",
               backgroundPosition: "center top",
               backgroundRepeat: "no-repeat",
               backgroundColor: "#1B0803",
-              willChange: "transform",
-              transform: "translateZ(0)",
+            }}
+          />
+          {/* Vignette: darkens corners + edges, hides banding at perimeter */}
+          <div
+            aria-hidden="true"
+            className="absolute inset-y-0 left-1/2 -translate-x-1/2 w-screen -z-10 pointer-events-none"
+            style={{
+              background: `
+                radial-gradient(ellipse 80% 70% at 50% 50%, transparent 40%, rgba(11,4,2,0.55) 100%),
+                linear-gradient(to right, rgba(11,4,2,0.45) 0%, transparent 18%, transparent 82%, rgba(11,4,2,0.45) 100%)
+              `,
+            }}
+          />
+          {/* Warm glow behind headline — left-center bloom */}
+          <div
+            aria-hidden="true"
+            className="absolute inset-y-0 left-1/2 -translate-x-1/2 w-screen -z-10 pointer-events-none"
+            style={{
+              background: `radial-gradient(ellipse 55% 60% at 28% 42%, rgba(212,98,43,0.22) 0%, transparent 70%)`,
+            }}
+          />
+          {/* Noise overlay — tiled static grain, hides WebP compression banding */}
+          <div
+            aria-hidden="true"
+            className="absolute inset-y-0 left-1/2 -translate-x-1/2 w-screen -z-10 pointer-events-none"
+            style={{
+              backgroundImage: `url("/noise.webp")`,
+              backgroundRepeat: "repeat",
+              backgroundSize: "128px 128px",
+              opacity: 0.045,
+              mixBlendMode: "screen",
             }}
           />
 
@@ -48,7 +76,7 @@ export default function Home() {
               <h1 className="text-hero text-5xl md:text-7xl mb-8 drop-shadow-sm text-white">
                 Automatisering som tar bort{" "}
                 <RollingWord />{" "}
-                - utan onödigt skit.
+                - utan onödigt strul.
               </h1>
 
               <p className="text-xl text-white/85 font-medium max-w-[520px] leading-relaxed mb-10">

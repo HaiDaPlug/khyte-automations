@@ -1,7 +1,12 @@
 "use client";
 
-import { motion, useAnimationFrame, useMotionValue, useReducedMotion } from "motion/react";
+import { motion, useAnimationFrame, useMotionValue, useReducedMotion, type MotionValue } from "motion/react";
 import { useRef, useEffect, useState } from "react";
+
+type ParticleConfig = {
+  x: MotionValue<number>; y: MotionValue<number>; o: MotionValue<number>;
+  baseX: number; baseY: number; speed: number; sway: number; phase: number; opBase: number;
+};
 
 /**
  * KiteHero — animated kite illustration
@@ -26,6 +31,7 @@ export default function KiteHero() {
   const prefersReduced = useReducedMotion();
   const containerRef = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(true);
+  const particlesRef = useRef<ParticleConfig[] | null>(null);
 
   useEffect(() => {
     const el = containerRef.current;
@@ -55,6 +61,16 @@ export default function KiteHero() {
   const p4x = useMotionValue(248); const p4y = useMotionValue(510); const p4o = useMotionValue(0);
   const p5x = useMotionValue(200); const p5y = useMotionValue(530); const p5o = useMotionValue(0);
 
+  useEffect(() => {
+    particlesRef.current = [
+      { x: p1x, y: p1y, o: p1o, baseX: 170, baseY: 440, speed: 18, sway: 6,  phase: 0.0,  opBase: 0.30 },
+      { x: p2x, y: p2y, o: p2o, baseX: 230, baseY: 470, speed: 22, sway: 8,  phase: 1.1,  opBase: 0.20 },
+      { x: p3x, y: p3y, o: p3o, baseX: 155, baseY: 500, speed: 15, sway: 5,  phase: 2.3,  opBase: 0.38 },
+      { x: p4x, y: p4y, o: p4o, baseX: 248, baseY: 510, speed: 27, sway: 9,  phase: 0.7,  opBase: 0.15 },
+      { x: p5x, y: p5y, o: p5o, baseX: 200, baseY: 530, speed: 20, sway: 7,  phase: 1.8,  opBase: 0.25 },
+    ];
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   useAnimationFrame((_, delta) => {
     if (prefersReduced || !inView) return;
     t.current += delta / 1000;
@@ -82,22 +98,17 @@ export default function KiteHero() {
     t4x.set(Math.sin(T * SWAY + 1.50) * 21);
 
     // Ember particles — each rises from its base, fades in, fades out, loops
-    const PARTICLES = [
-      { x: p1x, y: p1y, o: p1o, baseX: 170, baseY: 440, speed: 18, sway: 6,  phase: 0.0,  opBase: 0.30 },
-      { x: p2x, y: p2y, o: p2o, baseX: 230, baseY: 470, speed: 22, sway: 8,  phase: 1.1,  opBase: 0.20 },
-      { x: p3x, y: p3y, o: p3o, baseX: 155, baseY: 500, speed: 15, sway: 5,  phase: 2.3,  opBase: 0.38 },
-      { x: p4x, y: p4y, o: p4o, baseX: 248, baseY: 510, speed: 27, sway: 9,  phase: 0.7,  opBase: 0.15 },
-      { x: p5x, y: p5y, o: p5o, baseX: 200, baseY: 530, speed: 20, sway: 7,  phase: 1.8,  opBase: 0.25 },
-    ];
-
-    for (const p of PARTICLES) {
-      const RISE = 480; // total pixels each particle travels before looping
-      const progress = (T * p.speed + p.phase * 30) % RISE;
-      p.y.set(p.baseY - progress);
-      p.x.set(p.baseX + Math.sin(T * 0.9 + p.phase) * p.sway);
-      const fadeIn  = Math.min(progress / 80, 1);
-      const fadeOut = 1 - Math.max(0, (progress - 360) / 120);
-      p.o.set(p.opBase * fadeIn * fadeOut);
+    const particles = particlesRef.current;
+    if (particles) {
+      for (const p of particles) {
+        const RISE = 480; // total pixels each particle travels before looping
+        const progress = (T * p.speed + p.phase * 30) % RISE;
+        p.y.set(p.baseY - progress);
+        p.x.set(p.baseX + Math.sin(T * 0.9 + p.phase) * p.sway);
+        const fadeIn  = Math.min(progress / 80, 1);
+        const fadeOut = 1 - Math.max(0, (progress - 360) / 120);
+        p.o.set(p.opBase * fadeIn * fadeOut);
+      }
     }
   });
 
