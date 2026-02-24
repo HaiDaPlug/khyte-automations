@@ -43,3 +43,14 @@ next-env.d.ts
 # Windows
 nul
 .claude/settings.local.json
+
+# Claude Code temp files
+tmpclaude-*
+.claude/worktrees/
+
+# Dev scratch files
+auditpagegemini.tsx
+custombuildgemini.tsx
+dashboard-visual-test.html
+geminisvg.html
+html_data.md
