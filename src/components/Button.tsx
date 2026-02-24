@@ -19,7 +19,7 @@ export default function Button({
 
   const variantStyles = {
     primary:
-      "bg-[var(--color-cta-primary)] text-[var(--color-cta-text)] hover:bg-[var(--color-cta-primary-hover)]",
+      "btn-cta",
     secondary:
       "bg-transparent border border-[rgba(58,51,48,0.20)] text-[#3A3330] hover:bg-[rgba(58,51,48,0.06)]",
     ghostDark:

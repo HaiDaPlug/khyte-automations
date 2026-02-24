@@ -132,7 +132,7 @@ export default function Nav() {
         <div className="hidden md:flex items-center">
           <button
             onClick={handleCalendlyClick}
-            className="bg-[var(--color-cta-primary)] text-[var(--color-cta-text)] text-sm font-bold px-6 py-2.5 rounded-full hover:bg-[var(--color-cta-primary-hover)] transition-all shadow-sm hover:shadow-md shrink-0 cursor-pointer whitespace-nowrap"
+            className="btn-cta text-sm font-bold px-6 py-2.5 rounded-full shrink-0 cursor-pointer whitespace-nowrap"
           >
             Boka kostnadsfritt samtal
           </button>
@@ -195,7 +195,7 @@ export default function Nav() {
             <Link
               href="/contact"
               onClick={() => setOpen(false)}
-              className="block w-full text-center bg-[var(--color-cta-primary)] text-[var(--color-cta-text)] font-bold py-3 rounded-full hover:bg-[var(--color-cta-primary-hover)]"
+              className="block w-full text-center btn-cta font-bold py-3 rounded-full"
             >
               Kontakta oss
             </Link>

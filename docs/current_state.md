@@ -1,4 +1,4 @@
-# Khyte Automations - Current State (v1.61)
+# Khyte Automations - Current State (v1.63)
 
 ## Tech Stack
 - **Next.js** 16.1.6 (App Router)
@@ -33,6 +33,7 @@ src/
 │   ├── Footer.tsx           # Global footer
 │   ├── CaseCard.tsx         # Case card component
 │   ├── Container.tsx        # 1100px max-width wrapper
+│   ├── PageTransition.tsx   # Route-change: scroll-to-top + fade-in (Client)
 │   ├── DnaWeaveSvg.tsx      # Animated SVG (unused on homepage)
 │   ├── TimelineProcess.tsx  # Timeline with scan animation (Client)
 │   ├── ToolsTicker.tsx      # Logo ticker (Client)
@@ -114,6 +115,8 @@ Price card border: rgba(58,51,48,0.25)  — heavier, signals hierarchy
 ## globals.css Utilities, Animations & Overlays
 - `.base-band`: Rounded slab card with layered gradient via `::before`, grain overlay via `::after`, children `z-index: 1`
 - `.text-label`: 13px, 700 weight, 0.05em tracking, uppercase, **`color: var(--color-text)`** (overridden in footer with `!text-white/95`)
+- `.btn-cta`: Primary CTA gradient — `linear-gradient(180deg, #C96A24 0%, #B8521C 100%)`, white text, inset highlight/shadow, `brightness(1.10)` on hover with orange glow. Applied to `primary` + `warm` variants in Button + CalendlyButton, and Nav CTAs.
+- `.page-enter`: Page fade-in animation — `pageFadeIn` keyframe, `opacity: 0 + translateY(6px)` → natural, 0.32s expo-out. Triggered on every route change via `PageTransition`.
 - `slideDown` (150ms ease-out): fires on `details[open] > div` — FAQ accordion. Reduced-motion guard included.
 - `.faq-chevron`: rotates 180° on `details[open] > summary .faq-chevron`.
 
@@ -127,7 +130,7 @@ Price card border: rgba(58,51,48,0.25)  — heavier, signals hierarchy
 - Height: `h-12` (48px fixed)
 - Padding: `px-8`
 - Radius: `rounded-md`
-- Primary: `bg-[var(--color-cta-primary)] text-[var(--color-cta-text)] hover:bg-[var(--color-cta-primary-hover)]`
+- Primary: `btn-cta` utility class (gradient, see globals.css)
 - Secondary: `bg-transparent border border-[rgba(58,51,48,0.20)] text-[#3A3330] hover:bg-[rgba(58,51,48,0.06)]`
 - **ghostDark** *(hero-only)*: `bg-white/5 border border-white/25 text-white hover:bg-white/10 hover:border-white/35` — for use on dark hero backgrounds only (currently: homepage hero secondary CTA)
 
@@ -136,9 +139,9 @@ Price card border: rgba(58,51,48,0.25)  — heavier, signals hierarchy
 - Padding: `px-8`
 - Radius: `rounded-md`
 - **Three variants:**
-  - `primary`: `bg-[var(--color-cta-primary)] text-[var(--color-cta-text)] hover:bg-[var(--color-cta-primary-hover)]` (theme-aware)
+  - `primary`: `btn-cta` utility class (gradient, see globals.css)
   - `secondary`: `bg-transparent border border-[rgba(58,51,48,0.20)] text-[#3A3330] hover:bg-[rgba(58,51,48,0.06)]`
-  - `warm`: `bg-[var(--color-warm-accent)] text-[var(--color-warm-ink)] hover:bg-[var(--color-warm-accent-hover)]` (for PreFooterCTA — gradient background)
+  - `warm`: `btn-cta` utility class (same gradient, works on dark espresso base-band)
 - Triggers Calendly popup via `window.Calendly.initPopupWidget()`
 
 ### Nav.tsx (Floating Capsule)
@@ -236,19 +239,23 @@ PainOutcome → ROIBand → CasesSection → TimelineProcess → WhyKhyte
 ### CasesSection.tsx
 - **Layout**: 2-col grid — testimonial card (left) + "Läs mer" placeholder (right), matched height
 - **Testimonial card**: `bg-[var(--color-card-bg)] rounded-2xl overflow-hidden flex flex-col`
-  - **Image area** (top): `aspect-[16/9]`, 5-layer radial gradient (espresso → amber → cream) replicating a warm swirl texture + inline SVG `feTurbulence` grain overlay (`mixBlendMode: overlay, opacity 0.18`)
-  - **Collab lockup** (centered over image): stacked — "JaTack AB" (`32px`, `font-weight 600`, Geist Sans, white, `-0.02em` tracking) → `×` (`20px`, `font-weight 300`, `rgba(255,255,255,0.45)`) → Khyte logo (`height 32px`, brand orange via CSS filter chain: `brightness(0) saturate(0) invert(1) sepia(1) saturate(4) hue-rotate(340deg) brightness(1.15)`)
-  - **Note**: `khyte-logo-text.svg` is a rasterized PNG-in-SVG — recoloring requires CSS filter chain, not fill
-  - **Content area**: mono category label + quote text (`text-lg/xl`)
-  - **Attribution**: hairline divider `rgba(58,51,48,0.10)` + initials avatar + name/role
+  - **Image area** (top): `aspect-[16/9]`, 5-layer radial gradient (espresso → amber → cream) + grain overlay (`mixBlendMode: overlay, opacity 0.18`)
+  - **Collab lockup** (centered over image): "JaTack AB" (`clamp(28px,5vw,42px)`, weight 700, white, `-0.04em` tracking, text-shadow) → SVG `×` cross (14×14, diagonal lines, `opacity 0.40`) → Khyte logo (`height 64px`, white, `drop-shadow`)
+  - **Note**: `khyte-logo-text.svg` bakes white pixels internally via `feColorMatrix` — CSS filter recoloring does not work reliably; keep white + drop-shadow for legibility
+  - **Content area**: mono category label + real testimonial quote (Sebastian Andersson, JaTack AB)
+  - **Attribution**: hairline divider + `sebastian.jpg` avatar (`w-14 h-14`, `object-cover`, `object-position: center top`) + name/role
 - **Placeholder card**: `rounded-2xl border-2 border-dashed border-[var(--color-border)]` — arrow icon + "Läs mer om våra case", links to `/cases`
 - **Dot indicator**: 2 dots below cards — active `bg-[var(--color-text)]`, inactive `bg-[var(--color-border)]`
 - **Swap image**: replace gradient `<div>` with `<img src="/case-photo.jpg" className="w-full aspect-[16/9] object-cover shrink-0" />` when real photo is ready
-- **Hero gradient asset**: `public/gradients/hero-gradient-v1.svg`
-  - Pure vector, no raster/base64
-  - **12 layers**: linear base + bottom bloom (cy=88%) + dark crown + upper bloom (cx=62% cy=8%) + left ember + right ember + roaming mid bloom (31s) + bottom-left ember (34s) + vignette (strengthened: r=80%, opacity 0.72, mid-stop at 65%) + horizontal edge bars (crushes outer 14% each side) + dual grain layers
-  - **Animated**: bottom bloom 18s (`1↔0.62`), upper bloom 26s (`0.65↔1`), left ember 24s (`1↔0.45`), right ember 22s (`0.70↔1`), roaming bloom 31s (`0.5→1→0.3→1→0.5`), btm-left ember 34s — all offset phases, ease-in-out spline
-  - **Grain**: two layers — fine grain (`baseFrequency 0.72/0.75`, 4 octaves, `opacity 0.22`) + coarser grain (`0.38/0.42`, 2 octaves, `opacity 0.10`) for depth variation
+- **Hero background**: `public/gradients/hero-gradient-v1.webp` (14KB) — bitmapped, zero paint cost
+  - Source SVG preserved at `public/gradients/hero-gradient-v1.svg` (static, no SMIL/filters) — re-export with sharp if needed
+  - **Layer stack in page.tsx** (all `aria-hidden`, `absolute`, `-z-10`, `pointer-events-none`):
+    1. WebP base — `backgroundImage: url("/gradients/hero-gradient-v1.webp")`, `backgroundSize: cover`
+    2. Vignette — `radial-gradient` crushes corners + `linear-gradient` darkens left/right edges
+    3. Warm glow — `radial-gradient` ellipse at `28% 42%` (behind h1), `rgba(212,98,43,0.22)`
+    4. Noise tile — `public/noise.webp` (128×128, 10KB), tiled `repeat`, `opacity: 0.045`, `mixBlendMode: screen`
+  - **Performance**: SMIL animations removed, `feTurbulence` filters removed, no `willChange`/`contain` needed
+  - **Re-export command**: `node -e "require('sharp')(fs.readFileSync('public/gradients/hero-gradient-v1.svg')).resize(1440,810).webp({quality:90}).toFile('public/gradients/hero-gradient-v1.webp', cb)"`
 
 ### KiteHero.tsx (Hero right column visual — ACTIVE)
 - **SVG-based** — motion/react `motion.g` groups, `useAnimationFrame` loop, `useReducedMotion` guard
@@ -263,6 +270,7 @@ PainOutcome → ROIBand → CasesSection → TimelineProcess → WhyKhyte
 - **Reduced motion**: `useReducedMotion()` — early return in loop, static kite visible
 - **No card wrapper** — bare SVG floats directly on hero gradient
 - Mobile: `hidden md:flex` — not rendered on mobile
+- **Perf (patched)**: ember `PARTICLES` array moved to `particlesRef` (init in `useEffect([])`), no per-frame allocation
 
 ### NodeGraph.tsx (Archived — replaced by KiteHero)
 - Canvas-based node graph — see git history for details
@@ -293,6 +301,7 @@ Components requiring `"use client"`:
 - `NodeGraph.tsx` - rAF canvas loop (archived — replaced by KiteHero)
 - `KiteHero.tsx` - motion/react hooks + useAnimationFrame ← ACTIVE
 - `RollingWord.tsx` - AnimatePresence word cycle, useReducedMotion guard ← ACTIVE
+- `PageTransition.tsx` - usePathname route watcher, scroll-to-top + fade-in ← ACTIVE
 - `DataSweep.tsx` - rAF canvas loop (archived)
 - `InteractiveGrid.tsx` - rAF canvas loop (archived)
 - `WorkflowVisual.tsx` - motion/react + IntersectionObserver (archived)
@@ -357,19 +366,31 @@ npm run dev                     # Dev mode (Turbopack bug exists)
 | Global footer | `src/components/Footer.tsx` |
 | Buttons | `src/components/Button.tsx` |
 | Calendly button | `src/components/CalendlyButton.tsx` |
-| Hero gradient asset | `public/gradients/hero-gradient-v1.svg` |
+| Hero background (active) | `public/gradients/hero-gradient-v1.webp` |
+| Hero gradient source SVG | `public/gradients/hero-gradient-v1.svg` |
+| Noise tile | `public/noise.webp` |
 | Hero right visual | `src/components/KiteHero.tsx` |
 | Hero rolling word | `src/components/RollingWord.tsx` |
 | Motion design rules | `.claude/motion-design.md` |
+| Page transition | `src/components/PageTransition.tsx` |
+| Client photo (Sebastian) | `public/sebastian.jpg` |
 | Archived — node graph | `src/components/NodeGraph.tsx` |
 | Archived — chaos→order sweep | `src/components/DataSweep.tsx` |
 | Archived — interactive dot grid | `src/components/InteractiveGrid.tsx` |
 | Archived — pipeline node row | `src/components/WorkflowVisual.tsx` |
 
+## Performance Notes (v1.62)
+- **Hero background**: WebP bitmap (`hero-gradient-v1.webp`) — zero SMIL, zero SVG filters, zero per-frame paint
+- **KiteHero**: ember `PARTICLES` moved to `particlesRef`, init once in `useEffect([])` — no per-frame allocation
+- **TimelineProcess**: `useEffect` deps `[]` + `observer.disconnect()` — one-shot IO, no re-registration
+- **globals.css `@keyframes timelineScan`**: `left` → `translateX(350%)` — GPU-composited, no layout reflow
+- **ToolsTicker**: `TICKER_ROW` at module scope — never recreated on re-render
+- **Lenis**: single RAF loop via `frame.update` — verified correct, no duplicate schedulers
+
 ## Priorities (next up)
 
-### P1 — CasesSection: real content
-- Swap initials avatar `K` + "Kund" / "Ekonomiavdelningen" with real client name/role
+### P1 — CasesSection: real content ✓ (done v1.63)
+- Sebastian Andersson photo, name, role, real testimonial — all live
 - Replace gradient image area with real case photo when available (`/case-photo.jpg`, `object-cover`)
 - Cases page refinement to match CasesSection visual language
 

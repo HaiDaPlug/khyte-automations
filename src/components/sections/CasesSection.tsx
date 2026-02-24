@@ -56,60 +56,46 @@ export default function CasesSection() {
                 mixBlendMode: "overlay",
               }}
             />
-
-            {/* Collab lockup — stacked, centered, editorial scale */}
+            {/* Collab lockup — centered, editorial */}
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="flex flex-col items-center gap-4">
-                {/* Client name — large, Geist Sans, white */}
+              <div className="flex flex-col items-center gap-3">
+                {/* Client name — display scale, white */}
                 <span
-                  className="block leading-none whitespace-nowrap"
+                  className="block leading-[0.92] whitespace-nowrap"
                   style={{
                     fontFamily: "var(--font-sans)",
-                    fontSize: "32px",
-                    fontWeight: 600,
-                    letterSpacing: "-0.02em",
-                    color: "rgba(255,255,255,0.96)",
-                    textShadow: "0 2px 24px rgba(0,0,0,0.45)",
+                    fontSize: "clamp(28px, 5vw, 42px)",
+                    fontWeight: 700,
+                    letterSpacing: "-0.04em",
+                    color: "rgba(255,255,255,0.97)",
+                    textShadow: "0 2px 20px rgba(0,0,0,0.35)",
                   }}
                 >
                   JaTack AB
                 </span>
 
-                {/* × — recedes, generous spacing */}
-                <span
-                  className="block leading-none select-none"
-                  style={{
-                    fontFamily: "var(--font-sans)",
-                    fontSize: "20px",
-                    fontWeight: 300,
-                    color: "rgba(255,255,255,0.45)",
-                    textShadow: "0 1px 8px rgba(0,0,0,0.30)",
-                  }}
+                {/* × separator — custom SVG cross, true diagonal geometry */}
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 14 14"
+                  fill="none"
                   aria-hidden="true"
+                  style={{ opacity: 0.40 }}
                 >
-                  ×
-                </span>
+                  <line x1="1" y1="1" x2="13" y2="13" stroke="white" strokeWidth="1.25" strokeLinecap="round"/>
+                  <line x1="13" y1="1" x2="1" y2="13" stroke="white" strokeWidth="1.25" strokeLinecap="round"/>
+                </svg>
 
-                {/* Khyte logo — tinted brand orange via CSS filter */}
+                {/* Logo — white SVG, large */}
                 <img
                   src="/khyte-logo-text.svg"
-                  alt="Khyte"
+                  alt="Khyte Automations"
                   className="block w-auto"
                   style={{
-                    height: "32px",
-                    /*
-                     * Filter chain: black source → brand orange #E8833A (HSL ~25°, 79%, 57%)
-                     * brightness(0)        → force to black
-                     * saturate(0)          → ensure greyscale
-                     * invert(1)            → white
-                     * sepia(1)             → warm sepia base (~#704214)
-                     * saturate(4)          → punch saturation up toward vivid orange
-                     * hue-rotate(340deg)   → shift sepia hue (~35°) back to 25° orange target
-                     * brightness(1.15)     → lift to match L≈57%
-                     */
-                    filter:
-                      "brightness(0) saturate(0) invert(1) sepia(1) saturate(4) hue-rotate(340deg) brightness(1.15) drop-shadow(0 2px 12px rgba(0,0,0,0.40))",
-                    opacity: 0.97,
+                    height: "64px",
+                    filter: "drop-shadow(0 2px 16px rgba(0,0,0,0.40))",
+                    opacity: 0.93,
                   }}
                 />
               </div>
@@ -123,7 +109,7 @@ export default function CasesSection() {
                 Automatiserad informationsförädling
               </span>
               <p className="text-[var(--color-text)] text-lg md:text-xl font-medium leading-[1.5] tracking-[-0.01em]">
-                Det här sparar oss minst ett par timmar varje dag. Vi kände direkt att det var byggt av folk som förstår hur vi jobbar.
+                Hai har hjälpt mig att automatisera en del av min prospekteringsprocess genom att lyssna till mina behov. Nu kan jag jobba snabbare och effektivare, vilket skapar fler affärer!
               </p>
             </div>
 
@@ -131,12 +117,15 @@ export default function CasesSection() {
             <div>
               <div className="h-px bg-[rgba(58,51,48,0.10)] mb-6" />
               <div className="flex items-center gap-4">
-                <div className="w-10 h-10 rounded-full bg-[rgba(58,51,48,0.10)] flex items-center justify-center shrink-0">
-                  <span className="text-[13px] font-semibold text-[var(--color-muted)]">K</span>
-                </div>
+                <img
+                  src="/sebastian.jpg"
+                  alt="Sebastian Andersson"
+                  className="w-14 h-14 rounded-full object-cover shrink-0"
+                  style={{ objectPosition: "center top" }}
+                />
                 <div>
-                  <p className="text-[14px] font-semibold text-[var(--color-text)] leading-[1.3]">Kund</p>
-                  <p className="text-[13px] text-[var(--color-muted)] leading-[1.3]">Ekonomiavdelningen</p>
+                  <p className="text-[15px] font-semibold text-[var(--color-text)] leading-[1.3]">Sebastian Andersson</p>
+                  <p className="text-[14px] text-[var(--color-muted)] leading-[1.3]">Grundare, JaTack AB</p>
                 </div>
               </div>
             </div>
