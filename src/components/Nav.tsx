@@ -93,35 +93,35 @@ export default function Nav() {
         {/* Nav Links - Center (hidden mobile) */}
         <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-6 text-base font-semibold tracking-[-0.02em]">
           <Link
-            href="/cases"
+            href="/case"
             className={`transition-colors duration-200 hover:text-white ${
-              pathname === "/cases" ? "text-white" : "text-white/65"
+              pathname === "/case" ? "text-white" : "text-white/65"
             }`}
           >
             Case
           </Link>
           <Link
-            href="/about"
+            href="/om-oss"
             className={`transition-colors duration-200 hover:text-white ${
-              pathname === "/about" ? "text-white" : "text-white/65"
+              pathname === "/om-oss" ? "text-white" : "text-white/65"
             }`}
           >
             Om oss
           </Link>
 
           <Link
-            href="/services"
+            href="/tjanster"
             className={`transition-colors duration-200 hover:text-white ${
-              pathname.startsWith("/services") ? "text-white" : "text-white/65"
+              pathname.startsWith("/tjanster") ? "text-white" : "text-white/65"
             }`}
           >
             Tjänster
           </Link>
 
           <Link
-            href="/contact"
+            href="/kontakt"
             className={`transition-colors duration-200 hover:text-white ${
-              pathname === "/contact" ? "text-white" : "text-white/65"
+              pathname === "/kontakt" ? "text-white" : "text-white/65"
             }`}
           >
             Kontakt
@@ -183,17 +183,17 @@ export default function Nav() {
           </div>
           {/* Links */}
           <nav className="flex flex-col px-6 py-4 gap-4">
-            <Link href="/cases" className="text-white/70 hover:text-white text-lg" onClick={() => setOpen(false)}>Case</Link>
-            <Link href="/about" className="text-white/70 hover:text-white text-lg" onClick={() => setOpen(false)}>Om oss</Link>
+            <Link href="/case" className="text-white/70 hover:text-white text-lg" onClick={() => setOpen(false)}>Case</Link>
+            <Link href="/om-oss" className="text-white/70 hover:text-white text-lg" onClick={() => setOpen(false)}>Om oss</Link>
 
-            <Link href="/services" className="text-white/70 hover:text-white text-lg" onClick={() => setOpen(false)}>Tjänster</Link>
+            <Link href="/tjanster" className="text-white/70 hover:text-white text-lg" onClick={() => setOpen(false)}>Tjänster</Link>
 
-            <Link href="/contact" className="text-white/70 hover:text-white text-lg" onClick={() => setOpen(false)}>Kontakt</Link>
+            <Link href="/kontakt" className="text-white/70 hover:text-white text-lg" onClick={() => setOpen(false)}>Kontakt</Link>
           </nav>
           {/* CTA */}
           <div className="mt-auto px-6 py-6 border-t border-white/10">
             <Link
-              href="/contact"
+              href="/kontakt"
               onClick={() => setOpen(false)}
               className="block w-full text-center btn-cta font-bold py-3 rounded-full"
             >

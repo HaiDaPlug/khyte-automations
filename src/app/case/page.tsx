@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description:
     "Se hur vi automatiserat säljprocesser och research för svenska företag. Konkreta exempel på effektivare arbetsflöden.",
   alternates: {
-    canonical: "/cases",
+    canonical: "/case",
   },
 };
 
@@ -43,7 +43,7 @@ export default function Cases() {
             {cases.map((caseItem, index) => (
               <article
                 key={index}
-                className="bg-[var(--color-card-bg)] border border-[var(--color-border)] p-8 rounded-[4px] transition-colors duration-300 hover:border-[var(--color-muted)]"
+                className="bg-[var(--color-card-bg)] border border-[var(--color-border)] [border-width:var(--border-width)] p-8 rounded-[4px] transition-colors duration-300 hover:border-[var(--color-muted)]"
               >
                 <h2 className="text-[2rem] font-semibold text-[var(--color-text)] mb-6 tracking-[-0.01em] leading-[1.2]">
                   {caseItem.title}

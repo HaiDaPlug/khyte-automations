@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   description:
     "Boka ett 30-minuters intro eller berätta om era arbetsflöden. Vi svarar inom 24h med en första bedömning och nästa steg.",
   alternates: {
-    canonical: "/contact",
+    canonical: "/kontakt",
   },
 };
 
@@ -46,7 +46,7 @@ export default function Contact() {
                     id="name"
                     name="name"
                     required
-                    className="w-full h-12 px-4 bg-[var(--color-card-bg)] border border-[var(--color-border)] rounded-[4px] text-[var(--color-text)] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:border-transparent"
+                    className="w-full h-12 px-4 bg-[var(--color-card-bg)] border border-[var(--color-border)] [border-width:var(--border-width)] rounded-[4px] text-[var(--color-text)] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:border-transparent"
                   />
                 </div>
 
@@ -61,7 +61,7 @@ export default function Contact() {
                     type="text"
                     id="company"
                     name="company"
-                    className="w-full h-12 px-4 bg-[var(--color-card-bg)] border border-[var(--color-border)] rounded-[4px] text-[var(--color-text)] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:border-transparent"
+                    className="w-full h-12 px-4 bg-[var(--color-card-bg)] border border-[var(--color-border)] [border-width:var(--border-width)] rounded-[4px] text-[var(--color-text)] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:border-transparent"
                   />
                 </div>
 
@@ -76,7 +76,7 @@ export default function Contact() {
                     type="tel"
                     id="phone"
                     name="phone"
-                    className="w-full h-12 px-4 bg-[var(--color-card-bg)] border border-[var(--color-border)] rounded-[4px] text-[var(--color-text)] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:border-transparent"
+                    className="w-full h-12 px-4 bg-[var(--color-card-bg)] border border-[var(--color-border)] [border-width:var(--border-width)] rounded-[4px] text-[var(--color-text)] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:border-transparent"
                   />
                 </div>
 
@@ -92,7 +92,7 @@ export default function Contact() {
                     id="email"
                     name="email"
                     required
-                    className="w-full h-12 px-4 bg-[var(--color-card-bg)] border border-[var(--color-border)] rounded-[4px] text-[var(--color-text)] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:border-transparent"
+                    className="w-full h-12 px-4 bg-[var(--color-card-bg)] border border-[var(--color-border)] [border-width:var(--border-width)] rounded-[4px] text-[var(--color-text)] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:border-transparent"
                   />
                 </div>
 
@@ -108,7 +108,7 @@ export default function Contact() {
                     name="message"
                     required
                     rows={6}
-                    className="w-full px-4 py-3 bg-[var(--color-card-bg)] border border-[var(--color-border)] rounded-[4px] text-[var(--color-text)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:border-transparent resize-none"
+                    className="w-full px-4 py-3 bg-[var(--color-card-bg)] border border-[var(--color-border)] [border-width:var(--border-width)] rounded-[4px] text-[var(--color-text)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:border-transparent resize-none"
                   ></textarea>
                 </div>
 
@@ -119,7 +119,7 @@ export default function Contact() {
             </div>
 
             {/* Direct Contact Options */}
-            <div className="bg-[var(--color-card-bg)] border border-[rgba(58,51,48,0.25)] p-8 rounded-[4px] transition-colors duration-300 hover:border-[var(--color-muted)]">
+            <div className="bg-[var(--color-card-bg)] border border-[rgba(58,51,48,0.25)] [border-width:var(--border-width)] p-8 rounded-[4px] transition-colors duration-300 hover:border-[var(--color-muted)]">
               <h2 className="text-4xl font-bold text-[var(--color-text)] mb-8 tracking-tight leading-[1.2]">
                 Andra sätt att nå oss
               </h2>

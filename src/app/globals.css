@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-bg: #f4f1ef;
-  --color-card-bg: #EDEAE6;
+  --color-bg: #F8F6F3;
+  --color-card-bg: #F0EDE9;
   --color-text: #3A3330;
   --color-text-body: #5A4F48;
   --color-muted: #9C8E82;
@@ -10,7 +10,9 @@
   --color-border: rgba(58, 51, 48, 0.12);
 
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-barlow), sans-serif;
 
+  --border-width: 2px;
   --radius-sm: 4px;
   --shadow-soft: 0 18px 45px rgba(0, 0, 0, 0.08);
 
@@ -73,6 +75,21 @@
     filter: brightness(0.95);
   }
 
+  /* Global grain — multiply blend makes it invisible on dark sections automatically */
+  body {
+    background-color: var(--color-bg);
+  }
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    pointer-events: none;
+    opacity: 0.12;
+    filter: url(#grain);
+    mix-blend-mode: multiply;
+  }
+
   /* Page transition fade-in */
   @keyframes pageFadeIn {
     from { opacity: 0; transform: translateY(6px); }
@@ -83,9 +100,9 @@
   }
 
   .text-hero {
-    font-weight: 700;
-    letter-spacing: -0.03em;
-    line-height: 1.1;
+    font-weight: 600; /* revert: 700 */
+    letter-spacing: -0.035em; /* revert: -0.03em */
+    line-height: 1.08; /* revert: 1.1 */
   }
 
   .text-label {
@@ -94,6 +111,36 @@
     letter-spacing: 0.05em;
     text-transform: uppercase;
     color: var(--color-text);
+  }
+
+  /* Weaponized section eyebrow — amber line + tracked label */
+  .section-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.625rem;
+    font-size: 0.6875rem; /* 11px */
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #D4622B;
+    margin-bottom: 0;
+  }
+  .section-eyebrow::before {
+    content: '';
+    display: block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+    flex-shrink: 0;
+  }
+
+  /* Anton display — for section H2s only */
+  /* padding-top in em scales with font-size, clearing å/ä rings at all sizes */
+  .font-display {
+    font-family: var(--font-display);
+    font-weight: 800;
+    line-height: 1.15;
   }
 
   .base-band {
@@ -120,12 +167,9 @@
     content: "";
     position: absolute;
     inset: 0;
-    background: repeating-linear-gradient(
-      0deg,
-      rgba(255, 255, 255, 0.02) 0px,
-      rgba(255, 255, 255, 0.02) 1px,
-      rgba(0, 0, 0, 0.02) 2px
-    );
+    background-image: url('/noise.webp');
+    background-size: 128px 128px;
+    background-repeat: repeat;
     opacity: var(--base-band-grain-opacity);
     mix-blend-mode: var(--base-band-grain-blend);
     pointer-events: none;
@@ -139,7 +183,7 @@
 
 :root,
 :root[data-theme="classic"] {
-  --spacing-section: 128px;
+  --spacing-section: 144px;
 
   --color-ink: #3A3330;
   --color-heat: #5E1E10;
@@ -187,28 +231,47 @@
     rgba(255, 255, 255, 0.56) 0%,
     rgba(255, 255, 255, 0) 70%
   );
-  --base-band-grain-opacity: 0.12;
-  --base-band-grain-blend: soft-light;
+  --base-band-grain-opacity: 0.055;
+  --base-band-grain-blend: screen;
   --color-footer-seam: rgba(244, 241, 239, 0.12);
   --color-footer-seam-soft: rgba(244, 241, 239, 0.1);
 
   --base-band-bg:
+    /* blob A — large burnt orange, top-left, main anchor */
     radial-gradient(
-      112% 72% at 50% 106%,
-      rgba(212, 98, 43, 0.65) 0%,
-      rgba(212, 98, 43, 0) 50%
+      ellipse 70% 55% at 12% 18%,
+      rgba(212, 82, 28, 0.38) 0%,
+      rgba(160, 52, 18, 0.18) 45%,
+      rgba(160, 52, 18, 0) 100%
     ),
+    /* blob B — deep amber, center-right, sweeps inward */
     radial-gradient(
-      90% 70% at 18% -10%,
-      rgba(244, 241, 239, 0.1) 0%,
-      rgba(244, 241, 239, 0) 60%
+      ellipse 55% 60% at 88% 35%,
+      rgba(180, 64, 20, 0.22) 0%,
+      rgba(140, 44, 14, 0.10) 50%,
+      rgba(140, 44, 14, 0) 100%
     ),
+    /* blob C — warm copper, bottom-center, rises up */
     radial-gradient(
-      90% 70% at 88% 0%,
-      rgba(244, 241, 239, 0.06) 0%,
-      rgba(244, 241, 239, 0) 65%
+      ellipse 80% 45% at 50% 100%,
+      rgba(194, 78, 30, 0.32) 0%,
+      rgba(140, 48, 16, 0.14) 55%,
+      rgba(140, 48, 16, 0) 100%
     ),
-    linear-gradient(180deg, #1B0803 0%, #1B0803 34%, #5E1E10 85%, #D4622B 100%);
+    /* blob D — dark sienna mid-left, creates depth shadow */
+    radial-gradient(
+      ellipse 45% 50% at 28% 62%,
+      rgba(90, 22, 8, 0.45) 0%,
+      rgba(90, 22, 8, 0) 100%
+    ),
+    /* blob E — faint amber glint, top-right corner */
+    radial-gradient(
+      ellipse 40% 30% at 82% 8%,
+      rgba(220, 100, 40, 0.12) 0%,
+      rgba(220, 100, 40, 0) 100%
+    ),
+    /* base — espresso field */
+    linear-gradient(160deg, #0E0401 0%, #1B0803 40%, #1F0904 70%, #2A0D06 100%);
 }
 
 @media (max-width: 768px) {
@@ -413,13 +476,13 @@ html {
 
 /* Smooth dropdown panel animation */
 details[open] > div {
-  animation: slideDown 150ms ease-out;
+  animation: slideDown 650ms cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 @keyframes slideDown {
   from {
     opacity: 0;
-    transform: translateY(-8px);
+    transform: translateY(-6px);
   }
   to {
     opacity: 1;

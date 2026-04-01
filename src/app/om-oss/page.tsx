@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   description:
     "Möt Hai och Abdi – teamet som bygger automationer för svenska företag. Transparent process, snabb leverans, långsiktigt samarbete.",
   alternates: {
-    canonical: "/about",
+    canonical: "/om-oss",
   },
 };
 
@@ -44,7 +44,7 @@ export default function AboutPage() {
 
           {/* Section 2: Hur vi tänker & vad du kan förvänta dig */}
           <section className="mb-20">
-            <div className="bg-[var(--color-card-bg)] border border-[var(--color-border)] p-8 rounded-[4px] transition-colors duration-300 hover:border-[var(--color-muted)]">
+            <div className="bg-[var(--color-card-bg)] border border-[var(--color-border)] [border-width:var(--border-width)] p-8 rounded-[4px] transition-colors duration-300 hover:border-[var(--color-muted)]">
               <p className="text-[1.25rem] leading-[1.6] text-[var(--color-text-body)] mb-6 max-w-[65ch]">
                 Vi tror inte att AI kan göra allt. Däremot kan den göra mycket, rätt byggt kan det ta hand om repetitivt arbete och göra flöden mer effektiva.
               </p>
@@ -67,7 +67,7 @@ export default function AboutPage() {
             </div>
 
             <div className="text-center mt-8">
-              <a href="/cases" className="text-[var(--color-text)] hover:text-[var(--color-muted)] underline transition-colors">
+              <a href="/case" className="text-[var(--color-text)] hover:text-[var(--color-muted)] underline transition-colors">
                 Se exempel på våra automationer →
               </a>
             </div>

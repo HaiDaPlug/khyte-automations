@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   title: "Tjänster – Automationer för svenska företag",
   description: "Vi automatiserar manuella processer. Transparent prissättning, fast pris, ingen vendor lock-in.",
   alternates: {
-    canonical: "/services",
+    canonical: "/tjanster",
   },
 };
 
@@ -61,7 +61,7 @@ export default function ServicesPage() {
             ].map((item, i) => (
               <div
                 key={i}
-                className="bg-[var(--color-card-bg)] border border-[var(--color-border)] rounded-[4px] p-6 hover:border-[rgba(58,51,48,0.20)] transition-colors"
+                className="bg-[var(--color-card-bg)] border border-[var(--color-border)] [border-width:var(--border-width)] rounded-[4px] p-6 hover:border-[rgba(58,51,48,0.20)] transition-colors"
               >
                 <p className="text-label mb-2">{item.label}</p>
                 <p className="text-[var(--color-text-body)] text-[15px] leading-relaxed">{item.desc}</p>
@@ -104,7 +104,7 @@ export default function ServicesPage() {
                 desc: "Vi tränar ert team, överlämnar dokumentation, och ger er full äganderätt. Ni får också en supportperiod där vi fixar eventuella buggar."
               }
             ].map((item, i) => (
-              <div key={i} className="bg-[var(--color-card-bg)] border border-[var(--color-border)] rounded-[4px] p-8">
+              <div key={i} className="bg-[var(--color-card-bg)] border border-[var(--color-border)] [border-width:var(--border-width)] rounded-[4px] p-8">
                 <div className="text-xs font-bold text-[var(--color-muted)] mb-4">
                   {item.step}
                 </div>
@@ -132,7 +132,7 @@ export default function ServicesPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Price card */}
-            <div className="bg-[var(--color-card-bg)] border border-[rgba(58,51,48,0.25)] rounded-[4px] p-8">
+            <div className="bg-[var(--color-card-bg)] border border-[rgba(58,51,48,0.25)] [border-width:var(--border-width)] rounded-[4px] p-8">
               <div className="text-3xl font-bold text-[var(--color-text)] mb-1">25 000 – 120 000 kr</div>
               <p className="text-[var(--color-text-body)] text-sm mb-6">Fast pris efter scope</p>
               <p className="text-[var(--color-muted)] text-xs font-bold uppercase tracking-wider mb-3">Vad som påverkar priset</p>
@@ -150,7 +150,7 @@ export default function ServicesPage() {
             </div>
 
             {/* What's included card */}
-            <div className="bg-[var(--color-card-bg)] border border-[var(--color-border)] rounded-[4px] p-8">
+            <div className="bg-[var(--color-card-bg)] border border-[var(--color-border)] [border-width:var(--border-width)] rounded-[4px] p-8">
               <p className="text-[var(--color-muted)] text-xs font-bold uppercase tracking-wider mb-3">Vad ingår</p>
               <ul className="space-y-2">
                 {[
@@ -182,7 +182,7 @@ export default function ServicesPage() {
             </p>
           </div>
 
-          <div className="bg-[var(--color-card-bg)] border border-[var(--color-border)] rounded-[4px] p-8">
+          <div className="bg-[var(--color-card-bg)] border border-[var(--color-border)] [border-width:var(--border-width)] rounded-[4px] p-8">
             <p className="text-[var(--color-muted)] text-xs font-bold uppercase tracking-wider mb-3">Vad ingår i support</p>
             <ul className="space-y-2">
               {[
@@ -203,7 +203,7 @@ export default function ServicesPage() {
           </p>
           <div className="mt-4">
             <Link
-              href="/contact"
+              href="/kontakt"
               className="text-[var(--color-muted)] hover:text-[var(--color-text)] text-base underline underline-offset-4 transition-colors"
             >
               Prata om support
@@ -256,7 +256,7 @@ export default function ServicesPage() {
             ].map((tier, i) => (
               <div
                 key={i}
-                className="bg-[var(--color-card-bg)] border border-[var(--color-border)] rounded-[4px] p-8 hover:border-[rgba(58,51,48,0.20)] transition-colors"
+                className="bg-[var(--color-card-bg)] border border-[var(--color-border)] [border-width:var(--border-width)] rounded-[4px] p-8 hover:border-[rgba(58,51,48,0.20)] transition-colors"
               >
                 <h3 className="text-xl font-bold text-[var(--color-text)] mb-1">{tier.duration}</h3>
                 <p className="text-label mb-3">{tier.subtitle}</p>
@@ -274,7 +274,7 @@ export default function ServicesPage() {
           </p>
           <div className="mt-4">
             <Link
-              href="/contact"
+              href="/kontakt"
               className="text-[var(--color-muted)] hover:text-[var(--color-text)] text-base underline underline-offset-4 transition-colors"
             >
               Prata om en automationsresa
@@ -283,7 +283,7 @@ export default function ServicesPage() {
         </div>
 
         {/* 7. RESULTAT / VAD NI BRUKAR FÅ */}
-        <div className="bg-[var(--color-card-bg)] border border-[var(--color-border)] rounded-[4px] p-8 md:p-12 mb-32">
+        <div className="bg-[var(--color-card-bg)] border border-[var(--color-border)] [border-width:var(--border-width)] rounded-[4px] p-8 md:p-12 mb-32">
           <div className="mb-8">
             <h2 className="text-3xl md:text-4xl font-bold text-[var(--color-text)] tracking-tight mb-4">
               Resultat / vad ni brukar få
@@ -394,7 +394,7 @@ export default function ServicesPage() {
               Boka intro (15 min)
             </CalendlyButton>
             <Link
-              href="/cases"
+              href="/case"
               className="text-[var(--color-muted)] hover:text-[var(--color-text)] text-base underline underline-offset-4 transition-colors"
             >
               Se case

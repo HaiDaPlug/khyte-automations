@@ -24,6 +24,11 @@ const TRANSITION = {
 export default function RollingWord() {
   const prefersReduced = useReducedMotion();
   const [index, setIndex] = useState(0);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (prefersReduced) return;
@@ -50,20 +55,30 @@ export default function RollingWord() {
       <span className="sr-only">{WORDS[index]}</span>
 
       {/* mode="wait" — exit fully completes before enter starts; no layout measurement overhead */}
-      <AnimatePresence mode="wait" initial={false}>
-        <motion.span
-          key={index}
+      {!mounted ? (
+        <span
           aria-hidden="true"
-          className="italic bg-clip-text text-transparent inline-block py-1 -my-1 px-1 -mx-1"
-          style={{ backgroundImage: GRADIENT, willChange: "transform" }}
-          initial={{ y: "35%", opacity: 0 }}
-          animate={{ y: "0%", opacity: 1 }}
-          exit={{ y: "-35%", opacity: 0 }}
-          transition={TRANSITION}
+          className="italic font-bold bg-clip-text text-transparent inline-block py-1 -my-1 px-1 -mx-1"
+          style={{ backgroundImage: GRADIENT }}
         >
-          {WORDS[index]}
-        </motion.span>
-      </AnimatePresence>
+          {WORDS[0]}
+        </span>
+      ) : (
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.span
+            key={index}
+            aria-hidden="true"
+            className="italic font-bold bg-clip-text text-transparent inline-block py-1 -my-1 px-1 -mx-1" /* revert: remove font-bold */
+            style={{ backgroundImage: GRADIENT, willChange: "transform" }}
+            initial={{ y: "35%", opacity: 0 }}
+            animate={{ y: "0%", opacity: 1 }}
+            exit={{ y: "-35%", opacity: 0 }}
+            transition={TRANSITION}
+          >
+            {WORDS[index]}
+          </motion.span>
+        </AnimatePresence>
+      )}
     </span>
   );
 }

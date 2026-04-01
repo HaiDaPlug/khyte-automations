@@ -10,9 +10,13 @@ export default function PageTransition({
 }) {
   const pathname = usePathname();
   const ref = useRef<HTMLDivElement>(null);
+  const isFirstRender = useRef(true);
 
   useEffect(() => {
-    // Scroll to top instantly (bypasses Lenis smooth scroll intentionally)
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
     window.scrollTo({ top: 0, behavior: "instant" });
 
     // Re-trigger fade by toggling the animation class

@@ -23,12 +23,12 @@ export default function TimelineProcess() {
       className="section-border mb-[var(--spacing-section)]"
     >
       <div className="max-w-[600px] mb-16">
-        <h2 className="text-2xl font-medium text-[var(--color-text)] mb-3">
+        <span className="text-label mb-3 block">Processen</span>
+        <h2 className="text-3xl md:text-4xl font-semibold text-[var(--color-text)] leading-[1.15] tracking-[-0.02em] mb-4">
           Så jobbar vi
         </h2>
-        <p className="text-[var(--color-text-body)] text-base leading-[1.6] max-w-[65ch]">
-          En simpel process utan onödigt skit. Från problem till lösning på
-          kortast möjliga tid.
+        <p className="text-[var(--color-text-body)] text-base leading-[1.6] max-w-[56ch]">
+          En simpel process utan onödigt skit. Från problem till lösning på kortast möjliga tid.
         </p>
       </div>
 

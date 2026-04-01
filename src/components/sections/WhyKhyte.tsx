@@ -19,25 +19,26 @@ const cards = [
 
 export default function WhyKhyte() {
   return (
-    <section className="section-border mb-[var(--spacing-section)]">
+    <section className="pt-[var(--spacing-section)] pb-[var(--spacing-section)]">
       <div className="mb-10">
-        <span className="text-label mb-3 block">Varför Khyte</span>
         <h2 className="text-3xl md:text-4xl font-semibold text-[var(--color-text)] leading-[1.2] tracking-[-0.02em] mb-4">
           Automatisering byggd för drift — inte demo
         </h2>
-        <p className="text-[var(--color-text-body)] text-base leading-[1.6] max-w-[56ch]">
+        <p className="text-base font-medium text-[var(--color-text)] leading-[1.5] max-w-[56ch]">
           Vi levererar system som faktiskt håller — inte pilotprojekt som samlar damm.
         </p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-        {cards.map((card) => (
+        {cards.map((card, i) => (
           <div
             key={card.title}
-            className="bg-[var(--color-card-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] p-8"
+            className="bg-[var(--color-card-bg)] border border-[var(--color-border)] [border-width:var(--border-width)] rounded-[var(--radius-sm)] p-8 transition-colors duration-200 hover:border-[var(--color-muted)]"
+            /* revert: remove (card, i) → (card), remove transition-colors duration-200 hover:border-[var(--color-muted)] */
           >
-            <div className="w-2 h-2 rounded-full bg-[var(--color-accent)] mb-4" />
-            <p className="font-semibold text-[var(--color-text)] text-base mb-2">
+            {/* revert: replace with <div className="w-2 h-2 rounded-full bg-[var(--color-accent)] mb-4" /> */}
+            <span className="text-2xl font-bold text-[var(--color-accent)] opacity-40 block mb-3" aria-hidden="true">0{i + 1}</span>
+            <p className="font-semibold text-[var(--color-text)] text-lg mb-2"> {/* revert: text-base */}
               {card.title}
             </p>
             <p className="text-[var(--color-text-body)] text-sm leading-[1.6]">

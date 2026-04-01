@@ -13,7 +13,7 @@ Ship changes safely with **minimal diffs** and **no layout drift**. Prefer token
    - Centered links remain **absolutely centered** (do not change centering strategy).
 
 3) **Footer + PreFooter**
-   - Must remain a shared “base band” conversion foundation across pages.
+   - Must remain a shared "base band" conversion foundation across pages.
    - Avoid patchy/white seams; keep the blend continuous and premium.
 
 4) **Change philosophy**
@@ -25,6 +25,9 @@ Ship changes safely with **minimal diffs** and **no layout drift**. Prefer token
    - Always validate with: `npm run build` and `npm run start`
    - Flag any potential breakage, regressions, or layout shifts.
 
+## Frontend design
+- **Always invoke the `frontend-design` skill before any frontend design or visual work** — before proposing, planning, or writing any UI code.
+
 ## Output requirements (when planning)
 - Restate the constraints you will follow.
 - Provide: (1) minimal-diff plan, (2) exact files to touch, (3) acceptance checklist, (4) risks + rollback plan.
@@ -32,4 +35,8 @@ Ship changes safely with **minimal diffs** and **no layout drift**. Prefer token
 
 ## If you see a better solution
 - You may propose it, but **still respect the non-negotiables** and keep diffs minimal.
-- Present it as “Option B” with tradeoffs; default to the safest path.
+- Present it as "Option B" with tradeoffs; default to the safest path.
+
+## Reference docs
+- Read `docs/current_state.md` when doing component work or architectural decisions.
+- Read `docs/INTENTIONS.md` at session start for captured ideas and directions.

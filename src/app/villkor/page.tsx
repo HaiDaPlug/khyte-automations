@@ -129,7 +129,7 @@ export default function TermsPage() {
             </a>
             <p className="mt-4">
               <Link
-                href="/contact"
+                href="/kontakt"
                 className="text-[var(--color-muted)] hover:text-[var(--color-text)] transition-colors underline underline-offset-2"
               >
                 Vill du boka ett samtal? Gå till kontakt →

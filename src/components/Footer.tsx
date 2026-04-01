@@ -24,17 +24,24 @@ const Footer = () => {
 
               <p className="text-[13px] text-white/50 mb-6">Automatisering för svenska företag.</p>
 
-              <div className="mb-6 flex flex-col gap-3">
+              <div className="mb-[18px] flex flex-col gap-2">
+                <p className="text-label !text-white/95 tracking-[0.12em]">Address</p>
+                <p className="text-[14px] leading-[1.45] text-white/55">
+                  Västerbrogatan 8A, 503 30, Borås
+                </p>
+              </div>
+
+              <div className="mb-6 flex flex-col gap-2">
                 <p className="text-label !text-white/95 tracking-[0.12em]">Kontakt</p>
                 <a
                   href="tel:070-0996838"
-                  className="text-[15px] leading-[1.35] font-medium text-white/90 hover:text-white transition-colors duration-200 hover:underline underline-offset-4 decoration-white/35 hover:decoration-white/70 focus-visible:outline-none focus-visible:text-white focus-visible:underline"
+                  className="text-[14px] leading-[1.45] text-white/55 hover:text-white transition-colors duration-200 hover:underline underline-offset-4 decoration-white/35 hover:decoration-white/70 focus-visible:outline-none focus-visible:text-white focus-visible:underline"
                 >
                   070-099 68 38
                 </a>
                 <a
                   href="mailto:hai@khyteteam.com"
-                  className="text-[15px] leading-[1.35] font-medium text-white/90 hover:text-white transition-colors duration-200 hover:underline underline-offset-4 decoration-white/35 hover:decoration-white/70 focus-visible:outline-none focus-visible:text-white focus-visible:underline"
+                  className="text-[14px] leading-[1.45] text-white/55 hover:text-white transition-colors duration-200 hover:underline underline-offset-4 decoration-white/35 hover:decoration-white/70 focus-visible:outline-none focus-visible:text-white focus-visible:underline"
                 >
                   hai@khyteteam.com
                 </a>
@@ -64,7 +71,7 @@ const Footer = () => {
                 <ul className="flex flex-col gap-3">
                   <li>
                     <Link
-                      href="/services"
+                      href="/tjanster"
                       className="text-[15px] leading-[1.35] font-medium text-white/90 hover:text-white transition-colors duration-200 hover:underline underline-offset-4 decoration-white/35 hover:decoration-white/70 focus-visible:outline-none focus-visible:text-white focus-visible:underline"
                     >
                       Tjänster
@@ -72,7 +79,7 @@ const Footer = () => {
                   </li>
                   <li>
                     <Link
-                      href="/cases"
+                      href="/case"
                       className="text-[15px] leading-[1.35] font-medium text-white/90 hover:text-white transition-colors duration-200 hover:underline underline-offset-4 decoration-white/35 hover:decoration-white/70 focus-visible:outline-none focus-visible:text-white focus-visible:underline"
                     >
                       Case
@@ -87,7 +94,7 @@ const Footer = () => {
                 <ul className="flex flex-col gap-3">
                   <li>
                     <Link
-                      href="/about"
+                      href="/om-oss"
                       className="text-[15px] leading-[1.35] font-medium text-white/90 hover:text-white transition-colors duration-200 hover:underline underline-offset-4 decoration-white/35 hover:decoration-white/70 focus-visible:outline-none focus-visible:text-white focus-visible:underline"
                     >
                       Om oss
@@ -95,7 +102,7 @@ const Footer = () => {
                   </li>
                   <li>
                     <Link
-                      href="/contact"
+                      href="/kontakt"
                       className="text-[15px] leading-[1.35] font-medium text-white/90 hover:text-white transition-colors duration-200 hover:underline underline-offset-4 decoration-white/35 hover:decoration-white/70 focus-visible:outline-none focus-visible:text-white focus-visible:underline"
                     >
                       Kontakt

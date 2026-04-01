@@ -156,7 +156,7 @@ export default function PrivacyPolicyPage() {
             </a>
             <p className="mt-4">
               <Link
-                href="/contact"
+                href="/kontakt"
                 className="text-[var(--color-muted)] hover:text-[var(--color-text)] transition-colors underline underline-offset-2"
               >
                 Behöver du hjälp? Kontakta oss →

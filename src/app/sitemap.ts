@@ -3,7 +3,7 @@ import type { MetadataRoute } from "next";
 const SITE_URL = "https://khyteautomations.com";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const routes = ["", "/about", "/cases", "/contact"];
+  const routes = ["", "/tjanster", "/case", "/om-oss", "/kontakt", "/integritetspolicy", "/villkor"];
 
   return routes.map((path) => ({
     url: `${SITE_URL}${path}`,
