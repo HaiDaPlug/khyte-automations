@@ -190,11 +190,21 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
         />
-        {/* Calendly widget */}
+        {/* Calendly widget — CSS deferred off critical path */}
+        <link rel="preconnect" href="https://assets.calendly.com" />
         <link
+          rel="preload"
           href="https://assets.calendly.com/assets/external/widget.css"
-          rel="stylesheet"
+          as="style"
+          // @ts-expect-error onLoad string-as-attribute for non-blocking CSS pattern
+          onLoad="this.onload=null;this.rel='stylesheet'"
         />
+        <noscript>
+          <link
+            rel="stylesheet"
+            href="https://assets.calendly.com/assets/external/widget.css"
+          />
+        </noscript>
         <script
           src="https://assets.calendly.com/assets/external/widget.js"
           type="text/javascript"

@@ -12,15 +12,6 @@ export default function CasesSection() {
             TA INTE BARA<br /><span style={{ color: "#D4622B" }}>VÅRT ORD.</span>
           </h2>
         </div>
-        <Link
-          href="/case"
-          className="hidden sm:inline-flex items-center gap-2 font-display text-sm font-bold tracking-[0.2em] uppercase text-[var(--color-text)] hover:text-[#D4622B] transition-colors duration-300 shrink-0"
-        >
-          SE ALLA CASE
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </Link>
       </div>
 
       {/* Cards row */}
@@ -96,6 +87,8 @@ export default function CasesSection() {
                 <img
                   src="/sebastian.jpg"
                   alt="Sebastian Andersson"
+                  width={56}
+                  height={56}
                   className="w-14 h-14 rounded-full object-cover shrink-0"
                   style={{ objectPosition: "center top" }}
                 />
@@ -131,18 +124,6 @@ export default function CasesSection() {
 
       </div>
 
-      {/* Mobile link */}
-      <div className="sm:hidden flex justify-center mt-8">
-        <Link
-          href="/case"
-          className="inline-flex items-center gap-2 font-display text-sm font-bold tracking-[0.2em] uppercase text-[var(--color-text)] hover:text-[#D4622B] transition-colors duration-300"
-        >
-          SE ALLA CASE
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </Link>
-      </div>
       </div>
     </section>
   );

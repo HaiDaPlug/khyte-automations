@@ -31,7 +31,8 @@ export default function ToolsTicker() {
           <img
             src={logo.src}
             alt={logo.alt}
-            loading="lazy"
+            width={48}
+            height={48}
             className={`h-9 md:h-12 w-auto block ${
               logo.invert
                 ? "brightness-0 invert opacity-40"

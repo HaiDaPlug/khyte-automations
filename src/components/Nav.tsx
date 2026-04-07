@@ -92,40 +92,26 @@ export default function Nav() {
 
         {/* Nav Links - Center (hidden mobile) */}
         <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-6 text-base font-semibold tracking-[-0.02em]">
-          <Link
-            href="/case"
-            className={`transition-colors duration-200 hover:text-white ${
-              pathname === "/case" ? "text-white" : "text-white/65"
-            }`}
-          >
-            Case
-          </Link>
-          <Link
-            href="/om-oss"
-            className={`transition-colors duration-200 hover:text-white ${
-              pathname === "/om-oss" ? "text-white" : "text-white/65"
-            }`}
-          >
-            Om oss
-          </Link>
-
-          <Link
-            href="/tjanster"
-            className={`transition-colors duration-200 hover:text-white ${
-              pathname.startsWith("/tjanster") ? "text-white" : "text-white/65"
-            }`}
-          >
-            Tjänster
-          </Link>
-
-          <Link
-            href="/kontakt"
-            className={`transition-colors duration-200 hover:text-white ${
-              pathname === "/kontakt" ? "text-white" : "text-white/65"
-            }`}
-          >
-            Kontakt
-          </Link>
+          {[
+            { href: "/case", label: "Case", active: pathname === "/case" },
+            { href: "/om-oss", label: "Om oss", active: pathname === "/om-oss" },
+            { href: "/tjanster", label: "Tjänster", active: pathname.startsWith("/tjanster") },
+            { href: "/kontakt", label: "Kontakt", active: pathname === "/kontakt" },
+          ].map(({ href, label, active }) => (
+            <Link
+              key={href}
+              href={href}
+              className={`relative transition-colors duration-200 hover:text-white ${active ? "text-white" : "text-white/65"}`}
+            >
+              {label}
+              {active && (
+                <span
+                  aria-hidden="true"
+                  className="absolute -bottom-[11px] left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-[#D4622B]"
+                />
+              )}
+            </Link>
+          ))}
         </div>
 
         {/* CTA Button - Right (desktop only) */}
@@ -166,7 +152,7 @@ export default function Nav() {
           onClick={() => setOpen(false)}
         />
         {/* Panel - glass blur matching pill aesthetic */}
-        <div className="fixed top-0 right-0 h-full w-72 bg-[#0A0A0A]/95 backdrop-blur-md border-l border-white/10 z-50 flex flex-col">
+        <div className="nav-drawer fixed top-0 right-0 h-full w-72 bg-[#0A0A0A]/95 backdrop-blur-md border-l border-white/10 z-50 flex flex-col">
           {/* Header */}
           <div className="flex items-center justify-between px-6 py-4 border-b border-white/10">
             <span className="text-white font-semibold">Meny</span>
