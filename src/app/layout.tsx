@@ -191,7 +191,6 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
         />
         {/* Calendly widget — CSS deferred off critical path */}
-        <link rel="preconnect" href="https://assets.calendly.com" />
         <link
           rel="preload"
           href="https://assets.calendly.com/assets/external/widget.css"
