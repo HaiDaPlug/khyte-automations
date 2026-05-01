@@ -52,7 +52,6 @@ export function DiagonalScrollFade({
         maskRepeat: "no-repeat",
         WebkitMaskSize: "100% 100%",
         maskSize: "100% 100%",
-        willChange: "mask-image",
       }}
     >
       {children}

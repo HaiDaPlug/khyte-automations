@@ -52,6 +52,7 @@ export default function AmbientParticles({
   const rafRef = useRef<number>(0);
   const tRef = useRef(0);
   const particlesRef = useRef<Particle[]>([]);
+  const inViewRef = useRef(false);
   const shouldReduce = useReducedMotion();
 
   useEffect(() => {
@@ -80,6 +81,11 @@ export default function AmbientParticles({
     let last = performance.now();
 
     const tick = (now: number) => {
+      if (!inViewRef.current) {
+        rafRef.current = requestAnimationFrame(tick);
+        return;
+      }
+
       const delta = (now - last) / 1000;
       last = now;
       tRef.current += delta;
@@ -125,8 +131,24 @@ export default function AmbientParticles({
       rafRef.current = requestAnimationFrame(tick);
     };
 
+    // Pause RAF when off-screen
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        inViewRef.current = entry.isIntersecting;
+        if (entry.isIntersecting) {
+          // Reset last-time so delta doesn't spike after being hidden
+          last = performance.now();
+        }
+      },
+      { threshold: 0 }
+    );
+    observer.observe(canvas);
+
     rafRef.current = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(rafRef.current);
+    return () => {
+      cancelAnimationFrame(rafRef.current);
+      observer.disconnect();
+    };
   }, [shouldReduce, width, height, count, colors]);
 
   if (shouldReduce) return null;

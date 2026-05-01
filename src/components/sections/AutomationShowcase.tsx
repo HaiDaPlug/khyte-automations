@@ -54,7 +54,7 @@ export default function AutomationShowcase() {
               Rapporten som tar hela fredagen
             </h3>
             <p className="text-base font-medium text-[var(--color-text)] leading-relaxed max-w-[34ch]">
-              Dra data, formatera, skicka. Varje vecka. Vi automatiserar hela kedjan så rapporten landar i inkorgen utan att ni rör det.
+              Dra data, formattera, skicka. Varje vecka. Vi automatiserar hela kedjan så rapporten landar i inkorgen utan att ni rör det.
             </p>
           </div>
 

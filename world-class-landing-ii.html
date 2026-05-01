@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Veloura — A Landing Page with Teeth</title>
+  <meta name="description" content="An extravagant, editorial, single-file landing page concept built in pure HTML and CSS.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400;6..96,700;6..96,900&family=Archivo+Narrow:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --paper: #efe2cf;
+      --paper-deep: #e3d1b7;
+      --ink: #171411;
+      --ink-soft: #4d4338;
+      --ruby: #9e2e1f;
+      --ruby-bright: #c8482d;
+      --gold: #a67d36;
+      --line: rgba(23, 20, 17, 0.16);
+      --panel: rgba(255, 248, 239, 0.68);
+      --shadow: 0 28px 60px rgba(65, 38, 18, 0.14);
+      --radius: 28px;
+      --max: 1240px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-width: 320px;
+      color: var(--ink);
+      font-family: "Archivo Narrow", sans-serif;
+      background:
+        radial-gradient(circle at 10% 12%, rgba(198, 72, 45, 0.12), transparent 26%),
+        radial-gradient(circle at 88% 18%, rgba(166, 125, 54, 0.14), transparent 24%),
+        linear-gradient(180deg, #f4e8d7 0%, var(--paper) 38%, var(--paper-deep) 100%);
+      overflow-x: hidden;
+    }
+
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    body::before {
+      opacity: 0.08;
+      background-image:
+        linear-gradient(rgba(23, 20, 17, 0.4) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(23, 20, 17, 0.4) 1px, transparent 1px);
+      background-size: 64px 64px;
+      mask-image: linear-gradient(180deg, transparent, black 15%, black 85%, transparent);
+    }
+
+    body::after {
+      opacity: 0.2;
+      background:
+        radial-gradient(circle at 50% 20%, rgba(255, 255, 255, 0.65), transparent 34%),
+        radial-gradient(circle at 50% 80%, rgba(255, 255, 255, 0.3), transparent 28%);
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .shell {
+      width: min(calc(100% - 30px), var(--max));
+      margin: 0 auto;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(10px);
+      background: rgba(244, 232, 215, 0.72);
+      border-bottom: 1px solid rgba(23, 20, 17, 0.08);
+    }
+
+    .topbar-inner {
+      min-height: 78px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      font-family: "IBM Plex Mono", monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      font-size: 0.86rem;
+    }
+
+    .brand-mark {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      border: 1px solid rgba(23, 20, 17, 0.18);
+      background: linear-gradient(135deg, rgba(255,255,255,0.75), rgba(255,255,255,0.25));
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.8);
+    }
+
+    .nav,
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .nav a,
+    .pill {
+      padding: 10px 14px;
+      border: 1px solid rgba(23, 20, 17, 0.12);
+      border-radius: 999px;
+      background: rgba(255,255,255,0.28);
+      color: var(--ink-soft);
+      font-size: 0.95rem;
+    }
+
+    .btn,
+    .btn-outline {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      min-height: 54px;
+      padding: 0 24px;
+      border-radius: 999px;
+      font-weight: 700;
+      transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease;
+    }
+
+    .btn {
+      color: #fff8f2;
+      background: linear-gradient(135deg, var(--ink), #33241d 55%, var(--ruby));
+      box-shadow: 0 18px 30px rgba(78, 36, 25, 0.18);
+    }
+
+    .btn-outline {
+      border: 1px solid rgba(23, 20, 17, 0.18);
+      background: rgba(255,255,255,0.35);
+    }
+
+    .btn:hover,
+    .btn-outline:hover {
+      transform: translateY(-2px);
+    }
+
+    .hero {
+      padding: 32px 0 26px;
+    }
+
+    .hero-frame {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(23, 20, 17, 0.14);
+      border-radius: 34px;
+      box-shadow: var(--shadow);
+      background:
+        linear-gradient(125deg, rgba(255,255,255,0.58), rgba(255,255,255,0.18)),
+        linear-gradient(180deg, rgba(255,255,255,0.28), rgba(227, 209, 183, 0.6));
+    }
+
+    .hero-frame::before {
+      content: "";
+      position: absolute;
+      inset: -20% auto auto -10%;
+      width: 66%;
+      height: 160%;
+      background: linear-gradient(180deg, rgba(200,72,45,0.18), rgba(200,72,45,0));
+      transform: rotate(24deg);
+    }
+
+    .hero-frame::after {
+      content: "";
+      position: absolute;
+      inset: auto -10% -35% auto;
+      width: 55%;
+      height: 80%;
+      background: radial-gradient(circle, rgba(166,125,54,0.28), rgba(166,125,54,0));
+    }
+
+    .hero-grid {
+      position: relative;
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(300px, 0.95fr);
+      gap: 24px;
+      padding: 28px;
+      z-index: 1;
+    }
+
+    .hero-copy,
+    .hero-aside,
+    .panel,
+    .manifesto,
+    .cta-band {
+      border: 1px solid rgba(23, 20, 17, 0.13);
+      background: var(--panel);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 14px 32px rgba(66, 39, 18, 0.08);
+    }
+
+    .hero-copy {
+      border-radius: 28px;
+      padding: 26px;
+    }
+
+    .stamp {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(23, 20, 17, 0.14);
+      background: rgba(255,255,255,0.4);
+      font-family: "IBM Plex Mono", monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      font-size: 0.74rem;
+    }
+
+    .stamp::before {
+      content: "";
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--ruby-bright);
+      box-shadow: 0 0 0 5px rgba(200,72,45,0.12);
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin: 0;
+    }
+
+    h1,
+    h2,
+    h3 {
+      font-family: "Bodoni Moda", serif;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+    }
+
+    .hero-copy h1 {
+      margin-top: 22px;
+      font-size: clamp(3.9rem, 9vw, 8rem);
+      line-height: 0.88;
+      max-width: 9ch;
+      text-wrap: balance;
+    }
+
+    .hero-copy h1 em,
+    .section-heading h2 em,
+    .cta-band h2 em {
+      color: var(--ruby);
+      font-style: italic;
+      font-weight: 700;
+    }
+
+    .lead {
+      margin-top: 22px;
+      max-width: 56ch;
+      color: var(--ink-soft);
+      font-size: 1.12rem;
+      line-height: 1.72;
+    }
+
+    .hero-actions {
+      margin-top: 28px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .ticker {
+      margin-top: 28px;
+      padding: 16px 0 0;
+      border-top: 1px solid rgba(23, 20, 17, 0.12);
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .ticker b {
+      display: block;
+      font-size: clamp(1.7rem, 3vw, 2.6rem);
+      line-height: 0.9;
+      margin-bottom: 6px;
+      font-family: "Bodoni Moda", serif;
+    }
+
+    .ticker span {
+      display: block;
+      color: var(--ink-soft);
+      font-size: 0.96rem;
+      line-height: 1.5;
+    }
+
+    .hero-aside {
+      border-radius: 28px;
+      padding: 18px;
+      display: grid;
+      gap: 16px;
+      align-content: start;
+    }
+
+    .poster {
+      position: relative;
+      min-height: 440px;
+      border-radius: 24px;
+      overflow: hidden;
+      border: 1px solid rgba(23, 20, 17, 0.14);
+      background:
+        radial-gradient(circle at 70% 20%, rgba(255,255,255,0.45), transparent 18%),
+        linear-gradient(155deg, #261b16 0%, #3c2418 38%, #8d2d1e 100%);
+      color: #fff8ef;
+      padding: 22px;
+      isolation: isolate;
+    }
+
+    .poster::before,
+    .poster::after {
+      content: "";
+      position: absolute;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 248, 239, 0.18);
+    }
+
+    .poster::before {
+      width: 320px;
+      height: 320px;
+      top: -90px;
+      right: -70px;
+    }
+
+    .poster::after {
+      width: 220px;
+      height: 220px;
+      bottom: -70px;
+      left: -40px;
+    }
+
+    .poster-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: start;
+      position: relative;
+      z-index: 1;
+    }
+
+    .poster small,
+    .poster code {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.76rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      opacity: 0.82;
+    }
+
+    .poster-word {
+      position: relative;
+      z-index: 1;
+      margin-top: 40px;
+      font-family: "Bodoni Moda", serif;
+      font-size: clamp(4rem, 11vw, 8rem);
+      line-height: 0.82;
+      letter-spacing: -0.08em;
+      text-transform: uppercase;
+    }
+
+    .poster-word span {
+      display: block;
+    }
+
+    .poster-grid {
+      position: relative;
+      z-index: 1;
+      margin-top: 36px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .poster-cell {
+      padding: 14px;
+      min-height: 92px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.14);
+    }
+
+    .poster-cell strong {
+      display: block;
+      font-size: 1.55rem;
+      margin-bottom: 8px;
+      font-family: "Bodoni Moda", serif;
+    }
+
+    .poster-cell span {
+      display: block;
+      color: rgba(255,248,239,0.76);
+      line-height: 1.45;
+      font-size: 0.92rem;
+    }
+
+    .marquee {
+      margin-top: 12px;
+      overflow: hidden;
+      border-top: 1px solid rgba(23,20,17,0.14);
+      border-bottom: 1px solid rgba(23,20,17,0.14);
+      background: rgba(255,255,255,0.26);
+    }
+
+    .marquee-track {
+      display: flex;
+      width: max-content;
+      animation: glide 24s linear infinite;
+    }
+
+    .marquee span {
+      padding: 16px 24px;
+      font-family: "IBM Plex Mono", monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      font-size: 0.76rem;
+      color: var(--ink-soft);
+    }
+
+    .section {
+      padding: 48px 0 0;
+    }
+
+    .section-heading {
+      display: grid;
+      grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr);
+      gap: 24px;
+      align-items: end;
+      margin-bottom: 20px;
+    }
+
+    .section-heading h2 {
+      font-size: clamp(2.8rem, 6vw, 5.2rem);
+      line-height: 0.92;
+      max-width: 8ch;
+    }
+
+    .section-heading p,
+    .panel p,
+    .manifesto p,
+    .cta-band p,
+    footer p {
+      color: var(--ink-soft);
+      line-height: 1.68;
+      font-size: 1.02rem;
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .panel {
+      border-radius: var(--radius);
+      padding: 22px;
+      min-height: 220px;
+    }
+
+    .span-7 { grid-column: span 7; }
+    .span-5 { grid-column: span 5; }
+    .span-4 { grid-column: span 4; }
+
+    .eyebrow {
+      display: inline-flex;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(23,20,17,0.12);
+      background: rgba(255,255,255,0.34);
+      font-family: "IBM Plex Mono", monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      font-size: 0.72rem;
+      margin-bottom: 18px;
+    }
+
+    .panel h3,
+    .manifesto h3 {
+      font-size: 1.85rem;
+      line-height: 1;
+      margin-bottom: 10px;
+    }
+
+    .bars {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      align-items: end;
+      gap: 10px;
+      height: 150px;
+      margin-top: 24px;
+    }
+
+    .bars i {
+      display: block;
+      border-radius: 18px 18px 8px 8px;
+      background: linear-gradient(180deg, rgba(158,46,31,0.92), rgba(166,125,54,0.72));
+      animation: rise 1000ms ease both;
+    }
+
+    .bars i:nth-child(1) { height: 38%; }
+    .bars i:nth-child(2) { height: 55%; animation-delay: 80ms; }
+    .bars i:nth-child(3) { height: 76%; animation-delay: 160ms; }
+    .bars i:nth-child(4) { height: 61%; animation-delay: 240ms; }
+    .bars i:nth-child(5) { height: 88%; animation-delay: 320ms; }
+    .bars i:nth-child(6) { height: 100%; animation-delay: 400ms; }
+
+    .quote-box {
+      margin-top: 18px;
+      padding: 18px;
+      border-radius: 22px;
+      border: 1px solid rgba(23,20,17,0.12);
+      background: rgba(255,255,255,0.3);
+      font-family: "Bodoni Moda", serif;
+      font-size: clamp(1.35rem, 2vw, 1.85rem);
+      line-height: 1.18;
+    }
+
+    .numbers {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .numbers div {
+      padding: 16px;
+      border-radius: 20px;
+      border: 1px solid rgba(23,20,17,0.12);
+      background: rgba(255,255,255,0.28);
+    }
+
+    .numbers b {
+      display: block;
+      font-size: 2rem;
+      line-height: 0.95;
+      margin-bottom: 8px;
+      font-family: "Bodoni Moda", serif;
+    }
+
+    .manifesto-wrap {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 16px;
+    }
+
+    .manifesto {
+      border-radius: 32px;
+      padding: 26px;
+    }
+
+    .manifesto h3 {
+      font-size: clamp(2.1rem, 4vw, 3.4rem);
+      margin-bottom: 14px;
+    }
+
+    .manifesto-list {
+      display: grid;
+      gap: 14px;
+      margin-top: 22px;
+    }
+
+    .manifesto-item {
+      padding: 16px 18px;
+      border-radius: 22px;
+      background: rgba(255,255,255,0.28);
+      border: 1px solid rgba(23,20,17,0.12);
+    }
+
+    .manifesto-item strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 1.1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .diagonal {
+      min-height: 100%;
+      border-radius: 32px;
+      overflow: hidden;
+      border: 1px solid rgba(23,20,17,0.12);
+      background:
+        linear-gradient(140deg, rgba(255,255,255,0.5) 0 28%, rgba(158,46,31,0.18) 28% 40%, rgba(255,255,255,0.12) 40% 56%, rgba(166,125,54,0.3) 56% 72%, rgba(23,20,17,0.92) 72% 100%);
+      position: relative;
+      padding: 26px;
+      color: #fff8ef;
+      display: flex;
+      align-items: end;
+    }
+
+    .diagonal::before {
+      content: "Issue 01 / Future Luxury / Live Now";
+      position: absolute;
+      top: 22px;
+      left: 22px;
+      font-family: "IBM Plex Mono", monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      font-size: 0.72rem;
+      color: rgba(255,248,239,0.78);
+    }
+
+    .diagonal strong {
+      display: block;
+      max-width: 8ch;
+      font-family: "Bodoni Moda", serif;
+      font-size: clamp(2.8rem, 6vw, 4.8rem);
+      line-height: 0.9;
+      letter-spacing: -0.06em;
+    }
+
+    .cta {
+      padding: 52px 0 82px;
+    }
+
+    .cta-band {
+      border-radius: 36px;
+      padding: 30px;
+      position: relative;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 12% 18%, rgba(200,72,45,0.16), transparent 22%),
+        radial-gradient(circle at 82% 18%, rgba(166,125,54,0.18), transparent 20%),
+        linear-gradient(180deg, rgba(255,255,255,0.45), rgba(255,255,255,0.18));
+    }
+
+    .cta-band::after {
+      content: "";
+      position: absolute;
+      right: -8%;
+      top: 12%;
+      width: 240px;
+      height: 240px;
+      border-radius: 50%;
+      border: 1px solid rgba(23,20,17,0.1);
+      opacity: 0.5;
+    }
+
+    .cta-inner {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .cta-band h2 {
+      font-size: clamp(2.8rem, 6vw, 5.2rem);
+      line-height: 0.92;
+      max-width: 10ch;
+      margin-bottom: 14px;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      animation: reveal 900ms cubic-bezier(.19,.8,.2,1) forwards;
+    }
+
+    .d1 { animation-delay: 100ms; }
+    .d2 { animation-delay: 200ms; }
+    .d3 { animation-delay: 300ms; }
+    .d4 { animation-delay: 400ms; }
+
+    @keyframes reveal {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes glide {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    @keyframes rise {
+      from {
+        opacity: 0.45;
+        transform: scaleY(0.15);
+        transform-origin: bottom;
+      }
+      to {
+        opacity: 1;
+        transform: scaleY(1);
+        transform-origin: bottom;
+      }
+    }
+
+    @media (max-width: 1080px) {
+      .hero-grid,
+      .section-heading,
+      .manifesto-wrap,
+      .cta-inner {
+        grid-template-columns: 1fr;
+      }
+
+      .card-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .span-7,
+      .span-5,
+      .span-4 {
+        grid-column: auto;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .shell {
+        width: min(calc(100% - 18px), var(--max));
+      }
+
+      .topbar-inner,
+      .top-actions,
+      .hero-actions {
+        flex-wrap: wrap;
+      }
+
+      .nav {
+        order: 3;
+        width: 100%;
+        overflow-x: auto;
+        padding-bottom: 4px;
+      }
+
+      .hero-grid,
+      .hero-frame,
+      .hero-copy,
+      .hero-aside,
+      .panel,
+      .manifesto,
+      .cta-band {
+        border-radius: 24px;
+      }
+
+      .hero-grid {
+        padding: 16px;
+      }
+
+      .ticker,
+      .numbers,
+      .card-grid,
+      .poster-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .btn,
+      .btn-outline {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="shell topbar-inner">
+      <a class="brand" href="#home" aria-label="Veloura home">
+        <span class="brand-mark">V</span>
+        <span>Veloura Bureau</span>
+      </a>
+      <nav class="nav" aria-label="Primary navigation">
+        <a href="#edition">Edition</a>
+        <a href="#signal">Signal</a>
+        <a href="#manifesto">Manifesto</a>
+      </nav>
+      <div class="top-actions">
+        <span class="pill">Spring issue now open</span>
+        <a class="btn" href="#reserve">Reserve a launch</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="home">
+    <section class="hero">
+      <div class="shell hero-frame reveal">
+        <div class="hero-grid">
+          <div class="hero-copy reveal d1">
+            <span class="stamp">Editorial commerce for premium ideas</span>
+            <h1>Not another landing page. A <em>cover story</em> for your ambition.</h1>
+            <p class="lead">Veloura is a maximalist, print-inspired launch surface for brands that want more than conversion math. It stages authority, desire, tension, and proof in one sharply composed experience.</p>
+            <div class="hero-actions">
+              <a class="btn" href="#reserve">Commission the experience</a>
+              <a class="btn-outline" href="#signal">Read the anatomy</a>
+            </div>
+            <div class="ticker">
+              <div>
+                <b>12</b>
+                <span>Days from direction to polished launch artifact</span>
+              </div>
+              <div>
+                <b>4.1x</b>
+                <span>More qualified response from style-led positioning</span>
+              </div>
+              <div>
+                <b>97</b>
+                <span>Perceived premium score in internal review testing</span>
+              </div>
+            </div>
+          </div>
+
+          <aside class="hero-aside reveal d2">
+            <div class="poster">
+              <div class="poster-top">
+                <small>Issue 01</small>
+                <code>Pure HTML</code>
+              </div>
+              <div class="poster-word">
+                <span>Sell</span>
+                <span>the</span>
+                <span>Mood</span>
+              </div>
+              <div class="poster-grid">
+                <div class="poster-cell">
+                  <strong>Story</strong>
+                  <span>Positioning that sounds inevitable.</span>
+                </div>
+                <div class="poster-cell">
+                  <strong>Form</strong>
+                  <span>Layouts with fashion-editor energy.</span>
+                </div>
+                <div class="poster-cell">
+                  <strong>Proof</strong>
+                  <span>Metrics staged like cultural signals.</span>
+                </div>
+                <div class="poster-cell">
+                  <strong>Tension</strong>
+                  <span>Enough drama to feel unforgettable.</span>
+                </div>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <div class="marquee reveal d3" aria-hidden="true">
+      <div class="marquee-track">
+        <span>Luxury without stiffness</span>
+        <span>Editorial without dead weight</span>
+        <span>Sharp type</span>
+        <span>Asymmetric composition</span>
+        <span>High-desire storytelling</span>
+        <span>Luxury without stiffness</span>
+        <span>Editorial without dead weight</span>
+        <span>Sharp type</span>
+        <span>Asymmetric composition</span>
+        <span>High-desire storytelling</span>
+      </div>
+    </div>
+
+    <section class="section" id="signal">
+      <div class="shell">
+        <div class="section-heading reveal">
+          <h2>Every section should feel like a <em>decision</em>, not a default.</h2>
+          <p>This concept rejects startup sameness. It leans into a warm paper palette, Bodoni drama, diagonal composition, and print-era pacing so the whole page feels curated rather than assembled.</p>
+        </div>
+
+        <div class="card-grid">
+          <article class="panel span-7 reveal d1">
+            <span class="eyebrow">Signal Architecture</span>
+            <h3>Proof is framed like a luxury spread, not a dashboard screenshot</h3>
+            <p>Numbers are still here, but they are styled as symbols of desirability and momentum. The page sells emotional confidence first, then rational support.</p>
+            <div class="bars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+          </article>
+
+          <article class="panel span-5 reveal d2" id="edition">
+            <span class="eyebrow">Edition Design</span>
+            <h3>Typography does the heavy lifting</h3>
+            <p>A razor-edged serif headlines the experience while mono labels and narrow body copy create contrast, pacing, and editorial authority.</p>
+            <div class="quote-box">“Make the offer feel collectible before anyone clicks the button.”</div>
+          </article>
+
+          <article class="panel span-4 reveal d2">
+            <span class="eyebrow">Material</span>
+            <h3>Warm paper, lacquered ink, metallic accents</h3>
+            <p>The interface borrows from magazines, invitations, and gallery posters instead of software dashboards.</p>
+          </article>
+
+          <article class="panel span-4 reveal d3">
+            <span class="eyebrow">Layout</span>
+            <h3>Controlled asymmetry keeps it alive</h3>
+            <p>Diagonal overlays, layered panels, and off-center emphasis create motion without needing JavaScript.</p>
+          </article>
+
+          <article class="panel span-4 reveal d4">
+            <span class="eyebrow">Conversion</span>
+            <h3>Calls to action feel commissioned, not begged for</h3>
+            <p>The tone is premium and self-assured, which is often more persuasive than aggressive urgency.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="manifesto">
+      <div class="shell manifesto-wrap">
+        <div class="manifesto reveal">
+          <span class="eyebrow">Manifesto</span>
+          <h3>A landing page can act like packaging, publishing, and persuasion all at once.</h3>
+          <p>That is the point of this concept. It turns a browser window into an object with taste: something people remember, forward, and associate with conviction. The visual language is indulgent on purpose, but the structure stays clean enough to ship.</p>
+          <div class="numbers">
+            <div>
+              <b>01</b>
+              <p>Distinct identity built into the page itself</p>
+            </div>
+            <div>
+              <b>02</b>
+              <p>Responsive composition with no framework dependency</p>
+            </div>
+            <div>
+              <b>03</b>
+              <p>Enough theater to earn attention in crowded categories</p>
+            </div>
+          </div>
+          <div class="manifesto-list">
+            <div class="manifesto-item">
+              <strong>Memorable</strong>
+              <p>If someone can describe the page from memory, the design is doing its job.</p>
+            </div>
+            <div class="manifesto-item">
+              <strong>Ownable</strong>
+              <p>The palette and typography push it away from generic startup visuals immediately.</p>
+            </div>
+            <div class="manifesto-item">
+              <strong>Ready</strong>
+              <p>Everything lives in one HTML file, so it is easy to open, tweak, or adapt into a real project.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="diagonal reveal d2">
+          <strong>Style can be strategy when the page knows exactly who it is.</strong>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta" id="reserve">
+      <div class="shell">
+        <div class="cta-band reveal d3">
+          <div class="cta-inner">
+            <div>
+              <span class="stamp">Reserve the edition</span>
+              <h2>Build something that looks expensive, deliberate, and a little <em>dangerous</em>.</h2>
+              <p>This file is ready to open as-is, clone for a client, or rework into a full branded launch page.</p>
+            </div>
+            <div class="hero-actions">
+              <a class="btn" href="mailto:edition@veloura.studio">edition@veloura.studio</a>
+              <a class="btn-outline" href="#home">Back to top</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="shell" style="display:flex;justify-content:space-between;gap:16px;align-items:center;padding:0 0 34px;flex-wrap:wrap;">
+      <p>Veloura Bureau — launch pages with magazine blood and sales instincts.</p>
+      <p>Single-file HTML. No framework. No filler.</p>
+    </div>
+  </footer>
+</body>
+</html>

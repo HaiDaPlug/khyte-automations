@@ -46,14 +46,7 @@ export default function ProcessSection() {
       </div>
 
       {/* Grid with pipeline line */}
-      <div className="relative max-w-[1600px] mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
-
-        {/* Pipeline line — masked by card bg */}
-        <div
-          className="hidden md:block absolute w-full h-px left-0 z-0"
-          style={{ top: "8.5rem", background: "var(--color-border)" }}
-          aria-hidden="true"
-        />
+      <div className="max-w-[1600px] mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
 
         {steps.map((step) => (
           <div

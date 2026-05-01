@@ -1,12 +1,14 @@
-# Khyte Automations - Current State (v2.13)
+# Khyte Automations - Current State (v2.20)
 
 ## Tech Stack
 - **Next.js** 16.1.1 (App Router)
 - **React** 19.2.1
 - **TypeScript** 5 (Strict mode)
 - **Tailwind CSS** v4 (config via `@theme` in globals.css)
-- **Font**: Geist Sans (`geist` package)
+- **Fonts**: Satoshi (Fontshare CDN, body — now primary font globally), Barlow Condensed (Google Fonts, display/eyebrows), Barlow (Google Fonts, available), Bebas Neue (Google Fonts, available)
+- **GeistSans removed** — was imported from `geist/font/sans`, injected `--font-geist-sans` globally and overrode Satoshi. Fully removed from layout.tsx.
 - **GSAP**: `gsap` — installed for animations (ScrollTrigger, timelines, tweens). Core is free. No premium plugins used.
+- **Vercel Analytics**: `@vercel/analytics` — `<Analytics />` injected in `layout.tsx`, tracks page views on Vercel deployments
 
 ## Project Structure
 ```
@@ -22,20 +24,24 @@ src/
 │   │   ├── page.tsx      # Services & pricing page (was /services, 301 redirect in next.config)
 │   │   ├── audit/page.tsx          # Redirects to /tjanster
 │   │   └── custom-build/page.tsx   # Redirects to /tjanster
-│   ├── layout.tsx        # Root layout + metadata + Calendly scripts + Nav
+│   ├── layout.tsx        # Root layout + metadata + Calendly script + CalendlyProvider + Nav
 │   ├── globals.css       # Design tokens + animations
 │   ├── sitemap.ts        # Dynamic sitemap
 │   └── robots.ts         # Robots.txt
 ├── components/
 │   ├── Nav.tsx              # Floating glass capsule nav (Client)
 │   ├── Button.tsx           # Primary/secondary/ghostDark variants
-│   ├── CalendlyButton.tsx   # Calendly popup trigger (Client)
+│   ├── CalendlyButton.tsx   # Opens CalendlyDrawer via context (Client)
+│   ├── CalendlyContext.tsx  # Global context — openCalendly() / closeCalendly() (Client)
+│   ├── CalendlyDrawer.tsx   # Slide-in drawer with Calendly inline embed (Client)
+│   ├── KhyteMap.leaflet-archived.tsx     # Archived: Leaflet + Stadia tiles map with custom marker + popup
+│   ├── KhyteMapClient.leaflet-archived.tsx  # Archived: SSR-safe wrapper for Leaflet map
 │   ├── PreFooterCTA.tsx     # Global pre-footer CTA
 │   ├── Footer.tsx           # Global footer
 │   ├── CaseCard.tsx         # Case card component
-│   ├── Container.tsx        # Responsive max-width wrapper (see below)
+│   ├── Container.tsx        # Responsive max-width wrapper — max-w-[1200px] (see below)
 │   ├── PageTransition.tsx   # Route-change: scroll-to-top + fade-in (Client)
-│   ├── FAQAccordion.tsx     # FAQ accordion — real height transition, scrollHeight at click time (Client) ← ACTIVE
+│   ├── FAQAccordion.tsx     # FAQ accordion — grid-template-rows 0fr→1fr transition, compositor-only (Client) ← ACTIVE
 │   ├── DnaWeaveSvg.tsx      # Animated SVG (unused on homepage)
 │   ├── TimelineProcess.tsx  # Timeline with scan animation (Client)
 │   ├── ToolsTicker.tsx      # Logo ticker (Client)
@@ -53,7 +59,9 @@ src/
 │   ├── WorkflowVisual.tsx   # Archived: animated pipeline node row (Client)
 │   ├── VisualSection.tsx    # Archived: InteractiveGrid + WorkflowVisual wrapper (Client)
 │   └── sections/
-│       ├── Statement.tsx    # Editorial headline + conviction cards (Client) — archived from homepage (revert: add back inside Container)
+│       ├── Statement.tsx    # Editorial headline + conviction cards (Client) — used on Om oss page inside Container (archived from homepage)
+      ├── Statement.archived.tsx  # Archived copy of Statement.tsx
+      ├── Manifesto.tsx    # Reusable pull-quote blockquote — "Målet är alltid detsamma..." — fade-in on scroll, accent orange highlights (Client)
 │       ├── Statement.process-cards.archived.tsx  # Archived: zigzag/process cards variant (git 93819eb)
 │       ├── FitCheck.archived.tsx  # Archived: full-bleed split-screen fit check (dark left / light right)
 │       ├── AutomationShowcase.tsx  # Bento grid — transparent cards, pain-first copy, Lucide icons ← ACTIVE
@@ -80,7 +88,9 @@ public/
 --color-muted: #9C8E82;            /* Warm taupe (secondary text, icons) */
 --color-accent: #E8833A;           /* Bright orange (highlights, timeline) */
 --color-border: rgba(58,51,48,0.12); /* Subtle warm border */
---font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+--font-sans: "Satoshi", var(--font-barlow-body), ui-sans-serif, system-ui, sans-serif;
+--font-display: var(--font-barlow), sans-serif;  /* Barlow Condensed 700/800 — headings, eyebrows */
+--font-bebas: var(--font-bebas), sans-serif;      /* Bebas Neue — available for lockups */
 --border-width: 2px;               /* Content-facing card/input border thickness — change once, updates everywhere */
 --radius-sm: 4px;                  /* Cards, inputs */
 --spacing-section: 144px;          /* Desktop section spacing */
@@ -157,17 +167,20 @@ Skills live in `~/.claude/skills/` and are invoked via `/skill-name` or triggere
 - `.text-label`: 13px, 700 weight, 0.05em tracking, uppercase, **`color: var(--color-text)`** (overridden in footer with `!text-white/95`)
 - `.btn-cta`: Primary CTA gradient — `linear-gradient(180deg, #C96A24 0%, #B8521C 100%)`, white text, inset highlight/shadow, `brightness(1.10)` on hover with orange glow. Applied to `primary` + `warm` variants in Button + CalendlyButton, and Nav CTAs.
 - `.page-enter`: Page fade-in animation — `pageFadeIn` keyframe, `opacity: 0 + translateY(6px)` → natural, 0.32s expo-out. Triggered on every route change via `PageTransition`.
-- FAQ accordion is now a React client component (`FAQAccordion.tsx`) — real height transition via `scrollHeight` read at click time (same technique as Webflow IX2). `650ms cubic-bezier(0.25,1,0.5,1)` on height, `500ms` on chevron rotate. No `details`/`summary` — uses `button` + controlled `div` with inline `style={{ height }}`.
+- FAQ accordion is a React client component (`FAQAccordion.tsx`) — uses `grid-template-rows: 0fr→1fr` for expand/collapse (compositor-only, zero layout thrash). Easing: `220ms cubic-bezier(0.16,1,0.3,1)` row, `200ms` chevron. No `details`/`summary` — uses `button` + controlled grid wrapper. `useRef`/`scrollHeight` removed.
 - `slideDown` keyframe still in globals.css but no longer used by FAQ.
 
-## Typography Utilities
+## Typography System
+- **Body**: Satoshi via Fontshare CDN — `font-weight: 500`, `font-size: 19px` base, `letter-spacing: -0.01em`, `subpixel-antialiased`
+- **Display/Headings**: Barlow Condensed 700/800 via `--font-display` — used on most h1/h2 headings and eyebrow labels. Cases page uses `font-sans` (Satoshi) for headings instead — intentional per-page choice.
+- **Bebas Neue**: loaded as `--font-bebas`, available for special lockups
 - `.text-hero`: 600 weight, -0.035em tracking, 1.08 leading
 - `.text-label`: 13px, 700 weight, 0.05em tracking, uppercase, `color: var(--color-text)`
 
 ## Component Standards
 
 ### Container.tsx
-- **Fixed max-width**: `max-w-[1100px]` — flat across all breakpoints, no xl/2xl scaling
+- **Fixed max-width**: `max-w-[1200px]` — flat across all breakpoints, no xl/2xl scaling. Standalone pages (case, kontakt) also use `max-w-[1200px]` directly.
 - **Padding**: flat `px-6`
 - **Always `mx-auto`** — centered on viewport. On ultrawide screens the whitespace is intentional (readable line length, premium feel).
 - **CRITICAL**: Full-bleed sections (`w-screen`, viewport-escape trick) must NOT be children of Container. They must sit at page root. Statement is the one exception — its escape trick depends on Container being centered. See Homepage Layout Architecture.
@@ -190,19 +203,25 @@ Skills live in `~/.claude/skills/` and are invoked via `/skill-name` or triggere
   - `warm`: `btn-cta` utility class (same gradient, works on dark espresso base-band)
 - Triggers Calendly popup via `window.Calendly.initPopupWidget()`
 
-### Nav.tsx (Floating Capsule)
+### Nav.tsx (Floating Capsule + Hero Morph)
 - **Rendered globally** in layout.tsx (single instance across all pages)
-- Position: `fixed top-6 left-1/2 -translate-x-1/2`
-- Width: `max-w-[96%] md:max-w-[1280px] xl:max-w-[1400px]`
-- Glass: `bg-[#0A0A0A]/72 backdrop-blur-md border-white/10`
-- Shape: `rounded-full`
+- **Homepage morph**: at `scrollY ≤ 80px`, nav expands to full-width transparent bar flush to top. On scroll it compresses into the floating pill. CSS transitions only — `0.7s cubic-bezier(0.16,1,0.3,1)` on all morphing properties. No morph on other pages.
+  - Expanded state: `top: 0, width: 100%, max-width: 100%, border-radius: 0, background: transparent, backdrop-filter: none, border: transparent, box-shadow: none, padding: 20px 32px`
+  - Compressed (pill) state: `top: 24px, width: 96%, max-width: 1400px, border-radius: 9999px, background: rgba(10,10,10,0.72), backdrop-filter: blur(12px), border: rgba(255,255,255,0.10), box-shadow: none, padding: 12px 32px` — shadow removed
+  - Centering: `fixed left-0 right-0 mx-auto` (not `left-1/2 -translate-x-1/2` — required for clean width transition)
+  - Scroll detection: boolean `scrolled` state, `useEffect` scroll listener with `{ passive: true }`, `isHome` guard
+- **Pill state** (all other pages + scrolled homepage):
+  - Glass: `bg-[#0A0A0A]/72 backdrop-blur-md border-white/10`
+  - Shape: `rounded-full`
 - Layout: `justify-between` with absolutely-centered nav links
 - Logo left, CTA right, links centered (desktop)
-- Desktop links (4): Case, Om oss, **Tjänster**, Kontakt
-  - Active: `text-white`, inactive: `text-white/65`, hover: `text-white`
+- Desktop links (4): Case, Om oss, **Tjänster**, Kontakt — rendered via `.map()` array
+  - Active: `text-white active` class + full-width orange underline sweep (`#D4622B`, 1.5px, `-bottom-[7px]`)
+  - Hover: orange underline sweeps in left→right via `.nav-link span[aria-hidden]` CSS (`width: 0 → 100%`, `0.25s cubic-bezier(0.16,1,0.3,1)`) — defined in `globals.css`
+  - Inactive: `text-white/65`, hover: `text-white`
   - **Tjänster**: Link to `/tjanster`, active when `pathname.startsWith("/tjanster")`
-- Desktop CTA: tokenized (`--color-cta-primary`, `--color-cta-text`) and rounded-full
-- Mobile drawer: dark (`bg-[#0A0A0A]/95`) with white text hierarchy
+- Desktop CTA: `btn-cta` rounded-full
+- Mobile drawer: dark (`bg-[#0A0A0A]/95`) with white text hierarchy, slide-in animation (`drawerSlideIn` 280ms cubic-bezier, respects `prefers-reduced-motion`) — **unchanged by morph logic**
 - Mobile backdrop: `bg-black/60`
 
 ### Base Band (Shared Background Wrapper)
@@ -239,17 +258,52 @@ Skills live in `~/.claude/skills/` and are invoked via `/skill-name` or triggere
   - `Användarvillkor` → `/villkor`
   - `Integritetspolicy` → `/integritetspolicy`
 
-### About Page People Cards
-- Layout: 2-column grid (1 col mobile, 2 cols lg+)
-- Card class `.profile-card` (globals.css): warm parchment gradient surface `#F0EBE5→#E8E0D8→#DDD4C8` (160°), layered shadow system, orange border bloom on hover (`rgba(212,98,43,0.22)`)
-- Profile images: `/1.svg` (Hai), `/2.svg` (Abdi) — SVGs are transparent (no white bg)
-- Image container: `aspect-[4/4]` square, `overflow-hidden`, layered orange gradient background (radial bottom bloom + linear `#C8B8A8→#D4A882→#D4622B→#A03A18`)
-- Image rendering: `object-contain object-bottom scale-[1.32–1.35] origin-bottom` — subjects scaled up from bottom anchor, no crop risk; hover bumps scale slightly
-- Name `h3`: `color: #1A120E` (near-black espresso, darker than body text)
-- Role `.text-label`: `color: var(--color-accent)` orange — brand hierarchy anchor
-- Hairline divider between bio and contact details: `rgba(58,51,48,0.10)`
-- Contact details: `text-sm text-[var(--color-text-body)]`, links `hover:text-[var(--color-text)]`
-- LinkedIn icon: `absolute bottom-8 right-8`, h-6 w-6, opacity 50%→90%
+### About Page (`/om-oss`)
+- **Files**: `src/app/om-oss/page.tsx` (server — metadata only) + `src/app/om-oss/AboutContent.tsx` (client — all layout)
+- **Hero**: Satoshi bold `clamp(3.125rem, 8.5vw, 7.125rem)`, "story." in accent orange, subtitle right, `border-b pb-10`. H1: "Vår story."
+- **Structure**: Hero → Section 1 → Section 2 → Section 3 → Section 4 → Manifesto
+  - **Section 1 — Ursprunget**: "Vart allt började." — full-width heading + lead paragraph
+  - **Section 2 — Teamet**: "Och vilka är vi egentligen?" — 2-col grid, text left + photo right (`aspect-[4/5]`, placeholder until real camera roll photo added)
+  - **Section 3 — Övertygelsen**: "Vad står vi för och varför?" — heading + conviction statement paragraph
+  - **Section 4 — Vad vi gör**: "Vad vi gör." — heading + concrete description of what Khyte builds and delivers
+  - **Manifesto**: pull-quote close (`py-10 md:py-14`)
+- **Animations**: scroll-triggered `whileInView` reveals on all headings + paragraphs, staggered by 80ms, `useReducedMotion` guard. `Reveal` wrapper component defined locally in `AboutContent.tsx`.
+- **Section headings**: Barlow Condensed (`font-display`), fully `--color-text` (no orange splits), `clamp(2rem, 4.5vw, 3.5rem)`. No eyebrow labels.
+- **Borders**: `border-b border-[rgba(58,51,48,0.18)]` between all sections
+- **SEO notes**: canonical set, metadata title/description present, heading hierarchy correct. Missing: JSON-LD Person schema for Hai + Abdi (homepage has it, about page should reinforce). Metadata description could include "AI-automatisering" or "n8n" keyword. `aria-label` on `<section>` elements would help screen readers.
+- **Photo slot**: Section 2 right column has placeholder div — swap for `<img src="/your-photo.jpg" className="w-full h-full object-cover" alt="Hai och Abdi" />` when camera roll photo is ready
+
+### Kontakt Page (`/kontakt`)
+- **No Container wrapper** — uses `max-w-[1200px] mx-auto px-6` directly
+- **No form** — direct contact info + map
+- **Top block**: `grid-cols-[5fr_7fr]`, `min-height: 420px`, `border-t border-b border-[var(--color-border)]`
+  - Left: h1 "Khyte Automations" (Barlow Condensed 700, `clamp(2.4rem, 4.5vw, 3.6rem)`), two eyebrow-labeled blocks — "Kontor" (address) and "Kontakt" (phone + email, underlined). LinkedIn icon below as standalone link, `h-6 w-6` black PNG. No border between left and right.
+  - Right: Google Maps iframe — `p-6 md:p-10`, `rounded-xl` with border, `height: 300px`, `filter: grayscale(1) contrast(1.1) opacity(0.9)`
+  - Eyebrow labels: `text-[12px] tracking-[0.16em] uppercase`, Barlow Condensed 600, `color-muted`
+  - Phone + email: `text-base font-semibold`, underlined with `rgba(58,51,48,0.2)` decoration color
+- **Team section**: "Vi bakom Khyte" h2 (Barlow Condensed 700, same size as h1), `pt-8 pb-24`, `mb-5` gap below heading
+  - Cards: `rounded-2xl border border-[var(--color-border)]`, transparent bg (no fill class)
+  - Image container: `aspect-[4/4]`, gradient `linear-gradient(160deg, #2C1A10→#4A2010→#8B3A12→#C8581A→#E89050→#F0A868)` — espresso-to-warm-orange diagonal
+  - LinkedIn icons: `black-linkedin-icon.png`, `h-6 w-6`, `absolute bottom-8 right-8`, full opacity, fades on hover
+  - Category labels (role): `color: var(--color-accent)`
+  - Stat labels (Favorit-, Mobil:, Mejl:): `color: var(--color-text)` — darker than surrounding body text
+
+### Cases Page (`/case`)
+- **Layout**: 2-column card grid. Hero lockup above, cards below.
+- **Hero**: `border-b pb-10 mb-10`, h1 Satoshi bold `clamp(3.5rem, 9vw, 7.5rem)` with "levererar." in accent orange. No eyebrow. Sub-copy inline (no forced `<br>`). Border uses `rgba(58,51,48,0.18)`.
+- **Grid logic** (auto-adapts, no manual changes needed):
+  - Total items = `cases.length + 1` (placeholder always appended)
+  - **Odd total** → real cases in 2-col grid, placeholder centered at `max-w-[calc(50%-10px)]` below
+  - **Even total** → all items including placeholder in full 2-col grid
+  - Currently: 2 cases → total 3 (odd) → placeholder centered. Add 3rd case → total 4 (even) → 2×2 grid.
+- **Case cards**: `rounded-2xl`, border `rgba(58,51,48,0.18)`, hover border+shadow `rgba(58,51,48,0.52)` (double-border effect via `box-shadow`). No background fill — page bg shows through. Transition on `border-color` + `box-shadow`.
+  - Visual: `aspect-[16/10]`, gradient + grain overlay, scales `1.04` on hover
+  - Divider: `1px` line between visual and text panel
+  - Text panel: `p-6`, Satoshi bold company name, muted problem label, body description, "Läs mer" + arrow always visible in `--color-ink`
+  - No index numbers shown
+- **Placeholder card**: Mirrors real card structure exactly — `aspect-[16/10]` top area with "Under arbete" centered, divider, text panel with "Kommer snart". Dashed border. No background fill.
+- **Active cases**: JaTack AB (Leadgenerering för listor), Observa Inkasso & Juridik (Automatisk research av befintlig data)
+- **Archived layout** (Option B — alternating rows): preserved as JS block comment above `export default` in `case/page.tsx`. Uncomment to restore zigzag layout.
 
 ### Services Page (Consolidated)
 **Route**: `/tjanster` (accessible via "Tjänster" link in nav; 301 redirect from `/services`)
@@ -315,7 +369,7 @@ The homepage (`src/app/page.tsx`) uses an **alternating root/Container pattern**
   - Gap: `gap-10 md:gap-12` (tighter than before — copy and kite closer together for better hierarchy)
   - Left: h1 + body + CTAs
   - Right: KiteHero (`hidden md:flex`)
-- **H1**: `text-[2.25rem] md:text-[3.25rem] lg:text-6xl`, `.text-hero` (600 weight, -0.035em, 1.08 lh)
+- **H1**: `text-[2.25rem] md:text-[3.25rem] lg:text-6xl xl:text-[3.6rem] 2xl:text-[4rem]`, `.text-hero` (600 weight, -0.035em, 1.08 lh)
 - **H1 rolling word**: `<RollingWord />` — italic + `font-bold` gradient span; cycles "manuellt arbete" → "repetitivt arbete" → "det manuella" → "det onödiga"
 - **Subheadline**: `text-lg md:text-xl text-white/85 font-medium max-w-[480px] leading-relaxed`
 - **Mobile accent**: 3 cascading orange dots (`md:hidden`) below CTAs
@@ -359,8 +413,26 @@ The homepage (`src/app/page.tsx`) uses an **alternating root/Container pattern**
   - **Attribution**: hairline divider + `sebastian.jpg` avatar (`w-14 h-14`, `object-cover`, `object-position: center top`) + name/role
 - **Placeholder card**: `rounded-2xl border-2 border-dashed border-[var(--color-border)]` — arrow icon + "Läs mer om våra case", links to `/case`
 - **Dot indicator**: removed
-- **Outside links**: brutalist ink style — `font-display text-sm font-bold tracking-[0.2em] uppercase text-[var(--color-text)] hover:text-[#D4622B]` + inline SVG arrow. Desktop header "SE ALLA CASE" + mobile centered link.
+- **Outside links**: removed — "SE ALLA CASE" desktop header link and mobile link both removed.
 - **Swap image**: replace gradient `<div>` with `<img src="/case-photo.jpg" className="w-full aspect-[16/9] object-cover shrink-0" />` when real photo is ready
+
+### Case Overview Page (`/case`)
+- **Full rebuild** — replaced flat Problem/Build/Result card grid with editorial overview
+- **Hero**: Barlow `font-display` uppercase headline "ARBETE SOM / FAKTISKT / LEVERERAR." (`clamp(2.75rem,6vw,5rem)`, `lineHeight: 0.95`) left + short descriptor right on desktop. `section-eyebrow` above. Separated from grid by `border-b border-[var(--color-border)]`.
+- **Grid**: 3-column `md:grid-cols-3 gap-x-8`, `items-start`. Middle card staggered down via `md:mt-24` — editorial rhythm from reference (Design 2 / Kinetic Volumes).
+- **Card anatomy**: `aspect-[4/5]` portrait visual + `section-eyebrow` (index — category) + `font-display` title + one-liner hook. Arrow icon fades in on hover. Hover: gradient scales `1.04` via `transition-transform duration-700`.
+- **Gradients** (abstract, placeholder until real screenshots):
+  - Card 1 (Lead Engine): warm orange-amber — matches CasesSection testimonial palette
+  - Card 2 (Lead-lista): deep espresso-to-copper — clearly distinct, darker
+  - Card 3 (Inbox Zero): muted gray, `opacity-45`, `cursor-default`, "Kommer snart" overlay — non-interactive placeholder
+- **Grain overlay**: inline SVG `feTurbulence` data URI on each card visual, `mixBlendMode: overlay`
+- **Cases** (2 live + 1 placeholder):
+  - `/case/lead-engine` — "Lead Engine" — Sälj & Prospektering — "Säljteamet öppnar ett Sheet. Listan är redan där."
+  - `/case/lead-lista` — "Lead-lista" — Research & Analys — "Research som tog en fredag görs nu på ett par minuter."
+  - Placeholder: "Inbox Zero" — E-post & Uppföljning — "E-post som följer upp sig självt."
+- **Bottom CTA**: `border-t` divider, left copy + right arrow link to `/kontakt`
+- **Slugs**: `/case/lead-engine` and `/case/lead-lista` — wired as placeholders, individual article pages not yet built
+- **Swap visuals**: replace gradient `<div>` with `<img>` screenshot when ready — same `aspect-[4/5]` container
 
 ### PainOutcome.tsx
 - `mb-24 md:mb-32` (tighter than `--spacing-section` — pulls closer to ROIBand thematically)
@@ -392,7 +464,9 @@ The homepage (`src/app/page.tsx`) uses an **alternating root/Container pattern**
 - Own `w-full border-t border-[var(--color-border)]` section on `var(--color-bg)`, `py-[--spacing-section]`
 - **Header**: `.section-eyebrow` + `.font-display` h2 two-line, orange second line
 - **Accordion**: `<FAQAccordion />` client component — `bg-transparent rounded-2xl` cards, `border-[var(--color-border)]`, `gap-2`
-- **Animation**: real height transition — `scrollHeight` read at click time, `240ms cubic-bezier(0.4,0,0.2,1)` (Material standard easing). Chevron same duration. Answer text: `color-text-body font-medium`. Question text: Geist `font-semibold tracking-[-0.01em]`
+- **Animation**: `grid-template-rows: 0fr→1fr`, `380ms cubic-bezier(0.16,1,0.3,1)`. Chevron same curve. Answer text: `color-text-body font-medium`. Question text: Geist `font-semibold tracking-[-0.01em]`
+- **Animation**: `grid-template-rows: 0fr→1fr`, `220ms cubic-bezier(0.16,1,0.3,1)`. Chevron `200ms` same curve.
+- **Questions (4)**: Vad kostar det? / Hur lång tid tar det? / Behöver vi ändra hur vi jobbar? / Kan ni integrera med vårt system?
 
 ### FitCheck.tsx (Homepage fit check — ACTIVE)
 - **Full-bleed split-screen** at page root (outside Container) — `w-full flex flex-col md:flex-row`
@@ -468,8 +542,9 @@ Components requiring `"use client"`:
 - `AmbientParticles.tsx` - canvas rAF loop, drifting particles around visuals ← ACTIVE
 - `RollingWord.tsx` - AnimatePresence word cycle, useReducedMotion guard ← ACTIVE
 - `PageTransition.tsx` - usePathname route watcher, scroll-to-top on nav (skips first render) + fade-in ← ACTIVE
-- `FAQAccordion.tsx` - useState height toggle, scrollHeight read at click time ← ACTIVE
-- `Statement.tsx` - motion animations, IntersectionObserver, ResizeObserver ← ACTIVE
+- `FAQAccordion.tsx` - useState open toggle, grid-template-rows animation ← ACTIVE
+- `Statement.tsx` - motion animations, useInView ← used on Om oss page
+- `Manifesto.tsx` - motion/react, useInView ← reusable pull-quote, used on Om oss page
 - `DataSweep.tsx` - rAF canvas loop (archived)
 - `InteractiveGrid.tsx` - rAF canvas loop (archived)
 - `WorkflowVisual.tsx` - motion/react + IntersectionObserver (archived)
@@ -481,7 +556,7 @@ Components requiring `"use client"`:
 - Design rules: see `.claude/motion-design.md`
 
 ## Scroll & Performance
-- **Scroll restoration**: `experimental.scrollRestoration: true` in `next.config.ts` — browser restores position on refresh, only resets to top on link navigation (via `PageTransition.tsx`).
+- **Scroll restoration**: removed — `experimental.scrollRestoration` was causing browser to restore scroll on refresh. Default Next.js behavior: scroll to top on navigation (via `PageTransition.tsx`), no restore on refresh.
 - **Lenis removed** — native scroll only. Faster, zero JS overhead on wheel events.
 - **KiteHero** pauses animation via `IntersectionObserver` when off-screen (`inView` state guard in `useAnimationFrame`)
 - Hero bg divs: `absolute inset-0` — GPU-promoted, zero layout cost
@@ -497,9 +572,10 @@ Components requiring `"use client"`:
 - 301 redirects: `/services→/tjanster`, `/cases→/case`, `/about→/om-oss`, `/contact→/kontakt`, `/automations→/` (in `next.config.ts`)
 
 ## Calendly Integration
-- CSS/JS loaded in layout.tsx (global)
-- Trigger: `window.Calendly.initPopupWidget({ url })`
-- Used in: Nav CTA, PreFooterCTA, Tjänster page, Kontakt page
+- **Script loaded on-demand** — injected by `CalendlyDrawer` on first drawer open, not in layout.tsx
+- Widget initialised via `window.Calendly.initInlineWidget({ url, parentElement })` inside the drawer
+- Trigger: `openCalendly()` from `CalendlyContext` — used in Nav CTA, PreFooterCTA, CalendlyButton
+- `CalendlyProvider` wraps the full app in layout.tsx; `CalendlyDrawer` renders globally alongside Nav
 
 ## Development
 ```bash
@@ -551,6 +627,7 @@ npm run dev                     # Dev mode (Turbopack bug exists)
 | Hero right visual | `src/components/KiteHero.tsx` |
 | Hero rolling word | `src/components/RollingWord.tsx` |
 | Editorial statement + conviction cards | `src/components/sections/Statement.tsx` |
+| Pull-quote manifesto (reusable) | `src/components/sections/Manifesto.tsx` |
 | Process steps (sticky 2-col) | `src/components/sections/ProcessSection.tsx` |
 | Ambient particles (visuals) | `src/components/AmbientParticles.tsx` |
 | Fit check split-screen | `src/components/sections/FitCheck.tsx` |
@@ -563,14 +640,23 @@ npm run dev                     # Dev mode (Turbopack bug exists)
 | Archived — interactive dot grid | `src/components/InteractiveGrid.tsx` |
 | Archived — pipeline node row | `src/components/WorkflowVisual.tsx` |
 
-## Performance Notes (v1.65)
+## Performance Notes (v2.15)
 - **Lenis removed** — native scroll, no JS on wheel events
 - **Hero background**: WebP bitmap (`hero-gradient-v1.webp`) — zero SMIL, zero SVG filters, zero per-frame paint. BG layers use `absolute inset-0` (not escape trick).
 - **KiteHero**: ember `PARTICLES` moved to `particlesRef`, init once in `useEffect([])` — no per-frame allocation
 - **TimelineProcess**: `useEffect` deps `[]` + `observer.disconnect()` — one-shot IO, no re-registration
 - **globals.css `@keyframes timelineScan`**: `left` → `translateX(350%)` — GPU-composited, no layout reflow
-- **ToolsTicker**: `TICKER_ROW` at module scope — never recreated on re-render
+- **body::after grain**: no `transform`/`isolation` — kept simple to avoid breaking `position: fixed` on nav
+- **`.main-wrapper`**: no `contain: paint` — removed because it breaks `position: fixed` on nav (creates containing block)
+- **ToolsTicker**: `TICKER_ROW` at module scope — never recreated on re-render. `loading="lazy"` removed (above-fold). Explicit `width={48} height={48}` on logos for CLS prevention. `"use client"` removed — pure server component, CSS animation only.
 - **Statement**: pure `useInView` scroll trigger — no ResizeObserver, no dot positions.
+- **sebastian.jpg**: resized 800×800 → 112×112 (95KB → 2.9KB), displayed at 56×56 with 2× retina density. Explicit `width`/`height` on `<img>`.
+- **noise.webp**: recompressed 9.9KB → 5.4KB (quality 10, grain overlay at 12% opacity)
+- **Calendly script**: injected on-demand in `CalendlyDrawer` on first drawer open — not loaded globally. Saves ~100KB+ parse/eval on every page load for users who never open the drawer.
+- **Fontshare CSS**: non-blocking load via `rel="preload" as="style"` + `onLoad` swap + `<noscript>` fallback. `preconnect` has `crossOrigin="anonymous"` for correct CORS reuse. `dns-prefetch` on `cdn.fontshare.com` for font file CDN.
+- **AmbientParticles**: RAF loop pauses via `IntersectionObserver` when canvas is off-screen. Resets `last` timestamp on re-entry to prevent delta spike.
+- **html font-size**: `19px` set as bare unlayered rule (outside `@layer`) — previously `18px` inside `@layer utilities` was silently overridden by the unlayered cascade and never applied.
+- **browserslist**: added to `package.json` (last 2 versions of Chrome/Firefox/Safari/Edge). Note: Turbopack may not fully apply this yet (open Next.js issues).
 
 ## Priorities & Vision
 

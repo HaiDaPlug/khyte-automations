@@ -43,7 +43,7 @@ function FAQItem({ q, a }: { q: string; a: string }) {
           className="shrink-0 text-[var(--color-muted)]"
           style={{
             transform: open ? "rotate(180deg)" : "rotate(0deg)",
-            transition: "transform 380ms cubic-bezier(0.16, 1, 0.3, 1)",
+            transition: "transform 200ms cubic-bezier(0.16, 1, 0.3, 1)",
           }}
         >
           <path
@@ -60,7 +60,7 @@ function FAQItem({ q, a }: { q: string; a: string }) {
         style={{
           display: "grid",
           gridTemplateRows: open ? "1fr" : "0fr",
-          transition: "grid-template-rows 380ms cubic-bezier(0.16, 1, 0.3, 1)",
+          transition: "grid-template-rows 220ms cubic-bezier(0.16, 1, 0.3, 1)",
         }}
       >
         <div style={{ overflow: "hidden" }}>

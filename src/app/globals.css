@@ -9,8 +9,10 @@
   --color-accent: #E8833A;
   --color-border: rgba(58, 51, 48, 0.12);
 
-  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Satoshi", var(--font-barlow-body), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-barlow), sans-serif;
+  --font-barlow: var(--font-barlow), sans-serif;
+  --font-bebas: var(--font-bebas), sans-serif;
 
   --border-width: 2px;
   --radius-sm: 4px;
@@ -78,6 +80,9 @@
   /* Global grain — multiply blend makes it invisible on dark sections automatically */
   body {
     background-color: var(--color-bg);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    -webkit-font-smoothing: subpixel-antialiased;
   }
   body::after {
     content: "";
@@ -88,6 +93,17 @@
     opacity: 0.12;
     filter: url(#grain);
     mix-blend-mode: multiply;
+  }
+
+  /* Nav link underline sweep */
+  .nav-link span[aria-hidden] {
+    display: block;
+    width: 0;
+    transition: width 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .nav-link:hover span[aria-hidden],
+  .nav-link.active span[aria-hidden] {
+    width: 100%;
   }
 
   /* Page transition fade-in */
@@ -298,6 +314,10 @@ body {
   padding: 0;
   /* Prevent white flash on scroll/paint before hero bg renders */
   background-color: var(--color-bg);
+}
+
+html {
+  font-size: 18px;
 }
 
 body {
@@ -540,4 +560,19 @@ details[open] > summary .faq-chevron {
   .faq-chevron {
     transition: none;
   }
+}
+
+/* Leaflet popup — clean, no default chrome */
+.khyte-popup .leaflet-popup-content-wrapper {
+  border-radius: 8px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+  border: 1px solid rgba(58,51,48,0.10);
+  padding: 0;
+  background: #FAFAF8;
+}
+.khyte-popup .leaflet-popup-content {
+  margin: 10px 14px;
+}
+.khyte-popup .leaflet-popup-tip {
+  background: #FAFAF8;
 }

@@ -1,5 +1,3 @@
-"use client";
-
 const LOGO_TOOLS = [
   { src: "/N8n-logo-new.svg", alt: "n8n", invert: true },
   { src: "/OpenAI_Logo.svg", alt: "OpenAI", invert: true },

@@ -4,14 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-
-declare global {
-  interface Window {
-    Calendly?: {
-      initPopupWidget: (options: { url: string }) => void;
-    };
-  }
-}
+import { useCalendly } from "./CalendlyContext";
 
 function useIsMobile(breakpointPx = 768) {
   const [isMobile, setIsMobile] = useState<boolean>(false);
@@ -27,12 +20,22 @@ function useIsMobile(breakpointPx = 768) {
   return isMobile;
 }
 
-const CALENDLY_URL = "https://calendly.com/hai-khyteteam/30min";
-
 export default function Nav() {
   const pathname = usePathname();
+  const isHome = pathname === "/";
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const isMobile = useIsMobile(768);
+  const { openCalendly } = useCalendly();
+
+  // Homepage-only: track scroll to reveal nav pill
+  useEffect(() => {
+    if (!isHome) return;
+    const onScroll = () => setScrolled(window.scrollY > 80);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [isHome]);
 
 
   // Close drawer on route change
@@ -64,17 +67,40 @@ export default function Nav() {
   }, [open]);
 
 
-  const handleCalendlyClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    if (window.Calendly) {
-      window.Calendly.initPopupWidget({ url: CALENDLY_URL });
-    }
-  };
-
   return (
     <>
-    <nav className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-full max-w-[96%] md:max-w-[1280px] xl:max-w-[1400px]">
-      <div className="relative flex items-center justify-between px-4 sm:px-8 py-3 rounded-full bg-[#0A0A0A]/72 backdrop-blur-md border border-white/10 shadow-lg shadow-black/30">
+    <nav
+      className="fixed z-50 left-0 right-0 mx-auto"
+      style={{
+        top:      isHome && !scrolled ? "0px"   : "24px",
+        width:    isHome && !scrolled ? "100%"  : "96%",
+        maxWidth: isHome && !scrolled ? "100%"  : "1400px",
+        transition: [
+          "top 0.7s cubic-bezier(0.16,1,0.3,1)",
+          "width 0.7s cubic-bezier(0.16,1,0.3,1)",
+          "max-width 0.7s cubic-bezier(0.16,1,0.3,1)",
+        ].join(", "),
+      }}
+    >
+      <div
+        className="relative flex items-center justify-between"
+        style={{
+          padding:        isHome && !scrolled ? "20px 32px"             : "12px 32px",
+          borderRadius:   isHome && !scrolled ? "0px"                   : "9999px",
+          background:     isHome && !scrolled ? "transparent"           : "rgba(10,10,10,0.72)",
+          backdropFilter: isHome && !scrolled ? "none"                  : "blur(12px)",
+          border:         isHome && !scrolled ? "1px solid transparent" : "1px solid rgba(255,255,255,0.10)",
+          boxShadow:      "none",
+          transition: [
+            "padding 0.7s cubic-bezier(0.16,1,0.3,1)",
+            "border-radius 0.7s cubic-bezier(0.16,1,0.3,1)",
+            "background 0.7s cubic-bezier(0.16,1,0.3,1)",
+            "backdrop-filter 0.7s cubic-bezier(0.16,1,0.3,1)",
+            "border-color 0.7s cubic-bezier(0.16,1,0.3,1)",
+            "box-shadow 0.7s cubic-bezier(0.16,1,0.3,1)",
+          ].join(", "),
+        }}
+      >
         {/* Logo - Left (h-14, natural fit in taller container) */}
         <Link
           href="/"
@@ -101,15 +127,10 @@ export default function Nav() {
             <Link
               key={href}
               href={href}
-              className={`relative transition-colors duration-200 hover:text-white ${active ? "text-white" : "text-white/65"}`}
+              className={`nav-link relative transition-colors duration-200 hover:text-white ${active ? "text-white active" : "text-white/65"}`}
             >
               {label}
-              {active && (
-                <span
-                  aria-hidden="true"
-                  className="absolute -bottom-[11px] left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-[#D4622B]"
-                />
-              )}
+              <span aria-hidden="true" className="absolute -bottom-[7px] left-0 h-[1.5px] bg-[#D4622B]" />
             </Link>
           ))}
         </div>
@@ -117,7 +138,7 @@ export default function Nav() {
         {/* CTA Button - Right (desktop only) */}
         <div className="hidden md:flex items-center">
           <button
-            onClick={handleCalendlyClick}
+            onClick={openCalendly}
             className="btn-cta text-sm font-bold px-6 py-2.5 rounded-full shrink-0 cursor-pointer whitespace-nowrap"
           >
             Boka kostnadsfritt samtal
@@ -171,9 +192,7 @@ export default function Nav() {
           <nav className="flex flex-col px-6 py-4 gap-4">
             <Link href="/case" className="text-white/70 hover:text-white text-lg" onClick={() => setOpen(false)}>Case</Link>
             <Link href="/om-oss" className="text-white/70 hover:text-white text-lg" onClick={() => setOpen(false)}>Om oss</Link>
-
             <Link href="/tjanster" className="text-white/70 hover:text-white text-lg" onClick={() => setOpen(false)}>Tjänster</Link>
-
             <Link href="/kontakt" className="text-white/70 hover:text-white text-lg" onClick={() => setOpen(false)}>Kontakt</Link>
           </nav>
           {/* CTA */}

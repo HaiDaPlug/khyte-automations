@@ -56,7 +56,7 @@ export default function HeroSection() {
       <div className="w-full max-w-[1100px] 2xl:max-w-[1320px] mx-auto px-4 md:px-6 xl:px-12 grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-12 items-center">
         {/* Left: copy */}
         <div className="flex flex-col items-start text-left">
-          <h1 className="text-hero text-[2.25rem] md:text-[3.25rem] lg:text-6xl mb-8 drop-shadow-sm text-white"> {/* revert: text-5xl md:text-7xl */}
+          <h1 suppressHydrationWarning className="text-hero text-[2.25rem] md:text-[3.25rem] lg:text-6xl xl:text-[3.6rem] 2xl:text-[4rem] mb-8 drop-shadow-sm text-white"> {/* revert: text-5xl md:text-7xl */}
             Automatisering som tar bort{" "}
             <RollingWord />{" "}
             - utan onödigt strul.

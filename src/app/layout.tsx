@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import { GeistSans } from "geist/font/sans";
-import { Barlow_Condensed } from "next/font/google";
+import { Barlow, Barlow_Condensed, Bebas_Neue, DM_Serif_Display } from "next/font/google";
 import "./globals.css";
 
 const barlow = Barlow_Condensed({
@@ -10,10 +9,38 @@ const barlow = Barlow_Condensed({
   display: "swap",
   adjustFontFallback: false,
 });
+
+const barlowBody = Barlow({
+  weight: ["300", "400", "500", "600", "700"],
+  subsets: ["latin", "latin-ext"],
+  variable: "--font-barlow-body",
+  display: "swap",
+  adjustFontFallback: false,
+});
+
+const bebasNeue = Bebas_Neue({
+  weight: ["400"],
+  subsets: ["latin"],
+  variable: "--font-bebas",
+  display: "swap",
+  adjustFontFallback: false,
+});
+
+const dmSerifDisplay = DM_Serif_Display({
+  weight: ["400"],
+  subsets: ["latin"],
+  variable: "--font-syne",
+  display: "swap",
+  adjustFontFallback: false,
+});
+import { Analytics } from "@vercel/analytics/next";
+import Script from "next/script";
 import Nav from "@/components/Nav";
 import PreFooterCTA from "@/components/PreFooterCTA";
 import Footer from "@/components/Footer";
 import PageTransition from "@/components/PageTransition";
+import { CalendlyProvider } from "@/components/CalendlyContext";
+import CalendlyDrawer from "@/components/CalendlyDrawer";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://khyteautomations.com"),
@@ -184,31 +211,36 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="sv" className={`${GeistSans.variable} ${barlow.variable}`} data-theme={COLOR_CONCEPT}>
+    <html lang="sv" className={`${barlow.variable} ${barlowBody.variable} ${bebasNeue.variable} ${dmSerifDisplay.variable}`} data-theme={COLOR_CONCEPT}>
       <head>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
-        />
-        {/* Calendly widget — CSS deferred off critical path */}
+        <link rel="preconnect" href="https://api.fontshare.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://cdn.fontshare.com" />
+        {/* Non-blocking font CSS — preload swaps to stylesheet on load; noscript fallback for JS-off */}
         <link
           rel="preload"
-          href="https://assets.calendly.com/assets/external/widget.css"
+          href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,600,700&display=swap"
           as="style"
-          // @ts-expect-error onLoad string-as-attribute for non-blocking CSS pattern
+          // @ts-expect-error — onLoad as string attribute is the standard non-blocking CSS pattern
           onLoad="this.onload=null;this.rel='stylesheet'"
         />
         <noscript>
           <link
+            href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,600,700&display=swap"
             rel="stylesheet"
-            href="https://assets.calendly.com/assets/external/widget.css"
           />
         </noscript>
         <script
-          src="https://assets.calendly.com/assets/external/widget.js"
-          type="text/javascript"
-          async
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
         />
+        {/* Calendly script is injected on-demand in CalendlyDrawer — not loaded here */}
+        <Script src="https://www.googletagmanager.com/gtag/js?id=G-F91HE9L5LS" strategy="afterInteractive" />
+        <Script id="gtag-init" strategy="afterInteractive">{`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-F91HE9L5LS');
+        `}</Script>
       </head>
       <body className="main-wrapper">
         {/* Hidden SVG grain filter — referenced by body::after in globals.css */}
@@ -220,12 +252,16 @@ export default function RootLayout({
             </filter>
           </defs>
         </svg>
-        <Nav />
-        <PageTransition>{children}</PageTransition>
-        <div className="base-band">
-          <PreFooterCTA />
-          <Footer />
-        </div>
+        <CalendlyProvider>
+          <Nav />
+          <PageTransition>{children}</PageTransition>
+          <div className="base-band">
+            <PreFooterCTA />
+            <Footer />
+          </div>
+          <CalendlyDrawer />
+          <Analytics />
+        </CalendlyProvider>
       </body>
     </html>
   );

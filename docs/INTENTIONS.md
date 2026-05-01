@@ -34,6 +34,27 @@ Replace gradient image area with real case photo (`/case-photo.jpg`). Cases page
 
 New route `/vision` — standalone page communicating long-term mission and values. Should feel editorial and personal, not corporate. Add to nav or footer once live.
 
+### Custom booking & form flow (replace Calendly)
+
+Build a fully owned booking experience — more impressive than Calendly, full control over logic and follow-ups.
+
+**Phase 1 — Lean (ship first):**
+- Multi-step qualification form (3-4 steps): name/email → what they want to automate → rough budget/company size
+- On submit: hit n8n webhook with all form data
+- n8n triggers Resend: branded confirmation to lead + internal notification to Hai
+- No calendar picker yet — "we'll confirm a time within 2h" is more personal than a robot calendar
+- Lives inside the existing Calendly drawer (swap contents)
+
+**Phase 2 — Full:**
+- Time slot picker (custom, not Calendly) after form submit
+- Admin view: all bookings in one place
+- Automated reminders via n8n + Resend (24h before, day-of)
+- Qualification routing: different flows based on budget/need
+
+**Why it matters:** Walk into every call already knowing what they need. Zero context is Calendly's biggest flaw. Full brand control, custom follow-up sequences, internal logic (e.g. flag high-value leads, skip certain steps for returning contacts).
+
+**Stack:** Next.js API route → n8n webhook → Resend (transactional email)
+
 ### Homepage vision skeleton
 > Migrated from current_state.md — target structure
 

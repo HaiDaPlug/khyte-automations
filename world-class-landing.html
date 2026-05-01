@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Orbit House — Build the Future Before It Has a Name</title>
+  <meta name="description" content="A cinematic single-file landing page for a next-generation product studio.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;700;800&family=Instrument+Serif:ital@0;1&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #07111f;
+      --bg-soft: #0d1830;
+      --panel: rgba(10, 21, 40, 0.72);
+      --panel-strong: rgba(12, 25, 46, 0.9);
+      --line: rgba(165, 196, 255, 0.18);
+      --text: #f6f5ef;
+      --muted: #a6b6cf;
+      --gold: #ffd36e;
+      --coral: #ff7a59;
+      --cyan: #79f0ff;
+      --mint: #9ff3c7;
+      --shadow: 0 30px 80px rgba(0, 0, 0, 0.38);
+      --radius-xl: 32px;
+      --radius-lg: 24px;
+      --radius-md: 18px;
+      --max: 1180px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-width: 320px;
+      font-family: "Manrope", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 15% 20%, rgba(121, 240, 255, 0.18), transparent 28%),
+        radial-gradient(circle at 85% 18%, rgba(255, 122, 89, 0.2), transparent 24%),
+        radial-gradient(circle at 50% 90%, rgba(159, 243, 199, 0.14), transparent 30%),
+        linear-gradient(135deg, #04101a 0%, #081425 38%, #0d1631 100%);
+      overflow-x: hidden;
+    }
+
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: -2;
+    }
+
+    body::before {
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      background-size: 72px 72px;
+      mask-image: radial-gradient(circle at center, black 45%, transparent 92%);
+    }
+
+    body::after {
+      background: linear-gradient(180deg, rgba(4, 10, 21, 0) 0%, rgba(4, 10, 21, 0.35) 60%, rgba(4, 10, 21, 0.82) 100%);
+      z-index: -1;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    .page-shell {
+      width: min(calc(100% - 32px), var(--max));
+      margin: 0 auto;
+    }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(16px);
+      background: linear-gradient(180deg, rgba(5, 13, 25, 0.82), rgba(5, 13, 25, 0.3));
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      min-height: 78px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      font-family: "Syne", sans-serif;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .brand-mark {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      color: #05101f;
+      background: linear-gradient(135deg, var(--gold), #fff2c3 55%, var(--cyan));
+      box-shadow: 0 16px 36px rgba(121, 240, 255, 0.18);
+    }
+
+    .brand-mark span {
+      font-size: 1.05rem;
+    }
+
+    .nav-links,
+    .nav-cta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .nav-links a,
+    .mini-tag {
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.02);
+      font-size: 0.92rem;
+    }
+
+    .button,
+    .button-ghost {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 15px 22px;
+      border-radius: 999px;
+      font-weight: 700;
+      transition: transform 220ms ease, box-shadow 220ms ease, background 220ms ease;
+    }
+
+    .button {
+      color: #06111f;
+      background: linear-gradient(135deg, var(--gold), #ffe7a2, var(--cyan));
+      box-shadow: 0 18px 40px rgba(255, 211, 110, 0.24);
+    }
+
+    .button-ghost {
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text);
+    }
+
+    .button:hover,
+    .button-ghost:hover {
+      transform: translateY(-2px);
+    }
+
+    main {
+      position: relative;
+    }
+
+    section {
+      position: relative;
+    }
+
+    .hero {
+      padding: 72px 0 34px;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+      gap: 28px;
+      align-items: stretch;
+    }
+
+    .hero-copy,
+    .hero-visual,
+    .card,
+    .quote,
+    .footer-banner {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(16px);
+    }
+
+    .hero-copy {
+      padding: 32px;
+      border-radius: 34px;
+      overflow: hidden;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      font-size: 0.85rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--mint);
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--gold), var(--coral));
+      box-shadow: 0 0 16px rgba(255, 211, 110, 0.8);
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin: 0;
+    }
+
+    .hero h1 {
+      margin-top: 24px;
+      font-family: "Syne", sans-serif;
+      font-size: clamp(3.2rem, 8vw, 6.8rem);
+      line-height: 0.92;
+      letter-spacing: -0.05em;
+      max-width: 10ch;
+    }
+
+    .hero h1 .accent {
+      display: block;
+      font-family: "Instrument Serif", serif;
+      font-style: italic;
+      font-weight: 400;
+      color: #fff3cc;
+      letter-spacing: -0.02em;
+    }
+
+    .lead {
+      max-width: 56ch;
+      margin-top: 24px;
+      font-size: 1.08rem;
+      line-height: 1.75;
+      color: var(--muted);
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 32px;
+    }
+
+    .hero-metrics {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 34px;
+    }
+
+    .metric {
+      padding: 18px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .metric strong {
+      display: block;
+      font-family: "Syne", sans-serif;
+      font-size: clamp(1.7rem, 3vw, 2.5rem);
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .metric span {
+      color: var(--muted);
+      font-size: 0.94rem;
+    }
+
+    .hero-visual {
+      position: relative;
+      border-radius: 34px;
+      padding: 24px;
+      min-height: 620px;
+      isolation: isolate;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(255, 211, 110, 0.16), transparent 24%),
+        radial-gradient(circle at 76% 28%, rgba(121, 240, 255, 0.18), transparent 22%),
+        linear-gradient(180deg, rgba(13, 24, 48, 0.96), rgba(7, 17, 31, 0.92));
+    }
+
+    .glow {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(14px);
+      opacity: 0.72;
+      animation: pulse 7s ease-in-out infinite;
+    }
+
+    .glow.one {
+      width: 220px;
+      height: 220px;
+      top: -32px;
+      right: -24px;
+      background: rgba(121, 240, 255, 0.18);
+    }
+
+    .glow.two {
+      width: 180px;
+      height: 180px;
+      bottom: 80px;
+      left: -20px;
+      animation-delay: -2s;
+      background: rgba(255, 122, 89, 0.18);
+    }
+
+    .visual-stack {
+      position: relative;
+      display: grid;
+      gap: 18px;
+      height: 100%;
+      z-index: 1;
+    }
+
+    .panel-top {
+      display: grid;
+      grid-template-columns: 1.3fr 0.7fr;
+      gap: 18px;
+      min-height: 255px;
+    }
+
+    .score-panel,
+    .status-panel,
+    .wide-panel,
+    .mini-card {
+      border-radius: 24px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.04);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .score-panel {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .score-panel::after {
+      content: "";
+      position: absolute;
+      inset: auto -15% -35% auto;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: conic-gradient(from 220deg, rgba(255, 211, 110, 0.65), rgba(121, 240, 255, 0.15), rgba(255, 122, 89, 0.6), rgba(255, 211, 110, 0.65));
+      filter: blur(12px);
+      opacity: 0.7;
+    }
+
+    .kicker {
+      color: var(--muted);
+      text-transform: uppercase;
+      font-size: 0.78rem;
+      letter-spacing: 0.14em;
+    }
+
+    .big-score {
+      font-family: "Syne", sans-serif;
+      font-size: clamp(4rem, 7vw, 5.4rem);
+      line-height: 0.9;
+      letter-spacing: -0.08em;
+    }
+
+    .score-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .status-panel {
+      padding: 22px;
+      display: grid;
+      align-content: space-between;
+      gap: 18px;
+    }
+
+    .signal {
+      width: 100%;
+      height: 120px;
+      border-radius: 18px;
+      position: relative;
+      background:
+        linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+      background-size: 24px 24px, 24px 24px, auto;
+    }
+
+    .signal::after {
+      content: "";
+      position: absolute;
+      inset: 50% 12px auto 12px;
+      height: 3px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--gold), var(--coral), var(--cyan), var(--mint));
+      transform: translateY(-50%) rotate(-7deg);
+      box-shadow: 0 0 24px rgba(121, 240, 255, 0.45);
+    }
+
+    .status-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .status-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .status-row strong {
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    .wide-panel {
+      padding: 24px;
+      min-height: 206px;
+    }
+
+    .wide-panel h3,
+    .section-heading h2,
+    .quote strong,
+    .footer-banner h2 {
+      font-family: "Syne", sans-serif;
+      letter-spacing: -0.04em;
+    }
+
+    .wide-panel h3 {
+      font-size: 1.65rem;
+    }
+
+    .progress-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .mini-card {
+      padding: 16px;
+      min-height: 122px;
+      display: grid;
+      align-content: space-between;
+    }
+
+    .mini-card strong {
+      font-size: 1.65rem;
+      line-height: 1;
+    }
+
+    .mini-card span,
+    .wide-panel p,
+    .section-heading p,
+    .card p,
+    .quote p,
+    .footer-banner p,
+    footer p {
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .partners {
+      padding: 26px 0 12px;
+    }
+
+    .ticker {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .ticker div {
+      text-align: center;
+      padding: 18px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.03);
+      color: rgba(246, 245, 239, 0.78);
+      font-family: "Syne", sans-serif;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      font-size: 0.84rem;
+    }
+
+    .section-block {
+      padding: 58px 0 0;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+
+    .section-heading h2 {
+      font-size: clamp(2.2rem, 4vw, 4.1rem);
+      line-height: 0.96;
+      max-width: 9ch;
+    }
+
+    .section-heading h2 em {
+      font-family: "Instrument Serif", serif;
+      font-style: italic;
+      font-weight: 400;
+      color: #fff1cb;
+    }
+
+    .section-heading p {
+      max-width: 54ch;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .card {
+      border-radius: var(--radius-xl);
+      padding: 24px;
+      min-height: 260px;
+    }
+
+    .card.large {
+      grid-column: span 7;
+    }
+
+    .card.tall {
+      grid-column: span 5;
+      min-height: 260px;
+    }
+
+    .card.medium {
+      grid-column: span 4;
+    }
+
+    .card h3 {
+      font-size: 1.48rem;
+      margin: 18px 0 10px;
+      font-family: "Syne", sans-serif;
+      letter-spacing: -0.03em;
+    }
+
+    .card-number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 52px;
+      height: 52px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, rgba(255, 211, 110, 0.22), rgba(121, 240, 255, 0.14));
+      color: #fff6d8;
+      font-family: "Syne", sans-serif;
+      font-weight: 700;
+      font-size: 1.1rem;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .chart-bars {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 10px;
+      align-items: end;
+      height: 144px;
+      margin-top: 26px;
+    }
+
+    .chart-bars span {
+      display: block;
+      border-radius: 18px 18px 8px 8px;
+      background: linear-gradient(180deg, rgba(121, 240, 255, 0.88), rgba(255, 122, 89, 0.45));
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
+      animation: rise 1100ms ease both;
+    }
+
+    .chart-bars span:nth-child(1) { height: 38%; }
+    .chart-bars span:nth-child(2) { height: 57%; animation-delay: 80ms; }
+    .chart-bars span:nth-child(3) { height: 52%; animation-delay: 160ms; }
+    .chart-bars span:nth-child(4) { height: 79%; animation-delay: 240ms; }
+    .chart-bars span:nth-child(5) { height: 64%; animation-delay: 320ms; }
+    .chart-bars span:nth-child(6) { height: 87%; animation-delay: 400ms; }
+    .chart-bars span:nth-child(7) { height: 100%; animation-delay: 480ms; }
+
+    .orbital {
+      position: relative;
+      display: grid;
+      place-items: center;
+      min-height: 270px;
+      margin-top: 12px;
+    }
+
+    .orbit-ring,
+    .orbit-core,
+    .orbit-node {
+      position: absolute;
+      border-radius: 50%;
+    }
+
+    .orbit-ring {
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      animation: spin 18s linear infinite;
+    }
+
+    .orbit-ring.one { width: 240px; height: 240px; }
+    .orbit-ring.two { width: 174px; height: 174px; animation-direction: reverse; }
+    .orbit-ring.three { width: 110px; height: 110px; }
+
+    .orbit-core {
+      width: 78px;
+      height: 78px;
+      background: radial-gradient(circle at 30% 30%, #fff4cf, var(--gold) 35%, var(--coral) 75%, rgba(255, 122, 89, 0.2));
+      box-shadow: 0 0 34px rgba(255, 211, 110, 0.38);
+    }
+
+    .orbit-node {
+      width: 14px;
+      height: 14px;
+      background: var(--cyan);
+      box-shadow: 0 0 16px rgba(121, 240, 255, 0.9);
+    }
+
+    .orbit-ring.one .orbit-node { top: 20px; left: calc(50% - 7px); }
+    .orbit-ring.two .orbit-node { bottom: 10px; right: 20px; background: var(--gold); box-shadow: 0 0 16px rgba(255, 211, 110, 0.8); }
+    .orbit-ring.three .orbit-node { left: 12px; top: calc(50% - 7px); background: var(--mint); box-shadow: 0 0 16px rgba(159, 243, 199, 0.85); }
+
+    .stack-lines {
+      display: grid;
+      gap: 12px;
+      margin-top: 22px;
+    }
+
+    .stack-lines span {
+      display: block;
+      height: 14px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.04));
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stack-lines span::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      width: 45%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--gold), var(--coral), var(--cyan));
+    }
+
+    .stack-lines span:nth-child(2)::after { width: 74%; }
+    .stack-lines span:nth-child(3)::after { width: 60%; }
+    .stack-lines span:nth-child(4)::after { width: 88%; }
+
+    .story-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .quote {
+      border-radius: var(--radius-xl);
+      padding: 28px;
+      display: grid;
+      gap: 18px;
+      align-content: start;
+    }
+
+    .quote-mark {
+      font-family: "Instrument Serif", serif;
+      font-size: 5rem;
+      line-height: 0.8;
+      color: #ffe7ad;
+    }
+
+    .quote strong {
+      font-size: clamp(1.7rem, 2.6vw, 2.5rem);
+      line-height: 1.05;
+    }
+
+    .story-list {
+      display: grid;
+      gap: 18px;
+    }
+
+    .story-item {
+      padding: 22px;
+      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .story-item strong {
+      display: block;
+      margin-bottom: 8px;
+      font-family: "Syne", sans-serif;
+      font-size: 1.15rem;
+      letter-spacing: -0.03em;
+    }
+
+    .cta {
+      padding: 58px 0 86px;
+    }
+
+    .footer-banner {
+      border-radius: 36px;
+      padding: 32px;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 15% 18%, rgba(255, 211, 110, 0.15), transparent 22%),
+        radial-gradient(circle at 78% 22%, rgba(121, 240, 255, 0.16), transparent 20%),
+        linear-gradient(135deg, rgba(15, 30, 55, 0.95), rgba(8, 17, 31, 0.96));
+    }
+
+    .footer-banner-inner {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .footer-banner h2 {
+      font-size: clamp(2.2rem, 4vw, 4.4rem);
+      line-height: 0.94;
+      max-width: 11ch;
+      margin-bottom: 16px;
+    }
+
+    .footer-banner h2 em {
+      font-family: "Instrument Serif", serif;
+      font-style: italic;
+      font-weight: 400;
+      color: #ffefc0;
+    }
+
+    footer {
+      padding: 18px 0 44px;
+    }
+
+    .footer-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+      padding-top: 16px;
+      color: rgba(166, 182, 207, 0.84);
+      font-size: 0.95rem;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      animation: reveal 900ms cubic-bezier(.2,.8,.2,1) forwards;
+    }
+
+    .delay-1 { animation-delay: 110ms; }
+    .delay-2 { animation-delay: 220ms; }
+    .delay-3 { animation-delay: 330ms; }
+    .delay-4 { animation-delay: 440ms; }
+    .delay-5 { animation-delay: 550ms; }
+
+    @keyframes reveal {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1) translateY(0); }
+      50% { transform: scale(1.08) translateY(8px); }
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes rise {
+      from {
+        transform: scaleY(0.15);
+        transform-origin: bottom;
+        opacity: 0.4;
+      }
+      to {
+        transform: scaleY(1);
+        transform-origin: bottom;
+        opacity: 1;
+      }
+    }
+
+    @media (max-width: 1080px) {
+      .hero-grid,
+      .story-grid,
+      .footer-banner-inner,
+      .panel-top {
+        grid-template-columns: 1fr;
+      }
+
+      .feature-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .card.large,
+      .card.tall,
+      .card.medium {
+        grid-column: auto;
+      }
+
+      .ticker {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .hero-visual {
+        min-height: auto;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .page-shell {
+        width: min(calc(100% - 20px), var(--max));
+      }
+
+      .nav {
+        flex-wrap: wrap;
+        padding: 14px 0;
+      }
+
+      .nav-links {
+        order: 3;
+        width: 100%;
+        overflow-x: auto;
+        padding-bottom: 4px;
+      }
+
+      .hero {
+        padding-top: 36px;
+      }
+
+      .hero-copy,
+      .hero-visual,
+      .card,
+      .quote,
+      .footer-banner {
+        border-radius: 26px;
+      }
+
+      .hero-copy,
+      .hero-visual,
+      .card,
+      .quote,
+      .footer-banner {
+        padding: 22px;
+      }
+
+      .hero-metrics,
+      .progress-grid,
+      .feature-grid,
+      .ticker {
+        grid-template-columns: 1fr;
+      }
+
+      .section-heading {
+        align-items: start;
+        flex-direction: column;
+      }
+
+      .hero-actions,
+      .nav-cta,
+      .footer-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .button,
+      .button-ghost {
+        width: 100%;
+      }
+
+      .footer-row {
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="page-shell nav">
+      <a class="brand" href="#top" aria-label="Orbit House home">
+        <div class="brand-mark"><span>OH</span></div>
+        <span>Orbit House</span>
+      </a>
+      <nav class="nav-links" aria-label="Primary navigation">
+        <a href="#signal">Signal</a>
+        <a href="#system">System</a>
+        <a href="#proof">Proof</a>
+      </nav>
+      <div class="nav-cta">
+        <span class="mini-tag">Now booking Q2 launches</span>
+        <a class="button" href="#launch">Book the build</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="page-shell hero-grid">
+        <div class="hero-copy reveal">
+          <span class="eyebrow">Product studio for impossible ideas</span>
+          <h1>
+            Build the future
+            <span class="accent">before it has a name.</span>
+          </h1>
+          <p class="lead">
+            Orbit House turns raw ambition into cinematic launches, magnetic brands, and products people feel before they fully understand. Strategy, design, narrative, and velocity packed into one ruthless creative engine.
+          </p>
+          <div class="hero-actions">
+            <a class="button" href="#launch">Start a flagship launch</a>
+            <a class="button-ghost" href="#proof">See the momentum</a>
+          </div>
+          <div class="hero-metrics">
+            <div class="metric reveal delay-1">
+              <strong>14d</strong>
+              <span>From brief to launch-ready narrative system</span>
+            </div>
+            <div class="metric reveal delay-2">
+              <strong>3.8x</strong>
+              <span>Average increase in qualified launch demand</span>
+            </div>
+            <div class="metric reveal delay-3">
+              <strong>91</strong>
+              <span>Creative signal score across product, brand, and motion</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-visual reveal delay-2" aria-hidden="true">
+          <div class="glow one"></div>
+          <div class="glow two"></div>
+          <div class="visual-stack">
+            <div class="panel-top">
+              <div class="score-panel">
+                <div>
+                  <div class="kicker">Launch energy</div>
+                  <div class="big-score">91</div>
+                </div>
+                <div class="score-footer">
+                  <span>Signal clarity</span>
+                  <strong>Exceptional</strong>
+                </div>
+              </div>
+              <div class="status-panel">
+                <div>
+                  <div class="kicker">Live pulse</div>
+                  <div style="margin-top:8px;font-size:1.4rem;font-family:'Syne',sans-serif;letter-spacing:-0.03em;">Creative systems online</div>
+                </div>
+                <div class="signal"></div>
+                <div class="status-list">
+                  <div class="status-row"><span>Narrative</span><strong>Locked</strong></div>
+                  <div class="status-row"><span>Interface</span><strong>Reactive</strong></div>
+                  <div class="status-row"><span>Launch</span><strong>Ready</strong></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="wide-panel">
+              <div class="kicker">Studio stack</div>
+              <h3>One team. One pulse. Zero dead air.</h3>
+              <p style="margin-top:10px;max-width:52ch;">We shape positioning, write the story, craft the surface, and choreograph the conversion path so every pixel feels inevitable.</p>
+              <div class="progress-grid">
+                <div class="mini-card">
+                  <span class="kicker">Brand</span>
+                  <strong>98%</strong>
+                  <span>Worldbuilding that turns attention into belief</span>
+                </div>
+                <div class="mini-card">
+                  <span class="kicker">Product</span>
+                  <strong>94%</strong>
+                  <span>Systems designed for clarity, speed, and trust</span>
+                </div>
+                <div class="mini-card">
+                  <span class="kicker">Motion</span>
+                  <strong>89%</strong>
+                  <span>Meaningful animation with an editorial feel</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="partners">
+      <div class="page-shell ticker reveal delay-3" aria-label="Featured capabilities">
+        <div>Strategy</div>
+        <div>Identity</div>
+        <div>Product UX</div>
+        <div>Motion</div>
+        <div>Storytelling</div>
+        <div>Launch Ops</div>
+      </div>
+    </section>
+
+    <section class="section-block" id="signal">
+      <div class="page-shell">
+        <div class="section-heading reveal">
+          <div>
+            <div class="eyebrow">Signal</div>
+            <h2>Attention is cheap. <em>Belief</em> is not.</h2>
+          </div>
+          <p>Great landing pages do more than explain a product. They create gravity, collapse hesitation, and turn curiosity into a felt sense of momentum. This page is designed to do exactly that.</p>
+        </div>
+        <div class="feature-grid">
+          <article class="card large reveal delay-1">
+            <div class="card-number">01</div>
+            <h3>A hero that feels like a trailer, not a template</h3>
+            <p>The first screen layers typographic contrast, atmospheric gradients, and dashboard-style proof so the product instantly feels premium, directional, and alive.</p>
+            <div class="chart-bars" aria-hidden="true">
+              <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+            </div>
+          </article>
+          <article class="card tall reveal delay-2">
+            <div class="card-number">02</div>
+            <h3>Systems thinking disguised as style</h3>
+            <p>Every component pulls from the same color logic, spacing rhythm, and editorial voice, so the whole page feels coherent without ever looking safe.</p>
+            <div class="orbital" aria-hidden="true">
+              <div class="orbit-ring one"><div class="orbit-node"></div></div>
+              <div class="orbit-ring two"><div class="orbit-node"></div></div>
+              <div class="orbit-ring three"><div class="orbit-node"></div></div>
+              <div class="orbit-core"></div>
+            </div>
+          </article>
+          <article class="card medium reveal delay-3">
+            <div class="card-number">03</div>
+            <h3>Luxury motion, used sparingly</h3>
+            <p>Reveals, pulses, and orbit animations add life without burying the message under gimmicks.</p>
+          </article>
+          <article class="card medium reveal delay-4">
+            <div class="card-number">04</div>
+            <h3>Clear hierarchy at every scroll depth</h3>
+            <p>The page alternates dense proof with breathing room, so the story stays legible on both mobile and large displays.</p>
+          </article>
+          <article class="card medium reveal delay-5">
+            <div class="card-number">05</div>
+            <h3>Single-file by design</h3>
+            <p>Everything lives in one HTML file: structure, visual system, responsive behavior, and animation timing.</p>
+            <div class="stack-lines" aria-hidden="true">
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-block" id="system">
+      <div class="page-shell story-grid">
+        <div class="quote reveal">
+          <div class="quote-mark">“</div>
+          <strong>Make it feel expensive, inevitable, and slightly dangerous.</strong>
+          <p>That is the brief. The result is a landing page with cinematic contrast, high-end typography, immersive cards, and enough signal density to feel like a launch system instead of a brochure.</p>
+          <a class="button" href="#launch">Claim the spotlight</a>
+        </div>
+        <div class="story-list reveal delay-2">
+          <div class="story-item">
+            <strong>Editorial typography</strong>
+            <p>Syne brings sharp futurism, Instrument Serif adds drama, and Manrope keeps everything readable.</p>
+          </div>
+          <div class="story-item">
+            <strong>Atmospheric surfaces</strong>
+            <p>Glassmorphism is used as a material, not a crutch, with depth, glow, and restrained transparency.</p>
+          </div>
+          <div class="story-item" id="proof">
+            <strong>Conversion posture</strong>
+            <p>Sticky navigation, repeated CTAs, metrics, and modular proof blocks create a confident path to action.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta" id="launch">
+      <div class="page-shell">
+        <div class="footer-banner reveal">
+          <div class="footer-banner-inner">
+            <div>
+              <div class="eyebrow">Ready to launch</div>
+              <h2>Build the page they send around with <em>holy shit</em> in the subject line.</h2>
+              <p>This concept is ready to open in a browser as-is, adapt to a brand, or serve as the foundation for a polished launch campaign.</p>
+            </div>
+            <div class="hero-actions">
+              <a class="button" href="mailto:launch@orbithouse.co">launch@orbithouse.co</a>
+              <a class="button-ghost" href="#top">Back to top</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="page-shell footer-row">
+      <p>Orbit House — cinematic product storytelling for teams moving faster than consensus.</p>
+      <p>Single HTML file. No external framework required.</p>
+    </div>
+  </footer>
+</body>
+</html>
