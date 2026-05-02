@@ -234,13 +234,6 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
         />
         {/* Calendly script is injected on-demand in CalendlyDrawer — not loaded here */}
-        <Script src="https://www.googletagmanager.com/gtag/js?id=G-F91HE9L5LS" strategy="afterInteractive" />
-        <Script id="gtag-init" strategy="afterInteractive">{`
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-          gtag('config', 'G-F91HE9L5LS');
-        `}</Script>
       </head>
       <body className="main-wrapper">
         {/* Hidden SVG grain filter — referenced by body::after in globals.css */}
@@ -262,6 +255,13 @@ export default function RootLayout({
           <CalendlyDrawer />
           <Analytics />
         </CalendlyProvider>
+        <Script src="https://www.googletagmanager.com/gtag/js?id=G-F91HE9L5LS" strategy="afterInteractive" />
+        <Script id="gtag-init" strategy="afterInteractive">{`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-F91HE9L5LS');
+        `}</Script>
       </body>
     </html>
   );
