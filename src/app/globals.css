@@ -483,7 +483,7 @@ html {
 }
 
 .animate-ticker {
-  animation: tickerScroll 480s linear infinite;
+  animation: tickerScroll 192s linear infinite;
 }
 
 /* Respect reduced motion preference */

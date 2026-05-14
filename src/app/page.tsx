@@ -78,7 +78,7 @@ export default function Home() {
               <div className="absolute rounded-full z-0" style={{ width: 600, height: 600, background: "radial-gradient(ellipse at center, rgba(200,90,20,0.22) 0%, rgba(150,55,10,0.10) 50%, rgba(0,0,0,0) 75%)", filter: "blur(80px)" }} />
               <AmbientParticles width={700} height={700} count={7} colors={["212,98,43","232,131,58","255,200,150"]} className="absolute z-20" />
               <div className="absolute rounded-full bg-[#2E1005] w-[300px] h-[300px] md:w-[380px] md:h-[380px] z-0 translate-y-4" />
-              <img src="/visuals/cloudsleep.svg" alt="" aria-hidden="true" className="relative z-10 w-[600px] md:w-[700px] grayscale brightness-125 opacity-90 -translate-y-6" style={{ filter: "grayscale(1) brightness(1.25) drop-shadow(2px 5px 6px rgba(0,0,0,0.55))" }} />
+              <img src="/visuals/cloudsleep.svg" alt="" aria-hidden="true" width={700} height={700} loading="lazy" className="relative z-10 w-[600px] md:w-[700px] grayscale brightness-125 opacity-90 -translate-y-6" style={{ filter: "grayscale(1) brightness(1.25) drop-shadow(2px 5px 6px rgba(0,0,0,0.55))" }} />
             </div>
           </div>
 
@@ -94,7 +94,7 @@ export default function Home() {
               <div className="absolute w-[420px] h-[520px] z-0" style={{ background: "radial-gradient(ellipse 60% 55% at 50% 38%, rgba(8,2,0,0.45) 0%, rgba(8,2,0,0.18) 45%, rgba(8,2,0,0) 75%)" }} />
               {/* White glow anchor behind clock */}
               <div className="absolute z-0 rounded-full" style={{ width: 300, height: 300, background: "radial-gradient(ellipse at center, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 70%)", filter: "blur(80px)" }} />
-              <img src="/visuals/timeslipping.svg" alt="" aria-hidden="true" className="relative z-10 w-[660px] md:w-[780px] opacity-90 translate-x-8" style={{ filter: "grayscale(1) brightness(1.25) drop-shadow(2px 5px 6px rgba(0,0,0,0.55))" }} />
+              <img src="/visuals/timeslipping.svg" alt="" aria-hidden="true" width={780} height={780} loading="lazy" className="relative z-10 w-[660px] md:w-[780px] opacity-90 translate-x-8" style={{ filter: "grayscale(1) brightness(1.25) drop-shadow(2px 5px 6px rgba(0,0,0,0.55))" }} />
             </div>
             <div className="relative z-10 max-w-[500px]">
               <span className="section-eyebrow" style={{ color: "#E8833A" }}>Kostnaden</span>

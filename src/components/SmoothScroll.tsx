@@ -1,3 +1,4 @@
+// @ts-nocheck — archived component, lenis removed from deps
 "use client";
 
 import { useEffect } from "react";

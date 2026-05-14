@@ -205,7 +205,7 @@ export default function Contact() {
                 </div>
                 <div>
                   <span className="font-semibold" style={{ color: "var(--color-text)" }}>Mejl:</span>{" "}
-                  <a className="underline underline-offset-4 hover:text-[var(--color-text)] transition-colors" href="mailto:abdimajiidmohamud@gmail.com">abdimajiidmohamud@gmail.com</a>
+                  <a className="underline underline-offset-4 hover:text-[var(--color-text)] transition-colors" href="mailto:abdi@khyteteam.com">abdi@khyteteam.com</a>
                 </div>
               </div>
             </div>

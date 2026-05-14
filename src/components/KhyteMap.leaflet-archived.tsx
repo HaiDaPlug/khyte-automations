@@ -1,3 +1,4 @@
+// @ts-nocheck — archived file, leaflet/react-leaflet removed from deps
 "use client";
 
 import { useEffect } from "react";

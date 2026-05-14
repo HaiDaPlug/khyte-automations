@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Barlow, Barlow_Condensed, Bebas_Neue, DM_Serif_Display } from "next/font/google";
+import { Barlow, Barlow_Condensed, Bebas_Neue } from "next/font/google";
 import "./globals.css";
 
 const barlow = Barlow_Condensed({
@@ -26,13 +26,6 @@ const bebasNeue = Bebas_Neue({
   adjustFontFallback: false,
 });
 
-const dmSerifDisplay = DM_Serif_Display({
-  weight: ["400"],
-  subsets: ["latin"],
-  variable: "--font-syne",
-  display: "swap",
-  adjustFontFallback: false,
-});
 import { Analytics } from "@vercel/analytics/next";
 import Script from "next/script";
 import Nav from "@/components/Nav";
@@ -211,16 +204,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="sv" className={`${barlow.variable} ${barlowBody.variable} ${bebasNeue.variable} ${dmSerifDisplay.variable}`} data-theme={COLOR_CONCEPT}>
+    <html lang="sv" className={`${barlow.variable} ${barlowBody.variable} ${bebasNeue.variable}`} data-theme={COLOR_CONCEPT}>
       <head>
+        {/* Hero background — preload so browser fetches before CSS paint */}
+        <link rel="preload" as="image" href="/gradients/hero-gradient-v1.webp" fetchPriority="high" />
         <link rel="preconnect" href="https://api.fontshare.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://cdn.fontshare.com" />
-        {/* Non-blocking font CSS — preload swaps to stylesheet on load; noscript fallback for JS-off */}
+        {/* Non-blocking font load: preload triggers early fetch, onload swaps to stylesheet */}
         <link
           rel="preload"
-          href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,600,700&display=swap"
           as="style"
-          // @ts-expect-error — onLoad as string attribute is the standard non-blocking CSS pattern
+          href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,600,700&display=swap"
+          // @ts-expect-error onload is valid on preload links
           onLoad="this.onload=null;this.rel='stylesheet'"
         />
         <noscript>
@@ -255,8 +250,8 @@ export default function RootLayout({
           <CalendlyDrawer />
           <Analytics />
         </CalendlyProvider>
-        <Script src="https://www.googletagmanager.com/gtag/js?id=G-F91HE9L5LS" strategy="afterInteractive" />
-        <Script id="gtag-init" strategy="afterInteractive">{`
+        <Script src="https://www.googletagmanager.com/gtag/js?id=G-F91HE9L5LS" strategy="lazyOnload" />
+        <Script id="gtag-init" strategy="lazyOnload">{`
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());

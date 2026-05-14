@@ -11,7 +11,7 @@ const LOGO_TOOLS = [
 ];
 
 // Computed once at module load — never recreated on re-render
-const TICKER_ROW = Array.from({ length: 10 }, () => LOGO_TOOLS).flat();
+const TICKER_ROW = Array.from({ length: 4 }, () => LOGO_TOOLS).flat();
 
 export default function ToolsTicker() {
   const row = TICKER_ROW;
