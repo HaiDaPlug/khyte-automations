@@ -562,6 +562,7 @@ details[open] > summary .faq-chevron {
   }
 }
 
+
 /* Leaflet popup — clean, no default chrome */
 .khyte-popup .leaflet-popup-content-wrapper {
   border-radius: 8px;

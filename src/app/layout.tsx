@@ -11,7 +11,7 @@ const barlow = Barlow_Condensed({
 });
 
 const barlowBody = Barlow({
-  weight: ["300", "400", "500", "600", "700"],
+  weight: ["400", "500"],
   subsets: ["latin", "latin-ext"],
   variable: "--font-barlow-body",
   display: "swap",
@@ -206,24 +206,17 @@ export default function RootLayout({
   return (
     <html lang="sv" className={`${barlow.variable} ${barlowBody.variable} ${bebasNeue.variable}`} data-theme={COLOR_CONCEPT}>
       <head>
+        {/* Logo — preload so LCP element starts fetching immediately */}
+        <link rel="preload" as="image" href="/khyte-logo-text.svg" fetchPriority="high" />
         {/* Hero background — preload so browser fetches before CSS paint */}
-        <link rel="preload" as="image" href="/gradients/hero-gradient-v1.webp" fetchPriority="high" />
+        <link rel="preload" as="image" href="/gradients/hero-gradient-v1.webp" />
         <link rel="preconnect" href="https://api.fontshare.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://cdn.fontshare.com" />
-        {/* Non-blocking font load: preload triggers early fetch, onload swaps to stylesheet */}
+        {/* Satoshi is the primary above-fold font — load synchronously to prevent FOUT */}
         <link
-          rel="preload"
-          as="style"
+          rel="stylesheet"
           href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,600,700&display=swap"
-          // @ts-expect-error onload is valid on preload links
-          onLoad="this.onload=null;this.rel='stylesheet'"
         />
-        <noscript>
-          <link
-            href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,600,700&display=swap"
-            rel="stylesheet"
-          />
-        </noscript>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}

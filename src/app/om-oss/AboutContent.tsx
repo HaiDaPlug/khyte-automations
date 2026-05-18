@@ -138,10 +138,7 @@ export default function AboutContent() {
           </Reveal>
           <Reveal delay={0.16}>
             <p className="text-[1.35rem] leading-[1.65] text-[var(--color-text)] font-medium max-w-[55ch]">
-              [Placeholder — ett conviction statement. Inte punktlista. Skriv
-              det som ett stycke som faktiskt säger något. Vad ni tror på, vad
-              ni vägrar kompromissa med, och varför det spelar roll för kunden
-              som läser det här.] Vi tror på att i denna snabbt rörliga värld, ska övergången vara så smidig, simpelt och bra som möjligt.
+            I denna snabbt rörliga värld, ska övergången vara så smidig, simpel och bra som möjligt. Vi kommer alltid vara transparenta och aldrig sälja er något som inte passar. Vårt mål är att våra lösningar ska ge tilbaka lika mycket "hårda" värden, som "mjuka", och ge tillbaka en eftermiddag i taget.
             </p>
           </Reveal>
         </section>
@@ -162,7 +159,7 @@ export default function AboutContent() {
             <p className="text-[1.2rem] leading-[1.7] text-[var(--color-text-body)] max-w-[60ch]">
               [Placeholder — konkret beskrivning av vad Khyte faktiskt bygger
               och levererar. Inte buzzwords. Vad händer från första möte till
-              färdig automation? Vad äger kunden när ni är klara?]
+              färdig automation? Vad äger kunden när ni är klara?]Vi hoppar in i företagets vardag och automatiserar återkommande arbete. Detta kan se ut som en integration, rådgivning eller koda mjukvara från scratch. Detta gör vi för att skapa mer rum för det viktiga, slippa ha allt i huvudet och kunna göra mer på mindre tid.
             </p>
           </Reveal>
         </section>

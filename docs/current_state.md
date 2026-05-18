@@ -640,23 +640,28 @@ npm run dev                     # Dev mode (Turbopack bug exists)
 | Archived — interactive dot grid | `src/components/InteractiveGrid.tsx` |
 | Archived — pipeline node row | `src/components/WorkflowVisual.tsx` |
 
-## Performance Notes (v2.15)
+## Performance Notes (v2.21)
 - **Lenis removed** — native scroll, no JS on wheel events
-- **Hero background**: WebP bitmap (`hero-gradient-v1.webp`) — zero SMIL, zero SVG filters, zero per-frame paint. BG layers use `absolute inset-0` (not escape trick).
-- **KiteHero**: ember `PARTICLES` moved to `particlesRef`, init once in `useEffect([])` — no per-frame allocation
+- **Hero background**: WebP bitmap (`hero-gradient-v1.webp`) — zero SMIL, zero SVG filters, zero per-frame paint. BG layers use `absolute inset-0`. Preloaded via `<link rel="preload" as="image">` in layout.tsx head.
+- **KiteHero**: `particlesRef` init once in `useEffect([])`. Uses `useAnimationFrame` + `useMotionValue` (motion/react) for continuous sine-driven float. RAF pauses when off-screen via `IntersectionObserver` + `inView` state guard. `motion/react` import retained — CSS keyframes were tried but produced choppy mechanical motion vs smooth sine.
 - **TimelineProcess**: `useEffect` deps `[]` + `observer.disconnect()` — one-shot IO, no re-registration
 - **globals.css `@keyframes timelineScan`**: `left` → `translateX(350%)` — GPU-composited, no layout reflow
 - **body::after grain**: no `transform`/`isolation` — kept simple to avoid breaking `position: fixed` on nav
 - **`.main-wrapper`**: no `contain: paint` — removed because it breaks `position: fixed` on nav (creates containing block)
-- **ToolsTicker**: `TICKER_ROW` at module scope — never recreated on re-render. `loading="lazy"` removed (above-fold). Explicit `width={48} height={48}` on logos for CLS prevention. `"use client"` removed — pure server component, CSS animation only.
+- **ToolsTicker**: `TICKER_ROW` at module scope — never recreated on re-render. Repeats reduced 10→4, duration recalculated to 192s (same px/s speed). Explicit `width={48} height={48}` on logos for CLS prevention.
 - **Statement**: pure `useInView` scroll trigger — no ResizeObserver, no dot positions.
 - **sebastian.jpg**: resized 800×800 → 112×112 (95KB → 2.9KB), displayed at 56×56 with 2× retina density. Explicit `width`/`height` on `<img>`.
 - **noise.webp**: recompressed 9.9KB → 5.4KB (quality 10, grain overlay at 12% opacity)
 - **Calendly script**: injected on-demand in `CalendlyDrawer` on first drawer open — not loaded globally. Saves ~100KB+ parse/eval on every page load for users who never open the drawer.
-- **Fontshare CSS**: non-blocking load via `rel="preload" as="style"` + `onLoad` swap + `<noscript>` fallback. `preconnect` has `crossOrigin="anonymous"` for correct CORS reuse. `dns-prefetch` on `cdn.fontshare.com` for font file CDN.
-- **AmbientParticles**: RAF loop pauses via `IntersectionObserver` when canvas is off-screen. Resets `last` timestamp on re-entry to prevent delta spike.
+- **Fontshare CSS**: `rel="stylesheet"` (blocking) — Satoshi is above-fold primary font; async swap causes visible FOUT. `preconnect crossOrigin="anonymous"` for CORS reuse. `dns-prefetch` on `cdn.fontshare.com`.
+- **Khyte logo**: preloaded via `<link rel="preload" as="image" fetchPriority="high">` — logo is LCP element on mobile.
+- **GTM**: `strategy="lazyOnload"` — fires at browser idle. TBT dropped 570ms → 90ms.
+- **AmbientParticles**: RAF fully cancels (`cancelAnimationFrame`) when off-screen — no idle spinning. Per-frame `createRadialGradient` replaced with pre-baked offscreen canvas sprites stamped via `drawImage`. Delta capped at 50ms to prevent spike after tab switch.
+- **Dead deps removed**: `lenis`, `leaflet`, `react-leaflet`, `@types/leaflet`, `geist`, `claude`, `DM_Serif_Display` font — all removed.
+- **Barlow fallback weights**: trimmed 5→2 (400+500 only) — fallback for Satoshi, not primary font.
+- **SVG visuals**: `cloudsleep.svg` + `timeslipping.svg` have explicit `width`/`height` + `loading="lazy"` (below-fold, desktop-only).
 - **html font-size**: `19px` set as bare unlayered rule (outside `@layer`) — previously `18px` inside `@layer utilities` was silently overridden by the unlayered cascade and never applied.
-- **browserslist**: added to `package.json` (last 2 versions of Chrome/Firefox/Safari/Edge). Note: Turbopack may not fully apply this yet (open Next.js issues).
+- **browserslist**: `package.json` targets last 2 versions of Chrome/Firefox/Safari/Edge. Note: Turbopack may not fully apply this yet (open Next.js issues).
 
 ## Priorities & Vision
 
