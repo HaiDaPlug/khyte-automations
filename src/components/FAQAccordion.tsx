@@ -5,19 +5,19 @@ import { useState } from "react";
 const faqs = [
   {
     q: "Vad kostar det?",
-    a: "Fast pris, 25 000–120 000 kr beroende på scope. Exakt pris bestäms i en förstudie — ni vet vad det kostar innan ni bestämmer er.",
+    a: "Det beror på projektets omfattning. Är det en simpel implementation kommer det att kosta mindre, och större mer. Man får ett pris på kartläggningen så att ni vet innan ni bestämmer er.",
   },
   {
     q: "Hur lång tid tar det?",
-    a: "Små automationer 2–3 veckor, större projekt 4–6. Tidsplan bestäms i förstudie.",
+    a: "Beror på komplexitet av dina verktyg och processer. Vi värderar snabb service och försöker att få ut det åtminstone inom en till två veckor. Tidsramen läggs tydligt i kartläggningen.",
   },
   {
     q: "Behöver vi ändra hur vi jobbar?",
-    a: "Automationen anpassar sig till era befintliga system, inte tvärtom. Ni märker av förändringen i form av frigjord tid, inte ett nytt sätt att arbeta.",
+    a: "Vårt mål är att övergången ska vara så smidig som möjligt. Ni ska märka av förändringen i form av frigjord tid, inte ett nytt sätt att arbeta.",
   },
   {
     q: "Kan ni integrera med vårt system?",
-    a: "Om det har ett API eller exporterar data — troligen ja. Vi kollar i förstudien och bekräftar innan vi börjar.",
+    a: "Om ert system har en API kommer det troligtvis att kunna koppla. Vi dyker djupt in i era processer och system och säger ja/nej om det inte går.",
   },
 ];
 
