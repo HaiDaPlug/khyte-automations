@@ -7,7 +7,6 @@ export default function CasesSection() {
       {/* Header */}
       <div className="flex items-end justify-between mb-10 gap-4">
         <div>
-          <span className="section-eyebrow">Referens</span>
           <h2 className="font-display overflow-visible text-[2.5rem] md:text-[3.5rem] leading-[1.15] tracking-wide uppercase text-[var(--color-text)]">
             TA INTE BARA<br /><span style={{ color: "#D4622B" }}>VÅRT ORD.</span>
           </h2>

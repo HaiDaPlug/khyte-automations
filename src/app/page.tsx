@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import HeroSection from "@/components/HeroSection";
-import AmbientParticles from "@/components/AmbientParticles";
+import AmbientParticlesLazy from "@/components/AmbientParticlesLazy";
 // import TimelineProcess from "@/components/TimelineProcess"; // revert: uncomment
 // import Statement from "@/components/sections/Statement"; // revert: archived
 // import Container from "@/components/Container"; // revert: needed when Statement restored
@@ -31,29 +31,33 @@ function EspressoBand({ children }: { children: React.ReactNode }) {
 
 export default function Home() {
   return (
-    <div className="overflow-x-hidden">
+    <>
+      <div className="overflow-x-hidden">
 
-      {/* ── Hero ── */}
-      <HeroSection />
+        {/* ── Hero ── */}
+        <HeroSection />
 
-      {/*
-        NOTE: Statement must stay inside Container.
-        Its full-bleed band uses the viewport-escape trick which requires
-        a viewport-centered parent (mx-auto). Moving it outside Container breaks it.
-      */}
-      {/* revert: <Container><Statement /></Container> */}
+        {/*
+          NOTE: Statement must stay inside Container.
+          Its full-bleed band uses the viewport-escape trick which requires
+          a viewport-centered parent (mx-auto). Moving it outside Container breaks it.
+        */}
+        {/* revert: <Container><Statement /></Container> */}
 
-      {/* Process section */}
+      </div>
+
+      {/* Process section — outside overflow-x-hidden so sticky works on mobile */}
       <ProcessSection />
+
+      <div className="overflow-x-hidden">
 
       {/* ── ROI + COI Band ── */}
       <EspressoBand>
         <div className="relative z-10 max-w-[1100px] mx-auto px-6 py-24 md:py-32 flex flex-col gap-24 md:gap-32">
 
           {/* ROI — copy left, visual right */}
-          <div className="relative min-h-[480px] flex items-center">
+          <div className="relative md:min-h-[480px] flex flex-col md:flex-row md:items-center gap-0">
             <div className="relative z-10 max-w-[500px]">
-              <span className="section-eyebrow" style={{ color: "#E8833A" }} >Avkastning</span>
               <h2 className="font-display overflow-visible text-[2.5rem] md:text-[3.5rem] leading-[1.15] tracking-wide uppercase text-white mb-16">
                 VAD DU FÅR<br /><span style={{ color: "#E8833A" }}>TILLBAKA.</span>
               </h2>
@@ -73,10 +77,15 @@ export default function Home() {
                 ))}
               </ul>
             </div>
-            {/* Cloudsleep — circle stage + particles */}
+            {/* Mobile visual — below copy */}
+            <div className="flex md:hidden items-center justify-center relative pointer-events-none h-[260px] -mx-6 mt-10 overflow-hidden">
+              <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at center, rgba(200,90,20,0.30) 0%, rgba(27,8,3,0) 70%)" }} />
+              <img src="/visuals/cloudsleep.svg" alt="" aria-hidden="true" width={400} height={400} loading="lazy" className="relative z-10 w-[320px] opacity-80" style={{ filter: "grayscale(1) brightness(1.3) drop-shadow(0 4px 24px rgba(0,0,0,0.6))" }} />
+            </div>
+            {/* Desktop visual — positioned absolutely as before */}
             <div className="hidden md:flex items-center justify-center absolute right-[-140px] top-1/2 -translate-y-1/2 pointer-events-none">
               <div className="absolute rounded-full z-0" style={{ width: 600, height: 600, background: "radial-gradient(ellipse at center, rgba(200,90,20,0.22) 0%, rgba(150,55,10,0.10) 50%, rgba(0,0,0,0) 75%)", filter: "blur(80px)" }} />
-              <AmbientParticles width={700} height={700} count={7} colors={["212,98,43","232,131,58","255,200,150"]} className="absolute z-20" />
+              <AmbientParticlesLazy width={700} height={700} count={7} colors={["212,98,43","232,131,58","255,200,150"]} className="absolute z-20" />
               <div className="absolute rounded-full bg-[#2E1005] w-[300px] h-[300px] md:w-[380px] md:h-[380px] z-0 translate-y-4" />
               <img src="/visuals/cloudsleep.svg" alt="" aria-hidden="true" width={700} height={700} loading="lazy" className="relative z-10 w-[600px] md:w-[700px] grayscale brightness-125 opacity-90 -translate-y-6" style={{ filter: "grayscale(1) brightness(1.25) drop-shadow(2px 5px 6px rgba(0,0,0,0.55))" }} />
             </div>
@@ -86,18 +95,16 @@ export default function Home() {
           <div className="border-t border-white/10" />
 
           {/* COI — visual left, copy right */}
-          <div className="relative min-h-[480px] flex items-center justify-end">
-            {/* Timeslipping — vignette + particles */}
+          <div className="relative md:min-h-[480px] flex flex-col md:flex-row md:items-center md:justify-end gap-0">
+            {/* Desktop visual — positioned absolutely as before */}
             <div className="hidden md:flex items-center justify-center absolute left-[-200px] top-1/2 -translate-y-1/2 pointer-events-none">
               <div className="absolute rounded-full z-0" style={{ width: 600, height: 600, background: "radial-gradient(ellipse at center, rgba(200,90,20,0.22) 0%, rgba(150,55,10,0.10) 50%, rgba(0,0,0,0) 75%)", filter: "blur(80px)" }} />
-              <AmbientParticles width={640} height={640} count={9} colors={["220,220,225","190,195,210","240,238,232"]} className="absolute z-20" />
+              <AmbientParticlesLazy width={640} height={640} count={9} colors={["220,220,225","190,195,210","240,238,232"]} className="absolute z-20" />
               <div className="absolute w-[420px] h-[520px] z-0" style={{ background: "radial-gradient(ellipse 60% 55% at 50% 38%, rgba(8,2,0,0.45) 0%, rgba(8,2,0,0.18) 45%, rgba(8,2,0,0) 75%)" }} />
-              {/* White glow anchor behind clock */}
               <div className="absolute z-0 rounded-full" style={{ width: 300, height: 300, background: "radial-gradient(ellipse at center, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 70%)", filter: "blur(80px)" }} />
               <img src="/visuals/timeslipping.svg" alt="" aria-hidden="true" width={780} height={780} loading="lazy" className="relative z-10 w-[660px] md:w-[780px] opacity-90 translate-x-8" style={{ filter: "grayscale(1) brightness(1.25) drop-shadow(2px 5px 6px rgba(0,0,0,0.55))" }} />
             </div>
             <div className="relative z-10 max-w-[500px]">
-              <span className="section-eyebrow" style={{ color: "#E8833A" }}>Kostnaden</span>
               <h2 className="font-display overflow-visible text-[2.5rem] md:text-[3.5rem] leading-[1.15] tracking-wide uppercase text-white mb-16">
                 KOSTNADEN AV<br /><span style={{ color: "#E8833A" }}>STILLASTÅENDE.</span>
               </h2>
@@ -117,6 +124,11 @@ export default function Home() {
                 ))}
               </ul>
             </div>
+            {/* Mobile visual — below copy */}
+            <div className="flex md:hidden items-center justify-center relative pointer-events-none h-[260px] -mx-6 mt-10 overflow-hidden">
+              <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at center, rgba(180,180,200,0.12) 0%, rgba(27,8,3,0) 70%)" }} />
+              <img src="/visuals/timeslipping.svg" alt="" aria-hidden="true" width={400} height={400} loading="lazy" className="relative z-10 w-[320px] opacity-75" style={{ filter: "grayscale(1) brightness(1.3) drop-shadow(0 4px 24px rgba(0,0,0,0.6))" }} />
+            </div>
           </div>
 
         </div>
@@ -131,7 +143,6 @@ export default function Home() {
       <div className="w-full border-t border-[var(--color-border)]">
         <div className="max-w-[1100px] mx-auto px-6 py-[var(--spacing-section)]">
           <div className="mb-10">
-            <span className="section-eyebrow">Vanliga frågor</span>
             <h2 className="font-display overflow-visible text-[2.5rem] md:text-[3.5rem] leading-[1.15] tracking-wide uppercase text-[var(--color-text)]">
               SVAR PÅ DET VI<br /><span style={{ color: "#D4622B" }}>OFTAST FÅR HÖRA.</span>
             </h2>
@@ -142,5 +153,6 @@ export default function Home() {
       </div>
 
     </div>
+    </>
   );
 }

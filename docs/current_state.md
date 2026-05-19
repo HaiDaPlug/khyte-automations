@@ -1,4 +1,4 @@
-# Khyte Automations - Current State (v2.20)
+# Khyte Automations - Current State (v2.22)
 
 ## Tech Stack
 - **Next.js** 16.1.1 (App Router)
@@ -324,16 +324,17 @@ The homepage (`src/app/page.tsx`) uses an **alternating root/Container pattern**
 *(Statement archived — revert comment in page.tsx)*
 
 ```
-<div overflow-x-hidden>                     ← page root
+<div overflow-x-hidden>                     ← page root (Hero only)
 
   <section w-screen>                        ← 1. Hero (full-bleed, at root)
 
-  {/* Statement archived — revert comment in page.tsx */}
+</div>
 
-  <ProcessSection />                        ← 2. Process — 3-col card grid, neutral-100 bg, pipeline line
-                                               Split header (H2 left, buttons right), connecting pipeline line
-                                               behind cards (z-index masked), bold step numbers in accent orange
-                                               Cards: rounded-[32px], p-10/p-12, bg matches section bg
+<ProcessSection />                          ← 2. Process — OUTSIDE overflow-x-hidden (sticky requires it)
+                                               Desktop: 3-col card grid
+                                               Mobile: 300vh scroll-driven stacked card deck, sticky panel
+
+<div overflow-x-hidden>                     ← resumes for remaining sections
 
   <EspressoBand>                            ← 4. ROI + COI — single espresso band, two stacked sections
                                                ROI: copy left / cloudsleep visual right (circle stage + orange particles)
@@ -394,9 +395,10 @@ The homepage (`src/app/page.tsx`) uses an **alternating root/Container pattern**
 - **Single band** — ROI and COI stacked inside one `EspressoBand`, separated by `border-t border-white/10`.
 - **Layout**: each row is `relative min-h-[480px] flex items-center` — copy block (`max-w-[500px] z-10`), visuals `absolute` positioned outside grid constraints.
 - **Split-metric typography**: huge number (`font-display text-4xl md:text-5xl text-white tracking-wide uppercase`) + unit (`text-sm text-white/70 uppercase tracking-widest`). H2 `text-2xl md:text-3xl text-white/70 mb-16` (muted, creates hierarchy gap). Metrics `gap-12`, left-rail `border-l border-white/10 pl-8`.
-- **ROI**: copy left, `cloudsleep.svg` absolute `right-[-140px]` — burnt-orange radial atmosphere blob (heavily blurred, `rgba(200,90,20,0.22)`) + `AmbientParticles` (warm orange, count 7) + dark rust circle stage `bg-[#2E1005] rounded-full w-[380px]`. SVG `w-[600px] md:w-[700px] -translate-y-6`.
-- **COI**: copy right, `timeslipping.svg` absolute `left-[-200px]` — same burnt-orange atmosphere blob + `AmbientParticles` (silver, count 9) + white radial glow anchor + shadow vignette. SVG `w-[660px] md:w-[780px] translate-x-8`.
-- **Both visuals**: `filter: grayscale(1) brightness(1.25) drop-shadow(2px 5px 6px rgba(0,0,0,0.55))`.
+- **ROI**: copy left, `cloudsleep.svg` absolute `right-[-140px]` (desktop) — burnt-orange radial atmosphere blob + `AmbientParticlesLazy` (warm orange, count 7) + dark rust circle stage. SVG `w-[600px] md:w-[700px] -translate-y-6`. **Mobile**: SVG shown below copy in `h-[260px]` strip with radial glow, `w-[320px] opacity-80`.
+- **COI**: copy right, `timeslipping.svg` absolute `left-[-200px]` (desktop) — same blob + `AmbientParticlesLazy` (silver, count 9) + white radial glow anchor. SVG `w-[660px] md:w-[780px] translate-x-8`. **Mobile**: SVG shown below copy in `h-[260px]` strip, `w-[320px] opacity-75`.
+- **Both visuals**: `filter: grayscale(1) brightness(1.25) drop-shadow(2px 5px 6px rgba(0,0,0,0.55))`. Mobile versions use `brightness(1.3)`.
+- **`AmbientParticles` hidden on mobile** — both instances remain `hidden md:flex`.
 - **ROIBand.tsx**: archived on disk, no longer used
 
 ### ROIBand.tsx (Archived)
@@ -443,14 +445,18 @@ The homepage (`src/app/page.tsx`) uses an **alternating root/Container pattern**
 - File on disk, not rendered
 
 ### ProcessSection.tsx (Homepage process steps — ACTIVE)
-- **3-col card grid** on `bg-[var(--color-bg)]` warm off-white, `px-6 md:px-12`, full-width (no Container)
-- **Split header**: `.section-eyebrow` + H2 `font-display text-[3rem] md:text-[4.5rem] leading-[1.15]` — `TRE` solid dark + `STEG.` in `#D4622B`. Subtitle: `text-base font-medium color-text`. Right side: single brutalist ink link "OM OSS →" (font-display, tracking-[0.18em], uppercase, hover orange).
-- **Pipeline line**: `absolute h-px bg-[var(--color-border)]` at `top: 8.5rem`, `z-0`, `hidden md:block` — masked by card backgrounds (`z-10`)
-- **Cards**: `rounded-[32px] p-10 md:p-12`, `bg-[var(--color-bg)]`, `border: var(--border-width) solid var(--color-border)`, `shadow-none`
-- **Card typography**: step number `text-[4.5rem] font-bold tracking-tighter text-[var(--color-accent)]`, title `text-3xl font-bold`, body `text-lg leading-relaxed`
-- **Steps**: Kartläggning → Pilot → Drift & förbättring
-- **Max-width**: `max-w-[1600px] mx-auto` — wider than standard Container for full presence
-- Server Component — no `"use client"` needed
+- **`"use client"`** — requires Framer Motion hooks
+- **Desktop**: unchanged 3-col card grid on `bg-[var(--color-bg)]`, `hidden md:grid`, `max-w-[1600px] mx-auto`
+- **Mobile**: scroll-driven card deck (`MobileCardDeck` component) — `300vh` tall scroll container, `sticky top-[72px]` panel that pins header + cards + dots + Om oss link. Cards are absolutely stacked; scroll progress (`useScroll` target) drives `useTransform` x/rotate/opacity to deal each card off to the right.
+  - Card 0 exits during scroll 0→33%, card 1 during 33→66%, card 3 revealed at rest
+  - Stack depth: cards 1+2 inset via `top/left/right` offsets (not translateY) to stay within container bounds
+  - Progress dots: `ProgressDots` component takes `scrollYProgress`, derives per-dot opacity via `useTransform`
+  - `useReducedMotion` guard — static stack fallback
+  - Sticky panel offset: `top-[72px]`, `height: calc(100vh - 72px)` — clears the fixed nav pill
+- **IMPORTANT**: ProcessSection must sit **outside** any `overflow-x-hidden` parent — that CSS property breaks `position: sticky`. In `page.tsx` it sits between two separate `overflow-x-hidden` divs.
+- **Split header**: H2 `font-display text-[3rem] md:text-[4.5rem]` — `TRE` dark + `STEG.` `#D4622B`. Desktop: "OM OSS →" link right-aligned. Mobile: "OM OSS →" below cards inside sticky panel.
+- **Cards**: `rounded-[28px] p-6`, `bg-[var(--color-bg)]`, `border: var(--border-width) solid var(--color-border)`
+- **Steps**: Kartläggning → Implementering → Support & förbättring
 
 ### Weaponized Typography System (ACTIVE)
 - **Font**: `Barlow_Condensed` weight 700+800, `latin-ext` subset — imported via `next/font/google`, variable `--font-barlow`, Tailwind utility `.font-display` (`font-weight: 800, line-height: 1.15`)
@@ -540,6 +546,8 @@ Components requiring `"use client"`:
 - `NodeGraph.tsx` - rAF canvas loop (archived — replaced by KiteHero)
 - `KiteHero.tsx` - motion/react hooks + useAnimationFrame ← ACTIVE
 - `AmbientParticles.tsx` - canvas rAF loop, drifting particles around visuals ← ACTIVE
+- `AmbientParticlesLazy.tsx` - thin `"use client"` wrapper for `dynamic(() => import AmbientParticles, { ssr: false })` — required because page.tsx is a Server Component ← ACTIVE
+- `NoiseTexture.tsx` - SVG `feTurbulence` fractal noise component (created, currently unused — noise.webp tile kept for perf)
 - `RollingWord.tsx` - AnimatePresence word cycle, useReducedMotion guard ← ACTIVE
 - `PageTransition.tsx` - usePathname route watcher, scroll-to-top on nav (skips first render) + fade-in ← ACTIVE
 - `FAQAccordion.tsx` - useState open toggle, grid-template-rows animation ← ACTIVE
@@ -640,7 +648,7 @@ npm run dev                     # Dev mode (Turbopack bug exists)
 | Archived — interactive dot grid | `src/components/InteractiveGrid.tsx` |
 | Archived — pipeline node row | `src/components/WorkflowVisual.tsx` |
 
-## Performance Notes (v2.21)
+## Performance Notes (v2.22)
 - **Lenis removed** — native scroll, no JS on wheel events
 - **Hero background**: WebP bitmap (`hero-gradient-v1.webp`) — zero SMIL, zero SVG filters, zero per-frame paint. BG layers use `absolute inset-0`. Preloaded via `<link rel="preload" as="image">` in layout.tsx head.
 - **KiteHero**: `particlesRef` init once in `useEffect([])`. Uses `useAnimationFrame` + `useMotionValue` (motion/react) for continuous sine-driven float. RAF pauses when off-screen via `IntersectionObserver` + `inView` state guard. `motion/react` import retained — CSS keyframes were tried but produced choppy mechanical motion vs smooth sine.
@@ -662,6 +670,12 @@ npm run dev                     # Dev mode (Turbopack bug exists)
 - **SVG visuals**: `cloudsleep.svg` + `timeslipping.svg` have explicit `width`/`height` + `loading="lazy"` (below-fold, desktop-only).
 - **html font-size**: `19px` set as bare unlayered rule (outside `@layer`) — previously `18px` inside `@layer utilities` was silently overridden by the unlayered cascade and never applied.
 - **browserslist**: `package.json` targets last 2 versions of Chrome/Firefox/Safari/Edge. Note: Turbopack may not fully apply this yet (open Next.js issues).
+- **RollingWord**: lazy-loaded via `dynamic()` in `HeroSection` (no `ssr: false` — component has own `mounted` guard). Splits it from critical JS bundle.
+- **AmbientParticles**: lazy-loaded via `AmbientParticlesLazy.tsx` client wrapper with `ssr: false` — canvas APIs not available on server. Used on homepage ROI/COI band (desktop only).
+- **KiteHero**: direct import (not lazy) — desktop-only, Framer Motion already in bundle, eager render avoids visible pop-in on refresh.
+- **cdn.fontshare.com preconnect**: added alongside existing `api.fontshare.com` preconnect — font files served from CDN subdomain, saves ~80ms LCP on mobile.
+- **viewport-fit=cover**: `export const viewport: Viewport` in layout.tsx — removes iOS Safari white status bar gap above hero.
+- **JSON-LD unicode escaping**: `JSON.stringify(structuredData).replace(/[-￿]/g, ...)` — escapes chars > U+00FF to avoid ByteString error from em/en dashes in structured data strings.
 
 ## Priorities & Vision
 

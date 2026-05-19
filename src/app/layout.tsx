@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Barlow, Barlow_Condensed, Bebas_Neue } from "next/font/google";
 import "./globals.css";
 
@@ -34,6 +34,10 @@ import Footer from "@/components/Footer";
 import PageTransition from "@/components/PageTransition";
 import { CalendlyProvider } from "@/components/CalendlyContext";
 import CalendlyDrawer from "@/components/CalendlyDrawer";
+
+export const viewport: Viewport = {
+  viewportFit: "cover",
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://khyteautomations.com"),
@@ -211,6 +215,7 @@ export default function RootLayout({
         {/* Hero background — preload so browser fetches before CSS paint */}
         <link rel="preload" as="image" href="/gradients/hero-gradient-v1.webp" />
         <link rel="preconnect" href="https://api.fontshare.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://cdn.fontshare.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://cdn.fontshare.com" />
         {/* Satoshi is the primary above-fold font — load synchronously to prevent FOUT */}
         <link
@@ -219,7 +224,7 @@ export default function RootLayout({
         />
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/[-￿]/g, (c) => `\\u${c.charCodeAt(0).toString(16).padStart(4, "0")}`) }}
         />
         {/* Calendly script is injected on-demand in CalendlyDrawer — not loaded here */}
       </head>

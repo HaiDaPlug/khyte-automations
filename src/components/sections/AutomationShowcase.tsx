@@ -7,7 +7,6 @@ export default function AutomationShowcase() {
 
         {/* Section header */}
         <div className="mb-10">
-          <span className="section-eyebrow">Automatisering</span>
           <h2 className="font-display overflow-visible text-[2.5rem] md:text-[3.5rem] leading-[1.15] tracking-wide uppercase text-[var(--color-text)]">
             SLUTA SLÖSA TID<br /><span style={{ color: "#D4622B" }}>PÅ DET SOM GÅR ATT AUTOMATISERA.</span>
           </h2>
