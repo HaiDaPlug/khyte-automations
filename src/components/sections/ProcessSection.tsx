@@ -100,7 +100,7 @@ function MobileCardDeck() {
               {steps[2].num}
             </span>
             <h3 className="text-xl font-bold text-black mt-3 mb-2">{steps[2].title}</h3>
-            <p className="text-neutral-800 text-sm leading-relaxed">{steps[2].body}</p>
+            <p className="text-neutral-800 text-base leading-snug">{steps[2].body}</p>
           </div>
 
           {/* Card 1 — middle */}
