@@ -157,9 +157,10 @@ export default function AboutContent() {
           </Reveal>
           <Reveal delay={0.16}>
             <p className="text-[1.2rem] leading-[1.7] text-[var(--color-text-body)] max-w-[60ch]">
-              [Placeholder — konkret beskrivning av vad Khyte faktiskt bygger
-              och levererar. Inte buzzwords. Vad händer från första möte till
-              färdig automation? Vad äger kunden när ni är klara?]Vi hoppar in i företagets vardag och automatiserar återkommande arbete. Detta kan se ut som en integration, rådgivning eller koda mjukvara från scratch. Detta gör vi för att skapa mer rum för det viktiga, slippa ha allt i huvudet och kunna göra mer på mindre tid.
+              Vi hoppar in i företagets vardag och automatiserar återkommande arbete.<br className="hidden md:block" />
+              Det kan vara en integration, rådgivning eller koda mjukvara från scratch.<br />
+              Detta gör vi för att skapa mer rum för det viktiga, slippa ha allt i huvudet och kunna göra mer på mindre tid.<br className="hidden md:block" />
+              Ni äger sedan lösningen efter överlämning.
             </p>
           </Reveal>
         </section>
