@@ -64,6 +64,8 @@ export default function CasesSection() {
                 <img
                   src="/khyte-logo-text.svg"
                   alt="Khyte Automations"
+                  width={240}
+                  height={64}
                   className="block w-auto"
                   style={{ height: "64px", filter: "drop-shadow(0 2px 16px rgba(0,0,0,0.40))", opacity: 0.93 }}
                 />

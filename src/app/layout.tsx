@@ -214,10 +214,10 @@ export default function RootLayout({
         <link rel="preload" as="image" href="/khyte-logo-text.svg" fetchPriority="high" />
         {/* Hero background — preload so browser fetches before CSS paint */}
         <link rel="preload" as="image" href="/gradients/hero-gradient-v1.webp" />
+        {/* Satoshi is the primary above-fold font — load synchronously to prevent FOUT */}
+        {/* preconnect api (CSS request) + cdn (font file request) so both legs of the chain are warm */}
         <link rel="preconnect" href="https://api.fontshare.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://cdn.fontshare.com" crossOrigin="anonymous" />
-        <link rel="dns-prefetch" href="https://cdn.fontshare.com" />
-        {/* Satoshi is the primary above-fold font — load synchronously to prevent FOUT */}
         <link
           rel="stylesheet"
           href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,600,700&display=swap"

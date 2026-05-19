@@ -80,8 +80,8 @@ function MobileCardDeck() {
           </p>
         </div>
 
-        {/* Card stack — overflow visible so transform origin works, but bg covers */}
-        <div className="relative" style={{ height: 320 }}>
+        {/* Card stack — min-height so body text never clips on small phones */}
+        <div className="relative" style={{ minHeight: 340, height: 340 }}>
           {/* Card 2 — bottom of deck, inset so it peeks as a shadow */}
           <div
             className="absolute flex flex-col p-6 rounded-[28px]"
@@ -96,11 +96,11 @@ function MobileCardDeck() {
               zIndex: 1,
             }}
           >
-            <span className="block font-display text-[3.5rem] leading-none tracking-wide text-[var(--color-accent)]">
+            <span className="block font-display text-[2.5rem] leading-none tracking-wide text-[var(--color-accent)]">
               {steps[2].num}
             </span>
-            <h3 className="text-2xl font-bold text-black mt-5 mb-3">{steps[2].title}</h3>
-            <p className="text-neutral-800 text-base leading-relaxed">{steps[2].body}</p>
+            <h3 className="text-xl font-bold text-black mt-3 mb-2">{steps[2].title}</h3>
+            <p className="text-neutral-800 text-sm leading-relaxed">{steps[2].body}</p>
           </div>
 
           {/* Card 1 — middle */}
@@ -120,11 +120,11 @@ function MobileCardDeck() {
               zIndex: 2,
             }}
           >
-            <span className="block font-display text-[3.5rem] leading-none tracking-wide text-[var(--color-accent)]">
+            <span className="block font-display text-[2.5rem] leading-none tracking-wide text-[var(--color-accent)]">
               {steps[1].num}
             </span>
-            <h3 className="text-2xl font-bold text-black mt-5 mb-3">{steps[1].title}</h3>
-            <p className="text-neutral-800 text-base leading-relaxed">{steps[1].body}</p>
+            <h3 className="text-xl font-bold text-black mt-3 mb-2">{steps[1].title}</h3>
+            <p className="text-neutral-800 text-sm leading-relaxed">{steps[1].body}</p>
           </motion.div>
 
           {/* Card 0 — top */}
@@ -139,11 +139,11 @@ function MobileCardDeck() {
               zIndex: 3,
             }}
           >
-            <span className="block font-display text-[3.5rem] leading-none tracking-wide text-[var(--color-accent)]">
+            <span className="block font-display text-[2.5rem] leading-none tracking-wide text-[var(--color-accent)]">
               {steps[0].num}
             </span>
-            <h3 className="text-2xl font-bold text-black mt-5 mb-3">{steps[0].title}</h3>
-            <p className="text-neutral-800 text-base leading-relaxed">{steps[0].body}</p>
+            <h3 className="text-xl font-bold text-black mt-3 mb-2">{steps[0].title}</h3>
+            <p className="text-neutral-800 text-sm leading-relaxed">{steps[0].body}</p>
           </motion.div>
         </div>
 
