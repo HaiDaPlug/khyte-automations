@@ -14,8 +14,10 @@ export default function HeroSection() {
       {/* Base gradient */}
       <div
         aria-hidden="true"
-        className="absolute inset-0 -z-10 pointer-events-none"
+        className="absolute -inset-x-0 -z-10 pointer-events-none"
         style={{
+          top: "-10vh",
+          bottom: 0,
           backgroundImage: `url("/gradients/hero-gradient-v1.webp")`,
           backgroundSize: "cover",
           backgroundPosition: "center top",
