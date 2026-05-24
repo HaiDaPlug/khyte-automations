@@ -78,11 +78,15 @@
   }
 
   /* Global grain — multiply blend makes it invisible on dark sections automatically */
+  html {
+    overflow-x: clip; /* prevents feTurbulence fixed layer from painting beyond viewport width on mobile */
+  }
   body {
     background-color: var(--color-bg);
     font-weight: 500;
     letter-spacing: -0.01em;
     -webkit-font-smoothing: subpixel-antialiased;
+    overflow-x: clip;
   }
   body::after {
     content: "";
