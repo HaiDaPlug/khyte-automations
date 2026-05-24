@@ -10,14 +10,12 @@ const RollingWord = dynamic(() => import("@/components/RollingWord"));
 
 export default function HeroSection() {
   return (
-    <section className="relative w-screen min-h-[100dvh] flex flex-col justify-start md:justify-center items-center pt-32 md:pt-32 pb-8 overflow-hidden isolate">
+    <section className="relative w-screen min-h-[100dvh] flex flex-col justify-start md:justify-center items-center pt-[112px] md:pt-32 pb-8 overflow-hidden isolate">
       {/* Base gradient */}
       <div
         aria-hidden="true"
-        className="absolute -inset-x-0 -z-10 pointer-events-none"
+        className="absolute inset-0 -z-10 pointer-events-none"
         style={{
-          top: "-10vh",
-          bottom: 0,
           backgroundImage: `url("/gradients/hero-gradient-v1.webp")`,
           backgroundSize: "cover",
           backgroundPosition: "center top",
