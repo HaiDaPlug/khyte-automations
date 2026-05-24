@@ -227,6 +227,9 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/[-￿]/g, (c) => `\\u${c.charCodeAt(0).toString(16).padStart(4, "0")}`) }}
         />
         {/* Calendly script is injected on-demand in CalendlyDrawer — not loaded here */}
+        {/* Scroll restoration — inline, runs before first paint so there is zero flash.
+            Saves scroll Y per pathname in sessionStorage, restores on refresh. */}
+        <script dangerouslySetInnerHTML={{ __html: `(function(){try{history.scrollRestoration='manual';var k='sr:'+location.pathname;var y=sessionStorage.getItem(k);if(y)window.scrollTo(0,+y);window.addEventListener('scroll',function(){sessionStorage.setItem(k,window.scrollY)},{passive:true});}catch(e){}})();` }} />
       </head>
       <body className="main-wrapper">
         {/* Hidden SVG grain filter — referenced by body::after in globals.css */}
