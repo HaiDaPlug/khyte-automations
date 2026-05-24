@@ -163,6 +163,16 @@
     line-height: 1.15;
   }
 
+  /* Hero section — safe-area-aware top padding */
+  .hero-section {
+    padding-top: calc(env(safe-area-inset-top, 0px) + 112px);
+  }
+  @media (min-width: 768px) {
+    .hero-section {
+      padding-top: 128px; /* pt-32 */
+    }
+  }
+
   .base-band {
     position: relative;
     width: min(1440px, calc(100% - 32px));
