@@ -85,7 +85,7 @@ export default function Nav() {
       <div
         className="relative flex items-center justify-between"
         style={{
-          padding:        isHome && !scrolled ? "20px 32px"             : "12px 32px",
+          padding:        isHome && !scrolled ? (isMobile ? "12px 20px" : "20px 32px") : "12px 32px",
           borderRadius:   isHome && !scrolled ? "0px"                   : "9999px",
           background:     isHome && !scrolled ? "transparent"           : "rgba(10,10,10,0.72)",
           backdropFilter: isHome && !scrolled ? "none"                  : "blur(12px)",
@@ -113,6 +113,7 @@ export default function Nav() {
             height={64}
             className="h-16 w-auto -my-2"
             priority
+            unoptimized
           />
         </Link>
 
