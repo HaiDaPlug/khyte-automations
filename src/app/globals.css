@@ -78,6 +78,9 @@
   }
 
   /* Global grain — multiply blend makes it invisible on dark sections automatically */
+  html {
+    background-color: var(--color-bg); /* prevents white flash between sections on scroll */
+  }
   body {
     background-color: var(--color-bg);
     font-weight: 500;
@@ -163,14 +166,9 @@
     line-height: 1.15;
   }
 
-  /* Hero section — safe-area-aware top padding */
+  /* Hero section — safe-area-aware top padding, pt-32 (128px) on all sizes */
   .hero-section {
-    padding-top: calc(env(safe-area-inset-top, 0px) + 112px);
-  }
-  @media (min-width: 768px) {
-    .hero-section {
-      padding-top: 128px; /* pt-32 */
-    }
+    padding-top: calc(env(safe-area-inset-top, 0px) + 128px);
   }
 
   .base-band {

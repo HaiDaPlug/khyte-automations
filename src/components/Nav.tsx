@@ -111,7 +111,7 @@ export default function Nav() {
             alt="Khyte"
             width={240}
             height={64}
-            className="h-16 w-auto -my-2 ml-3"
+            className="h-16 w-auto -my-2"
             priority
           />
         </Link>
