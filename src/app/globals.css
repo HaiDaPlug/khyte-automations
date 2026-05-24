@@ -79,7 +79,7 @@
 
   /* Global grain — multiply blend makes it invisible on dark sections automatically */
   html {
-    background-color: var(--color-bg); /* prevents white flash between sections on scroll */
+    background-color: #1B0803; /* top overscroll shows hero dark — no white flash on iOS bounce */
   }
   body {
     background-color: var(--color-bg);
