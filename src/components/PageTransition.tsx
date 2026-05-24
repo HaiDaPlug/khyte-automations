@@ -13,11 +13,12 @@ export default function PageTransition({
   const isFirstRender = useRef(true);
 
   useEffect(() => {
+    // Always scroll to top — on first render this corrects browser scroll restoration on refresh
+    window.scrollTo({ top: 0, behavior: "instant" });
     if (isFirstRender.current) {
       isFirstRender.current = false;
       return;
     }
-    window.scrollTo({ top: 0, behavior: "instant" });
 
     // Re-trigger fade by toggling the animation class
     const el = ref.current;

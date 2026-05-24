@@ -10,7 +10,7 @@ const RollingWord = dynamic(() => import("@/components/RollingWord"));
 
 export default function HeroSection() {
   return (
-    <section className="relative w-screen min-h-[100dvh] flex flex-col justify-center items-center pt-20 md:pt-32 pb-8 overflow-hidden isolate">
+    <section className="relative w-screen min-h-[100dvh] flex flex-col justify-start md:justify-center items-center pt-24 md:pt-32 pb-8 overflow-hidden isolate">
       {/* Base gradient */}
       <div
         aria-hidden="true"
