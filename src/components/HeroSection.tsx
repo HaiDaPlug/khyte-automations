@@ -57,13 +57,13 @@ export default function HeroSection() {
       <div className="w-full max-w-[1100px] 2xl:max-w-[1320px] mx-auto px-4 md:px-6 xl:px-12 grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-12 items-center">
         {/* Left: copy */}
         <div className="flex flex-col items-start text-left">
-          <h1 suppressHydrationWarning className="text-hero text-[2.25rem] md:text-[3.25rem] lg:text-6xl xl:text-[3.6rem] 2xl:text-[4rem] mb-8 drop-shadow-sm text-white"> {/* revert: text-5xl md:text-7xl */}
+          <h1 suppressHydrationWarning className="text-hero text-[2.25rem] md:text-[3.25rem] lg:text-6xl xl:text-[3.6rem] 2xl:text-[4rem] mb-5 md:mb-8 drop-shadow-sm text-white"> {/* revert: text-5xl md:text-7xl */}
             Automatisering som tar bort{" "}
             <RollingWord />{" "}
             - utan onödigt strul.
           </h1>
 
-          <p className="text-lg md:text-xl text-white/85 font-medium max-w-[480px] leading-relaxed mb-10">
+          <p className="text-lg md:text-xl text-white/85 font-medium max-w-[480px] leading-relaxed mb-7 md:mb-10">
             Vi eliminerar manuella fel och frigör tid för det som faktiskt skapar värde. Kundnära, effektivt och byggt för att hålla.
           </p>
 
@@ -91,7 +91,7 @@ export default function HeroSection() {
       </div>
 
       {/* Trust strip + Tools Ticker */}
-      <div className="mt-20 w-full">
+      <div className="mt-auto md:mt-20 w-full pt-10 md:pt-0">
         <div className="flex items-center gap-4 mb-6 px-4 max-w-[520px] mx-auto">
           <div className="flex-1 h-px bg-white/15" />
           <span className="shrink-0 text-[11px] font-semibold tracking-[0.10em] uppercase text-white/45 whitespace-nowrap">
