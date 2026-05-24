@@ -3,6 +3,12 @@
 import { usePathname } from "next/navigation";
 import { useEffect, useRef } from "react";
 
+// Disable browser scroll restoration immediately — prevents the flash where the browser
+// jumps to the saved scroll position before our JS can correct it on refresh.
+if (typeof window !== "undefined") {
+  history.scrollRestoration = "manual";
+}
+
 export default function PageTransition({
   children,
 }: {
@@ -13,19 +19,18 @@ export default function PageTransition({
   const isFirstRender = useRef(true);
 
   useEffect(() => {
-    // Always scroll to top — on first render this corrects browser scroll restoration on refresh
-    window.scrollTo({ top: 0, behavior: "instant" });
     if (isFirstRender.current) {
       isFirstRender.current = false;
-      return;
+      return; // On first render: scrollRestoration="manual" already keeps us at top
     }
 
-    // Re-trigger fade by toggling the animation class
+    // Route change — scroll to top and re-trigger fade
+    window.scrollTo({ top: 0, behavior: "instant" });
+
     const el = ref.current;
     if (!el) return;
     el.classList.remove("page-enter");
-    // Force reflow to restart animation
-    void el.offsetHeight;
+    void el.offsetHeight; // force reflow to restart animation
     el.classList.add("page-enter");
   }, [pathname]);
 
