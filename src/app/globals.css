@@ -78,9 +78,6 @@
   }
 
   /* Global grain — multiply blend makes it invisible on dark sections automatically */
-  html {
-    background-color: #1B0803; /* top overscroll shows hero dark — no white flash on iOS bounce */
-  }
   body {
     background-color: var(--color-bg);
     font-weight: 500;
@@ -166,9 +163,14 @@
     line-height: 1.15;
   }
 
-  /* Hero section — safe-area-aware top padding, pt-32 (128px) on all sizes */
+  /* Hero section — safe-area-aware top padding */
   .hero-section {
-    padding-top: calc(env(safe-area-inset-top, 0px) + 128px);
+    padding-top: calc(env(safe-area-inset-top, 0px) + 112px);
+  }
+  @media (min-width: 768px) {
+    .hero-section {
+      padding-top: 128px; /* pt-32 */
+    }
   }
 
   .base-band {
@@ -325,7 +327,15 @@ html,
 body {
   margin: 0;
   padding: 0;
-  /* Prevent white flash on scroll/paint before hero bg renders */
+}
+
+html {
+  /* iOS Safari shows the html background in the top safe-area/overscroll region. */
+  background-color: #1B0803;
+}
+
+body {
+  /* Keep normal page sections on the warm site background. */
   background-color: var(--color-bg);
 }
 
