@@ -61,7 +61,7 @@ export default function HeroSection() {
           <h1 suppressHydrationWarning className="text-hero text-[2.25rem] md:text-[3.25rem] lg:text-6xl xl:text-[3.6rem] 2xl:text-[4rem] mb-5 md:mb-8 drop-shadow-sm text-white"> {/* revert: text-5xl md:text-7xl */}
             Automatisering som tar bort{" "}
             <RollingWord />{" "}
-            - utan onödigt strul.
+            <span className="inline-block whitespace-nowrap">- utan onödigt strul.</span>
           </h1>
 
           <p className="text-lg md:text-xl text-white/85 font-medium max-w-[480px] leading-relaxed mb-7 md:mb-10">
