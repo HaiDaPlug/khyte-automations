@@ -17,7 +17,7 @@ export default function CalendlyButton({
   const { openCalendly } = useCalendly();
 
   const baseStyles =
-    "inline-flex h-12 px-8 rounded-md text-base font-semibold whitespace-nowrap transition-all duration-200 cursor-pointer items-center justify-center active:scale-[0.98] no-underline";
+    "inline-flex h-12 px-8 rounded-full text-base font-semibold whitespace-nowrap transition-all duration-200 cursor-pointer items-center justify-center active:scale-[0.98] no-underline";
 
   const variantStyles = {
     primary: "btn-cta",

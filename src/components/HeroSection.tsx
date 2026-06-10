@@ -92,7 +92,7 @@ export default function HeroSection() {
       </div>
 
       {/* Trust strip + Tools Ticker */}
-      <div className="mt-20 w-full">
+      <div className="mt-auto pt-12 w-full">
         <div className="flex items-center gap-4 mb-6 px-4 max-w-[520px] mx-auto">
           <div className="flex-1 h-px bg-white/15" />
           <span className="shrink-0 text-[11px] font-semibold tracking-[0.10em] uppercase text-white/45 whitespace-nowrap">
