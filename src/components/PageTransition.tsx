@@ -15,7 +15,7 @@ export default function PageTransition({
   useEffect(() => {
     if (isFirstRender.current) {
       isFirstRender.current = false;
-      return; // First render — scroll position already restored by inline <head> script
+      return; // First render — scroll position is at top (set by inline script); no restoration needed
     }
 
     // Route change — scroll to top and re-trigger fade

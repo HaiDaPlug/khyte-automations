@@ -9,10 +9,9 @@
   --color-accent: #E8833A;
   --color-border: rgba(58, 51, 48, 0.12);
 
-  --font-sans: "Satoshi", var(--font-barlow-body), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Satoshi", ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-barlow), sans-serif;
   --font-barlow: var(--font-barlow), sans-serif;
-  --font-bebas: var(--font-bebas), sans-serif;
 
   --border-width: 2px;
   --radius-sm: 4px;
@@ -89,12 +88,13 @@
     position: fixed;
     top: 0;
     left: 0;
-    width: 100vw;   /* explicit vw instead of inset:0 — prevents feTurbulence layer */
-    height: 100vh;  /* from over-allocating beyond viewport on mobile              */
+    width: 100vw;
+    height: 100vh;
     z-index: 9999;
     pointer-events: none;
-    opacity: 0.12;
-    filter: url(#grain);
+    background-image: url('/noise.webp');
+    background-size: 128px 128px;
+    opacity: 0.04;
     mix-blend-mode: multiply;
     overflow: hidden;
   }

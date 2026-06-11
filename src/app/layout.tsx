@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Barlow, Barlow_Condensed, Bebas_Neue } from "next/font/google";
+import { Barlow_Condensed } from "next/font/google";
 import "./globals.css";
 
 const barlow = Barlow_Condensed({
@@ -10,21 +10,6 @@ const barlow = Barlow_Condensed({
   adjustFontFallback: false,
 });
 
-const barlowBody = Barlow({
-  weight: ["400", "500"],
-  subsets: ["latin", "latin-ext"],
-  variable: "--font-barlow-body",
-  display: "swap",
-  adjustFontFallback: false,
-});
-
-const bebasNeue = Bebas_Neue({
-  weight: ["400"],
-  subsets: ["latin"],
-  variable: "--font-bebas",
-  display: "swap",
-  adjustFontFallback: false,
-});
 
 import { Analytics } from "@vercel/analytics/next";
 import Script from "next/script";
@@ -208,7 +193,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="sv" className={`${barlow.variable} ${barlowBody.variable} ${bebasNeue.variable}`} data-theme={COLOR_CONCEPT}>
+    <html lang="sv" className={`${barlow.variable}`} data-theme={COLOR_CONCEPT}>
       <head>
         {/* Logo — preload so LCP element starts fetching immediately */}
         <link rel="preload" as="image" href="/khyte-logo-text.svg" fetchPriority="high" />
@@ -227,20 +212,10 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/[-￿]/g, (c) => `\\u${c.charCodeAt(0).toString(16).padStart(4, "0")}`) }}
         />
         {/* Calendly script is injected on-demand in CalendlyDrawer — not loaded here */}
-        {/* Scroll restoration — inline, runs before first paint so there is zero flash.
-            Saves scroll Y per pathname in sessionStorage, restores on refresh. */}
-        <script dangerouslySetInnerHTML={{ __html: `(function(){try{history.scrollRestoration='manual';var k='sr:'+location.pathname;var y=sessionStorage.getItem(k);if(y)window.scrollTo(0,+y);window.addEventListener('scroll',function(){sessionStorage.setItem(k,window.scrollY)},{passive:true});}catch(e){}})();` }} />
+        {/* Ensure top-of-page on hard refresh — no scroll listener, no sessionStorage */}
+        <script dangerouslySetInnerHTML={{ __html: `(function(){try{history.scrollRestoration='manual';window.scrollTo(0,0);}catch(e){}})();` }} />
       </head>
       <body className="main-wrapper">
-        {/* Hidden SVG grain filter — referenced by body::after in globals.css */}
-        <svg aria-hidden="true" style={{ position: "absolute", width: 0, height: 0 }}>
-          <defs>
-            <filter id="grain">
-              <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" />
-              <feColorMatrix type="saturate" values="0" />
-            </filter>
-          </defs>
-        </svg>
         <CalendlyProvider>
           <Nav />
           <PageTransition>{children}</PageTransition>

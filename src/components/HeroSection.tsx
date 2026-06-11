@@ -3,7 +3,6 @@
 import dynamic from "next/dynamic";
 import Button from "@/components/Button";
 import KiteHero from "@/components/KiteHero";
-import { NoiseTexture } from "@/components/NoiseTexture";
 import ToolsTicker from "@/components/ToolsTicker";
 
 const RollingWord = dynamic(() => import("@/components/RollingWord"));
@@ -44,14 +43,10 @@ export default function HeroSection() {
         }}
       />
       {/* Noise overlay */}
-      <NoiseTexture
+      <div
         aria-hidden="true"
-        className="-z-10"
-        frequency={0.65}
-        octaves={4}
-        slope={0.12}
-        noiseOpacity={0.35}
-        style={{ mixBlendMode: "screen", opacity: 0.06 }}
+        className="absolute inset-0 -z-10 pointer-events-none"
+        style={{ backgroundImage: "url('/noise.webp')", backgroundSize: "128px 128px", opacity: 0.05, mixBlendMode: "screen" }}
       />
 
       {/* Hero content grid */}

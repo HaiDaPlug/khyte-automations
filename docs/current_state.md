@@ -5,7 +5,7 @@
 - **React** 19.2.1
 - **TypeScript** 5 (Strict mode)
 - **Tailwind CSS** v4 (config via `@theme` in globals.css)
-- **Fonts**: Satoshi (Fontshare CDN, body — now primary font globally), Barlow Condensed (Google Fonts, display/eyebrows), Barlow (Google Fonts, available), Bebas Neue (Google Fonts, available)
+- **Fonts**: Satoshi (Fontshare CDN, body — primary font globally), Barlow Condensed (Google Fonts, display/eyebrows — used in CalendlyDrawer). Barlow Body and Bebas Neue removed — were loaded but unused.
 - **GeistSans removed** — was imported from `geist/font/sans`, injected `--font-geist-sans` globally and overrode Satoshi. Fully removed from layout.tsx.
 - **GSAP**: `gsap` — installed for animations (ScrollTrigger, timelines, tweens). Core is free. No premium plugins used.
 - **Vercel Analytics**: `@vercel/analytics` — `<Analytics />` injected in `layout.tsx`, tracks page views on Vercel deployments
@@ -162,7 +162,7 @@ Skills live in `~/.claude/skills/` and are invoked via `/skill-name` or triggere
 - Swedish copy: short punchy sentences, understatement over superlatives
 
 ## globals.css Utilities, Animations & Overlays
-- **Global grain overlay**: `body::after` — `position: fixed, inset: 0, z-index: 9999, pointer-events: none, opacity: 0.07, mix-blend-mode: multiply`. Uses SVG `feTurbulence` filter (`id="grain"`, injected as hidden SVG in `layout.tsx`). `multiply` blend mode makes grain invisible on dark sections automatically — only visible on light backgrounds. No manual class needed per section.
+- **Global grain overlay**: `body::after` — `position: fixed, inset: 0, z-index: 9999, pointer-events: none, opacity: 0.04, mix-blend-mode: multiply`. Uses pre-baked `noise.webp` 128×128 tile (no live SVG filter). Hidden SVG grain filter removed from `layout.tsx`. Bitmap tile eliminates per-frame rasterization cost of live `feTurbulence`.
 - `.base-band`: Rounded slab card with fluid mesh gradient via `::before`, real `noise.webp` film grain via `::after`, children `z-index: 1`
 - `.text-label`: 13px, 700 weight, 0.05em tracking, uppercase, **`color: var(--color-text)`** (overridden in footer with `!text-white/95`)
 - `.btn-cta`: Primary CTA gradient — `linear-gradient(180deg, #C96A24 0%, #B8521C 100%)`, white text, inset highlight/shadow, `brightness(1.10)` on hover with orange glow. Applied to `primary` + `warm` variants in Button + CalendlyButton, and Nav CTAs.
@@ -547,7 +547,7 @@ Components requiring `"use client"`:
 - `KiteHero.tsx` - motion/react hooks + useAnimationFrame ← ACTIVE
 - `AmbientParticles.tsx` - canvas rAF loop, drifting particles around visuals ← ACTIVE
 - `AmbientParticlesLazy.tsx` - thin `"use client"` wrapper for `dynamic(() => import AmbientParticles, { ssr: false })` — required because page.tsx is a Server Component ← ACTIVE
-- `NoiseTexture.tsx` - SVG `feTurbulence` fractal noise component (created, currently unused — noise.webp tile kept for perf)
+- `NoiseTexture.tsx` - SVG `feTurbulence` fractal noise component (unused — all noise overlays use `noise.webp` 128×128 tile for perf)
 - `RollingWord.tsx` - AnimatePresence word cycle, useReducedMotion guard ← ACTIVE
 - `PageTransition.tsx` - usePathname route watcher, scroll-to-top on nav (skips first render) + fade-in ← ACTIVE
 - `FAQAccordion.tsx` - useState open toggle, grid-template-rows animation ← ACTIVE
@@ -564,7 +564,7 @@ Components requiring `"use client"`:
 - Design rules: see `.claude/motion-design.md`
 
 ## Scroll & Performance
-- **Scroll restoration**: removed — `experimental.scrollRestoration` was causing browser to restore scroll on refresh. Default Next.js behavior: scroll to top on navigation (via `PageTransition.tsx`), no restore on refresh.
+- **Scroll restoration**: minimal inline script in `<head>` sets `history.scrollRestoration='manual'` and `window.scrollTo(0,0)` — ensures top-of-page on hard refresh with no sessionStorage I/O. No scroll listener. `PageTransition.tsx` handles scroll-to-top on client-side route changes.
 - **Lenis removed** — native scroll only. Faster, zero JS overhead on wheel events.
 - **KiteHero** pauses animation via `IntersectionObserver` when off-screen (`inView` state guard in `useAnimationFrame`)
 - Hero bg divs: `absolute inset-0` — GPU-promoted, zero layout cost

@@ -95,7 +95,6 @@ export default function Nav() {
             "padding 0.7s cubic-bezier(0.16,1,0.3,1)",
             "border-radius 0.7s cubic-bezier(0.16,1,0.3,1)",
             "background 0.7s cubic-bezier(0.16,1,0.3,1)",
-            "backdrop-filter 0.7s cubic-bezier(0.16,1,0.3,1)",
             "border-color 0.7s cubic-bezier(0.16,1,0.3,1)",
             "box-shadow 0.7s cubic-bezier(0.16,1,0.3,1)",
           ].join(", "),
