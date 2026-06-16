@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 const faqs = [
   {
@@ -23,6 +23,7 @@ const faqs = [
 
 function FAQItem({ q, a }: { q: string; a: string }) {
   const [open, setOpen] = useState(false);
+  const contentRef = useRef<HTMLDivElement>(null);
 
   return (
     <div className="border border-[var(--color-border)] rounded-2xl overflow-hidden">
@@ -58,17 +59,15 @@ function FAQItem({ q, a }: { q: string; a: string }) {
 
       <div
         style={{
-          display: "grid",
-          gridTemplateRows: open ? "1fr" : "0fr",
-          transition: "grid-template-rows 220ms cubic-bezier(0.16, 1, 0.3, 1)",
+          height: open ? `${contentRef.current?.scrollHeight ?? 0}px` : "0px",
+          overflow: "hidden",
+          transition: "height 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94)",
         }}
       >
-        <div style={{ overflow: "hidden" }}>
-          <div className="px-8 pb-7 pt-0">
-            <p className="text-[var(--color-text-body)] font-medium text-base leading-[1.7] max-w-[60ch]">
-              {a}
-            </p>
-          </div>
+        <div ref={contentRef} className="px-8 pb-7 pt-0">
+          <p className="text-[var(--color-text-body)] font-medium text-base leading-[1.7] max-w-[60ch]">
+            {a}
+          </p>
         </div>
       </div>
     </div>
