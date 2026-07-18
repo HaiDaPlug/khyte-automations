@@ -210,6 +210,7 @@ Skills live in `~/.claude/skills/` and are invoked via `/skill-name` or triggere
   - Compressed (pill) state: `top: 24px, width: 96%, max-width: 1400px, border-radius: 9999px, background: rgba(10,10,10,0.72), backdrop-filter: blur(12px), border: rgba(255,255,255,0.10), box-shadow: none, padding: 12px 32px` — shadow removed
   - Centering: `fixed left-0 right-0 mx-auto` (not `left-1/2 -translate-x-1/2` — required for clean width transition)
   - Scroll detection: boolean `scrolled` state, `useEffect` scroll listener with `{ passive: true }`, `isHome` guard
+  - **Morph timing**: all transition properties at `0.5s cubic-bezier(0.16,1,0.3,1)` — tightened from 0.7s for a snappier feel without losing smoothness. No staggering between properties.
 - **Pill state** (all other pages + scrolled homepage):
   - Glass: `bg-[#0A0A0A]/72 backdrop-blur-md border-white/10`
   - Shape: `rounded-full`
@@ -260,18 +261,18 @@ Skills live in `~/.claude/skills/` and are invoked via `/skill-name` or triggere
 
 ### About Page (`/om-oss`)
 - **Files**: `src/app/om-oss/page.tsx` (server — metadata only) + `src/app/om-oss/AboutContent.tsx` (client — all layout)
-- **Hero**: Satoshi bold `clamp(3.125rem, 8.5vw, 7.125rem)`, "story." in accent orange, subtitle right, `border-b pb-10`. H1: "Vår story."
+- **Hero**: Barlow Condensed bold (`font-display`) `clamp(3.125rem, 8.5vw, 7.125rem)`, "story." in accent orange, subtitle right, `border-b pb-10`. H1: "Vår story."
 - **Structure**: Hero → Section 1 → Section 2 → Section 3 → Section 4 → Manifesto
-  - **Section 1 — Ursprunget**: "Vart allt började." — full-width heading + lead paragraph
-  - **Section 2 — Teamet**: "Och vilka är vi egentligen?" — 2-col grid, text left + photo right (`aspect-[4/5]`, placeholder until real camera roll photo added)
-  - **Section 3 — Övertygelsen**: "Vad står vi för och varför?" — heading + conviction statement paragraph
-  - **Section 4 — Vad vi gör**: "Vad vi gör." — heading + concrete description of what Khyte builds and delivers
+  - **Section 1 — Ursprunget**: "Vart allt började." — full-width heading + lead paragraph (3 lines via `<br />`). Kicker line "Simpelt och utan onödigt strul." has a hand-drawn animated underline (SVG `motion.path`, draws left→right on scroll reveal, 0.6s ease-out, accent orange, `strokeWidth: 1.5`)
+  - **Section 2 — Teamet**: "Och vilka är vi egentligen?" — 2-col grid, text left + photo right (`aspect-[4/5]`). Photo: `/pics/Hai & Abdi.jpeg`, `object-cover`
+  - **Section 3 — Vad vi gör**: "Vad vi gör." — heading + concrete description of what Khyte builds and delivers
+  - **Section 4 — Övertygelsen**: "Vad står vi för och varför?" — heading + conviction statement paragraph
   - **Manifesto**: pull-quote close (`py-10 md:py-14`)
+- **Body text standard**: all paragraphs unified — `text-[1.2rem] leading-[1.7] text-[var(--color-text-body)] max-w-[60ch]`. No exceptions.
 - **Animations**: scroll-triggered `whileInView` reveals on all headings + paragraphs, staggered by 80ms, `useReducedMotion` guard. `Reveal` wrapper component defined locally in `AboutContent.tsx`.
 - **Section headings**: Barlow Condensed (`font-display`), fully `--color-text` (no orange splits), `clamp(2rem, 4.5vw, 3.5rem)`. No eyebrow labels.
 - **Borders**: `border-b border-[rgba(58,51,48,0.18)]` between all sections
 - **SEO notes**: canonical set, metadata title/description present, heading hierarchy correct. Missing: JSON-LD Person schema for Hai + Abdi (homepage has it, about page should reinforce). Metadata description could include "AI-automatisering" or "n8n" keyword. `aria-label` on `<section>` elements would help screen readers.
-- **Photo slot**: Section 2 right column has placeholder div — swap for `<img src="/your-photo.jpg" className="w-full h-full object-cover" alt="Hai och Abdi" />` when camera roll photo is ready
 
 ### Kontakt Page (`/kontakt`)
 - **No Container wrapper** — uses `max-w-[1200px] mx-auto px-6` directly
@@ -530,7 +531,7 @@ The homepage (`src/app/page.tsx`) uses an **alternating root/Container pattern**
 
 ## Critical Production Data ⚠️
 ```
-Email: hai@khyteteam.com
+Email: hai@khyte.se / abdi@khyte.se
 Phone: 070-099 68 38
 Calendly: https://calendly.com/hai-khyteteam/30min
 Formspree: https://formspree.io/f/xzznjaly
