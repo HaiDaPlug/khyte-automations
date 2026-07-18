@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import type { CaseData } from "@/data/cases";
+import { cases } from "@/data/cases";
 
 export const metadata: Metadata = {
   title: "Case – Automation som leverar | Khyte",
@@ -9,37 +11,6 @@ export const metadata: Metadata = {
 };
 
 const GRAIN = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.70' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23g)' opacity='0.18'/%3E%3C/svg%3E")`;
-
-const cases = [
-  {
-    slug: "lead-engine",
-    index: "01",
-    company: "JaTack AB",
-    problem: "Leadgenerering för listor",
-    description: "Automatiserat flöde som identifierar, kvalificerar och levererar varma leads direkt till säljarnas arbetsyta — utan manuellt arbete.",
-    gradient: [
-      "radial-gradient(ellipse 55% 60% at 78% 18%, rgba(255,235,185,0.72) 0%, rgba(255,235,185,0) 65%)",
-      "radial-gradient(ellipse 70% 65% at 28% 52%, rgba(212,98,43,0.90) 0%, rgba(212,98,43,0) 62%)",
-      "radial-gradient(ellipse 50% 55% at 8% 88%, rgba(27,8,3,0.88) 0%, rgba(27,8,3,0) 58%)",
-      "radial-gradient(ellipse 60% 50% at 18% 10%, rgba(232,131,58,0.65) 0%, rgba(232,131,58,0) 60%)",
-      "linear-gradient(145deg, #7A3A18 0%, #C46020 35%, #E8A050 58%, #F5D8A0 80%, #C87030 100%)",
-    ].join(", "),
-  },
-  {
-    slug: "lead-lista",
-    index: "02",
-    company: "Observa Inkasso & Juridik",
-    problem: "Automatisk research av befintlig data",
-    description: "AI-driven research som scrapar, filtrerar och sammanställer företagsprofiler med kontaktuppgifter — helt utan mänsklig hand.",
-    gradient: [
-      "radial-gradient(ellipse 45% 55% at 15% 25%, rgba(90,20,8,0.95) 0%, rgba(90,20,8,0) 65%)",
-      "radial-gradient(ellipse 60% 50% at 85% 45%, rgba(160,60,20,0.70) 0%, rgba(160,60,20,0) 60%)",
-      "radial-gradient(ellipse 55% 60% at 50% 85%, rgba(200,90,30,0.55) 0%, rgba(200,90,30,0) 65%)",
-      "radial-gradient(ellipse 40% 35% at 70% 12%, rgba(240,160,80,0.40) 0%, rgba(240,160,80,0) 60%)",
-      "linear-gradient(140deg, #0C0402 0%, #2A0A04 30%, #6B2210 58%, #A84020 80%, #5A1A08 100%)",
-    ].join(", "),
-  },
-];
 
 /*
   ══════════════════════════════════════════════════════════════════════════════
@@ -72,7 +43,7 @@ const cases = [
 export default function Cases() {
   const totalIsOdd = (cases.length + 1) % 2 !== 0;
 
-  const caseCard = ({ slug, company, problem, description, gradient }: Omit<typeof cases[number], "index">) => (
+  const caseCard = ({ slug, index, company, problem, description, gradient, metrics }: Pick<CaseData, "slug" | "index" | "company" | "problem" | "description" | "gradient" | "metrics">) => (
     <Link
       key={slug}
       href={`/case/${slug}`}
@@ -88,30 +59,55 @@ export default function Cases() {
           className="absolute inset-0 pointer-events-none"
           style={{ backgroundImage: GRAIN, backgroundSize: "160px 160px", mixBlendMode: "overlay" }}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/25 to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent pointer-events-none" />
       </div>
 
-      {/* Divider */}
-      <div className="h-px bg-[rgba(58,51,48,0.18)]" />
-
       {/* Text */}
-      <div className="flex flex-col flex-1 p-6">
-        <h2
-          className="font-sans font-bold text-[var(--color-text)] group-hover:text-[var(--color-accent)] transition-colors duration-300 mb-2"
-          style={{ fontSize: "clamp(1.15rem, 1.8vw, 1.45rem)", lineHeight: 1.15, letterSpacing: "-0.02em" }}
-        >
-          {company}
-        </h2>
-        <p className="text-[var(--color-muted)] text-sm font-medium mb-4 leading-snug">
-          {problem}
-        </p>
-        <p className="text-[var(--color-text-body)] text-sm leading-relaxed">
-          {description}
-        </p>
-        <div className="mt-6 pt-5 border-t border-[rgba(58,51,48,0.18)]">
-          <span className="flex items-center gap-1.5 text-[var(--color-ink)] text-sm font-bold">
+      <div className="flex flex-col flex-1 p-6 pt-5">
+
+        {/* Top block */}
+        <div className="flex-1">
+          <p
+            className="mb-2 font-medium"
+            style={{ fontSize: "11px", letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--color-muted)" }}
+          >
+            {problem}
+          </p>
+          <h2
+            className="font-display text-[var(--color-text)] group-hover:text-[var(--color-accent)] transition-colors duration-300 mb-3"
+            style={{ fontSize: "clamp(1.25rem, 1.9vw, 1.55rem)", fontWeight: 800, lineHeight: 1.05, letterSpacing: "-0.01em" }}
+          >
+            {company}
+          </h2>
+          <p className="text-[var(--color-text-body)] text-sm leading-relaxed">
+            {description}
+          </p>
+        </div>
+
+        {/* Key metric */}
+        <div className="mt-6 pt-5 border-t border-[rgba(58,51,48,0.12)]">
+          <p
+            className="font-display text-[var(--color-text)] mb-1"
+            style={{ fontSize: "clamp(1.5rem, 2.4vw, 2rem)", fontWeight: 800, lineHeight: 1, letterSpacing: "-0.02em" }}
+          >
+            {metrics[0].value}
+            <span
+              className="font-display text-[var(--color-muted)] ml-1"
+              style={{ fontSize: "0.85em", fontWeight: 700, letterSpacing: "0" }}
+            >
+              {metrics[0].unit}
+            </span>
+          </p>
+          <p className="text-[var(--color-muted)] text-xs font-medium">
+            {metrics[0].label}
+          </p>
+        </div>
+
+        {/* Läs mer */}
+        <div className="mt-4 pt-4 border-t border-[rgba(58,51,48,0.12)]">
+          <span className="flex items-center gap-1.5 text-[var(--color-text)] text-sm font-semibold">
             Läs mer
-            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true" className="transition-transform duration-300 group-hover:translate-x-1">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" className="transition-transform duration-300 group-hover:translate-x-1">
               <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </span>
