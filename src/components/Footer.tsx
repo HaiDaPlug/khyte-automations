@@ -40,10 +40,10 @@ const Footer = () => {
                   070-099 68 38
                 </a>
                 <a
-                  href="mailto:hai@khyteteam.com"
+                  href="mailto:hai@khyte.se"
                   className="text-[14px] leading-[1.45] text-white/55 hover:text-white transition-colors duration-200 hover:underline underline-offset-4 decoration-white/35 hover:decoration-white/70 focus-visible:outline-none focus-visible:text-white focus-visible:underline"
                 >
-                  hai@khyteteam.com
+                  hai@khyte.se
                 </a>
               </div>
 

@@ -111,7 +111,7 @@ export default function TermsPage() {
               <p>
                 Frågor om villkoren skickas till
                 {" "}
-                <a className="underline underline-offset-2" href="mailto:hai@khyteteam.com">hai@khyteteam.com</a>.
+                <a className="underline underline-offset-2" href="mailto:hai@khyte.se">hai@khyte.se</a>.
               </p>
             </section>
           </article>
@@ -122,10 +122,10 @@ export default function TermsPage() {
             </h2>
             <p className="text-[var(--color-text-body)] mb-2">Khyte Automations</p>
             <a
-              href="mailto:hai@khyteteam.com"
+              href="mailto:hai@khyte.se"
               className="text-[var(--color-text)] hover:text-[var(--color-muted)] transition-colors underline underline-offset-2"
             >
-              hai@khyteteam.com
+              hai@khyte.se
             </a>
             <p className="mt-4">
               <Link

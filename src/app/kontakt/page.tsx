@@ -61,11 +61,11 @@ export default function Contact() {
                       070-099 68 38
                     </a>
                     <a
-                      href="mailto:hai@khyteteam.com"
+                      href="mailto:hai@khyte.se"
                       className="text-base font-semibold text-[var(--color-text)] hover:text-[var(--color-accent)] transition-colors"
                       style={{ textDecoration: "underline", textUnderlineOffset: "4px", textDecorationThickness: "1px", textDecorationColor: "rgba(58,51,48,0.2)" }}
                     >
-                      hai@khyteteam.com
+                      hai@khyte.se
                     </a>
                   </div>
                 </div>
@@ -155,7 +155,7 @@ export default function Contact() {
                 </div>
                 <div>
                   <span className="font-semibold" style={{ color: "var(--color-text)" }}>Mejl:</span>{" "}
-                  <a className="underline underline-offset-4 hover:text-[var(--color-text)] transition-colors" href="mailto:hai@khyteteam.com">hai@khyteteam.com</a>
+                  <a className="underline underline-offset-4 hover:text-[var(--color-text)] transition-colors" href="mailto:hai@khyte.se">hai@khyte.se</a>
                 </div>
               </div>
             </div>
@@ -205,7 +205,7 @@ export default function Contact() {
                 </div>
                 <div>
                   <span className="font-semibold" style={{ color: "var(--color-text)" }}>Mejl:</span>{" "}
-                  <a className="underline underline-offset-4 hover:text-[var(--color-text)] transition-colors" href="mailto:abdi@khyteteam.com">abdi@khyteteam.com</a>
+                  <a className="underline underline-offset-4 hover:text-[var(--color-text)] transition-colors" href="mailto:abdi@khyte.se">abdi@khyte.se</a>
                 </div>
               </div>
             </div>

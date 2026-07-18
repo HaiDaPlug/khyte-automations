@@ -90,8 +90,8 @@ export default function Contact() {
               <div className="space-y-6 mb-8">
                 <div>
                   <p className="text-label mb-2">E-post</p>
-                  <a href="mailto:hai@khyteteam.com" className="text-xl text-[var(--color-text)] hover:text-[var(--color-accent)] transition-colors underline underline-offset-2">
-                    hai@khyteteam.com
+                  <a href="mailto:hai@khyte.se" className="text-xl text-[var(--color-text)] hover:text-[var(--color-accent)] transition-colors underline underline-offset-2">
+                    hai@khyte.se
                   </a>
                 </div>
 

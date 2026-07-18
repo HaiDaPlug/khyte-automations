@@ -71,7 +71,7 @@ export const metadata: Metadata = {
 
 // Structured Data (JSON-LD) for SEO
 const SITE_URL = "https://khyteautomations.com";
-const CONTACT_EMAIL = "hai@khyteteam.com";
+const CONTACT_EMAIL = "hai@khyte.se";
 const LINKEDIN_PERSONAL = "https://www.linkedin.com/in/hai-pham-bui-8a9893395";
 const LINKEDIN_COMPANY = "https://www.linkedin.com/company/khyte-automations";
 const COLOR_CONCEPT = "espresso";
