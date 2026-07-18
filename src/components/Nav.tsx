@@ -72,13 +72,13 @@ export default function Nav() {
     <nav
       className="fixed z-50 left-0 right-0 mx-auto"
       style={{
-        top:      isHome && !scrolled ? "0px"   : "24px",
-        width:    isHome && !scrolled ? "100%"  : "96%",
-        maxWidth: isHome && !scrolled ? "100%"  : "1400px",
+        top:      isHome && !scrolled ? "0px"  : "24px",
+        width:    isHome && !scrolled ? "100%" : "96%",
+        maxWidth: isHome && !scrolled ? "100%" : "1400px",
         transition: [
-          "top 0.7s cubic-bezier(0.16,1,0.3,1)",
-          "width 0.7s cubic-bezier(0.16,1,0.3,1)",
-          "max-width 0.7s cubic-bezier(0.16,1,0.3,1)",
+          "top 0.5s cubic-bezier(0.16,1,0.3,1)",
+          "width 0.5s cubic-bezier(0.16,1,0.3,1)",
+          "max-width 0.5s cubic-bezier(0.16,1,0.3,1)",
         ].join(", "),
       }}
     >
@@ -92,11 +92,10 @@ export default function Nav() {
           border:         isHome && !scrolled ? "1px solid transparent" : "1px solid rgba(255,255,255,0.10)",
           boxShadow:      "none",
           transition: [
-            "padding 0.7s cubic-bezier(0.16,1,0.3,1)",
-            "border-radius 0.7s cubic-bezier(0.16,1,0.3,1)",
-            "background 0.7s cubic-bezier(0.16,1,0.3,1)",
-            "border-color 0.7s cubic-bezier(0.16,1,0.3,1)",
-            "box-shadow 0.7s cubic-bezier(0.16,1,0.3,1)",
+            "padding 0.5s cubic-bezier(0.16,1,0.3,1)",
+            "border-radius 0.5s cubic-bezier(0.16,1,0.3,1)",
+            "background 0.5s cubic-bezier(0.16,1,0.3,1)",
+            "border-color 0.5s cubic-bezier(0.16,1,0.3,1)",
           ].join(", "),
         }}
       >
