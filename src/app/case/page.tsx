@@ -2,9 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import type { CaseData } from "@/data/cases";
 import { cases } from "@/data/cases";
+import PageHeader from "@/components/PageHeader";
 
 export const metadata: Metadata = {
-  title: "Case – Automation som leverar | Khyte",
+  title: "Case – Automation som levererar",
   description:
     "Automationer vi byggt för riktiga problem hos svenska företag. Konkreta resultat, riktiga flöden.",
   alternates: { canonical: "/case" },
@@ -43,7 +44,7 @@ const GRAIN = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'
 export default function Cases() {
   const totalIsOdd = (cases.length + 1) % 2 !== 0;
 
-  const caseCard = ({ slug, index, company, problem, description, gradient, metrics }: Pick<CaseData, "slug" | "index" | "company" | "problem" | "description" | "gradient" | "metrics">) => (
+  const caseCard = ({ slug, index, company, description, gradient, metrics }: Pick<CaseData, "slug" | "index" | "company" | "problem" | "description" | "gradient" | "metrics">) => (
     <Link
       key={slug}
       href={`/case/${slug}`}
@@ -67,12 +68,6 @@ export default function Cases() {
 
         {/* Top block */}
         <div className="flex-1">
-          <p
-            className="mb-2 font-medium"
-            style={{ fontSize: "11px", letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--color-muted)" }}
-          >
-            {problem}
-          </p>
           <h2
             className="font-display text-[var(--color-text)] group-hover:text-[var(--color-accent)] transition-colors duration-300 mb-3"
             style={{ fontSize: "clamp(1.25rem, 1.9vw, 1.55rem)", fontWeight: 800, lineHeight: 1.05, letterSpacing: "-0.01em" }}
@@ -92,8 +87,8 @@ export default function Cases() {
           >
             {metrics[0].value}
             <span
-              className="font-display text-[var(--color-muted)] ml-1"
-              style={{ fontSize: "0.85em", fontWeight: 700, letterSpacing: "0" }}
+              className="font-display text-[var(--color-text)] ml-1"
+              style={{ fontSize: "1em", fontWeight: 800, letterSpacing: "0" }}
             >
               {metrics[0].unit}
             </span>
@@ -140,20 +135,13 @@ export default function Cases() {
         <main className="pt-32 pb-10">
 
           {/* ── Hero ── */}
-          <div className="pb-10 mb-10 border-b border-[rgba(58,51,48,0.18)]">
-            <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
-              <h1
-                className="font-sans font-bold text-[var(--color-text)] leading-[0.92] tracking-[-0.03em]"
-                style={{ fontSize: "clamp(3.125rem, 8.5vw, 7.125rem)" }}
-              >
-                Arbete som{" "}
-                <span style={{ color: "var(--color-accent)" }}>levererar.</span>
-              </h1>
-              <p className="text-base text-[var(--color-text-body)] max-w-[32ch] leading-relaxed md:pb-2 shrink-0">
-                Automationer vi byggt för riktiga problem.<br />Resultaten talar för sig själva.
-              </p>
-            </div>
-          </div>
+          <PageHeader
+            divider
+            className="mb-12 md:mb-16"
+            line1="ARBETE SOM"
+            line2="LEVERERAR."
+            intro="Automationer vi byggt för riktiga problem. Resultaten talar för sig själva."
+          />
 
           {/* ── Case grid ──
                Total = cases + 1 placeholder.

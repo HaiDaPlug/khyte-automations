@@ -20,7 +20,7 @@ export async function generateMetadata({
   const c = getCaseBySlug(slug);
   if (!c) return {};
   return {
-    title: `${c.company} — ${c.problem} | Khyte`,
+    title: `${c.company} — ${c.problem}`,
     description: c.hook,
     alternates: { canonical: `/case/${slug}` },
   };
@@ -41,15 +41,14 @@ export default async function CaseDetailPage({
     <div className="page-enter">
 
       {/* ── Hero ── */}
-      <section className="relative overflow-hidden" style={{ minHeight: "62vh" }}>
-        <div className="absolute inset-0" style={{ background: c.gradient }} />
+      <section className="relative overflow-hidden" style={{ minHeight: "62vh", background: "var(--base-band-bg), #1B0803" }}>
         <div
           className="absolute inset-0 pointer-events-none"
-          style={{ backgroundImage: GRAIN, backgroundSize: "160px 160px", mixBlendMode: "overlay" }}
+          style={{ backgroundImage: GRAIN, backgroundSize: "160px 160px", mixBlendMode: "screen", opacity: 0.06 }}
         />
         <div
-          className="absolute inset-x-0 bottom-0 h-44 pointer-events-none"
-          style={{ background: "linear-gradient(to bottom, transparent, var(--color-bg))" }}
+          className="absolute inset-x-0 bottom-0 h-px"
+          style={{ background: "rgba(255,255,255,0.10)" }}
         />
 
         {/* Ghost index — editorial folio mark */}
@@ -81,12 +80,6 @@ export default async function CaseDetailPage({
 
           {/* Company + hook */}
           <div className="pb-14 md:pb-18">
-            <p
-              className="text-white/55 mb-3"
-              style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase" }}
-            >
-              {c.category}
-            </p>
             <h1
               className="font-display text-white"
               style={{ fontSize: "clamp(2.75rem, 6.5vw, 5.5rem)", fontWeight: 800, lineHeight: 0.9, letterSpacing: "-0.01em" }}
@@ -140,12 +133,14 @@ export default async function CaseDetailPage({
                 Utmaningen
               </p>
             </div>
-            <p
-              className="font-medium leading-relaxed"
+            <div
+              className="font-medium leading-relaxed flex flex-col gap-4"
               style={{ fontSize: "clamp(1rem, 1.4vw, 1.2rem)", color: "var(--color-text)" }}
             >
-              {c.challenge}
-            </p>
+              {(Array.isArray(c.challenge) ? c.challenge : [c.challenge]).map((p, i) => (
+                <p key={i}>{p}</p>
+              ))}
+            </div>
           </div>
         </section>
 
@@ -160,12 +155,14 @@ export default async function CaseDetailPage({
               </p>
             </div>
             <div>
-              <p
-                className="font-medium leading-relaxed mb-10"
+              <div
+                className="font-medium leading-relaxed mb-10 flex flex-col gap-4"
                 style={{ fontSize: "clamp(1rem, 1.4vw, 1.2rem)", color: "var(--color-text)" }}
               >
-                {c.solution}
-              </p>
+                {(Array.isArray(c.solution) ? c.solution : [c.solution]).map((p, i) => (
+                  <p key={i}>{p}</p>
+                ))}
+              </div>
 
               {/* Steps */}
               <div className="flex flex-col">
@@ -217,31 +214,43 @@ export default async function CaseDetailPage({
             Resultat
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-            {c.metrics.map((m, i) => (
+            {(() => {
+              const longestValue = Math.max(...c.metrics.map((m) => m.value.length));
+              const valueFontSize =
+                longestValue > 6 ? "clamp(1.9rem, 3.4vw, 2.75rem)" : "clamp(2.5rem, 5vw, 4rem)";
+              return c.metrics.map((m, i) => (
               <div
                 key={i}
                 className={i > 0 ? "md:pl-12" : ""}
                 style={i > 0 ? { borderLeft: "1px solid rgba(255,255,255,0.10)" } : undefined}
               >
-                <div className="flex items-baseline gap-2 mb-2 flex-wrap">
+                <div className="flex items-baseline gap-2 mb-3 flex-wrap">
                   <span
                     className="font-display text-white"
-                    style={{ fontSize: "clamp(2.5rem, 5vw, 4rem)", fontWeight: 800, lineHeight: 1, letterSpacing: "-0.02em" }}
+                    style={{
+                      fontSize: valueFontSize,
+                      fontWeight: 800,
+                      lineHeight: 1,
+                      letterSpacing: "-0.02em",
+                    }}
                   >
                     {m.value}
                   </span>
-                  <span
-                    className="font-display"
-                    style={{ fontSize: "clamp(0.7rem, 1.1vw, 0.85rem)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "rgba(255,255,255,0.40)" }}
-                  >
-                    {m.unit}
-                  </span>
+                  {m.unit && (
+                    <span
+                      className="font-display"
+                      style={{ fontSize: "clamp(0.7rem, 1.1vw, 0.85rem)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "rgba(255,255,255,0.40)" }}
+                    >
+                      {m.unit}
+                    </span>
+                  )}
                 </div>
-                <p className="text-sm font-medium" style={{ color: "rgba(255,255,255,0.50)" }}>
+                <p className="text-sm font-medium max-w-[26ch]" style={{ color: "rgba(255,255,255,0.50)" }}>
                   {m.label}
                 </p>
               </div>
-            ))}
+              ));
+            })()}
           </div>
         </div>
       </section>
@@ -281,14 +290,14 @@ export default async function CaseDetailPage({
 
       {/* ── Back / Next ── */}
       <div className="border-t" style={{ borderColor: "var(--color-border)" }}>
-        <div className="max-w-[1200px] mx-auto px-6 py-10 flex items-center justify-between">
+        <div className="max-w-[1200px] mx-auto px-6 py-10 flex items-end justify-between gap-6">
           <Link
             href="/case"
-            className="inline-flex items-center gap-2 transition-colors duration-200 text-[var(--color-text-body)] hover:text-[var(--color-text)]"
-            style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase" }}
+            className="group font-display font-bold tracking-[0.18em] uppercase text-[var(--color-text)] hover:text-[var(--color-accent)] transition-colors duration-300 flex items-center gap-2 shrink-0"
+            style={{ fontSize: "21px" }}
           >
-            <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
-              <path d="M8.5 1.5L3.5 6.5l5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true" className="shrink-0 transition-transform duration-300 group-hover:-translate-x-1">
+              <path d="M13 8H3M7 4L3 8l4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
             Alla case
           </Link>
@@ -296,16 +305,22 @@ export default async function CaseDetailPage({
           {nextCase && (
             <Link
               href={`/case/${nextCase.slug}`}
-              className="inline-flex items-center gap-3 transition-colors duration-200 text-[var(--color-text-body)] hover:text-[var(--color-text)] text-right"
-              style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase" }}
+              className="group flex flex-col items-end gap-1.5 min-w-0"
             >
-              <span className="flex flex-col items-end gap-0.5">
-                <span style={{ color: "var(--color-muted)", fontWeight: 600 }}>Nästa case</span>
-                <span style={{ color: "inherit" }}>{nextCase.company}</span>
+              <span
+                className="font-display text-xs font-bold tracking-[0.18em] uppercase text-[var(--color-text)]"
+              >
+                Nästa case
               </span>
-              <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
-                <path d="M4.5 1.5l5 5-5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
+              <span
+                className="font-display font-bold tracking-[0.02em] uppercase text-[var(--color-text)] group-hover:text-[var(--color-accent)] transition-colors duration-300 flex items-center gap-3 truncate max-w-[70vw] md:max-w-none"
+                style={{ fontSize: "clamp(1.5rem, 3.2vw, 2.25rem)" }}
+              >
+                {nextCase.company}
+                <svg width="22" height="22" viewBox="0 0 16 16" fill="none" aria-hidden="true" className="shrink-0 transition-transform duration-300 group-hover:translate-x-1.5">
+                  <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </span>
             </Link>
           )}
         </div>

@@ -1,4 +1,4 @@
-# Khyte Automations - Current State (v2.22)
+# Khyte Automations - Current State (v2.24)
 
 ## Tech Stack
 - **Next.js** 16.1.1 (App Router)
@@ -162,10 +162,16 @@ Skills live in `~/.claude/skills/` and are invoked via `/skill-name` or triggere
 - Swedish copy: short punchy sentences, understatement over superlatives
 
 ## globals.css Utilities, Animations & Overlays
-- **Global grain overlay**: `body::after` — `position: fixed, inset: 0, z-index: 9999, pointer-events: none, opacity: 0.04, mix-blend-mode: multiply`. Uses pre-baked `noise.webp` 128×128 tile (no live SVG filter). Hidden SVG grain filter removed from `layout.tsx`. Bitmap tile eliminates per-frame rasterization cost of live `feTurbulence`.
-- `.base-band`: Rounded slab card with fluid mesh gradient via `::before`, real `noise.webp` film grain via `::after`, children `z-index: 1`
+- **Global grain overlay**: ~~`body::after`~~ **removed**. There is no longer a site-wide grain layer. `noise.webp` (128×128 pre-baked tile) is now used only by `.base-band::after` — see below. The hidden SVG grain filter was already gone from `layout.tsx`.
+  - Note the one live `feTurbulence` left on the site is the inline data URI inside `.btn-cta::before`, scoped to buttons only.
+- `.base-band`: Rounded slab card with fluid mesh gradient via `::before`, real `noise.webp` film grain via `::after`, children `z-index: 1`. Grain opacity is theme-driven: `--base-band-grain-opacity` is `0.055` under `espresso` (active) and `0` under `classic`.
 - `.text-label`: 13px, 700 weight, 0.05em tracking, uppercase, **`color: var(--color-text)`** (overridden in footer with `!text-white/95`)
-- `.btn-cta`: Primary CTA gradient — `linear-gradient(180deg, #C96A24 0%, #B8521C 100%)`, white text, inset highlight/shadow, `brightness(1.10)` on hover with orange glow. Applied to `primary` + `warm` variants in Button + CalendlyButton, and Nav CTAs.
+- `.btn-cta`: Primary CTA **grain material** (v2.23 — replaced the flat 2-stop gradient). Layered background reads as light falling unevenly rather than a mechanical stripe: an off-centre warm light pool (`28% 12%`), a shadow pool opposite (`86% 104%`), and a `128deg` directional undertone beneath both. A single fine `feTurbulence` layer (`baseFrequency 0.85`, inline SVG data URI, `soft-light` at 0.65) sits on top via `::before` as dry film grain. Bevel is warmed (`rgba(255,232,200)` / `rgba(40,16,4)`) rather than neutral black/white so the whole thing reads as one material. `brightness(1.05)` on hover, `0.94` on active.
+  - **Hue**: `--btn-hue: #C05E20`, the midpoint of the old `#C96A24 → #B8521C` gradient — colour is unchanged from v2.22, only the material differs. `--btn-fg: #fff`.
+  - **Fallback**: `background-color: var(--btn-hue)` is declared *after* the `background` shorthand on purpose. `color-mix()` needs Safari 16.2+ / Chrome 111+; below that the gradient layers are dropped at parse time and the button degrades to solid orange instead of transparent.
+  - Also owns `:focus-visible` (2px white outline, 2px offset — the Nav CTA previously had no focus style at all), `:disabled`, and a `prefers-reduced-motion` transition kill.
+  - Applied to `primary` + `warm` variants in Button + CalendlyButton, and both Nav CTAs. Every orange button on the site routes through this one class.
+- `.btn-cta-lift`: Shadow modifier for CTAs sitting on the **light/cream top** of the base band, where `.btn-cta`'s tight `0 5px 14px -8px` reads flat and its white outer glow is invisible. Keeps the bevel, swaps in the band's ambient `0 14px 34px rgba(40,22,15,0.32)` (`0 18px 40px` on hover). **Only PreFooterCTA uses it.** Must stay declared after `.btn-cta` — same specificity, source order decides.
 - `.page-enter`: Page fade-in animation — `pageFadeIn` keyframe, `opacity: 0 + translateY(6px)` → natural, 0.32s expo-out. Triggered on every route change via `PageTransition`.
 - FAQ accordion is a React client component (`FAQAccordion.tsx`) — uses `grid-template-rows: 0fr→1fr` for expand/collapse (compositor-only, zero layout thrash). Easing: `220ms cubic-bezier(0.16,1,0.3,1)` row, `200ms` chevron. No `details`/`summary` — uses `button` + controlled grid wrapper. `useRef`/`scrollHeight` removed.
 - `slideDown` keyframe still in globals.css but no longer used by FAQ.
@@ -189,7 +195,8 @@ Skills live in `~/.claude/skills/` and are invoked via `/skill-name` or triggere
 - Height: `h-12` (48px fixed)
 - Padding: `px-8`
 - Radius: `rounded-md`
-- Primary: `btn-cta` utility class (gradient, see globals.css)
+- Primary: `btn-cta` utility class (grain material, see globals.css)
+- **Children are wrapped in a `<span>`** — required by `.btn-cta > *` so the label clears the grain `::before` layer. See Key Implementation Notes #16.
 - Secondary: `bg-transparent border border-[rgba(58,51,48,0.20)] text-[#3A3330] hover:bg-[rgba(58,51,48,0.06)]`
 - **ghostDark** *(hero-only)*: `bg-white/5 border border-white/25 text-white hover:bg-white/10 hover:border-white/35` — for use on dark hero backgrounds only (currently: homepage hero secondary CTA)
 
@@ -198,9 +205,10 @@ Skills live in `~/.claude/skills/` and are invoked via `/skill-name` or triggere
 - Padding: `px-8`
 - Radius: `rounded-md`
 - **Three variants:**
-  - `primary`: `btn-cta` utility class (gradient, see globals.css)
+  - `primary`: `btn-cta` utility class (grain material, see globals.css)
   - `secondary`: `bg-transparent border border-[rgba(58,51,48,0.20)] text-[#3A3330] hover:bg-[rgba(58,51,48,0.06)]`
-  - `warm`: `btn-cta` utility class (same gradient, works on dark espresso base-band)
+  - `warm`: `btn-cta` utility class (same material; PreFooterCTA pairs it with `.btn-cta-lift`)
+- **Children are wrapped in a `<span>`** — required by `.btn-cta > *`. See Key Implementation Notes #16.
 - Triggers Calendly popup via `window.Calendly.initPopupWidget()`
 
 ### Nav.tsx (Floating Capsule + Hero Morph)
@@ -221,7 +229,8 @@ Skills live in `~/.claude/skills/` and are invoked via `/skill-name` or triggere
   - Hover: orange underline sweeps in left→right via `.nav-link span[aria-hidden]` CSS (`width: 0 → 100%`, `0.25s cubic-bezier(0.16,1,0.3,1)`) — defined in `globals.css`
   - Inactive: `text-white/65`, hover: `text-white`
   - **Tjänster**: Link to `/tjanster`, active when `pathname.startsWith("/tjanster")`
-- Desktop CTA: `btn-cta` rounded-full
+- Desktop CTA: `btn-cta` rounded-full, label wrapped in `<span>`. The 1px border the grain material adds does **not** move the pill — pill height is driven by the `h-16` logo, and the CTA sits ~46px inside it. Verified: pill height/width and the centred-links midpoint are byte-identical before/after.
+- Mobile drawer CTA ("Kontakta oss"): same `btn-cta`, label wrapped in `<span>`
 - Mobile drawer: dark (`bg-[#0A0A0A]/95`) with white text hierarchy, slide-in animation (`drawerSlideIn` 280ms cubic-bezier, respects `prefers-reduced-motion`) — **unchanged by morph logic**
 - Mobile backdrop: `bg-black/60`
 
@@ -237,12 +246,12 @@ Skills live in `~/.claude/skills/` and are invoked via `/skill-name` or triggere
 - **Rendered globally** inside `.base-band` wrapper in layout.tsx
 - Server component (CalendlyButton handles client interactions)
 - Design: Centered CTA block with heading, subtext, and Calendly button
-- Copy: "Visa oss en process - vi visar vad som går att automatisera"
+- Copy: heading "Redo för att automatisera repetitivt arbete?"; body "Boka ett 15-minuters samtal. Ingen press, vi går igenom era arbetsflöden och ser om det finns potential för ett samarbete."
 - **Compact rhythm**: `py-14 md:py-16`, heading `text-4xl md:text-5xl`, body `max-w-[60ch]`
 - **Transparent background**: gradient from `.base-band` shows through (espresso mode = light text)
   - Heading: `text-[var(--color-warm-text)]` (espresso active: `#F4F1EF`)
   - Body: `text-[var(--color-warm-text-muted)]`
-  - Button: `CalendlyButton variant="warm"` with custom dark pill + subtle border/shadow
+  - Button: `CalendlyButton variant="warm"` + `.btn-cta-lift`. The competing Tailwind `bg-[...]` / `border` / `shadow-[...]` utilities were removed in v2.23 — `.btn-cta` owns background, border and box-shadow, so leaving them in place fought the material.
 
 ### Footer.tsx
 - **Rendered globally** inside `.base-band` wrapper in layout.tsx
@@ -290,8 +299,8 @@ Skills live in `~/.claude/skills/` and are invoked via `/skill-name` or triggere
   - Stat labels (Favorit-, Mobil:, Mejl:): `color: var(--color-text)` — darker than surrounding body text
 
 ### Cases Page (`/case`)
-- **Layout**: 2-column card grid. Hero lockup above, cards below.
-- **Hero**: `border-b pb-10 mb-10`, h1 Satoshi bold `clamp(3.5rem, 9vw, 7.5rem)` with "levererar." in accent orange. No eyebrow. Sub-copy inline (no forced `<br>`). Border uses `rgba(58,51,48,0.18)`.
+- **Layout**: full-bleed dark hero band above, 2-column card grid below (inside `max-w-[1200px]`).
+- **Hero band**: full-bleed `<section>` (breaks out of the page container) using the shared `--base-band-bg` espresso mesh gradient + `#1B0803` base fill — same premium dark surface as the footer/PreFooter base-band and the case detail hero. Grain overlay (`screen`, opacity `0.06`). Heading "Arbete som **levererar.**" (accent word orange) in white, sub-copy `text-white/60`. Hard 1px white/10% divider at the bottom — no fade — into the regular page background where the grid sits.
 - **Grid logic** (auto-adapts, no manual changes needed):
   - Total items = `cases.length + 1` (placeholder always appended)
   - **Odd total** → real cases in 2-col grid, placeholder centered at `max-w-[calc(50%-10px)]` below
@@ -300,11 +309,22 @@ Skills live in `~/.claude/skills/` and are invoked via `/skill-name` or triggere
 - **Case cards**: `rounded-2xl`, border `rgba(58,51,48,0.18)`, hover border+shadow `rgba(58,51,48,0.52)` (double-border effect via `box-shadow`). No background fill — page bg shows through. Transition on `border-color` + `box-shadow`.
   - Visual: `aspect-[16/10]`, gradient + grain overlay, scales `1.04` on hover
   - Divider: `1px` line between visual and text panel
-  - Text panel: `p-6`, Satoshi bold company name, muted problem label, body description, "Läs mer" + arrow always visible in `--color-ink`
+  - Text panel: `p-6`, Satoshi bold company name, body description, "Läs mer" + arrow always visible in `--color-ink`. **No eyebrow/problem label** — removed from the card (was `{problem}` muted uppercase line above the company name).
+  - **Key metric**: value + unit now render in the same weight/size/color (`var(--color-text)`, same `font-display` size) — previously the unit was smaller and muted, which read as two different metrics rather than one stat.
   - No index numbers shown
 - **Placeholder card**: Mirrors real card structure exactly — `aspect-[16/10]` top area with "Under arbete" centered, divider, text panel with "Kommer snart". Dashed border. No background fill.
-- **Active cases**: JaTack AB (Leadgenerering för listor), Observa Inkasso & Juridik (Automatisk research av befintlig data)
+- **Active cases**: JaTack AB (Sälj & Prospektering), Observa Inkasso & Juridik (Research & Analys) — see `src/data/cases.ts`
 - **Archived layout** (Option B — alternating rows): preserved as JS block comment above `export default` in `case/page.tsx`. Uncomment to restore zigzag layout.
+
+### Case Detail Page (`/case/[slug]`)
+- **Data model** (`src/data/cases.ts`): `challenge` and `solution` fields are now `string | string[]` — an array renders as multiple `<p>` paragraphs (`flex flex-col gap-4`), a plain string still works for backward compatibility. `testimonial` is optional — omitting it on a case cleanly removes the testimonial block (no fallback content shown).
+- **Hero**: full-bleed dark espresso band (`--base-band-bg` + `#1B0803`, same token as the `/case` list hero and the global footer/PreFooter base-band), grain overlay, ghost folio index number ( `c.index`, huge/faint), back link, company name (`font-display` white), hook subhead. Hard 1px bottom divider, no fade.
+- **Metadata strip**: 3-col (Kategori / Kund / Case N av total), `border-b`.
+- **Utmaningen / Lösningen**: label + content in a `md:grid-cols-[200px_1fr]` row. Content renders as a `<p>` per paragraph when the data field is an array (`gap-4` between paragraphs) — do not collapse multi-paragraph copy back into one string, it won't show line breaks.
+- **Steps**: numbered list (`01`–`04`) under Lösningen, `border-t` between rows.
+- **Resultat (metrics band)**: dark `#1B0803` section, 3-col grid, `md:pl-12` + `border-left` divider between columns after the first. Value font-size is **computed once per case** from the *longest* value string across that case's `metrics` array (`clamp(1.9rem,3.4vw,2.75rem)` if the longest exceeds 6 chars, else `clamp(2.5rem,5vw,4rem)`) — NOT per-item — so all three stats in a row always share one consistent scale even when values differ wildly in length (e.g. "≈32h" vs "2 min → 5 sek"). Unit span only renders when `m.unit` is non-empty (metrics with purely textual values like "≈96%" pass `unit: ""`). Label wraps at `max-w-[26ch]` to keep row baselines even.
+- **Testimonial**: optional, `figure` card, only renders when `c.testimonial` is set.
+- **Back / Next footer**: "Alla case" and "Nästa case" both use the same editorial `font-display font-bold tracking-[0.18em] uppercase` treatment (matches the site's "OM OSS →" link pattern in ProcessSection) — orange on hover, sliding arrow icon. Row uses `items-end` (not `items-center`) so both links share the same baseline. Next-case company name is larger (`clamp(1.5rem,3.2vw,2.25rem)`) than the "Alla case"/"Nästa case" labels but stays in the same clean uppercase display style, not an oversized headline treatment.
 
 ### Services Page (Consolidated)
 **Route**: `/tjanster` (accessible via "Tjänster" link in nav; 301 redirect from `/services`)
@@ -419,24 +439,6 @@ The homepage (`src/app/page.tsx`) uses an **alternating root/Container pattern**
 - **Outside links**: removed — "SE ALLA CASE" desktop header link and mobile link both removed.
 - **Swap image**: replace gradient `<div>` with `<img src="/case-photo.jpg" className="w-full aspect-[16/9] object-cover shrink-0" />` when real photo is ready
 
-### Case Overview Page (`/case`)
-- **Full rebuild** — replaced flat Problem/Build/Result card grid with editorial overview
-- **Hero**: Barlow `font-display` uppercase headline "ARBETE SOM / FAKTISKT / LEVERERAR." (`clamp(2.75rem,6vw,5rem)`, `lineHeight: 0.95`) left + short descriptor right on desktop. `section-eyebrow` above. Separated from grid by `border-b border-[var(--color-border)]`.
-- **Grid**: 3-column `md:grid-cols-3 gap-x-8`, `items-start`. Middle card staggered down via `md:mt-24` — editorial rhythm from reference (Design 2 / Kinetic Volumes).
-- **Card anatomy**: `aspect-[4/5]` portrait visual + `section-eyebrow` (index — category) + `font-display` title + one-liner hook. Arrow icon fades in on hover. Hover: gradient scales `1.04` via `transition-transform duration-700`.
-- **Gradients** (abstract, placeholder until real screenshots):
-  - Card 1 (Lead Engine): warm orange-amber — matches CasesSection testimonial palette
-  - Card 2 (Lead-lista): deep espresso-to-copper — clearly distinct, darker
-  - Card 3 (Inbox Zero): muted gray, `opacity-45`, `cursor-default`, "Kommer snart" overlay — non-interactive placeholder
-- **Grain overlay**: inline SVG `feTurbulence` data URI on each card visual, `mixBlendMode: overlay`
-- **Cases** (2 live + 1 placeholder):
-  - `/case/lead-engine` — "Lead Engine" — Sälj & Prospektering — "Säljteamet öppnar ett Sheet. Listan är redan där."
-  - `/case/lead-lista` — "Lead-lista" — Research & Analys — "Research som tog en fredag görs nu på ett par minuter."
-  - Placeholder: "Inbox Zero" — E-post & Uppföljning — "E-post som följer upp sig självt."
-- **Bottom CTA**: `border-t` divider, left copy + right arrow link to `/kontakt`
-- **Slugs**: `/case/lead-engine` and `/case/lead-lista` — wired as placeholders, individual article pages not yet built
-- **Swap visuals**: replace gradient `<div>` with `<img>` screenshot when ready — same `aspect-[4/5]` container
-
 ### PainOutcome.tsx
 - `mb-24 md:mb-32` (tighter than `--spacing-section` — pulls closer to ROIBand thematically)
 - "Med Khyte" column: `md:border-l-2 md:border-l-[var(--color-accent)]` orange accent bar + `md:bg-[rgba(232,131,58,0.04)]` warm tint
@@ -535,7 +537,7 @@ Email: hai@khyte.se / abdi@khyte.se
 Phone: 070-099 68 38
 Calendly: https://calendly.com/hai-khyteteam/30min
 Formspree: https://formspree.io/f/xzznjaly
-Domain: https://khyteautomations.com
+Domain: https://khyte.se
 ```
 
 ## Client Components
@@ -572,7 +574,7 @@ Components requiring `"use client"`:
 - `html/body` baseline: `background-color: var(--color-bg)` set in globals.css to prevent white flash on first paint
 
 ## SEO Setup
-- `metadataBase`: `https://khyteautomations.com`
+- `metadataBase`: `https://khyte.se`
 - Title template: `"%s | Khyte Automations"`
 - Canonical URLs per page (Swedish routes: `/`, `/tjanster`, `/case`, `/om-oss`, `/kontakt`, `/integritetspolicy`, `/villkor`)
 - JSON-LD: Organization, ProfessionalService (LocalBusiness w/ Borås address, geo, areaServed, priceRange, openingHours), WebSite, Person, FAQPage (5 Q&As) schemas
@@ -608,6 +610,8 @@ npm run dev                     # Dev mode (Turbopack bug exists)
 13. Legal pages are live at `/integritetspolicy` and `/villkor`.
 14. **Full-bleed sections belong at page root** — never nest `w-screen` / viewport-escape sections inside `<Container>`. Statement is the one exception (see Homepage Layout Architecture).
 15. **ROIBand needs `relative`** — its inner `absolute inset-0` gradient anchors to it; removing `relative` causes the gradient to escape to the nearest positioned ancestor.
+16. **`.btn-cta` labels must be an element, not a bare text node** — the grain sits in a `::before` at `z-index: 0`, and `.btn-cta > *` (which only matches elements) is what lifts content above it. A bare text node gets the soft-light grain blended *through* the label. `Button.tsx` and `CalendlyButton.tsx` wrap children centrally; the two Nav CTAs wrap inline. Any new `.btn-cta` call site must do the same.
+17. **Don't run `npm run start` while the dev server is up** — both write to the same `.next` directory and the production server throws `InvariantError: client reference manifest does not exist` on every route. Stop the dev server first, or the verification is meaningless.
 
 ## Visuals
 | File | Used in |
