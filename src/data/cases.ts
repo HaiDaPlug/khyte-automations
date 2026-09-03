@@ -139,6 +139,62 @@ export const cases: CaseData[] = [
       { value: "≈96%", unit: "", label: "Kortare researchtid" },
       { value: "≈65h", unit: "", label: "Sparad tid per 1 000 företag" },
     ],
+    nextSlug: "komfort-bilvard",
+  },
+  {
+    slug: "komfort-bilvard",
+    index: "03",
+    company: "Kom-Fort Bilvård",
+    problem: "Verksamhetssystem för bokningar och personal",
+    category: "Drift & Schemaläggning",
+    description:
+      "Från telefon, minne och lösa trådar till ett system för hela verksamheten.",
+    hook: "Från telefon, minne och lösa trådar till ett system för hela verksamheten.",
+    gradient: [
+      "radial-gradient(ellipse 50% 55% at 82% 15%, rgba(220,225,235,0.55) 0%, rgba(220,225,235,0) 62%)",
+      "radial-gradient(ellipse 65% 60% at 22% 48%, rgba(180,90,35,0.85) 0%, rgba(180,90,35,0) 62%)",
+      "radial-gradient(ellipse 55% 55% at 12% 90%, rgba(15,15,20,0.90) 0%, rgba(15,15,20,0) 58%)",
+      "radial-gradient(ellipse 55% 45% at 75% 8%, rgba(90,100,120,0.45) 0%, rgba(90,100,120,0) 60%)",
+      "linear-gradient(150deg, #14161C 0%, #3A3128 32%, #8A4A22 58%, #C97A3E 80%, #4A4238 100%)",
+    ].join(", "),
+    challenge: [
+      "När Kom-Fort Bilvård fick in en ny bokning behövde flera saker hanteras manuellt.",
+      "Ägaren behövde hålla reda på vilken medarbetare som kunde ta uppdraget, skriva till personalen om passen, samla kund- och fordonsuppgifter, hålla informationen uppdaterad och därefter skicka orderbekräftelsen från sin egen telefon.",
+      "Informationen låg utspridd mellan meddelanden, telefonen och ägarens eget minne. Ju fler bokningar och medarbetare verksamheten hanterade, desto fler lösa trådar behövde hållas ihop manuellt.",
+    ],
+    solution: [
+      "Vi byggde ett skräddarsytt kalender- och verksamhetssystem för Kom-Fort Bilvård.",
+      "När ett nytt uppdrag registreras samlas kunduppgifter, fordonsinformation, tid och ansvarig medarbetare på samma ställe. Personalen kan själva logga in och se sina aktuella pass och informationen de behöver inför varje uppdrag.",
+      "När bokningen registreras skickas dessutom orderbekräftelsen automatiskt till kunden.",
+      "Istället för att verksamheten behöver koordineras genom ägarens telefon fungerar systemet som en gemensam källa för både honom och personalen.",
+    ],
+    steps: [
+      {
+        label: "Registrera uppdrag",
+        description:
+          "Kund, bil, tjänst, tid och övrig information registreras på ett och samma ställe.",
+      },
+      {
+        label: "Planera personal",
+        description:
+          "Uppdraget kopplas till rätt medarbetare och placeras direkt i kalendern.",
+      },
+      {
+        label: "Ge personalen kontroll",
+        description:
+          "Medarbetarna kan själva logga in och se sina pass och relevant information inför arbetet.",
+      },
+      {
+        label: "Bekräfta automatiskt",
+        description:
+          "När uppdraget registreras skickas orderbekräftelsen till kunden automatiskt.",
+      },
+    ],
+    metrics: [
+      { value: "1 system", unit: "", label: "För bokningar, personal och kundinformation" },
+      { value: "Färre lösa trådar", unit: "", label: "All information samlad på samma ställe" },
+      { value: "Mindre personberoende", unit: "", label: "Verksamheten behöver inte längre leva i ägarens telefon" },
+    ],
     nextSlug: "lead-engine",
   },
 ];
