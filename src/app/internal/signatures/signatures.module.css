@@ -1,0 +1,331 @@
+/*
+ * Internal signature builder.
+ *
+ * Deliberately its own dark "console" surface rather than the site's light
+ * espresso theme: the payload here is a white email signature, and framing it
+ * against near-black is what makes it read as a specimen you are inspecting
+ * instead of page content you are reading. Scoped as a CSS module so none of
+ * this reaches the public stylesheet.
+ */
+
+.page {
+  --ink: #ededed;
+  --ink-muted: #9b9b9b;
+  --ink-faint: #6e6e6e;
+  --line: #1f1f1f;
+  --line-soft: #171717;
+  --panel: #0d0d0d;
+  --accent: #e8833a;
+
+  min-height: 100dvh;
+  background: #070707;
+  /* Single low-alpha wash behind the header — depth without a decorative gradient. */
+  background-image: radial-gradient(
+    120% 60% at 50% 0%,
+    rgba(232, 131, 58, 0.05) 0%,
+    transparent 60%
+  );
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---- top bar ------------------------------------------------------------ */
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 28px;
+  border-bottom: 1px solid var(--line);
+  background: rgba(7, 7, 7, 0.82);
+  backdrop-filter: blur(10px);
+}
+
+.wordmark {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+
+.wordmark b {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.topbarMeta {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--ink-faint);
+}
+
+/* ---- header ------------------------------------------------------------- */
+
+/*
+ * 610px is measured, not arbitrary: the signature table is a fixed 460px, and
+ * 460 + 48 (preview padding) + 36 (well padding) + 2 (card border) + 56 (page
+ * padding) = 602. The extra 8px keeps the white specimen hugging the signature
+ * instead of trailing dead white space to its right.
+ */
+.inner {
+  max-width: 610px;
+  margin: 0 auto;
+  padding: 56px 28px 96px;
+}
+
+.heading {
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+  margin: 0 0 12px;
+}
+
+.lede {
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--ink-muted);
+  margin: 0 0 28px;
+  max-width: 46ch;
+}
+
+/* Gmail path as discrete steps — the original was one arrow-chained run-on. */
+.steps {
+  list-style: none;
+  counter-reset: step;
+  margin: 0 0 48px;
+  padding: 16px 20px;
+  border: 1px solid var(--line-soft);
+  border-radius: 8px;
+  background: var(--panel);
+}
+
+.steps li {
+  counter-increment: step;
+  position: relative;
+  padding-left: 26px;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--ink-muted);
+}
+
+.steps li + li {
+  margin-top: 6px;
+}
+
+.steps li::before {
+  content: counter(step);
+  position: absolute;
+  left: 0;
+  top: 1px;
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 10px;
+  line-height: 15px;
+  text-align: center;
+  color: var(--ink-faint);
+}
+
+.steps code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12px;
+  color: var(--ink);
+}
+
+/* ---- card --------------------------------------------------------------- */
+
+.card {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel);
+  overflow: hidden;
+}
+
+.card + .card {
+  margin-top: 18px;
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 13px 18px;
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.cardName {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.cardEmail {
+  font-size: 12px;
+  color: var(--ink-faint);
+}
+
+.badge {
+  padding: 2px 7px;
+  border-radius: 3px;
+  border: 1px solid #5a3517;
+  background: rgba(232, 131, 58, 0.1);
+  color: var(--accent);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+}
+
+/*
+ * The white slab is inset rather than full-bleed so it reads as the artifact
+ * sitting on the console, not as an unstyled gap in the card.
+ */
+.previewWell {
+  padding: 18px;
+  background: #0a0a0a;
+}
+
+.preview {
+  background: #fff;
+  border-radius: 6px;
+  padding: 24px;
+  /* The signature table is a fixed ~460px; let it scroll rather than forcing
+     the whole page into a horizontal scroll on a narrow phone. */
+  overflow-x: auto;
+}
+
+/* ---- actions ------------------------------------------------------------ */
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 18px;
+  border-top: 1px solid var(--line-soft);
+}
+
+.btn,
+.btnGhost {
+  font-family: var(--font-sans);
+  font-size: 12.5px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: color 0.16s ease, border-color 0.16s ease, background-color 0.16s ease;
+}
+
+.btn {
+  font-weight: 500;
+  color: var(--ink);
+  background: transparent;
+  border: 1px solid #2c2c2c;
+  padding: 7px 15px;
+}
+
+.btn:hover:not(:disabled) {
+  border-color: var(--accent);
+  background: rgba(232, 131, 58, 0.09);
+}
+
+.btnGhost {
+  color: var(--ink-faint);
+  background: transparent;
+  border: 1px solid transparent;
+  padding: 7px 11px;
+}
+
+.btnGhost:hover:not(:disabled) {
+  color: var(--ink);
+}
+
+.btn:focus-visible,
+.btnGhost:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.btn:disabled,
+.btnGhost:disabled {
+  color: #3a3a3a;
+  border-color: #1a1a1a;
+  cursor: not-allowed;
+}
+
+.btnGhost:disabled {
+  border-color: transparent;
+}
+
+.copied {
+  color: #64c98a;
+  border-color: #2d5c3d;
+  background: rgba(100, 201, 138, 0.08);
+}
+
+.missing {
+  padding: 0 18px 15px;
+  font-size: 12px;
+  line-height: 1.6;
+  color: #c08a52;
+}
+
+.missing code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 11.5px;
+  color: var(--accent);
+}
+
+.fallback {
+  margin: 28px 0 0;
+  font-size: 12.5px;
+  line-height: 1.65;
+  color: var(--ink-faint);
+}
+
+/* ---- responsive --------------------------------------------------------- */
+
+@media (max-width: 620px) {
+  .topbar {
+    padding: 13px 18px;
+  }
+
+  .topbarMeta {
+    display: none;
+  }
+
+  .inner {
+    padding: 36px 16px 64px;
+  }
+
+  .heading {
+    font-size: 25px;
+  }
+
+  .previewWell {
+    padding: 12px;
+  }
+
+  .preview {
+    padding: 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn,
+  .btnGhost {
+    transition: none;
+  }
+}

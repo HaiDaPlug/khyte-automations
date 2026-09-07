@@ -32,6 +32,7 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
 
 # vercel
 .vercel
@@ -54,3 +55,9 @@ custombuildgemini.tsx
 dashboard-visual-test.html
 geminisvg.html
 html_data.md
+
+# signature source photos — multi-MB originals used only as build inputs for
+# scripts/build-signature-assets.mjs. The generated 128px assets in
+# public/signature-assets ARE committed; these are not. Ask a teammate for the
+# originals if you need to regenerate or add a person.
+/assets/signature-sources/
