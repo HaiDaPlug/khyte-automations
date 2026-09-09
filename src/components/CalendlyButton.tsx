@@ -31,7 +31,7 @@ export default function CalendlyButton({
       onClick={openCalendly}
       className={`${baseStyles} ${variantStyles[variant]} ${className}`}
     >
-      {children}
+      <span>{children}</span>
     </button>
   );
 }

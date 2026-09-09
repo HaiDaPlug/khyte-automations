@@ -22,7 +22,7 @@ const Footer = () => {
                 />
               </Link>
 
-              <p className="text-[13px] text-white/50 mb-6">Automatisering för svenska företag.</p>
+              <p className="text-[14px] leading-[1.45] text-white/50 mb-6">Automatisering för svenska företag.</p>
 
               <div className="mb-[18px] flex flex-col gap-2">
                 <p className="text-label !text-white/95 tracking-[0.12em]">Address</p>

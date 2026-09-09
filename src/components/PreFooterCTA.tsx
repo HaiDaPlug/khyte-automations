@@ -14,7 +14,7 @@ export default function PreFooterCTA() {
           </p>
           <CalendlyButton
             variant="warm"
-            className="rounded-full px-7 text-[15px] md:text-[16px] font-semibold tracking-[-0.01em] bg-[var(--color-cta-primary)] text-white/95 hover:bg-[var(--color-cta-primary-hover)] border border-white/10 shadow-[0_14px_34px_rgba(40,22,15,0.32)] hover:shadow-[0_18px_40px_rgba(40,22,15,0.42)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black/20"
+            className="btn-cta-lift rounded-full px-7 text-[15px] md:text-[16px] font-semibold tracking-[-0.01em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black/20"
           >
             Boka genomgång
           </CalendlyButton>

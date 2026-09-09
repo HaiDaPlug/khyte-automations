@@ -10,8 +10,10 @@
   --color-border: rgba(58, 51, 48, 0.12);
 
   --font-sans: "Satoshi", ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-barlow), sans-serif;
+  --font-display: var(--font-bebas), sans-serif;
   --font-barlow: var(--font-barlow), sans-serif;
+  --font-bebas: var(--font-bebas), sans-serif;
+  --font-jakarta: var(--font-jakarta), sans-serif;
 
   --border-width: 2px;
   --radius-sm: 4px;
@@ -61,44 +63,109 @@
 }
 
 @layer utilities {
-  /* Primary CTA — consistent orange, subtle vertical depth */
+  /* Primary CTA — grain material.
+     Layered gradient + film grain: an off-centre warm light pool, a shadow
+     pool opposite it, and a directional undertone beneath both, with a fine
+     turbulence layer soft-light blended on top. --btn-hue is the midpoint of
+     the previous flat gradient (#C96A24 -> #B8521C), so the colour is
+     unchanged and only the material differs. */
   .btn-cta {
-    background: linear-gradient(180deg, #C96A24 0%, #B8521C 100%);
-    color: #ffffff;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,255,0.14), inset 0 -1px 0 rgba(0,0,0,0.12);
-    transition: filter 0.18s ease, box-shadow 0.18s ease;
+    --btn-hue: #C05E20;
+    --btn-fg: #fff;
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, black 22%, var(--btn-hue));
+    color: var(--btn-fg);
+    background:
+      radial-gradient(78% 130% at 28% 12%, color-mix(in srgb, #FFE7C6 34%, var(--btn-hue)) 0%, transparent 60%),
+      radial-gradient(65% 95% at 86% 104%, color-mix(in srgb, black 26%, var(--btn-hue)) 0%, transparent 62%),
+      linear-gradient(128deg,
+        var(--btn-hue) 6%,
+        color-mix(in srgb, white 8%, var(--btn-hue)) 48%,
+        var(--btn-hue) 94%);
+    /* After the shorthand so it survives as a solid fallback if color-mix()
+       is unsupported and the gradient layers are dropped. */
+    background-color: var(--btn-hue);
+    box-shadow:
+      inset 0 1px 0 0 rgba(255, 232, 200, 0.16),
+      inset 0 -1px 0 0 rgba(40, 16, 4, 0.22),
+      0 1px 2px rgba(0, 0, 0, 0.22),
+      0 5px 14px -8px color-mix(in srgb, var(--btn-hue) 50%, transparent),
+      0 0 14px 0 rgba(255, 255, 255, 0.1);
+    transition: filter 0.15s ease, box-shadow 0.15s ease;
   }
-  .btn-cta:hover {
-    filter: brightness(1.10);
-    box-shadow: 0 4px 14px rgba(212,98,43,0.38), inset 0 1px 0 rgba(255,255,255,0.16), inset 0 -1px 0 rgba(0,0,0,0.10);
+  .btn-cta::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.65;
+    mix-blend-mode: soft-light;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' seed='7'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    background-size: 48px 48px;
   }
-  .btn-cta:active {
-    filter: brightness(0.95);
+  /* Lifts the label above the grain layer. Requires an element child, so
+     every .btn-cta call site wraps its text in a <span>. */
+  .btn-cta > * {
+    position: relative;
+    z-index: 1;
+  }
+  .btn-cta:hover:not(:disabled) {
+    filter: brightness(1.05);
+    box-shadow:
+      inset 0 1px 0 0 rgba(255, 232, 200, 0.2),
+      inset 0 -1px 0 0 rgba(40, 16, 4, 0.22),
+      0 1px 2px rgba(0, 0, 0, 0.22),
+      0 6px 16px -8px color-mix(in srgb, var(--btn-hue) 55%, transparent),
+      0 0 16px 0 rgba(255, 255, 255, 0.14);
+  }
+  .btn-cta:active:not(:disabled) {
+    filter: brightness(0.94);
+    box-shadow:
+      inset 0 1px 2px 0 rgba(40, 16, 4, 0.26),
+      0 1px 1px rgba(0, 0, 0, 0.2);
+  }
+  .btn-cta:focus-visible {
+    outline: 2px solid rgba(255, 255, 255, 0.85);
+    outline-offset: 2px;
+  }
+  .btn-cta:disabled {
+    opacity: 0.45;
+    filter: grayscale(0.4);
+    box-shadow: none;
+    cursor: not-allowed;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .btn-cta { transition: none; }
   }
 
-  /* Global grain — multiply blend makes it invisible on dark sections automatically */
+  /* Lift modifier — for CTAs on the light/cream top of the base band, where
+     the default tight shadow reads flat and the white outer glow is
+     invisible. Keeps the bevel, swaps in the band's ambient drop shadow. */
+  .btn-cta-lift {
+    box-shadow:
+      inset 0 1px 0 0 rgba(255, 232, 200, 0.16),
+      inset 0 -1px 0 0 rgba(40, 16, 4, 0.22),
+      0 1px 2px rgba(0, 0, 0, 0.22),
+      0 14px 34px rgba(40, 22, 15, 0.32);
+  }
+  .btn-cta-lift:hover:not(:disabled) {
+    box-shadow:
+      inset 0 1px 0 0 rgba(255, 232, 200, 0.2),
+      inset 0 -1px 0 0 rgba(40, 16, 4, 0.22),
+      0 1px 2px rgba(0, 0, 0, 0.22),
+      0 18px 40px rgba(40, 22, 15, 0.42);
+  }
+
   body {
     background-color: var(--color-bg);
     font-weight: 500;
     letter-spacing: -0.01em;
     -webkit-font-smoothing: subpixel-antialiased;
   }
-  body::after {
-    content: "";
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: 9999;
-    pointer-events: none;
-    background-image: url('/noise.webp');
-    background-size: 128px 128px;
-    opacity: 0.04;
-    mix-blend-mode: multiply;
-    overflow: hidden;
-  }
-
   /* Nav link underline sweep */
   .nav-link span[aria-hidden] {
     display: block;
@@ -161,6 +228,10 @@
     font-family: var(--font-display);
     font-weight: 800;
     line-height: 1.15;
+  }
+
+  .font-jakarta {
+    font-family: var(--font-jakarta);
   }
 
   /* Hero section — safe-area-aware top padding */
@@ -573,18 +644,6 @@ details[open] > div {
     animation: none;
   }
 }
-
-/* FAQ chevron rotation */
-details[open] > summary .faq-chevron {
-  transform: rotate(180deg);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .faq-chevron {
-    transition: none;
-  }
-}
-
 
 /* Leaflet popup — clean, no default chrome */
 .khyte-popup .leaflet-popup-content-wrapper {

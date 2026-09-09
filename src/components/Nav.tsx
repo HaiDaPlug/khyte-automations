@@ -140,7 +140,7 @@ export default function Nav() {
             onClick={openCalendly}
             className="btn-cta text-sm font-bold px-6 py-2.5 rounded-full shrink-0 cursor-pointer whitespace-nowrap"
           >
-            Boka kostnadsfritt samtal
+            <span>Boka kostnadsfritt samtal</span>
           </button>
         </div>
 
@@ -201,7 +201,7 @@ export default function Nav() {
               onClick={() => setOpen(false)}
               className="block w-full text-center btn-cta font-bold py-3 rounded-full"
             >
-              Kontakta oss
+              <span>Kontakta oss</span>
             </Link>
           </div>
         </div>

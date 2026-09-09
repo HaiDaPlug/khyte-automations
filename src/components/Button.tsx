@@ -31,10 +31,14 @@ export default function Button({
   if (href) {
     return (
       <Link href={href} className={combinedClassName}>
-        {children}
+        <span>{children}</span>
       </Link>
     );
   }
 
-  return <button className={combinedClassName}>{children}</button>;
+  return (
+    <button className={combinedClassName}>
+      <span>{children}</span>
+    </button>
+  );
 }

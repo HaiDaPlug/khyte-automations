@@ -1,25 +1,8 @@
 "use client";
 
 import { useState, useRef } from "react";
+import { homeFaqs, type FAQEntry } from "@/data/faq";
 
-const faqs = [
-  {
-    q: "Vad kostar det?",
-    a: "Det beror på projektets omfattning. Är det en simpel implementation kommer det att kosta mindre, och större mer. Man får ett pris på kartläggningen så att ni vet innan ni bestämmer er.",
-  },
-  {
-    q: "Hur lång tid tar det?",
-    a: "Beror på komplexitet av dina verktyg och processer. Vi värderar snabb service och försöker att få ut det åtminstone inom en till två veckor. Tidsramen läggs tydligt i kartläggningen.",
-  },
-  {
-    q: "Behöver vi ändra hur vi jobbar?",
-    a: "Vårt mål är att övergången ska vara så smidig som möjligt. Ni ska märka av förändringen i form av frigjord tid, inte ett nytt sätt att arbeta.",
-  },
-  {
-    q: "Kan ni integrera med vårt system?",
-    a: "Om ert system har en API kommer det troligtvis att kunna koppla. Vi dyker djupt in i era processer och system och säger ja/nej om det inte går.",
-  },
-];
 
 function FAQItem({ q, a }: { q: string; a: string }) {
   const [open, setOpen] = useState(false);
@@ -74,10 +57,10 @@ function FAQItem({ q, a }: { q: string; a: string }) {
   );
 }
 
-export default function FAQAccordion() {
+export default function FAQAccordion({ items = homeFaqs }: { items?: FAQEntry[] }) {
   return (
     <div className="flex flex-col gap-2">
-      {faqs.map(({ q, a }) => (
+      {items.map(({ q, a }) => (
         <FAQItem key={q} q={q} a={a} />
       ))}
     </div>
