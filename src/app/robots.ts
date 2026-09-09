@@ -1,10 +1,10 @@
 import type { MetadataRoute } from "next";
 
-const SITE_URL = "https://khyteautomations.com";
+const SITE_URL = "https://khyte.se";
 
 export default function robots(): MetadataRoute.Robots {
   return {
-    rules: [{ userAgent: "*", allow: "/" }],
+    rules: [{ userAgent: "*", allow: "/", disallow: "/internal/" }],
     sitemap: `${SITE_URL}/sitemap.xml`,
   };
 }
