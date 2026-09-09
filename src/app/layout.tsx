@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Barlow_Condensed } from "next/font/google";
+import { Barlow_Condensed, Bebas_Neue, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 
 const barlow = Barlow_Condensed({
@@ -10,10 +10,28 @@ const barlow = Barlow_Condensed({
   adjustFontFallback: false,
 });
 
+const bebasNeue = Bebas_Neue({
+  weight: ["400"],
+  subsets: ["latin"],
+  variable: "--font-bebas",
+  display: "swap",
+  adjustFontFallback: false,
+});
+
+const jakartaSans = Plus_Jakarta_Sans({
+  weight: ["700", "800"],
+  subsets: ["latin", "latin-ext"],
+  variable: "--font-jakarta",
+  display: "swap",
+  adjustFontFallback: false,
+});
+
 
 import { Analytics } from "@vercel/analytics/next";
 import Script from "next/script";
+import JsonLd from "@/components/JsonLd";
 import Nav from "@/components/Nav";
+import SiteChrome from "@/components/SiteChrome";
 import PreFooterCTA from "@/components/PreFooterCTA";
 import Footer from "@/components/Footer";
 import PageTransition from "@/components/PageTransition";
@@ -25,7 +43,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://khyteautomations.com"),
+  metadataBase: new URL("https://khyte.se"),
 
   title: {
     default: "Khyte Automations",
@@ -47,14 +65,8 @@ export const metadata: Metadata = {
     description:
       "Vi bygger AI-automationer som tar bort manuellt arbete, minskar fel och frigör tid — utan hype, bara fungerande workflows.",
     siteName: "Khyte Automations",
-    images: [
-      {
-        url: "/opengraph-image.svg",
-        width: 1200,
-        height: 630,
-        alt: "Khyte Automations",
-      },
-    ],
+    // og:image comes from the file-based opengraph-image.tsx convention —
+    // setting `images` here would override it with a stale URL.
     locale: "sv_SE",
     type: "website",
   },
@@ -65,12 +77,11 @@ export const metadata: Metadata = {
     title: "KHYTE AUTOMATIONS | No Hype, Just Workflows",
     description:
       "Vi bygger AI-automationer som tar bort manuellt arbete, minskar fel och frigör tid — utan hype, bara fungerande workflows.",
-    images: ["/opengraph-image.svg"],
   },
 };
 
 // Structured Data (JSON-LD) for SEO
-const SITE_URL = "https://khyteautomations.com";
+const SITE_URL = "https://khyte.se";
 const CONTACT_EMAIL = "hai@khyte.se";
 const LINKEDIN_PERSONAL = "https://www.linkedin.com/in/hai-pham-bui-8a9893395";
 const LINKEDIN_COMPANY = "https://www.linkedin.com/company/khyte-automations";
@@ -91,7 +102,7 @@ const structuredData = [
     "@type": "ProfessionalService",
     "@id": `${SITE_URL}/#local`,
     name: "Khyte Automations",
-    image: `${SITE_URL}/opengraph-image.svg`,
+    image: `${SITE_URL}/opengraph-image`,
     url: SITE_URL,
     telephone: "+46700996838",
     email: CONTACT_EMAIL,
@@ -112,7 +123,7 @@ const structuredData = [
       { "@type": "AdministrativeArea", name: "Västra Götaland" },
       { "@type": "Country", name: "Sverige" },
     ],
-    priceRange: "Från 15000 SEK",
+    priceRange: "Från 15 000 SEK",
     openingHoursSpecification: {
       "@type": "OpeningHoursSpecification",
       dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
@@ -138,53 +149,7 @@ const structuredData = [
     url: SITE_URL,
     sameAs: [LINKEDIN_PERSONAL],
     worksFor: { "@id": `${SITE_URL}/#organization` },
-  },
-  {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: [
-      {
-        "@type": "Question",
-        name: "Vad kostar det?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Fast pris från 15 000 kr beroende på scope. Exakt pris bestäms i en förstudie — ni vet vad det kostar innan ni bestämmer er.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: "Hur lång tid tar det?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Små automationer 2–3 veckor, större projekt 4–6. Tidsplan bestäms i förstudie.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: "Vilka system kan ni integrera?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "De flesta med API — CRM, bokföring, e-post, databaser. Om det har ett API kan vi troligen koppla det.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: "Vem äger lösningen?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Ni gör. All kod, dokumentation, inloggningar. Ingen vendor lock-in.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: "Vad händer efter leverans?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Dokumentation, utbildning och en supportperiod. Ni kan drifta allt själva.",
-        },
-      },
-    ],
-  },
+  }
 ];
 
 export default function RootLayout({
@@ -193,7 +158,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="sv" className={`${barlow.variable}`} data-theme={COLOR_CONCEPT}>
+    <html lang="sv" className={`${barlow.variable} ${bebasNeue.variable} ${jakartaSans.variable}`} data-theme={COLOR_CONCEPT}>
       <head>
         {/* Logo — preload so LCP element starts fetching immediately */}
         <link rel="preload" as="image" href="/khyte-logo-text.svg" fetchPriority="high" />
@@ -207,23 +172,31 @@ export default function RootLayout({
           rel="stylesheet"
           href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,600,700&display=swap"
         />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/[-￿]/g, (c) => `\\u${c.charCodeAt(0).toString(16).padStart(4, "0")}`) }}
+        {/* Bold italic — requested separately on purpose. Appending "700i" to the
+            request above makes Fontshare return a narrower set that drops 600/800,
+            and weight 800 is used by the case card titles. */}
+        <link
+          rel="stylesheet"
+          href="https://api.fontshare.com/v2/css?f[]=satoshi@700i&display=swap"
         />
+        <JsonLd data={structuredData} />
         {/* Calendly script is injected on-demand in CalendlyDrawer — not loaded here */}
         {/* Ensure top-of-page on hard refresh — no scroll listener, no sessionStorage */}
         <script dangerouslySetInnerHTML={{ __html: `(function(){try{history.scrollRestoration='manual';window.scrollTo(0,0);}catch(e){}})();` }} />
       </head>
       <body className="main-wrapper">
         <CalendlyProvider>
-          <Nav />
+          <SiteChrome>
+            <Nav />
+          </SiteChrome>
           <PageTransition>{children}</PageTransition>
-          <div className="base-band">
-            <PreFooterCTA />
-            <Footer />
-          </div>
-          <CalendlyDrawer />
+          <SiteChrome>
+            <div className="base-band">
+              <PreFooterCTA />
+              <Footer />
+            </div>
+            <CalendlyDrawer />
+          </SiteChrome>
           <Analytics />
         </CalendlyProvider>
         <Script src="https://www.googletagmanager.com/gtag/js?id=G-F91HE9L5LS" strategy="lazyOnload" />
