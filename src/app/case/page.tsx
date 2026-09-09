@@ -42,8 +42,6 @@ const GRAIN = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'
 
 
 export default function Cases() {
-  const totalIsOdd = (cases.length + 1) % 2 !== 0;
-
   const caseCard = ({ slug, index, company, description, gradient, metrics }: Pick<CaseData, "slug" | "index" | "company" | "problem" | "description" | "gradient" | "metrics">) => (
     <Link
       key={slug}
@@ -69,8 +67,8 @@ export default function Cases() {
         {/* Top block */}
         <div className="flex-1">
           <h2
-            className="font-display text-[var(--color-text)] group-hover:text-[var(--color-accent)] transition-colors duration-300 mb-3"
-            style={{ fontSize: "clamp(1.25rem, 1.9vw, 1.55rem)", fontWeight: 800, lineHeight: 1.05, letterSpacing: "-0.01em" }}
+            className="font-jakarta text-[var(--color-text)] group-hover:text-[var(--color-accent)] transition-colors duration-300 mb-3"
+            style={{ fontSize: "clamp(1.5rem, 2.4vw, 2rem)", fontWeight: 800, lineHeight: 1.05, letterSpacing: "-0.01em" }}
           >
             {company}
           </h2>
@@ -82,12 +80,12 @@ export default function Cases() {
         {/* Key metric */}
         <div className="mt-6 pt-5 border-t border-[rgba(58,51,48,0.12)]">
           <p
-            className="font-display text-[var(--color-text)] mb-1"
+            className="font-jakarta text-[var(--color-text)] mb-1"
             style={{ fontSize: "clamp(1.5rem, 2.4vw, 2rem)", fontWeight: 800, lineHeight: 1, letterSpacing: "-0.02em" }}
           >
             {metrics[0].value}
             <span
-              className="font-display text-[var(--color-text)] ml-1"
+              className="font-jakarta text-[var(--color-text)] ml-1"
               style={{ fontSize: "1em", fontWeight: 800, letterSpacing: "0" }}
             >
               {metrics[0].unit}
@@ -111,23 +109,52 @@ export default function Cases() {
     </Link>
   );
 
-  const placeholder = (
-    <div
-      key="placeholder"
-      className="flex flex-col rounded-2xl overflow-hidden cursor-default select-none border border-dashed border-[rgba(58,51,48,0.45)]"
-    >
-      {/* Fill to match real card height */}
-      <div className="flex flex-col flex-1 min-h-[420px] p-6 items-center justify-center text-center">
-        <h2
-          className="font-sans font-bold text-[var(--color-text)] mb-2"
-          style={{ fontSize: "clamp(1.15rem, 1.8vw, 1.45rem)", lineHeight: 1.15, letterSpacing: "-0.02em" }}
-        >
-          Kommer snart
-        </h2>
-        <p className="text-[var(--color-muted)] text-sm font-medium leading-snug">Nästa case är under arbete</p>
+  /*
+    ══════════════════════════════════════════════════════════════════════════════
+    "Kommer snart" placeholder card (archived — removed once we had 5 real cases).
+    A trailing empty-slot card reads as "the content ran out" once the grid is
+    already full of real work. Restore only if the grid is sparse again (1-2 cases)
+    and needs a visual anchor — pair with the totalIsOdd branching below.
+
+    const placeholder = (
+      <div
+        key="placeholder"
+        className="flex flex-col rounded-2xl overflow-hidden cursor-default select-none border border-dashed border-[rgba(58,51,48,0.45)]"
+      >
+        <div className="flex flex-col flex-1 min-h-[420px] p-6 items-center justify-center text-center">
+          <h2
+            className="font-sans font-bold text-[var(--color-text)] mb-2"
+            style={{ fontSize: "clamp(1.15rem, 1.8vw, 1.45rem)", lineHeight: 1.15, letterSpacing: "-0.02em" }}
+          >
+            Kommer snart
+          </h2>
+          <p className="text-[var(--color-muted)] text-sm font-medium leading-snug">Nästa case är under arbete</p>
+        </div>
       </div>
-    </div>
-  );
+    );
+
+    Grid branching (odd total → placeholder centered below; even total → placeholder
+    fills the grid):
+
+    {totalIsOdd ? (
+      <>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          {cases.map((c) => caseCard(c))}
+        </div>
+        <div className="flex justify-center mt-5">
+          <div className="w-full md:max-w-[calc(50%-10px)]">
+            {placeholder}
+          </div>
+        </div>
+      </>
+    ) : (
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        {cases.map((c) => caseCard(c))}
+        {placeholder}
+      </div>
+    )}
+    ══════════════════════════════════════════════════════════════════════════════
+  */
 
   return (
     <div className="page-enter">
@@ -144,26 +171,23 @@ export default function Cases() {
           />
 
           {/* ── Case grid ──
-               Total = cases + 1 placeholder.
-               Odd total  → cases in grid, placeholder centered at half-width below.
-               Even total → all items in 2-col grid.
-               Add a 3rd case → total 4 (even) → clean 2×2 grid.
+               Odd count → last card centered alone below the grid.
+               Even count → all cards fill the 2-col grid symmetrically.
           ── */}
-          {totalIsOdd ? (
+          {cases.length % 2 !== 0 ? (
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                {cases.map((c) => caseCard(c))}
+                {cases.slice(0, -1).map((c) => caseCard(c))}
               </div>
               <div className="flex justify-center mt-5">
                 <div className="w-full md:max-w-[calc(50%-10px)]">
-                  {placeholder}
+                  {caseCard(cases[cases.length - 1])}
                 </div>
               </div>
             </>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               {cases.map((c) => caseCard(c))}
-              {placeholder}
             </div>
           )}
 

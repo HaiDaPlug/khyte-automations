@@ -9,6 +9,9 @@ import AutomationShowcase from "@/components/sections/AutomationShowcase";
 import ProcessSection from "@/components/sections/ProcessSection";
 import CasesSection from "@/components/sections/CasesSection";
 import FAQAccordion from "@/components/FAQAccordion";
+import JsonLd from "@/components/JsonLd";
+import { homeFaqs, faqPageSchema } from "@/data/faq";
+import EspressoBand from "@/components/EspressoBand";
 
 export const metadata: Metadata = {
   title: "AI-automation för företag – Frigör tid från manuellt arbete",
@@ -18,16 +21,6 @@ export const metadata: Metadata = {
     canonical: "/",
   },
 };
-
-
-function EspressoBand({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="w-full relative overflow-hidden bg-[#1B1613]">
-      <div aria-hidden="true" className="absolute inset-0 pointer-events-none" style={{ backgroundImage: "url('/noise.webp')", backgroundSize: "128px 128px", opacity: 0.055, mixBlendMode: "screen" }} />
-      {children}
-    </div>
-  );
-}
 
 export default function Home() {
   return (
@@ -149,6 +142,7 @@ export default function Home() {
           </div>
 
           <FAQAccordion />
+          <JsonLd data={faqPageSchema(homeFaqs)} />
         </div>
       </div>
 

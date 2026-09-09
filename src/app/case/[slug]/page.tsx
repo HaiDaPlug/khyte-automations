@@ -81,8 +81,8 @@ export default async function CaseDetailPage({
           {/* Company + hook */}
           <div className="pb-14 md:pb-18">
             <h1
-              className="font-display text-white"
-              style={{ fontSize: "clamp(2.75rem, 6.5vw, 5.5rem)", fontWeight: 800, lineHeight: 0.9, letterSpacing: "-0.01em" }}
+              className="font-jakarta text-white"
+              style={{ fontSize: "clamp(2.25rem, 5vw, 3.75rem)", fontWeight: 800, lineHeight: 0.9, letterSpacing: "-0.01em" }}
             >
               {c.company}
             </h1>
@@ -217,7 +217,7 @@ export default async function CaseDetailPage({
             {(() => {
               const longestValue = Math.max(...c.metrics.map((m) => m.value.length));
               const valueFontSize =
-                longestValue > 6 ? "clamp(1.9rem, 3.4vw, 2.75rem)" : "clamp(2.5rem, 5vw, 4rem)";
+                longestValue > 6 ? "clamp(1.65rem, 3.4vw, 2.5rem)" : "clamp(2.25rem, 5vw, 3.75rem)";
               return c.metrics.map((m, i) => (
               <div
                 key={i}
@@ -226,7 +226,7 @@ export default async function CaseDetailPage({
               >
                 <div className="flex items-baseline gap-2 mb-3 flex-wrap">
                   <span
-                    className="font-display text-white"
+                    className="font-jakarta text-white"
                     style={{
                       fontSize: valueFontSize,
                       fontWeight: 800,
@@ -238,7 +238,7 @@ export default async function CaseDetailPage({
                   </span>
                   {m.unit && (
                     <span
-                      className="font-display"
+                      className="font-jakarta"
                       style={{ fontSize: "clamp(0.7rem, 1.1vw, 0.85rem)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "rgba(255,255,255,0.40)" }}
                     >
                       {m.unit}

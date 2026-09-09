@@ -38,7 +38,7 @@ export const cases: CaseData[] = [
     problem: "Leadgenerering för listor",
     category: "Sälj & Prospektering",
     description:
-      "Säljarens arbetsflöde automatiserat. In med en länk i Allabolag och ut med kvalificerade leads direkt i ett Excel.",
+      "Filtrera bolagen i Allabolag. Klistra in länken. Få en färdig prospektlista i Excel.",
     hook: "Från filtrering till ringlista på några sekunder.",
     gradient: [
       "radial-gradient(ellipse 55% 60% at 78% 18%, rgba(255,235,185,0.72) 0%, rgba(255,235,185,0) 65%)",
@@ -93,7 +93,7 @@ export const cases: CaseData[] = [
     problem: "Automatisk research av befintlig data",
     category: "Research & Analys",
     description:
-      "Lista med leads utan kontaktuppgifter, och AI-driven research som hittar information och fyller in det som saknas.",
+      "Från en lista med företagsnamn till researchade leads med domän, bolagstyp, ort och beslutsfattare.",
     hook: "Från företagsnamn till färdig research på sekunder.",
     gradient: [
       "radial-gradient(ellipse 45% 55% at 15% 25%, rgba(90,20,8,0.95) 0%, rgba(90,20,8,0) 65%)",
@@ -191,9 +191,121 @@ export const cases: CaseData[] = [
       },
     ],
     metrics: [
-      { value: "1 system", unit: "", label: "För bokningar, personal och kundinformation" },
+      { value: "Bokning → schema → bekräftelse", unit: "", label: "Samlat i ett enda arbetsflöde" },
       { value: "Färre lösa trådar", unit: "", label: "All information samlad på samma ställe" },
       { value: "Mindre personberoende", unit: "", label: "Verksamheten behöver inte längre leva i ägarens telefon" },
+    ],
+    nextSlug: "etcetera-offset",
+  },
+  {
+    slug: "etcetera-offset",
+    index: "04",
+    company: "Etcetera Offset",
+    problem: "Automatisk generering av plock- och följesedlar",
+    category: "Dokument & Produktion",
+    description:
+      "Excel in. Färdiga plocksedlar ut.",
+    hook: "Excel in. Färdiga plocksedlar ut.",
+    gradient: [
+      "radial-gradient(ellipse 55% 55% at 80% 20%, rgba(235,225,205,0.60) 0%, rgba(235,225,205,0) 62%)",
+      "radial-gradient(ellipse 65% 60% at 25% 50%, rgba(200,110,40,0.80) 0%, rgba(200,110,40,0) 62%)",
+      "radial-gradient(ellipse 50% 55% at 10% 88%, rgba(20,18,16,0.92) 0%, rgba(20,18,16,0) 58%)",
+      "radial-gradient(ellipse 45% 40% at 70% 6%, rgba(150,140,120,0.35) 0%, rgba(150,140,120,0) 60%)",
+      "linear-gradient(150deg, #16130F 0%, #3E2E1C 32%, #96521E 58%, #D48A3E 80%, #4A3A2A 100%)",
+    ].join(", "),
+    challenge: [
+      "Etcetera Offset får återkommande omfattande Excel-filer från sina kunder med information som ska omvandlas till plock- och följesedlar inför produktion och leverans.",
+      "Tidigare behövde informationen hanteras manuellt. Artikelnummer, artikel-ID, storlekar, antal och övriga uppgifter behövde läsas ur stora kalkylblad och föras över till separata dokument.",
+      "När filerna innehöll hundratals eller tusentals rader blev det ett omfattande och repetitivt arbetsmoment som band upp mycket arbetstid varje gång en ny fil kom in.",
+    ],
+    solution: [
+      "Vi byggde ett skräddarsytt system som automatiskt omvandlar kundernas Excel-filer till färdiga plock- och följesedlar.",
+      "Medarbetaren laddar upp den befintliga Excel-filen direkt i systemet. Systemet läser och strukturerar informationen, delar upp den rätt och genererar därefter de dokument som behövs.",
+      "Varje sedel innehåller automatiskt rätt artikelnummer, storlek, artikel-ID, antal och övrig relevant information – presenterat i ett enhetligt och brandat format.",
+      "Istället för att skapa dokumenten manuellt behöver teamet i princip bara ladda upp filen och hämta det färdiga resultatet.",
+    ],
+    steps: [
+      {
+        label: "Ladda upp",
+        description:
+          "Den befintliga Excel-filen laddas direkt upp i systemet.",
+      },
+      {
+        label: "Tolka",
+        description:
+          "Systemet läser och strukturerar informationen från filens rader och kolumner.",
+      },
+      {
+        label: "Generera",
+        description:
+          "Plock- och följesedlar skapas automatiskt med rätt artiklar, storlekar, antal och information.",
+      },
+      {
+        label: "Leverera",
+        description:
+          "Färdiga, enhetligt formaterade och brandade dokument genereras redo att användas.",
+      },
+    ],
+    metrics: [
+      { value: "Excel → färdiga plocksedlar", unit: "", label: "Från manuellt dokumentarbete till kvalitetskontroll" },
+      { value: "Kraftigt minskad administration", unit: "", label: "Ett repetitivt arbetsmoment automatiserat" },
+      { value: "Mer tid till produktion", unit: "", label: "Istället för att manuellt bygga plock- och följesedlar" },
+    ],
+    nextSlug: "osteopaticentrum",
+  },
+  {
+    slug: "osteopaticentrum",
+    index: "05",
+    company: "Osteopaticentrum",
+    problem: "SMS-system för kunduppföljning och återaktivering",
+    category: "Kunduppföljning & SMS",
+    description:
+      "Från kundlista till mätbara återbesök.",
+    hook: "Från kundlista till mätbara återbesök.",
+    gradient: [
+      "radial-gradient(ellipse 55% 55% at 78% 18%, rgba(210,230,225,0.55) 0%, rgba(210,230,225,0) 62%)",
+      "radial-gradient(ellipse 65% 60% at 24% 50%, rgba(40,120,100,0.80) 0%, rgba(40,120,100,0) 62%)",
+      "radial-gradient(ellipse 50% 55% at 10% 88%, rgba(10,18,16,0.92) 0%, rgba(10,18,16,0) 58%)",
+      "radial-gradient(ellipse 45% 40% at 72% 8%, rgba(230,140,60,0.30) 0%, rgba(230,140,60,0) 60%)",
+      "linear-gradient(150deg, #0C1614 0%, #1E3A34 32%, #1E7A62 58%, #4EAE8C 80%, #2A4038 100%)",
+    ].join(", "),
+    challenge: [
+      "Osteopaticentrum ville arbeta mer systematiskt med att följa upp tidigare kunder och påminna dem om att boka en ny behandling.",
+      "Problemet var att de befintliga verktygen på marknaden inte passade deras behov. De behövde ett enkelt sätt att använda sin befintliga kundlista för återkommande SMS-utskick, utan att bygga upp ytterligare en dyr eller komplicerad process runt kundinformationen.",
+      "Samtidigt ville de inte bara kunna skicka SMS – de ville också kunna se om utskicken faktiskt ledde till nya bokningar.",
+    ],
+    solution: [
+      "Vi byggde ett skräddarsytt SMS-system för kunduppföljning och återaktivering.",
+      "Osteopaticentrum kan exportera sin befintliga kundlista som CSV och importera den direkt i systemet. Därifrån kan de skapa och skicka SMS-utskick till tidigare kunder för att påminna om verksamheten och uppmuntra till återbesök.",
+      "Systemet kopplar dessutom samman utskicken med efterföljande bokningar. När en kund som fått ett SMS senare bokar en behandling kan det registreras, vilket gör det möjligt att följa hur utskicken faktiskt presterar.",
+      "Istället för att bara skicka meddelanden får Osteopaticentrum ett eget verktyg för både återaktivering och uppföljning.",
+    ],
+    steps: [
+      {
+        label: "Importera kunder",
+        description:
+          "Den befintliga kundlistan exporteras och importeras direkt till SMS-systemet via CSV.",
+      },
+      {
+        label: "Skapa utskick",
+        description:
+          "Mottagare väljs och återkommande SMS-kampanjer kan skickas till tidigare kunder.",
+      },
+      {
+        label: "Återaktivera",
+        description:
+          "SMS används för att hålla Osteopaticentrum top of mind och påminna kunder om att boka igen.",
+      },
+      {
+        label: "Mät resultatet",
+        description:
+          "Efterföljande bokningar kan kopplas tillbaka till kunder som fått SMS och ge en tydligare bild av vilka utskick som fungerar.",
+      },
+    ],
+    metrics: [
+      { value: "SMS → bokning kan spåras", unit: "", label: "Se vilka återaktiveringsutskick som leder till nya bokningar" },
+      { value: "1 eget system", unit: "", label: "För SMS, kunduppföljning och återaktivering" },
+      { value: "Mindre verktygsberoende", unit: "", label: "Byggt runt Osteopaticentrums faktiska arbetssätt" },
     ],
     nextSlug: "lead-engine",
   },
