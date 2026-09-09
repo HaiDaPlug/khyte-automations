@@ -133,7 +133,7 @@ export default function ServicesPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Price card */}
             <div className="bg-[var(--color-card-bg)] border border-[rgba(58,51,48,0.25)] [border-width:var(--border-width)] rounded-[4px] p-8">
-              <div className="text-3xl font-bold text-[var(--color-text)] mb-1">25 000 – 120 000 kr</div>
+              <div className="text-3xl font-bold text-[var(--color-text)] mb-1">15 000+ kr</div>
               <p className="text-[var(--color-text-body)] text-sm mb-6">Fast pris efter scope</p>
               <p className="text-[var(--color-muted)] text-xs font-bold uppercase tracking-wider mb-3">Vad som påverkar priset</p>
               <ul className="space-y-2">
@@ -354,7 +354,7 @@ export default function ServicesPage() {
               },
               {
                 q: "Hur mycket kostar det typiskt?",
-                a: "Vi jobbar med fast pris i intervallet 25 000–120 000 kr, beroende på scope. Exakt pris bestäms i förstudien – så ni vet vad det kostar innan ni bestämmer er."
+                a: "Vi jobbar med fast pris från 15 000 kr, beroende på scope. Exakt pris bestäms i förstudien – så ni vet vad det kostar innan ni bestämmer er."
               },
               {
                 q: "Vem äger automationen efteråt?",

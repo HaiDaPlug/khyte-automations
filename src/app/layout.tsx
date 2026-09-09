@@ -112,7 +112,7 @@ const structuredData = [
       { "@type": "AdministrativeArea", name: "Västra Götaland" },
       { "@type": "Country", name: "Sverige" },
     ],
-    priceRange: "25000-120000 SEK",
+    priceRange: "Från 15000 SEK",
     openingHoursSpecification: {
       "@type": "OpeningHoursSpecification",
       dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
@@ -148,7 +148,7 @@ const structuredData = [
         name: "Vad kostar det?",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "Fast pris, 25 000–120 000 kr beroende på scope. Exakt pris bestäms i en förstudie — ni vet vad det kostar innan ni bestämmer er.",
+          text: "Fast pris från 15 000 kr beroende på scope. Exakt pris bestäms i en förstudie — ni vet vad det kostar innan ni bestämmer er.",
         },
       },
       {
