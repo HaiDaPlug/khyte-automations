@@ -78,42 +78,32 @@ export default function Cases() {
         </div>
 
         {/* Key metric
-             The value slot holds two kinds of content: a short figure ("≈32h",
-             "≈96%") and a longer phrase ("Bokning → schema → bekräftelse") for
-             cases whose result is not a single number. Display-number styling
-             (tight leading, negative tracking, 2rem) only reads well on the
-             former — on a phrase it wraps into a cramped second headline that
-             competes with the card title. So the type scales to the content. */}
-        {(() => {
-          const { value, unit, label } = metrics[0];
-          const isPhrase = value.length > 16;
-
-          return (
-            <div className="mt-6 pt-5 border-t border-[rgba(58,51,48,0.12)]">
-              <p
-                className="font-jakarta text-[var(--color-text)] mb-1.5"
-                style={
-                  isPhrase
-                    ? { fontSize: "clamp(1rem, 1.35vw, 1.15rem)", fontWeight: 800, lineHeight: 1.25, letterSpacing: "-0.005em", textWrap: "balance" }
-                    : { fontSize: "clamp(1.5rem, 2.4vw, 2rem)", fontWeight: 800, lineHeight: 1, letterSpacing: "-0.02em" }
-                }
+             One size for every card. The value slot holds two kinds of content:
+             a short figure ("≈32h") and a longer phrase ("Bokning → schema →
+             bekräftelse") for cases whose result is not a single number. Sizing
+             each to its own content made the grid look inconsistent — cards
+             scanned side by side should share one voice — so this sits between
+             the two: enough weight to read as a result, small enough that a
+             phrase wraps cleanly without competing with the card title. */}
+        <div className="mt-6 pt-5 border-t border-[rgba(58,51,48,0.12)]">
+          <p
+            className="font-jakarta text-[var(--color-text)] mb-1.5"
+            style={{ fontSize: "clamp(1.15rem, 1.6vw, 1.35rem)", fontWeight: 800, lineHeight: 1.25, letterSpacing: "-0.01em", textWrap: "balance" }}
+          >
+            {metrics[0].value}
+            {metrics[0].unit && (
+              <span
+                className="font-jakarta text-[var(--color-text)] ml-1"
+                style={{ fontSize: "1em", fontWeight: 800, letterSpacing: "0" }}
               >
-                {value}
-                {unit && (
-                  <span
-                    className="font-jakarta text-[var(--color-text)] ml-1"
-                    style={{ fontSize: "1em", fontWeight: 800, letterSpacing: "0" }}
-                  >
-                    {unit}
-                  </span>
-                )}
-              </p>
-              <p className="text-[var(--color-muted)] text-xs font-medium leading-snug">
-                {label}
-              </p>
-            </div>
-          );
-        })()}
+                {metrics[0].unit}
+              </span>
+            )}
+          </p>
+          <p className="text-[var(--color-muted)] text-xs font-medium leading-snug">
+            {metrics[0].label}
+          </p>
+        </div>
 
         {/* Läs mer */}
         <div className="mt-4 pt-4 border-t border-[rgba(58,51,48,0.12)]">
