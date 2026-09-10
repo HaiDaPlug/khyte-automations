@@ -8,7 +8,7 @@ const nextConfig: NextConfig = {
     return [
       // ── Host normalisation ───────────────────────────────────────────────
       // khyte.se is the canonical domain. Anything served on the old
-      // khyteautomations.com (or a www variant) is a duplicate of the whole
+      // khyteautomations.com (or its www variant) is a duplicate of the whole
       // site — without this, Google can index both and split the ranking
       // signal across them.
       //
@@ -31,12 +31,12 @@ const nextConfig: NextConfig = {
         destination: "https://khyte.se/:path*",
         permanent: true,
       },
-      {
-        source: "/:path*",
-        has: [{ type: "host", value: "www.khyte.se" }],
-        destination: "https://khyte.se/:path*",
-        permanent: true,
-      },
+      // NOTE: no www.khyte.se → khyte.se rule here on purpose. Vercel's own
+      // domain settings decide which of the two is primary and issue that
+      // redirect itself. Adding a rule in the opposite direction to Vercel's
+      // setting makes the two bounce off each other in an infinite loop and
+      // takes the whole site down. Set the canonical host in the Vercel
+      // dashboard (project → Domains), not here.
 
       // Retired sub-pages. Listed before the /services wildcard so the old
       // English URLs land on /tjanster in one hop instead of chaining.
