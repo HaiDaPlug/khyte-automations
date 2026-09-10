@@ -634,12 +634,17 @@ Components requiring `"use client"`:
 - Sitemap: `/sitemap.xml` — static routes **plus every case detail page**, generated from
   `src/data/cases.ts`, so a new case indexes itself with no edit to `sitemap.ts`.
 - Robots: `/robots.txt` — allows all, disallows `/internal/` (also password-gated in `proxy.ts`)
-- **Host normalisation** (`next.config.ts`, permanent 308): `khyteautomations.com`,
-  `www.khyteautomations.com` and `www.khyte.se` all redirect to `https://khyte.se/:path*`.
-  Without this the old domain can serve a full duplicate of the site and split the ranking
-  signal. Host rules run before the path rules, so a legacy domain *and* a legacy path
-  (`khyteautomations.com/services`) takes two hops — acceptable. Inert if the domain is not
-  attached to the deployment.
+- **Host normalisation** — configured **in Vercel** (Settings → Domains), *not* in
+  `next.config.ts`. `khyte.se` is the canonical production host; `www.khyte.se`,
+  `khyteteam.com`, `www.khyteteam.com`, `khyteautomations.com` and
+  `www.khyteautomations.com` each redirect to it as a permanent 308, applied at the edge
+  before the app runs. Without this the aliases serve full duplicates of the site and split
+  the ranking signal.
+  > **Never add host-matching rules to `next.config.ts`.** A rule pointing the opposite way
+  > to Vercel's own domain setting makes the two redirect into each other in an infinite
+  > loop, taking down every URL on the site. This happened on 2026-09-10: a
+  > `www.khyte.se → khyte.se` rule was added here while Vercel had `www` set as primary,
+  > and the whole site returned redirect-loop errors until the rule was removed.
 - **Path redirects** (all in `next.config.ts`, all permanent 308, all single-hop):
   `/services→/tjanster`, `/cases→/case`, `/cases/:path*→/case/:path*`, `/about→/om-oss`,
   `/contact→/kontakt`, `/automations→/`, and the retired sub-pages `/tjanster/audit`,

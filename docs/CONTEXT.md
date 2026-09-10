@@ -189,7 +189,7 @@ khyte-automations/
 
 ⚠️ **CRITICAL - Do Not Change Without Authorization**
 
-- **Email**: `hai@khyteteam.com`
+- **Email**: `hai@khyte.se`
 - **Phone**: `070-099 68 38`
 - **Calendly**: `https://calendly.com/hai-khyteteam/30min`
 - **Formspree Endpoint**: `https://formspree.io/f/xzznjaly`
@@ -300,7 +300,7 @@ The contact form at `/contact` uses **Formspree** for submissions:
    - Left: Formspree form (5 fields: name, company, phone, email, message)
    - Right: Direct contact options (email, phone, Calendly)
 4. **Form Styling**: 4px border radius, token colors, focus ring on accent
-5. **Direct Contact Options**: Email (hai@khyteteam.com), Phone (070-099 68 38), Calendly link
+5. **Direct Contact Options**: Email (hai@khyte.se), Phone (070-099 68 38), Calendly link
 6. **Calendly Button**: Uses `<a>` tag (not next/link) with `target="_blank"`
 
 ### `/about` - About Page
@@ -692,7 +692,7 @@ Before deployment, verify:
 
 **Project Owner**: Hai
 **Business**: Khyte Automations
-**Email**: hai@khyteteam.com
+**Email**: hai@khyte.se
 **Calendly**: https://calendly.com/hai-khyteteam/30min
 
 ## Additional Resources

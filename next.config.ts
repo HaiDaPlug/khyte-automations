@@ -6,37 +6,20 @@ const nextConfig: NextConfig = {
 
   async redirects() {
     return [
-      // ── Host normalisation ───────────────────────────────────────────────
-      // khyte.se is the canonical domain. Anything served on the old
-      // khyteautomations.com (or its www variant) is a duplicate of the whole
-      // site — without this, Google can index both and split the ranking
-      // signal across them.
+      // ── Host normalisation lives in Vercel, NOT here ─────────────────────
+      // khyte.se is canonical. Every alias — www.khyte.se, khyteteam.com,
+      // khyteautomations.com and their www variants — redirects to it as a
+      // permanent 308, configured per-domain in the Vercel dashboard
+      // (project → Settings → Domains). Vercel applies those at the edge
+      // before this app is invoked.
       //
-      // Host rules run first so the domain is normalised before the path
-      // rules below. A legacy domain AND a legacy path (e.g.
-      // khyteautomations.com/services) therefore takes two hops, which is
-      // fine — Google follows redirect chains this short without issue.
+      // Do not add host-matching rules below. A rule pointing the opposite
+      // way to Vercel's own setting makes the two redirect into each other
+      // in an infinite loop, which takes down every URL on the site — that
+      // is exactly what happened when a www.khyte.se → khyte.se rule was
+      // added here while Vercel had www set as primary.
       //
-      // These are inert if the domain is not attached to the deployment, so
-      // they are safe to keep either way.
-      {
-        source: "/:path*",
-        has: [{ type: "host", value: "khyteautomations.com" }],
-        destination: "https://khyte.se/:path*",
-        permanent: true,
-      },
-      {
-        source: "/:path*",
-        has: [{ type: "host", value: "www.khyteautomations.com" }],
-        destination: "https://khyte.se/:path*",
-        permanent: true,
-      },
-      // NOTE: no www.khyte.se → khyte.se rule here on purpose. Vercel's own
-      // domain settings decide which of the two is primary and issue that
-      // redirect itself. Adding a rule in the opposite direction to Vercel's
-      // setting makes the two bounce off each other in an infinite loop and
-      // takes the whole site down. Set the canonical host in the Vercel
-      // dashboard (project → Domains), not here.
+      // Path redirects are fine, and are what the rest of this list is for.
 
       // Retired sub-pages. Listed before the /services wildcard so the old
       // English URLs land on /tjanster in one hop instead of chaining.
