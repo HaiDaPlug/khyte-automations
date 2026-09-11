@@ -17,7 +17,10 @@ export default function CasesSection() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
         {/* Card 1 — JaTack AB */}
-        <div className="bg-[var(--color-card-bg)] rounded-2xl overflow-hidden flex flex-col">
+        <Link
+          href="/case/lead-engine"
+          className="bg-[var(--color-card-bg)] rounded-2xl overflow-hidden flex flex-col"
+        >
           <div
             aria-hidden="true"
             className="relative w-full aspect-[16/9] shrink-0 overflow-hidden"
@@ -100,7 +103,96 @@ export default function CasesSection() {
               </div>
             </div>
           </div>
-        </div>
+        </Link>
+
+        {/* Card 2 — Osteopaticentrum */}
+        <Link
+          href="/case/osteopaticentrum"
+          className="bg-[var(--color-card-bg)] rounded-2xl overflow-hidden flex flex-col"
+        >
+          <div
+            aria-hidden="true"
+            className="relative w-full aspect-[16/9] shrink-0 overflow-hidden"
+          >
+            <div
+              className="absolute inset-0"
+              style={{
+                background: [
+                  "radial-gradient(ellipse 55% 55% at 78% 18%, rgba(210,230,225,0.55) 0%, rgba(210,230,225,0) 62%)",
+                  "radial-gradient(ellipse 65% 60% at 24% 50%, rgba(40,120,100,0.80) 0%, rgba(40,120,100,0) 62%)",
+                  "radial-gradient(ellipse 50% 55% at 10% 88%, rgba(10,18,16,0.92) 0%, rgba(10,18,16,0) 58%)",
+                  "radial-gradient(ellipse 45% 40% at 72% 8%, rgba(230,140,60,0.30) 0%, rgba(230,140,60,0) 60%)",
+                  "linear-gradient(150deg, #0C1614 0%, #1E3A34 32%, #1E7A62 58%, #4EAE8C 80%, #2A4038 100%)",
+                ].join(", "),
+              }}
+            />
+            <div
+              className="absolute inset-0"
+              style={{
+                backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.70' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23g)' opacity='0.18'/%3E%3C/svg%3E")`,
+                backgroundSize: "160px 160px",
+                mixBlendMode: "overlay",
+              }}
+            />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="flex flex-col items-center gap-3">
+                <span
+                  className="block leading-[1.05] whitespace-nowrap"
+                  style={{
+                    fontFamily: "var(--font-sans)",
+                    fontSize: "clamp(28px, 5vw, 42px)",
+                    fontWeight: 700,
+                    letterSpacing: "-0.04em",
+                    color: "rgba(255,255,255,0.97)",
+                    textShadow: "0 2px 20px rgba(0,0,0,0.35)",
+                  }}
+                >
+                  Osteopaticentrum
+                </span>
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true" style={{ opacity: 0.40 }}>
+                  <line x1="1" y1="1" x2="13" y2="13" stroke="white" strokeWidth="1.25" strokeLinecap="round"/>
+                  <line x1="13" y1="1" x2="1" y2="13" stroke="white" strokeWidth="1.25" strokeLinecap="round"/>
+                </svg>
+                <img
+                  src="/khyte-logo-text.svg"
+                  alt="Khyte Automations"
+                  width={240}
+                  height={64}
+                  className="block w-auto"
+                  style={{ height: "64px", filter: "drop-shadow(0 2px 16px rgba(0,0,0,0.40))", opacity: 0.93 }}
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-col justify-between gap-8 p-8 md:p-10 flex-1">
+            <div>
+              <span className="font-mono text-[12px] text-[var(--color-muted)] tracking-[0.06em] uppercase mb-4 block">
+                Kunduppföljning & SMS
+              </span>
+              <p className="text-[var(--color-text)] text-lg md:text-xl font-medium leading-[1.5] tracking-[-0.01em]">
+                Khyte har lyssnat på min verksamhets behov och skräddarsytt lösningen för att matcha dem. Jag är mycket nöjd med det professionella bemötande och utförandet!
+              </p>
+            </div>
+            <div>
+              <div className="h-px bg-[rgba(58,51,48,0.10)] mb-6" />
+              <div className="flex items-center gap-4">
+                <img
+                  src="/mattiashietala.jpg"
+                  alt="Mattias Hietala"
+                  width={56}
+                  height={56}
+                  className="w-14 h-14 rounded-full object-cover shrink-0"
+                  style={{ objectPosition: "center top" }}
+                />
+                <div>
+                  <p className="text-[15px] font-semibold text-[var(--color-text)] leading-[1.3]">Mattias Hietala</p>
+                  <p className="text-[14px] text-[var(--color-muted)] leading-[1.3]">Grundare, Osteopaticentrum</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </Link>
 
         {/* Placeholder — "Läs mer" card */}
         <Link
