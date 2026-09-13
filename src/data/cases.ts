@@ -17,6 +17,7 @@ export interface CaseData {
   category: string;
   description: string;
   hook: string;
+  image: string;
   gradient: string;
   challenge: string | string[];
   solution: string | string[];
@@ -40,6 +41,7 @@ export const cases: CaseData[] = [
     description:
       "Filtrera bolagen i Allabolag. Klistra in länken. Få en färdig prospektlista i Excel.",
     hook: "Från filtrering till ringlista på några sekunder.",
+    image: "/case-images/1.png",
     gradient: [
       "radial-gradient(ellipse 55% 60% at 78% 18%, rgba(255,235,185,0.72) 0%, rgba(255,235,185,0) 65%)",
       "radial-gradient(ellipse 70% 65% at 28% 52%, rgba(212,98,43,0.90) 0%, rgba(212,98,43,0) 62%)",
@@ -84,128 +86,18 @@ export const cases: CaseData[] = [
       { value: "2 min → 5 sek", unit: "", label: "Bearbetningstid per lead" },
       { value: "—", unit: "manuella steg", label: "Från prospektering till färdig ringlista" },
     ],
-    nextSlug: "lead-lista",
-  },
-  {
-    slug: "lead-lista",
-    index: "02",
-    company: "Observa Inkasso & Juridik",
-    problem: "Automatisk research av befintlig data",
-    category: "Research & Analys",
-    description:
-      "Från en lista med företagsnamn till researchade leads med domän, bolagstyp, ort och beslutsfattare.",
-    hook: "Från företagsnamn till färdig research på sekunder.",
-    gradient: [
-      "radial-gradient(ellipse 45% 55% at 15% 25%, rgba(90,20,8,0.95) 0%, rgba(90,20,8,0) 65%)",
-      "radial-gradient(ellipse 60% 50% at 85% 45%, rgba(160,60,20,0.70) 0%, rgba(160,60,20,0) 60%)",
-      "radial-gradient(ellipse 55% 60% at 50% 85%, rgba(200,90,30,0.55) 0%, rgba(200,90,30,0) 65%)",
-      "radial-gradient(ellipse 40% 35% at 70% 12%, rgba(240,160,80,0.40) 0%, rgba(240,160,80,0) 60%)",
-      "linear-gradient(140deg, #0C0402 0%, #2A0A04 30%, #6B2210 58%, #A84020 80%, #5A1A08 100%)",
-    ].join(", "),
-    challenge: [
-      "Observa Inkasso & Juridik hade en omfattande lista med tiotusentals potentiella kunder – men underlaget bestod till stor del bara av företagsnamn.",
-      "För att listan skulle kunna användas i säljarbetet behövde varje företag researchas och förädlas med bland annat hemsida, stad, om verksamheten riktade sig mot företag eller konsumenter samt vem som var ekonomichef.",
-      "Att göra detta manuellt innebar att söka efter varje företag, kontrollera information från flera källor och sammanställa resultatet. Med flera minuters research per bolag blev arbetet snabbt väldigt tidskrävande i större volymer.",
-    ],
-    solution: [
-      "Vi byggde ett AI-drivet researchflöde som automatiskt förädlar företagslistan steg för steg.",
-      "Utifrån endast företagsnamnet genomför systemet research i tre separata AI-steg. Först identifieras rätt företag och dess domän. Därefter analyseras bolaget för att fastställa bland annat stad och om verksamheten är B2B eller B2C. Slutligen används den insamlade informationen för att identifiera rätt ekonomiansvarig.",
-      "Resultatet skrivs tillbaka till listan och ger Observa ett betydligt mer komplett underlag utan att varje företag behöver researchas manuellt.",
-    ],
-    steps: [
-      {
-        label: "Identifiering",
-        description:
-          "Företagsnamnet används för att identifiera rätt bolag och hitta dess domän och hemsida.",
-      },
-      {
-        label: "Bolagsresearch",
-        description:
-          "Nästa steg analyserar verksamheten och identifierar bland annat stad och om företaget arbetar B2B eller B2C.",
-      },
-      {
-        label: "Beslutsfattare",
-        description:
-          "Ytterligare research genomförs för att identifiera företagets ekonomichef eller motsvarande beslutsfattare.",
-      },
-      {
-        label: "Förädlad lista",
-        description:
-          "Den insamlade informationen struktureras och läggs tillbaka i listan, redo att användas vidare.",
-      },
-    ],
-    metrics: [
-      { value: "4 min → ~10 sek", unit: "", label: "Researchtid per företag" },
-      { value: "≈96%", unit: "", label: "Kortare researchtid" },
-      { value: "≈65h", unit: "", label: "Sparad tid per 1 000 företag" },
-    ],
-    nextSlug: "komfort-bilvard",
-  },
-  {
-    slug: "komfort-bilvard",
-    index: "03",
-    company: "Kom-Fort Bilvård",
-    problem: "Verksamhetssystem för bokningar och personal",
-    category: "Drift & Schemaläggning",
-    description:
-      "Från telefon, minne och lösa trådar till ett system för hela verksamheten.",
-    hook: "Från telefon, minne och lösa trådar till ett system för hela verksamheten.",
-    gradient: [
-      "radial-gradient(ellipse 50% 55% at 82% 15%, rgba(220,225,235,0.55) 0%, rgba(220,225,235,0) 62%)",
-      "radial-gradient(ellipse 65% 60% at 22% 48%, rgba(180,90,35,0.85) 0%, rgba(180,90,35,0) 62%)",
-      "radial-gradient(ellipse 55% 55% at 12% 90%, rgba(15,15,20,0.90) 0%, rgba(15,15,20,0) 58%)",
-      "radial-gradient(ellipse 55% 45% at 75% 8%, rgba(90,100,120,0.45) 0%, rgba(90,100,120,0) 60%)",
-      "linear-gradient(150deg, #14161C 0%, #3A3128 32%, #8A4A22 58%, #C97A3E 80%, #4A4238 100%)",
-    ].join(", "),
-    challenge: [
-      "När Kom-Fort Bilvård fick in en ny bokning behövde flera saker hanteras manuellt.",
-      "Ägaren behövde hålla reda på vilken medarbetare som kunde ta uppdraget, skriva till personalen om passen, samla kund- och fordonsuppgifter, hålla informationen uppdaterad och därefter skicka orderbekräftelsen från sin egen telefon.",
-      "Informationen låg utspridd mellan meddelanden, telefonen och ägarens eget minne. Ju fler bokningar och medarbetare verksamheten hanterade, desto fler lösa trådar behövde hållas ihop manuellt.",
-    ],
-    solution: [
-      "Vi byggde ett skräddarsytt kalender- och verksamhetssystem för Kom-Fort Bilvård.",
-      "När ett nytt uppdrag registreras samlas kunduppgifter, fordonsinformation, tid och ansvarig medarbetare på samma ställe. Personalen kan själva logga in och se sina aktuella pass och informationen de behöver inför varje uppdrag.",
-      "När bokningen registreras skickas dessutom orderbekräftelsen automatiskt till kunden.",
-      "Istället för att verksamheten behöver koordineras genom ägarens telefon fungerar systemet som en gemensam källa för både honom och personalen.",
-    ],
-    steps: [
-      {
-        label: "Registrera uppdrag",
-        description:
-          "Kund, bil, tjänst, tid och övrig information registreras på ett och samma ställe.",
-      },
-      {
-        label: "Planera personal",
-        description:
-          "Uppdraget kopplas till rätt medarbetare och placeras direkt i kalendern.",
-      },
-      {
-        label: "Ge personalen kontroll",
-        description:
-          "Medarbetarna kan själva logga in och se sina pass och relevant information inför arbetet.",
-      },
-      {
-        label: "Bekräfta automatiskt",
-        description:
-          "När uppdraget registreras skickas orderbekräftelsen till kunden automatiskt.",
-      },
-    ],
-    metrics: [
-      { value: "Bokning → schema → bekräftelse", unit: "", label: "Samlat i ett enda arbetsflöde" },
-      { value: "Färre lösa trådar", unit: "", label: "All information samlad på samma ställe" },
-      { value: "Mindre personberoende", unit: "", label: "Verksamheten behöver inte längre leva i ägarens telefon" },
-    ],
     nextSlug: "etcetera-offset",
   },
   {
     slug: "etcetera-offset",
-    index: "04",
+    index: "02",
     company: "Etcetera Offset",
     problem: "Automatisk generering av plock- och följesedlar",
     category: "Dokument & Produktion",
     description:
       "Excel in. Färdiga plocksedlar ut.",
     hook: "Excel in. Färdiga plocksedlar ut.",
+    image: "/case-images/4.png",
     gradient: [
       "radial-gradient(ellipse 55% 55% at 80% 20%, rgba(235,225,205,0.60) 0%, rgba(235,225,205,0) 62%)",
       "radial-gradient(ellipse 65% 60% at 25% 50%, rgba(200,110,40,0.80) 0%, rgba(200,110,40,0) 62%)",
@@ -251,17 +143,75 @@ export const cases: CaseData[] = [
       { value: "Kraftigt minskad administration", unit: "", label: "Ett repetitivt arbetsmoment automatiserat" },
       { value: "Mer tid till produktion", unit: "", label: "Istället för att manuellt bygga plock- och följesedlar" },
     ],
+    nextSlug: "komfort-bilvard",
+  },
+  {
+    slug: "komfort-bilvard",
+    index: "03",
+    company: "Kom-Fort Bilvård",
+    problem: "Verksamhetssystem för bokningar och personal",
+    category: "Drift & Schemaläggning",
+    description:
+      "Från telefon, minne och lösa trådar till ett system för hela verksamheten.",
+    hook: "Från telefon, minne och lösa trådar till ett system för hela verksamheten.",
+    image: "/case-images/5.png",
+    gradient: [
+      "radial-gradient(ellipse 50% 55% at 82% 15%, rgba(220,225,235,0.55) 0%, rgba(220,225,235,0) 62%)",
+      "radial-gradient(ellipse 65% 60% at 22% 48%, rgba(180,90,35,0.85) 0%, rgba(180,90,35,0) 62%)",
+      "radial-gradient(ellipse 55% 55% at 12% 90%, rgba(15,15,20,0.90) 0%, rgba(15,15,20,0) 58%)",
+      "radial-gradient(ellipse 55% 45% at 75% 8%, rgba(90,100,120,0.45) 0%, rgba(90,100,120,0) 60%)",
+      "linear-gradient(150deg, #14161C 0%, #3A3128 32%, #8A4A22 58%, #C97A3E 80%, #4A4238 100%)",
+    ].join(", "),
+    challenge: [
+      "När Kom-Fort Bilvård fick in en ny bokning behövde flera saker hanteras manuellt.",
+      "Ägaren behövde hålla reda på vilken medarbetare som kunde ta uppdraget, skriva till personalen om passen, samla kund- och fordonsuppgifter, hålla informationen uppdaterad och därefter skicka orderbekräftelsen från sin egen telefon.",
+      "Informationen låg utspridd mellan meddelanden, telefonen och ägarens eget minne. Ju fler bokningar och medarbetare verksamheten hanterade, desto fler lösa trådar behövde hållas ihop manuellt.",
+    ],
+    solution: [
+      "Vi byggde ett skräddarsytt kalender- och verksamhetssystem för Kom-Fort Bilvård.",
+      "När ett nytt uppdrag registreras samlas kunduppgifter, fordonsinformation, tid och ansvarig medarbetare på samma ställe. Personalen kan själva logga in och se sina aktuella pass och informationen de behöver inför varje uppdrag.",
+      "När bokningen registreras skickas dessutom orderbekräftelsen automatiskt till kunden.",
+      "Istället för att verksamheten behöver koordineras genom ägarens telefon fungerar systemet som en gemensam källa för både honom och personalen.",
+    ],
+    steps: [
+      {
+        label: "Registrera uppdrag",
+        description:
+          "Kund, bil, tjänst, tid och övrig information registreras på ett och samma ställe.",
+      },
+      {
+        label: "Planera personal",
+        description:
+          "Uppdraget kopplas till rätt medarbetare och placeras direkt i kalendern.",
+      },
+      {
+        label: "Ge personalen kontroll",
+        description:
+          "Medarbetarna kan själva logga in och se sina pass och relevant information inför arbetet.",
+      },
+      {
+        label: "Bekräfta automatiskt",
+        description:
+          "När uppdraget registreras skickas orderbekräftelsen till kunden automatiskt.",
+      },
+    ],
+    metrics: [
+      { value: "Bokning → schema → bekräftelse", unit: "", label: "Samlat i ett enda arbetsflöde" },
+      { value: "Färre lösa trådar", unit: "", label: "All information samlad på samma ställe" },
+      { value: "Mindre personberoende", unit: "", label: "Verksamheten behöver inte längre leva i ägarens telefon" },
+    ],
     nextSlug: "osteopaticentrum",
   },
   {
     slug: "osteopaticentrum",
-    index: "05",
+    index: "04",
     company: "Osteopaticentrum",
     problem: "SMS-system för kunduppföljning och återaktivering",
     category: "Kunduppföljning & SMS",
     description:
       "Från kundlista till mätbara återbesök.",
     hook: "Från kundlista till mätbara återbesök.",
+    image: "/case-images/3.png",
     gradient: [
       "radial-gradient(ellipse 55% 55% at 78% 18%, rgba(210,230,225,0.55) 0%, rgba(210,230,225,0) 62%)",
       "radial-gradient(ellipse 65% 60% at 24% 50%, rgba(40,120,100,0.80) 0%, rgba(40,120,100,0) 62%)",
@@ -306,6 +256,62 @@ export const cases: CaseData[] = [
       { value: "SMS → bokning kan spåras", unit: "", label: "Se vilka återaktiveringsutskick som leder till nya bokningar" },
       { value: "1 eget system", unit: "", label: "För SMS, kunduppföljning och återaktivering" },
       { value: "Mindre verktygsberoende", unit: "", label: "Byggt runt Osteopaticentrums faktiska arbetssätt" },
+    ],
+    nextSlug: "lead-lista",
+  },
+  {
+    slug: "lead-lista",
+    index: "05",
+    company: "Observa Inkasso & Juridik",
+    problem: "Automatisk research av befintlig data",
+    category: "Research & Analys",
+    description:
+      "Från en lista med företagsnamn till researchade leads med domän, bolagstyp, ort och beslutsfattare.",
+    hook: "Från företagsnamn till färdig research på sekunder.",
+    image: "/case-images/2.png",
+    gradient: [
+      "radial-gradient(ellipse 45% 55% at 15% 25%, rgba(90,20,8,0.95) 0%, rgba(90,20,8,0) 65%)",
+      "radial-gradient(ellipse 60% 50% at 85% 45%, rgba(160,60,20,0.70) 0%, rgba(160,60,20,0) 60%)",
+      "radial-gradient(ellipse 55% 60% at 50% 85%, rgba(200,90,30,0.55) 0%, rgba(200,90,30,0) 65%)",
+      "radial-gradient(ellipse 40% 35% at 70% 12%, rgba(240,160,80,0.40) 0%, rgba(240,160,80,0) 60%)",
+      "linear-gradient(140deg, #0C0402 0%, #2A0A04 30%, #6B2210 58%, #A84020 80%, #5A1A08 100%)",
+    ].join(", "),
+    challenge: [
+      "Observa Inkasso & Juridik hade en omfattande lista med tiotusentals potentiella kunder – men underlaget bestod till stor del bara av företagsnamn.",
+      "För att listan skulle kunna användas i säljarbetet behövde varje företag researchas och förädlas med bland annat hemsida, stad, om verksamheten riktade sig mot företag eller konsumenter samt vem som var ekonomichef.",
+      "Att göra detta manuellt innebar att söka efter varje företag, kontrollera information från flera källor och sammanställa resultatet. Med flera minuters research per bolag blev arbetet snabbt väldigt tidskrävande i större volymer.",
+    ],
+    solution: [
+      "Vi byggde ett AI-drivet researchflöde som automatiskt förädlar företagslistan steg för steg.",
+      "Utifrån endast företagsnamnet genomför systemet research i tre separata AI-steg. Först identifieras rätt företag och dess domän. Därefter analyseras bolaget för att fastställa bland annat stad och om verksamheten är B2B eller B2C. Slutligen används den insamlade informationen för att identifiera rätt ekonomiansvarig.",
+      "Resultatet skrivs tillbaka till listan och ger Observa ett betydligt mer komplett underlag utan att varje företag behöver researchas manuellt.",
+    ],
+    steps: [
+      {
+        label: "Identifiering",
+        description:
+          "Företagsnamnet används för att identifiera rätt bolag och hitta dess domän och hemsida.",
+      },
+      {
+        label: "Bolagsresearch",
+        description:
+          "Nästa steg analyserar verksamheten och identifierar bland annat stad och om företaget arbetar B2B eller B2C.",
+      },
+      {
+        label: "Beslutsfattare",
+        description:
+          "Ytterligare research genomförs för att identifiera företagets ekonomichef eller motsvarande beslutsfattare.",
+      },
+      {
+        label: "Förädlad lista",
+        description:
+          "Den insamlade informationen struktureras och läggs tillbaka i listan, redo att användas vidare.",
+      },
+    ],
+    metrics: [
+      { value: "4 min → ~10 sek", unit: "", label: "Researchtid per företag" },
+      { value: "≈96%", unit: "", label: "Kortare researchtid" },
+      { value: "≈65h", unit: "", label: "Sparad tid per 1 000 företag" },
     ],
     nextSlug: "lead-engine",
   },

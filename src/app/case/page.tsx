@@ -11,8 +11,6 @@ export const metadata: Metadata = {
   alternates: { canonical: "/case" },
 };
 
-const GRAIN = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.70' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23g)' opacity='0.18'/%3E%3C/svg%3E")`;
-
 /*
   ══════════════════════════════════════════════════════════════════════════════
   OPTION B — Alternating editorial rows (archived, for future use)
@@ -42,7 +40,7 @@ const GRAIN = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'
 
 
 export default function Cases() {
-  const caseCard = ({ slug, index, company, description, gradient, metrics }: Pick<CaseData, "slug" | "index" | "company" | "problem" | "description" | "gradient" | "metrics">) => (
+  const caseCard = ({ slug, index, company, description, image, metrics }: Pick<CaseData, "slug" | "index" | "company" | "problem" | "description" | "image" | "metrics">) => (
     <Link
       key={slug}
       href={`/case/${slug}`}
@@ -50,13 +48,10 @@ export default function Cases() {
     >
       {/* Visual */}
       <div className="relative overflow-hidden aspect-[16/10] shrink-0">
-        <div
-          className="absolute inset-0 transition-transform duration-700 ease-out group-hover:scale-[1.04]"
-          style={{ background: gradient }}
-        />
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{ backgroundImage: GRAIN, backgroundSize: "160px 160px", mixBlendMode: "overlay" }}
+        <img
+          src={image}
+          alt={`${company} x Khyte Automations`}
+          className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent pointer-events-none" />
       </div>

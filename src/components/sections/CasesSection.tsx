@@ -25,55 +25,11 @@ export default function CasesSection() {
             aria-hidden="true"
             className="relative w-full aspect-[16/9] shrink-0 overflow-hidden"
           >
-            <div
-              className="absolute inset-0"
-              style={{
-                background: [
-                  "radial-gradient(ellipse 55% 60% at 78% 18%, rgba(255,235,185,0.72) 0%, rgba(255,235,185,0) 65%)",
-                  "radial-gradient(ellipse 70% 65% at 28% 52%, rgba(212,98,43,0.90) 0%, rgba(212,98,43,0) 62%)",
-                  "radial-gradient(ellipse 50% 55% at 8% 88%, rgba(27,8,3,0.88) 0%, rgba(27,8,3,0) 58%)",
-                  "radial-gradient(ellipse 60% 50% at 18% 10%, rgba(232,131,58,0.65) 0%, rgba(232,131,58,0) 60%)",
-                  "linear-gradient(145deg, #7A3A18 0%, #C46020 35%, #E8A050 58%, #F5D8A0 80%, #C87030 100%)",
-                ].join(", "),
-              }}
+            <img
+              src="/case-images/1.png"
+              alt="JaTack AB x Khyte Automations"
+              className="absolute inset-0 w-full h-full object-cover"
             />
-            <div
-              className="absolute inset-0"
-              style={{
-                backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.70' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23g)' opacity='0.18'/%3E%3C/svg%3E")`,
-                backgroundSize: "160px 160px",
-                mixBlendMode: "overlay",
-              }}
-            />
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="flex flex-col items-center gap-3">
-                <span
-                  className="block leading-[1.05] whitespace-nowrap"
-                  style={{
-                    fontFamily: "var(--font-sans)",
-                    fontSize: "clamp(28px, 5vw, 42px)",
-                    fontWeight: 700,
-                    letterSpacing: "-0.04em",
-                    color: "rgba(255,255,255,0.97)",
-                    textShadow: "0 2px 20px rgba(0,0,0,0.35)",
-                  }}
-                >
-                  JaTack AB
-                </span>
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true" style={{ opacity: 0.40 }}>
-                  <line x1="1" y1="1" x2="13" y2="13" stroke="white" strokeWidth="1.25" strokeLinecap="round"/>
-                  <line x1="13" y1="1" x2="1" y2="13" stroke="white" strokeWidth="1.25" strokeLinecap="round"/>
-                </svg>
-                <img
-                  src="/khyte-logo-text.svg"
-                  alt="Khyte Automations"
-                  width={240}
-                  height={64}
-                  className="block w-auto"
-                  style={{ height: "64px", filter: "drop-shadow(0 2px 16px rgba(0,0,0,0.40))", opacity: 0.93 }}
-                />
-              </div>
-            </div>
           </div>
 
           <div className="flex flex-col justify-between gap-8 p-8 md:p-10 flex-1">
@@ -114,55 +70,11 @@ export default function CasesSection() {
             aria-hidden="true"
             className="relative w-full aspect-[16/9] shrink-0 overflow-hidden"
           >
-            <div
-              className="absolute inset-0"
-              style={{
-                background: [
-                  "radial-gradient(ellipse 55% 55% at 78% 18%, rgba(210,230,225,0.55) 0%, rgba(210,230,225,0) 62%)",
-                  "radial-gradient(ellipse 65% 60% at 24% 50%, rgba(40,120,100,0.80) 0%, rgba(40,120,100,0) 62%)",
-                  "radial-gradient(ellipse 50% 55% at 10% 88%, rgba(10,18,16,0.92) 0%, rgba(10,18,16,0) 58%)",
-                  "radial-gradient(ellipse 45% 40% at 72% 8%, rgba(230,140,60,0.30) 0%, rgba(230,140,60,0) 60%)",
-                  "linear-gradient(150deg, #0C1614 0%, #1E3A34 32%, #1E7A62 58%, #4EAE8C 80%, #2A4038 100%)",
-                ].join(", "),
-              }}
+            <img
+              src="/case-images/3.png"
+              alt="Osteopaticentrum x Khyte Automations"
+              className="absolute inset-0 w-full h-full object-cover"
             />
-            <div
-              className="absolute inset-0"
-              style={{
-                backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.70' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23g)' opacity='0.18'/%3E%3C/svg%3E")`,
-                backgroundSize: "160px 160px",
-                mixBlendMode: "overlay",
-              }}
-            />
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="flex flex-col items-center gap-3">
-                <span
-                  className="block leading-[1.05] whitespace-nowrap"
-                  style={{
-                    fontFamily: "var(--font-sans)",
-                    fontSize: "clamp(28px, 5vw, 42px)",
-                    fontWeight: 700,
-                    letterSpacing: "-0.04em",
-                    color: "rgba(255,255,255,0.97)",
-                    textShadow: "0 2px 20px rgba(0,0,0,0.35)",
-                  }}
-                >
-                  Osteopaticentrum
-                </span>
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true" style={{ opacity: 0.40 }}>
-                  <line x1="1" y1="1" x2="13" y2="13" stroke="white" strokeWidth="1.25" strokeLinecap="round"/>
-                  <line x1="13" y1="1" x2="1" y2="13" stroke="white" strokeWidth="1.25" strokeLinecap="round"/>
-                </svg>
-                <img
-                  src="/khyte-logo-text.svg"
-                  alt="Khyte Automations"
-                  width={240}
-                  height={64}
-                  className="block w-auto"
-                  style={{ height: "64px", filter: "drop-shadow(0 2px 16px rgba(0,0,0,0.40))", opacity: 0.93 }}
-                />
-              </div>
-            </div>
           </div>
 
           <div className="flex flex-col justify-between gap-8 p-8 md:p-10 flex-1">

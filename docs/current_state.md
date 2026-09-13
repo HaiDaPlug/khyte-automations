@@ -1,4 +1,4 @@
-# Khyte Automations - Current State (v2.26)
+# Khyte Automations - Current State (v2.28)
 
 ## Tech Stack
 - **Next.js** 16.1.1 (App Router)
@@ -83,6 +83,11 @@ src/
 public/
 ├── khyte-logo-text.svg   # Main logo (white SVG, embedded PNG)
 ├── icons/                # Tool logos for ticker + social icons
+├── case-images/          # Case company photos (1.png-5.png, Canva-made "Company x Khyte" mockups)
+│                         # NOT named "cases/" — next.config.ts has a legacy `/cases/:path*` → `/case/:path*`
+│                         # redirect (old English URL migration) that would otherwise 308-redirect every
+│                         # request for these static files into the case detail route and 404. Keep this
+│                         # folder name; do not rename it back to "cases".
 └── *.png                 # Profile images
 ```
 
@@ -316,18 +321,18 @@ Skills live in `~/.claude/skills/` and are invoked via `/skill-name` or triggere
   - This mirrors the old placeholder-card centering behavior exactly, just driven by the real case count instead of a `cases.length + 1` placeholder slot
 - **"Kommer snart" placeholder card: REMOVED** (archived as a block comment in `case/page.tsx`, same pattern as the "Option B" alternating-rows archive). Rationale: with 5 real cases, a trailing empty "coming soon" tile reads as "the content ran out" rather than confident and intentional. Restore only if the grid gets sparse again (1–2 cases).
 - **Case cards**: `rounded-2xl`, border `rgba(58,51,48,0.18)`, hover border+shadow `rgba(58,51,48,0.52)` (double-border effect via `box-shadow`). No background fill — page bg shows through. Transition on `border-color` + `box-shadow`.
-  - Visual: `aspect-[16/10]`, gradient + grain overlay, scales `1.04` on hover
+  - Visual: `aspect-[16/10]`, real photo (`<img>`, `object-cover`, sourced from `image` field in `cases.ts`), scales `1.04` on hover — replaced the procedural gradient+grain mockup in v2.28
   - Divider: `1px` line between visual and text panel
   - Text panel: `p-6`. **No eyebrow/problem label** on the card.
   - **Company name (title) and key metric (outcome) are now the same font AND same size** — both `font-jakarta` (Plus Jakarta Sans, see Typography below), both `clamp(1.5rem, 2.4vw, 2rem)`, weight 800. Previously the title (`font-display`/Bebas) was visibly smaller than the metric value, which read as timid/unintentional next to a bold outcome stat — sizes were unified so the title carries equal visual weight.
   - "Läs mer" + arrow always visible in `--color-ink`
   - No index numbers shown
-- **Active cases** (5, see `src/data/cases.ts`):
+- **Active cases** (5, see `src/data/cases.ts`) — ordered by owner's confidence in the case, strongest first:
   1. JaTack AB — Sälj & Prospektering
-  2. Observa Inkasso & Juridik — Research & Analys
+  2. Etcetera Offset — Dokument & Produktion
   3. Kom-Fort Bilvård — Drift & Schemaläggning
-  4. Etcetera Offset — Dokument & Produktion
-  5. Osteopaticentrum — Kunduppföljning & SMS
+  4. Osteopaticentrum — Kunduppföljning & SMS
+  5. Observa Inkasso & Juridik — Research & Analys
 - **Archived layout** (Option B — alternating rows): preserved as JS block comment above `export default` in `case/page.tsx`. Uncomment to restore zigzag layout.
 
 ### Case Detail Page (`/case/[slug]`)
@@ -340,7 +345,7 @@ Skills live in `~/.claude/skills/` and are invoked via `/skill-name` or triggere
 - **Testimonial**: optional, `figure` card, only renders when `c.testimonial` is set. Currently no case has one (JaTack's was removed; none of the newer 3 cases include one).
 - **Back / Next footer**: "Alla case" and "Nästa case" both use the same editorial `font-display font-bold tracking-[0.18em] uppercase` treatment (matches the site's "OM OSS →" link pattern in ProcessSection) — orange on hover, sliding arrow icon. Row uses `items-end` (not `items-center`) so both links share the same baseline. Next-case company name is larger (`clamp(1.5rem,3.2vw,2.25rem)`) than the "Alla case"/"Nästa case" labels but stays in the same clean uppercase display style, not an oversized headline treatment.
 - **Company name (H1)**: uses `font-jakarta` (Plus Jakarta Sans, not `font-display`/Bebas), sized to match the metrics band's short-value size: `clamp(2.25rem, 5vw, 3.75rem)`. This was deliberately matched to the Resultat metric value size so the hero title carries the same visual weight as the outcome stats below it, instead of the title feeling smaller/quieter by comparison.
-- **`nextSlug` chain**: JaTack → Observa → Kom-Fort → Etcetera → Osteopaticentrum → JaTack (cycles through all 5).
+- **`nextSlug` chain**: JaTack → Etcetera → Kom-Fort → Osteopaticentrum → Observa → JaTack (cycles through all 5, ordered strongest case first per owner's confidence ranking).
 
 ### Typography — Plus Jakarta Sans (case pages only)
 - Loaded via `next/font/google` in `layout.tsx` as `jakartaSans` (weights 700/800, variable `--font-jakarta`), added to the `<html>` className alongside `barlow`/`bebasNeue`.
@@ -454,17 +459,17 @@ The homepage (`src/app/page.tsx`) uses an **alternating root/Container pattern**
 
 ### CasesSection.tsx
 - **Header**: h2 big (`text-3xl/4xl`) on top, `.text-label` eyebrow below — reversed from standard pattern
-- **Layout**: 2-col grid — testimonial card (left) + "Läs mer" placeholder (right), matched height
-- **Testimonial card**: `bg-[var(--color-card-bg)] rounded-2xl overflow-hidden flex flex-col`
-  - **Image area** (top): `aspect-[16/9]`, 5-layer radial gradient (espresso → amber → cream) + grain overlay (`mixBlendMode: overlay, opacity 0.18`)
-  - **Collab lockup** (centered over image): "JaTack AB" (`clamp(28px,5vw,42px)`, weight 700, white, `-0.04em` tracking, text-shadow) → SVG `×` cross (14×14, diagonal lines, `opacity 0.40`) → Khyte logo (`height 64px`, white, `drop-shadow`)
-  - **Note**: `khyte-logo-text.svg` bakes white pixels internally via `feColorMatrix` — CSS filter recoloring does not work reliably; keep white + drop-shadow for legibility
-  - **Content area**: mono category label + real testimonial quote (Sebastian Andersson, JaTack AB)
-  - **Attribution**: hairline divider + `sebastian.jpg` avatar (`w-14 h-14`, `object-cover`, `object-position: center top`) + name/role
+- **Layout**: 2-col grid — 2 testimonial cards (Sebastian/JaTack, Mattias/Osteopaticentrum) + "Läs mer" placeholder, wraps to a 2nd row
+- **Testimonial cards**: `bg-[var(--color-card-bg)] rounded-2xl overflow-hidden flex flex-col`, now wrapped in `<Link href="/case/{slug}">` — the **whole card is clickable** through to that case's detail page (Sebastian → `/case/lead-engine`, Mattias → `/case/osteopaticentrum`). No hover treatment added — deliberately minimal-diff, just swapped the outer `div` for `Link`.
+  - **Image area** (top): `aspect-[16/9]`, real Canva-made photo (`<img>`, `object-cover`) — replaced the procedural gradient+text mockup in v2.28. Source images live in `public/case-images/` (see note below on the folder name), referenced via each case's own `image` field in `cases.ts`.
+  - **Content area**: mono category label (pulled from that case's own `category` in `cases.ts`) + real testimonial quote
+  - **Attribution**: hairline divider + avatar (`w-14 h-14`, `object-cover`, `object-position: center top`) + name/role
+    - Sebastian Andersson, Grundare JaTack AB — `sebastian.jpg`
+    - Mattias Hietala, Grundare Osteopaticentrum — `mattiashietala.jpg`
 - **Placeholder card**: `rounded-2xl border-2 border-dashed border-[var(--color-border)]` — arrow icon + "Läs mer om våra case", links to `/case`
 - **Dot indicator**: removed
 - **Outside links**: removed — "SE ALLA CASE" desktop header link and mobile link both removed.
-- **Swap image**: replace gradient `<div>` with `<img src="/case-photo.jpg" className="w-full aspect-[16/9] object-cover shrink-0" />` when real photo is ready
+- **Room for more**: only 2 of the 5 cases (`src/data/cases.ts`) have a testimonial card here — Kom-Fort Bilvård, Etcetera Offset, Observa don't yet. Add the same pattern (gradient matched to that case's own colors, category label from `cases.ts`, real quote + photo) if/when those clients give testimonials.
 
 ### PainOutcome.tsx
 - `mb-24 md:mb-32` (tighter than `--spacing-section` — pulls closer to ROIBand thematically)
@@ -744,6 +749,8 @@ npm run dev                     # Dev mode (Turbopack bug exists)
 | Motion design rules | `.claude/motion-design.md` |
 | Page transition | `src/components/PageTransition.tsx` |
 | Client photo (Sebastian) | `public/sebastian.jpg` |
+| Client photo (Mattias) | `public/mattiashietala.jpg` |
+| Case company photos (5, "Company x Khyte") | `public/case-images/1.png`–`5.png` |
 | Archived — node graph | `src/components/NodeGraph.tsx` |
 | Archived — chaos→order sweep | `src/components/DataSweep.tsx` |
 | Archived — interactive dot grid | `src/components/InteractiveGrid.tsx` |
@@ -801,6 +808,18 @@ Moved to `docs/INTENTIONS.md` — the living log for ideas, directions, and thin
 ---
 
 ## Changelog
+
+### v2.28 — Real case photos + strongest-case ordering
+- **Replaced procedural gradient+text mockups with real photos** on both the homepage testimonial cards (`CasesSection.tsx`) and the `/case` listing grid (`case/page.tsx`). Each case now has an `image` field in `cases.ts` pointing at a Canva-made "Company x Khyte" photo in `public/case-images/`.
+- **New asset folder is `public/case-images/`, not `public/cases/`** — the obvious name collides with the legacy `/cases/:path*` → `/case/:path*` redirect in `next.config.ts` (English→Swedish URL migration), which was 308-redirecting every image request into the case detail route and silently 404ing. Renamed to avoid touching redirect logic — the CLAUDE.md constraint pack flags host/path redirect changes as high risk (a prior incident took down the whole site). Do not rename this folder back to `cases/`.
+- Removed the now-dead `GRAIN` constant from `case/page.tsx` (was only referenced inside an already-archived comment block, would have failed lint as unused).
+- **Reordered `/case` by the owner's confidence in each case, strongest first**: JaTack AB → Etcetera Offset → Kom-Fort Bilvård → Osteopaticentrum → Observa Inkasso & Juridik. `index` (01–05) and `nextSlug` chain updated to match. Homepage `CasesSection` is unaffected — it still features JaTack + Osteopaticentrum, the only two cases with a written testimonial quote.
+
+### v2.27 — Homepage review cards link to case pages
+- **CasesSection testimonial cards are now clickable** — each wrapped in `<Link href="/case/{slug}">` straight through to that client's case detail page, instead of being static cards next to a separate "Läs mer" link.
+- **Added a second testimonial card**: Mattias Hietala (Grundare, Osteopaticentrum), linking to `/case/osteopaticentrum`. New photo asset `public/mattiashietala.jpg`. Card's gradient and category label match the Osteopaticentrum case's own data in `cases.ts` (teal/green, "Kunduppföljning & SMS") rather than reusing JaTack's orange theme.
+- Grid now holds 2 testimonial cards + the "Läs mer" placeholder — wraps to a second row in the existing `md:grid-cols-2`.
+- 3 of 5 cases (Kom-Fort Bilvård, Etcetera Offset, Observa) still have no testimonial card here — same pattern can be repeated when those clients give quotes.
 
 ### v2.25 — SEO correctness pass
 Acted on `docs/SEO_AUDIT.md` (written 2026-03-05, reconciled against the code on 2026-08-29).
