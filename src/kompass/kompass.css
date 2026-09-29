@@ -1,0 +1,623 @@
+/**
+ * Automationskompassen — all CSS, isolerad.
+ *
+ * Allt ligger under .kompass, klasserna heter k-*, variablerna --k-* och
+ * animationerna k-*. Därför kan kompassen flyttas in i en annan app (t.ex.
+ * khyte.se) utan att sajtens stilar läcker in eller kompassens läcker ut.
+ * Filen importeras av KompassSida — värdappen behöver inte göra något.
+ *
+ * Designtokens hämtade från khyte.se (kompilerad CSS, verifierat 2026-09-22).
+ * Ändra inte på måfå — de ska matcha sajten exakt.
+ */
+
+.kompass {
+  --k-bg: #f8f6f3;
+  --k-card-bg: #f0ede9;
+  --k-text: #3a3330;
+  --k-text-body: #5a4f48;
+  --k-muted: #9c8e82;
+  --k-accent: #e8833a;
+  --k-border: rgba(58, 51, 48, 0.12);
+
+  /* Mörk yta — samma som sajtens pillerformade header. */
+  --k-dark: #1b0803;
+  --k-dark-text: #f8f6f3;
+
+  --k-cta: #c05e20;
+  --k-cta-hover: #a94f19;
+
+  /* Satoshi laddas av värdappen (khyte.se gör det redan). Bebas Neue laddas
+     av kompassen själv, se typsnitt.ts. */
+  --k-font-sans: "Satoshi", ui-sans-serif, system-ui, sans-serif;
+  --k-font-display: var(--k-font-bebas), "Bebas Neue", sans-serif;
+
+  background-color: var(--k-bg);
+  color: var(--k-text);
+  font-family: var(--k-font-sans);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  -webkit-font-smoothing: subpixel-antialiased;
+  /* Ingen horisontell scroll, även på 375 px. clip, inte hidden — hidden
+     skulle göra knappfältets position: sticky verkningslös. */
+  overflow-x: clip;
+  /* Notchen och de rundade hörnen i liggande läge på iPhone. */
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+
+/* Tydlig fokusmarkering för tangentbordsnavigering. */
+.kompass :focus-visible {
+  outline: 2px solid var(--k-cta);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kompass *,
+  .kompass *::before,
+  .kompass *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Versala rubriker i sajtens displayfont. */
+.kompass .k-rubrik {
+  font-family: var(--k-font-display);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  line-height: 1.05;
+  /* Ingen färg här: den ärvs från .kompass. En färg på en klass utanför
+     Tailwinds lager skulle slå text-[…]-klasser på samma element. */
+}
+
+/* Primärknapp — sajtens kopparton, utan gradient. */
+.kompass .k-btn-primar {
+  background-color: var(--k-cta);
+  color: #ffffff;
+  transition:
+    background-color 0.18s ease,
+    transform 0.12s ease;
+}
+
+@media (hover: hover) {
+  .kompass .k-btn-primar:hover:not(:disabled) {
+    background-color: var(--k-cta-hover);
+  }
+}
+
+.kompass .k-btn-primar:active:not(:disabled) {
+  transform: scale(0.985);
+}
+
+.kompass .k-btn-primar:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* Svarsalternativ. Hela ytan är klickbar — viktigt på mobil. */
+.kompass .k-alternativ {
+  background-color: var(--k-card-bg);
+  border: 1px solid var(--k-border);
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease;
+}
+
+/* Hover bara med mus — på en telefon fastnar :hover efter ett tryck och ser
+   ut som ett val. */
+@media (hover: hover) {
+  .kompass .k-alternativ:hover {
+    border-color: rgba(192, 94, 32, 0.45);
+  }
+}
+
+.kompass .k-alternativ[data-vald="true"] {
+  border-color: var(--k-cta);
+  background-color: rgba(192, 94, 32, 0.07);
+  animation: k-poppa 0.25s ease-out;
+}
+
+/* Flervalets tak är nått — övriga alternativ går inte att välja. */
+.kompass .k-alternativ[data-last="true"] {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.kompass .k-alternativ[data-last="true"]:hover {
+  border-color: var(--k-border);
+}
+
+/*
+ * Snabbval: piller på skärmar med flera korta frågor. Ett tryck räcker.
+ * Minst 44 px höga så att de håller som tryckyta på mobil.
+ */
+.kompass .k-snabbval {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding: 0 1rem;
+  border-radius: 9999px;
+  border: 1px solid var(--k-border);
+  background-color: var(--k-card-bg);
+  color: var(--k-text);
+  font-size: 0.9375rem;
+  cursor: pointer;
+  user-select: none;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+
+@media (hover: hover) {
+  .kompass .k-snabbval:hover {
+    border-color: rgba(192, 94, 32, 0.45);
+  }
+}
+
+.kompass .k-snabbval[data-vald="true"] {
+  border-color: var(--k-cta);
+  background-color: var(--k-cta);
+  color: #ffffff;
+  animation: k-poppa 0.25s ease-out;
+}
+
+/* Radioknappen är dold, så fokusmarkeringen läggs på pillret. */
+.kompass .k-snabbval:has(input:focus-visible) {
+  outline: 2px solid var(--k-cta);
+  outline-offset: 3px;
+}
+
+/*
+ * Rörelse i flödet. Korta, mjuka övergångar — frågan glider in från det
+ * håll man är på väg, alternativen tonar upp i tur och ordning.
+ * prefers-reduced-motion stänger av allt via regeln i base-lagret.
+ */
+.kompass .k-fraga-in-fram {
+  animation: k-glid-in-fram 0.32s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.kompass .k-fraga-in-bak {
+  animation: k-glid-in-bak 0.32s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+/* Längden måste matcha UTGANG i FragaVy.tsx. */
+.kompass .k-fraga-lamnar {
+  animation: k-glid-ut 0.18s ease-in forwards;
+}
+
+.kompass .k-alternativ-in {
+  animation: k-tona-upp 0.35s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: calc(var(--i, 0) * 45ms + 80ms);
+}
+
+.kompass .k-reaktion {
+  animation: k-tona-upp 0.3s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+/* Tunn linje som fylls medan reaktionen visas — visar att det går vidare. */
+.kompass .k-reaktion-tid {
+  display: block;
+  height: 3px;
+  background-color: var(--k-cta);
+  opacity: 0.5;
+  transform-origin: left;
+  animation: k-fyll linear forwards;
+}
+
+/* Resultatet byggs upp del för del. --i styr ordningen. */
+.kompass .k-tona-in {
+  animation: k-tona-upp 0.45s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: calc(var(--i, 0) * 90ms);
+}
+
+/* Låsta modulkort: innehållet anas men går inte att läsa. */
+.kompass .k-last-innehall {
+  filter: blur(5px);
+  user-select: none;
+  pointer-events: none;
+}
+
+/*
+ * Flödet i ett förslag: numrerade steg med en tunn linje emellan, så att
+ * det läses som en kedja — det här händer, sedan det här.
+ */
+.kompass .k-flode {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+.kompass .k-flode-steg {
+  position: relative;
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+
+.kompass .k-flode-steg:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  left: 0.8125rem;
+  top: 1.875rem;
+  bottom: -0.75rem;
+  width: 2px;
+  background-color: rgba(192, 94, 32, 0.25);
+}
+
+.kompass .k-flode-nummer {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 9999px;
+  background-color: var(--k-cta);
+  color: #ffffff;
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+/*
+ * Draken från khyte.se. Yttre diven lutar sig mot pekaren och flyger iväg
+ * vid start (transition); svg:n tonar in; kroppen svävar; svansen gungar.
+ */
+.kompass .k-drake {
+  --k-luta-x: 0px;
+  --k-luta-y: 0px;
+  --k-luta-rot: 0deg;
+  transform: translate(var(--k-luta-x), var(--k-luta-y)) rotate(var(--k-luta-rot));
+  transition:
+    transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1),
+    opacity 0.5s ease;
+}
+
+/* Ett vindkast: rycker till direkt och drar iväg snett uppåt. */
+.kompass .k-drake-flyger {
+  transform: translate(180px, -320px) rotate(24deg) scale(0.55);
+  opacity: 0;
+  transition:
+    transform 0.65s cubic-bezier(0.3, 0.1, 0.7, 0.4),
+    opacity 0.3s ease 0.35s;
+}
+
+.kompass .k-drake-in {
+  animation: k-drake-in 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.kompass .k-drake-kropp {
+  transform-box: view-box;
+  transform-origin: 200px 230px;
+  animation: k-drake-svava 6s ease-in-out infinite;
+}
+
+.kompass .k-drake-svans {
+  transform-box: fill-box;
+  transform-origin: 50% 0%;
+  animation: k-drake-svans 2.4s ease-in-out infinite;
+  animation-delay: calc(var(--i, 0) * -0.3s);
+}
+
+.kompass .k-drake-partikel {
+  transform-box: fill-box;
+  opacity: 0;
+  animation: k-drake-partikel 4.5s ease-in-out infinite;
+}
+
+.kompass .k-drake-lina {
+  animation: k-drake-lina 1.8s linear infinite;
+}
+
+.kompass .k-drake-glans {
+  animation: k-drake-glans 6s ease-in-out infinite;
+}
+
+/* Varmt sken bakom draken — bryter det vita utan att ta över. */
+.kompass .k-start-sken {
+  position: absolute;
+  pointer-events: none;
+  border-radius: 9999px;
+  background: radial-gradient(
+    circle,
+    rgba(232, 131, 58, 0.22) 0%,
+    rgba(232, 131, 58, 0.08) 45%,
+    transparent 70%
+  );
+  animation: k-start-sken 8s ease-in-out infinite;
+}
+
+/* Skenets pulsering skulle annars låsa opaciteten när det ska tona ut. */
+.kompass .k-start-sken.k-start-lamnar {
+  animation: none;
+}
+
+/* Startvyn — text och sken — tonar ut medan draken flyger iväg. */
+.kompass .k-start-lamnar {
+  opacity: 0;
+  transform: translateY(-8px);
+  transition:
+    opacity 0.4s ease,
+    transform 0.4s ease;
+}
+
+/*
+ * Tidskartan. Två steg ur kopparrampen, validerade med dataviz-skriptet mot
+ * bakgrunden #f8f6f3: alla kontroller godkända, kontrast under 3:1 för den
+ * ljusa — därför skrivs värdena alltid ut vid stapeln.
+ * Stapel 16 px, 2 px mellanrum mellan delarna, 4 px rundning bara i änden.
+ */
+.kompass .k-karta-spara {
+  background-color: #a94f19;
+}
+
+.kompass .k-karta-rest {
+  background-color: #e0915a;
+}
+
+.kompass .k-karta-stapel {
+  gap: 2px;
+  transform-origin: left center;
+  animation: k-karta-vaxa 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: calc(var(--i, 0) * 120ms + 350ms);
+}
+
+.kompass .k-karta-stapel > span:last-child {
+  border-radius: 0 4px 4px 0;
+}
+
+.kompass .k-karta-nyckel {
+  display: inline-block;
+  width: 0.625rem;
+  height: 0.625rem;
+  border-radius: 2px;
+}
+
+/* Analysögonblicket: raderna dyker upp en i taget. */
+.kompass .k-analys-rad {
+  opacity: 0;
+  transform: translateY(6px);
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
+}
+
+.kompass .k-analys-synlig {
+  opacity: 1;
+  transform: none;
+}
+
+.kompass .k-analys-puls {
+  animation: k-analys-puls 0.9s ease-in-out infinite;
+}
+
+/* "Det vi ser hittills" — tonar in när AI-analysen uppdateras. */
+.kompass .k-hypotes {
+  animation: k-tona-upp 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.kompass .k-hypotes-prick {
+  animation: k-analys-puls 1.6s ease-in-out infinite;
+}
+
+/* Endast för skärmläsare. */
+.kompass .k-bara-skarmlasare {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+@keyframes k-glid-in-fram {
+  from {
+    opacity: 0;
+    transform: translateX(28px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes k-glid-in-bak {
+  from {
+    opacity: 0;
+    transform: translateX(-28px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes k-glid-ut {
+  to {
+    opacity: 0;
+    transform: translateX(-28px);
+  }
+}
+
+@keyframes k-tona-upp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes k-poppa {
+  50% {
+    transform: scale(1.015);
+  }
+}
+
+@keyframes k-karta-vaxa {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes k-analys-puls {
+  0%,
+  100% {
+    transform: scale(0.7);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+}
+
+@keyframes k-fyll {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes k-drake-in {
+  from {
+    opacity: 0;
+    transform: translateY(28px) scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes k-drake-svava {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-1.5deg);
+  }
+  50% {
+    transform: translateY(-14px) rotate(1.8deg);
+  }
+}
+
+@keyframes k-drake-svans {
+  0%,
+  100% {
+    transform: translateX(calc(-2px - var(--i, 0) * 2px)) rotate(-5deg);
+  }
+  50% {
+    transform: translateX(calc(3px + var(--i, 0) * 3px)) rotate(6deg);
+  }
+}
+
+@keyframes k-drake-partikel {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0);
+  }
+  30% {
+    opacity: 0.55;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-12px, -80px);
+  }
+}
+
+@keyframes k-drake-lina {
+  to {
+    stroke-dashoffset: -20;
+  }
+}
+
+@keyframes k-drake-glans {
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes k-start-sken {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+  50% {
+    transform: scale(1.08);
+    opacity: 1;
+  }
+}
+
+/* ── Mobil ───────────────────────────────────────────────────────────────── */
+
+/*
+ * Knappfältet under frågorna: fast i nederkant på mobil, så att Nästa och
+ * Tillbaka alltid syns — även på långa skärmar som "Vad tar mest tid?".
+ * Tar hänsyn till iPhones hemindikator.
+ */
+/* Smal skärm — eller låg pekskärm, dvs. en telefon i liggande läge. */
+@media (max-width: 639px), (max-height: 500px) and (pointer: coarse) {
+  .kompass .k-knappfalt {
+    position: sticky;
+    bottom: 0;
+    z-index: 10;
+    margin-inline: -1.25rem;
+    padding: 0.75rem 1.25rem max(0.75rem, env(safe-area-inset-bottom));
+    /* Helt täckande — genomskinligt blir rörigt när alternativ glider under. */
+    background-color: var(--k-bg);
+    border-top: 1px solid var(--k-border);
+    box-shadow: 0 -8px 20px rgba(58, 51, 48, 0.06);
+  }
+}
+
+/* Startsidan på låga skärmar (iPhone SE): mindre drake, så att knappen syns. */
+@media (max-width: 639px) and (max-height: 760px) {
+  .kompass .k-drake-start {
+    height: 7.5rem;
+    width: 5.375rem;
+  }
+}
+
+/*
+ * Flytande knapp på resultatet, bara mobil: leder ner till mejlfältet, som
+ * annars ligger långt ner. Döljs när formuläret syns.
+ */
+.kompass .k-flytande {
+  position: fixed;
+  left: 50%;
+  bottom: max(1rem, env(safe-area-inset-bottom));
+  z-index: 20;
+  transform: translateX(-50%);
+  box-shadow: 0 10px 30px rgba(27, 8, 3, 0.25);
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease;
+}
+.kompass .k-flytande[data-dold="true"] {
+  opacity: 0;
+  transform: translate(-50%, 1rem);
+  pointer-events: none;
+}
+/* Döljs på dator och surfplatta — men inte på en telefon i liggande läge. */
+@media (min-width: 640px) and (min-height: 501px), (min-width: 640px) and (pointer: fine) {
+  .kompass .k-flytande {
+    display: none;
+  }
+}

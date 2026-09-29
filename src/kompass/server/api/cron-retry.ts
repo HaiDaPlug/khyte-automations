@@ -1,0 +1,143 @@
+import { NextResponse } from "next/server";
+import { LAGRING } from "@/kompass/data/kompass";
+import { loggaFel } from "@/kompass/server/logg";
+import { RAD_KOLUMNER, type SvarsRad } from "@/kompass/server/rad";
+import { supabase } from "@/kompass/server/supabase";
+import {
+  behoverForsok,
+  korEftersteg,
+  larmaOmUppgivnaSteg,
+  sparaStatus,
+} from "@/kompass/server/leverans";
+
+/**
+ * Cron-jobb som försöker om misslyckade eftersteg.
+ *
+ * Körs var tionde minut. Skyddat av CRON_SECRET — utan rätt nyckel händer
+ * ingenting.
+ */
+
+/** Hur många rader vi tar per körning, så att en körning inte drar iväg. */
+const MAX_RADER_PER_KORNING = 25;
+
+/**
+ * Rensar data som inte ska sparas längre än nödvändigt — se LAGRING.
+ * Avbrutna svar utan mejl, gamla mätningshändelser och spamskyddets
+ * IP-räkning. Leads med mejl rörs inte. Ett fel här stoppar aldrig
+ * omförsöken av mejl.
+ */
+async function rensaGammalData(): Promise<Record<string, number | null>> {
+  const fore = (dagar: number) =>
+    new Date(Date.now() - dagar * 24 * 60 * 60 * 1000).toISOString();
+  const resultat: Record<string, number | null> = {};
+
+  const jobb: [string, () => PromiseLike<{ error: { message: string } | null; count: number | null }>][] = [
+    [
+      "avbrutna",
+      () =>
+        supabase()
+          .from("kompass_svar")
+          .delete({ count: "exact" })
+          .is("mejl", null)
+          .lt("updated_at", fore(LAGRING.avbrutnaDagar)),
+    ],
+    [
+      "handelser",
+      () =>
+        supabase()
+          .from("kompass_events")
+          .delete({ count: "exact" })
+          .lt("created_at", fore(LAGRING.handelserDagar)),
+    ],
+    [
+      "spamskydd",
+      () =>
+        supabase()
+          .from("kompass_inskick")
+          .delete({ count: "exact" })
+          .lt("created_at", fore(LAGRING.spamskyddDagar)),
+    ],
+  ];
+
+  for (const [namn, kor] of jobb) {
+    try {
+      const { error, count } = await kor();
+      if (error) loggaFel(`Kunde inte rensa ${namn}`, error.message);
+      resultat[namn] = error ? null : (count ?? 0);
+    } catch (fel) {
+      loggaFel(`Kunde inte rensa ${namn}`, fel);
+      resultat[namn] = null;
+    }
+  }
+  return resultat;
+}
+
+export async function GET(request: Request) {
+  const hemlighet = process.env.CRON_SECRET;
+
+  if (!hemlighet) {
+    loggaFel("CRON_SECRET saknas — cron-jobbet kan inte köras.");
+    return NextResponse.json({ fel: "Inte konfigurerat." }, { status: 500 });
+  }
+
+  // Vercel Cron skickar Authorization: Bearer <CRON_SECRET>.
+  const auktorisering = request.headers.get("authorization");
+  if (auktorisering !== `Bearer ${hemlighet}`) {
+    return NextResponse.json({ fel: "Nekad." }, { status: 401 });
+  }
+
+  try {
+    // Bara rader som faktiskt väntar på ett nytt försök. Tidigare filtrerades
+    // det bort i efterhand bland de 25 äldsta raderna — med fler än 25 lyckade
+    // rader nåddes de misslyckade aldrig. Och kontakt_namn användes som villkor,
+    // men de flesta leads lämnar bara mejl.
+    const { data, error } = await supabase()
+      .from("kompass_svar")
+      .select(RAD_KOLUMNER)
+      .eq("behover_forsok", true)
+      .not("mejl", "is", null)
+      .order("updated_at", { ascending: true })
+      .limit(MAX_RADER_PER_KORNING);
+
+    if (error) {
+      loggaFel("Cron kunde inte hämta rader", error.message);
+      return NextResponse.json({ fel: "Kunde inte hämta." }, { status: 500 });
+    }
+
+    const rader = (data ?? []) as unknown as SvarsRad[];
+    // Dubbelkontroll mot själva statusen, om kolumnen och statusen skulle
+    // glida isär.
+    const attForsoka = rader.filter((r) => behoverForsok(r.leverans_status));
+
+    let lyckade = 0;
+    let kvar = 0;
+
+    for (const rad of attForsoka) {
+      const innan = rad.leverans_status ?? {};
+      const efter = await korEftersteg(rad);
+
+      await sparaStatus(rad.session_id, efter);
+      await larmaOmUppgivnaSteg(rad.session_id, innan, efter);
+
+      if (behoverForsok(efter)) {
+        kvar += 1;
+      } else {
+        lyckade += 1;
+      }
+    }
+
+    const rensat = await rensaGammalData();
+
+    return NextResponse.json({
+      ok: true,
+      rensat,
+      granskade: rader.length,
+      forsokta: attForsoka.length,
+      lyckade,
+      kvar,
+    });
+  } catch (fel) {
+    loggaFel("Oväntat fel i cron-jobbet", fel);
+    return NextResponse.json({ fel: "Oväntat fel." }, { status: 500 });
+  }
+}

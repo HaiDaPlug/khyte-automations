@@ -1,4 +1,4 @@
-# Khyte Automations - Current State (v2.28)
+# Khyte Automations - Current State (v2.29)
 
 ## Tech Stack
 - **Next.js** 16.1.1 (App Router)
@@ -681,6 +681,19 @@ FAQ schema, and never let the schema list and the accordion list drift apart —
 - Trigger: `openCalendly()` from `CalendlyContext` — used in Nav CTA, PreFooterCTA, CalendlyButton
 - `CalendlyProvider` wraps the full app in layout.tsx; `CalendlyDrawer` renders globally alongside Nav
 
+## Automationskompassen (v2.29)
+Lead magnet moved in from the separate `khyte-kompass` repo with its `npm run flytta` script. **Source of truth is still `khyte-kompass`** — never edit `src/kompass/` here; change it there and move it again.
+
+- **Module**: `src/kompass/` (self-contained: CSS scoped under `.kompass`, classes `k-*`, API under `/api/kompass/*`, images under `public/kompass/`). Entry points: `@/kompass`, `@/kompass/og`, `@/kompass/server`.
+- **Routes**: `/kompass` (full page, site chrome, in sitemap) · `/kompass/inbaddad` (no chrome, `noindex` — only loaded inside the popup iframe) · `/api/kompass/{svar,analys,forslag,event,kontakt,komplettera,cron}`.
+- **Popup** (`KompassContext.tsx` + `KompassModal.tsx`): `openKompass()` opens a dialog with an **iframe** to `/kompass/inbaddad`. Iframe on purpose — the compass scrolls `window` and has `position: fixed` buttons, which break inside a scrolling modal. The iframe is created on first open and kept, so closing/reopening continues where the visitor was. `?ref=` and `utm_*` are forwarded into the iframe. Mobile: full screen; desktop: centered 760px panel. z-index 210/211 (Calendly is 200/201).
+- **Links out of the popup**: `src/app/kompass/inbaddad/LankarUtUrRutan.tsx` sends links to other pages (privacy policy, case pages) to the top window; `#anchors`, mailto and tel stay in the iframe. Share links point at `/kompass` (`delningsSokvag`).
+- **Nav**: secondary ghost button left of the CTA — icon only at `lg`, icon + "Kompassen" from `xl`, hidden below `lg` (right side has no room; the nav already overlaps at 768px). Mobile drawer: full-width ghost button above "Kontakta oss". Logo/CTA/centered links untouched. On `/kompass` the button just scrolls to top.
+- **Teaser** (`KompassTeaser.tsx`): homepage only. Dark card bottom-right (mobile: bottom, full width) after scrolling past ~0.8 viewport or 20 s. Hidden for 7 days after close or after the compass is opened (`localStorage` key `khyte-kompass-ruta`). Hidden while the compass or Calendly is open.
+- **SiteChrome** also hides nav/footer/Calendly on `/kompass/inbaddad`.
+- **Env vars (Vercel)**: `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `RESEND_API_KEY`, `MAIL_FROM`, `SALES_EMAIL`, `ADMIN_EMAIL`, `ANTHROPIC_API_KEY`, `CRON_SECRET` — see `.env.example`. **Without Supabase, saving answers and the contact form return 500** (the visitor sees "Vi kunde inte skicka just nu"). Without `ANTHROPIC_API_KEY` the result falls back to the rule engine.
+- **Cron not added**: the move script creates `vercel.json` with `/api/kompass/cron` every 10 min (retries failed mails). Left out on purpose — Vercel Hobby only allows daily cron and would fail the deploy. Add it once mail is set up and the plan is known.
+
 ## Development
 ```bash
 npm run build && npm run start  # Production (recommended)
@@ -808,6 +821,11 @@ Moved to `docs/INTENTIONS.md` — the living log for ideas, directions, and thin
 ---
 
 ## Changelog
+
+### v2.29 — Automationskompassen on the site
+- Moved the compass module in from `khyte-kompass` (`src/kompass/`, `/kompass`, `/api/kompass/*`, `public/kompass/`). New deps: `@anthropic-ai/sdk`, `@supabase/supabase-js`, `resend`, `server-only`, `zod`.
+- Popup: `KompassProvider` in layout, `KompassModal` (iframe to `/kompass/inbaddad`), homepage `KompassTeaser`. Nav button (lg+) and mobile drawer button. See "Automationskompassen" above.
+- `/kompass` added to the sitemap.
 
 ### v2.28 — Real case photos + strongest-case ordering
 - **Replaced procedural gradient+text mockups with real photos** on both the homepage testimonial cards (`CasesSection.tsx`) and the `/case` listing grid (`case/page.tsx`). Each case now has an `image` field in `cases.ts` pointing at a Canva-made "Company x Khyte" photo in `public/case-images/`.

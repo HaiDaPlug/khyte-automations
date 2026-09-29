@@ -1,0 +1,205 @@
+/**
+ * Uträkningen bakom resultatet.
+ *
+ * Tiden kommer från besökarens egna svar per område. Våra antaganden är bara
+ * två: hur stor del som brukar gå att automatisera (ANDEL_SPARBAR) och vad ett
+ * missat samtal kostar i uteblivna affärer. Båda står i src/data/kompass.ts
+ * och skrivs ut i "Så räknade vi".
+ */
+
+import {
+  ANDEL_MISSADE_SOM_AFFAR,
+  ANDEL_SPARBAR,
+  FRAGA,
+  KUNDVARDE_KR,
+  LANGSAM_SVARSTID,
+  LITEN_TID_UNDER,
+  MANGA_MISSADE_SAMTAL,
+  MINUTER_PER_MISSAT_SAMTAL,
+  MISSADE_SAMTAL_PER_VECKA,
+  OMRADEN,
+  OMRADESNYCKEL,
+  TID_PER_VECKA,
+  VECKOR_PER_MANAD,
+  type Bransch,
+  type Omrade,
+} from "@/kompass/data/kompass";
+import type { AiAnalys } from "@/kompass/lib/ai-typer";
+import { byggForslag, byggPlan } from "@/kompass/lib/analys";
+import { malFor, nivaFor, pengarGallerFor, valdaOmraden } from "@/kompass/lib/flode";
+import {
+  avrundaHalvtimme,
+  avrundaKronor,
+  formateraKronor,
+  formateraTimmar,
+  summera,
+} from "@/kompass/lib/tid";
+import type { Intervall, OmradeResultat, Resultat, Svar } from "@/kompass/lib/typer";
+
+/** Läser ett envalssvar. */
+function enval(svar: Svar, id: string): string | undefined {
+  const varde = svar[id];
+  return typeof varde === "string" ? varde : undefined;
+}
+
+const procent = (andel: number) => `${Math.round(andel * 100)}`;
+
+const INGEN_TID: Intervall = { min: 0, max: 0 };
+
+/** Ett valt område: besökarens tid × andelen som brukar gå att automatisera. */
+function raknaOmrade(omrade: Omrade, svar: Svar): OmradeResultat {
+  const tidSvar = enval(svar, OMRADESNYCKEL.tid(omrade.id));
+  const idag = enval(svar, OMRADESNYCKEL.idag(omrade.id));
+  const lagt = tidSvar ? TID_PER_VECKA[tidSvar] : undefined;
+  const andel = idag ? ANDEL_SPARBAR[idag] : undefined;
+
+  // Halvt besvarat (t.ex. avhopp mitt på skärmen) — visa området utan siffror
+  // hellre än att gissa.
+  if (!lagt || !andel || !idag) {
+    return {
+      omrade,
+      lagt,
+      idag,
+      besparing: INGEN_TID,
+      harledning: `${omrade.namn}: inte tillräckligt med svar för att räkna.`,
+      foreslaget: false,
+    };
+  }
+
+  const besparing = {
+    min: avrundaHalvtimme(lagt.min * andel.min),
+    max: avrundaHalvtimme(lagt.max * andel.max),
+  };
+
+  return {
+    omrade,
+    lagt,
+    idag,
+    besparing,
+    harledning:
+      `${omrade.namn}: du angav ${formateraTimmar(lagt)} i veckan, ` +
+      `${idag.toLowerCase()}. Vi räknar med att ${procent(andel.min)}–` +
+      `${procent(andel.max)} % brukar gå att automatisera, alltså ` +
+      `${formateraTimmar(besparing)}.`,
+    foreslaget: false,
+  };
+}
+
+/**
+ * Samtalsområdet föreslås även när det inte valts, om svaren pekar dit.
+ * Många som tappar samtal tänker inte på det som tid — men det är ofta där
+ * pengarna försvinner.
+ */
+function foreslaSamtal(svar: Svar, valda: Omrade[]): OmradeResultat | null {
+  const samtal = OMRADEN.find((o) => o.id === "samtal");
+  if (!samtal || valda.some((o) => o.id === samtal.id)) return null;
+
+  const missade = enval(svar, FRAGA.missadeSamtal);
+  const svarstid = enval(svar, FRAGA.svarstid);
+  const mangaMissade = MANGA_MISSADE_SAMTAL.some((m) => m === missade);
+  const langsam = LANGSAM_SVARSTID.some((l) => l === svarstid);
+  if (!mangaMissade && !langsam) return null;
+
+  const skal: string[] = [];
+  let besparing = INGEN_TID;
+  let harledning = `${samtal.namn}: föreslaget utifrån dina svar, utan tidsberäkning.`;
+
+  if (mangaMissade && missade) {
+    const perVecka = MISSADE_SAMTAL_PER_VECKA[missade] ?? 0;
+    besparing = {
+      min: avrundaHalvtimme((perVecka * MINUTER_PER_MISSAT_SAMTAL.min) / 60),
+      max: avrundaHalvtimme((perVecka * MINUTER_PER_MISSAT_SAMTAL.max) / 60),
+    };
+    skal.push(`Ni missar ${missade.toLowerCase()} samtal i veckan.`);
+    harledning =
+      `${samtal.namn}: runt ${perVecka} missade samtal i veckan × ` +
+      `${MINUTER_PER_MISSAT_SAMTAL.min}–${MINUTER_PER_MISSAT_SAMTAL.max} minuter ` +
+      `att ringa tillbaka och reda ut = ${formateraTimmar(besparing)}.`;
+  }
+  if (langsam && svarstid) {
+    skal.push(
+      svarstid === "Det varierar"
+        ? "Svarstiden på förfrågningar varierar."
+        : "Förfrågningar får svar först nästa dag.",
+    );
+  }
+
+  return {
+    omrade: samtal,
+    besparing,
+    harledning,
+    foreslaget: true,
+    skal: skal.join(" "),
+  };
+}
+
+/** Kronor i månaden som försvinner med missade samtal. */
+function raknaMissadeAffarer(svar: Svar): Resultat["missadeAffarer"] {
+  // Där ett missat samtal sällan är en ny kund räknar vi inga pengar alls.
+  if (!pengarGallerFor(enval(svar, FRAGA.bransch))) return undefined;
+
+  const missade = enval(svar, FRAGA.missadeSamtal);
+  const kundvardeSvar = enval(svar, FRAGA.kundvarde);
+  if (!missade || !kundvardeSvar) return undefined;
+
+  const perVecka = MISSADE_SAMTAL_PER_VECKA[missade] ?? 0;
+  const kundvarde = KUNDVARDE_KR[kundvardeSvar];
+  if (!perVecka || !kundvarde) return undefined;
+
+  const perManad = perVecka * VECKOR_PER_MANAD;
+  const kronor = {
+    min: avrundaKronor(perManad * ANDEL_MISSADE_SOM_AFFAR.min * kundvarde),
+    max: avrundaKronor(perManad * ANDEL_MISSADE_SOM_AFFAR.max * kundvarde),
+  };
+
+  return {
+    kronor,
+    harledning:
+      `Uteblivna affärer: runt ${perVecka} missade samtal i veckan × ` +
+      `${VECKOR_PER_MANAD} veckor × ${procent(ANDEL_MISSADE_SOM_AFFAR.min)}–` +
+      `${procent(ANDEL_MISSADE_SOM_AFFAR.max)} % som hade blivit en ny kund × ` +
+      `${formateraKronor({ min: kundvarde, max: kundvarde })} per kund = ` +
+      `${formateraKronor(kronor)} i månaden.`,
+  };
+}
+
+/**
+ * Räknar ut resultatet. Med en AI-analys blir förslagen och planen AI:ns —
+ * men all tid räknas alltid här, ur besökarens egna svar.
+ */
+export function raknaUtResultat(svar: Svar, ai?: AiAnalys | null): Resultat {
+  const valda = valdaOmraden(svar);
+
+  const omraden = valda
+    .map((o) => raknaOmrade(o, svar))
+    .sort((a, b) => b.besparing.max - a.besparing.max);
+
+  const foreslaget = foreslaSamtal(svar, valda);
+  if (foreslaget) omraden.push(foreslaget);
+
+  const lagt = summera(
+    omraden.flatMap((o) => (o.lagt ? [o.lagt] : [])),
+  );
+  const besparing = summera(omraden.map((o) => o.besparing));
+  const missadeAffarer = raknaMissadeAffarer(svar);
+
+  const bransch = enval(svar, FRAGA.bransch) as Bransch | undefined;
+  const niva = nivaFor(svar);
+  const mal = malFor(svar);
+
+  const forslag = byggForslag(svar, omraden, { missadeAffarer, mal }, ai);
+
+  return {
+    forslag,
+    plan: byggPlan(svar, forslag, ai),
+    niva,
+    kallaForslag: ai ? "ai" : "regler",
+    omraden,
+    lagt,
+    besparing,
+    missadeAffarer,
+    mal,
+    litenTid: besparing.max < LITEN_TID_UNDER[niva],
+    bransch,
+  };
+}
