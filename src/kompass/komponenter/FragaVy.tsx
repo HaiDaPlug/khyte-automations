@@ -64,9 +64,15 @@ export default function FragaVy({
   // Timern ska anropa den onNasta som gäller när den löser ut, inte den som
   // fanns vid klicket — då var det nya svaret ännu inte med i föräldern.
   const nastaRef = useRef(onNasta);
+  // Frågan och svaren som de ser ut när timern löser ut — ett val kan ha lagt
+  // till en rad på skärmen efter klicket (se autoVidare).
+  const fragaRef = useRef(fraga);
+  const svarRef = useRef(svar);
 
   useEffect(() => {
     nastaRef.current = onNasta;
+    fragaRef.current = fraga;
+    svarRef.current = svar;
   });
 
   // Flytta fokus till frågan vid varje steg, så att skärmläsare och
@@ -85,6 +91,20 @@ export default function FragaVy({
     window.clearTimeout(timer.current);
     setLamnar(true);
     timer.current = window.setTimeout(() => nastaRef.current(), UTGANG);
+  }
+
+  /**
+   * Går vidare av sig själv — men bara om skärmen fortfarande är komplett.
+   * Ett val kan lägga till en ny rad (t.ex. missade samtal efter "Telefon",
+   * kundvärdet efter många missade samtal). Då stannar skärmen och väntar på
+   * raden; när den besvaras går den vidare som vanligt.
+   */
+  function autoVidare() {
+    if (!arBesvarad(fragaRef.current, svarRef.current)) {
+      setAutoOm(0);
+      return;
+    }
+    gaVidare();
   }
 
   function hanteraNasta() {
@@ -131,7 +151,7 @@ export default function FragaVy({
 
     const vantan = text ? lastid(text) : paus;
     setAutoOm(text ? vantan : 0);
-    timer.current = window.setTimeout(gaVidare, vantan);
+    timer.current = window.setTimeout(autoVidare, vantan);
   }
 
   function valjEnval(alternativ: string) {

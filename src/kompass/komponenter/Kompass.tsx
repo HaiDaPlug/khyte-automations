@@ -14,6 +14,7 @@ import KontaktVy, { type KontaktUppgifter } from "@/kompass/komponenter/KontaktV
 import KompletteraVy from "@/kompass/komponenter/KompletteraVy";
 import TackVy from "@/kompass/komponenter/TackVy";
 import {
+  arBesvarad,
   byggFragor,
   lasSparat,
   rensaSparat,
@@ -207,6 +208,10 @@ export default function Kompass({ visaLogga = true, delningsSokvag }: Props) {
   }
 
   function nasta() {
+    // Sista skyddet: en skärm som fått en ny rad efter ett val (t.ex. missade
+    // samtal) går inte att lämna förrän raden är besvarad.
+    if (aktuellFraga && !arBesvarad(aktuellFraga, svar)) return;
+
     void loggaHandelse(sessionId, "fraga_besvarad", aktuellFraga?.id);
 
     // Frågelistan kan ha ändrats av branschvalet — räkna om innan vi går vidare.

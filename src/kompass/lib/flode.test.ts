@@ -324,6 +324,30 @@ describe("samtalsfrågorna", () => {
     expect(mejl[FRAGA.kundvarde]).toBeUndefined();
   });
 
+  // Skyddet mot att hoppa över en rad bygger på det här: ett val kan lägga
+  // till en obligatorisk rad, och då är skärmen inte besvarad längre.
+  it("en rad som dyker upp efter ett val måste besvaras innan skärmen är klar", () => {
+    const besvarad = (svar: Svar) => {
+      const f = skarm(svar, "skarm_kanaler");
+      return f ? arBesvarad(f, svar) : undefined;
+    };
+    let svar: Svar = sattSvar({ [FRAGA.bransch]: BRANSCH.hantverk }, FRAGA.mal, MAL.service);
+    svar = sattSvar(svar, FRAGA.kanaler, "Mejl och formulär");
+    expect(besvarad(svar)).toBe(true);
+
+    svar = sattSvar(svar, FRAGA.kanaler, "Telefon");
+    expect(besvarad(svar)).toBe(false); // Missade samtal har dykt upp.
+
+    svar = sattSvar(svar, FRAGA.missadeSamtal, "1–5");
+    expect(besvarad(svar)).toBe(true);
+
+    svar = sattSvar(svar, FRAGA.missadeSamtal, "6–15");
+    expect(besvarad(svar)).toBe(false); // Kundvärdet har dykt upp.
+
+    svar = sattSvar(svar, FRAGA.kundvarde, "5 000–50 000 kr");
+    expect(besvarad(svar)).toBe(true);
+  });
+
   it("tar bort ett gammalt kundvärde om man byter till en bransch utan pengar", () => {
     let svar: Svar = sattSvar({ [FRAGA.bransch]: BRANSCH.hantverk }, FRAGA.mal, MAL.service);
     svar = sattSvar(svar, FRAGA.kanaler, "Telefon");
