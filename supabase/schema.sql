@@ -103,7 +103,11 @@ create table if not exists kompass_svar (
   leverans_status jsonb not null default '{}'::jsonb,
   -- Sant när något steg misslyckats och ska försökas igen. Sätts tillsammans
   -- med leverans_status; cron-jobbet frågar efter den här kolumnen.
-  behover_forsok boolean not null default false
+  behover_forsok boolean not null default false,
+  -- Lås för cron-jobbet: raden behandlas av en körning fram till den här
+  -- tiden. En annan körning rör den inte under tiden, så ingen lead får två
+  -- mejl. Kraschar körningen släpper låset av sig självt när tiden gått ut.
+  behandlas_till timestamptz
 );
 
 -- Kolumner som lagts till efter att tabellen först skapades. `create table if
@@ -114,6 +118,7 @@ alter table kompass_svar add column if not exists mal text;
 alter table kompass_svar add column if not exists flaskhals text;
 alter table kompass_svar add column if not exists bekraftelse text;
 alter table kompass_svar add column if not exists bekraftelse_text text;
+alter table kompass_svar add column if not exists behandlas_till timestamptz;
 
 create index if not exists kompass_svar_session_idx on kompass_svar (session_id);
 create index if not exists kompass_svar_created_idx on kompass_svar (created_at desc);

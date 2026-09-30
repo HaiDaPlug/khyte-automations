@@ -31,6 +31,9 @@ export type LeveransStatus = Partial<Record<Steg, StegStatus>>;
 
 export const MAX_FORSOK = 3;
 
+/** Så länge en cron-körning får hålla en rad innan en annan får ta den. */
+export const LAS_MINUTER = 10;
+
 /**
  * Steg 1: skapa lead i CRM.
  *
@@ -52,13 +55,21 @@ async function korCrm(): Promise<StegStatus> {
   };
 }
 
+/**
+ * Idempotensnyckel per besök, steg och försök. Två körningar som tar samma
+ * försök delar nyckel, och Resend skickar då bara ett mejl. Nästa försök får
+ * en ny nyckel, så ett riktigt omförsök går igenom.
+ */
+const nyckel = (rad: SvarsRad, steg: Steg, tidigareForsok: number) =>
+  `kompass-${rad.session_id}-${steg}-${tidigareForsok + 1}`;
+
 /** Steg 2: notis till säljaren. */
 async function korSaljmejl(
   rad: SvarsRad,
   tidigareForsok: number,
 ): Promise<StegStatus> {
   try {
-    await skickaSaljnotis(rad);
+    await skickaSaljnotis(rad, nyckel(rad, "saljmejl", tidigareForsok));
     return {
       status: "skickad",
       forsok: tidigareForsok + 1,
@@ -83,7 +94,7 @@ async function korResultatmejl(
   if (!rad.skicka_resultat || !rad.mejl) return null;
 
   try {
-    await skickaResultatmejl(rad);
+    await skickaResultatmejl(rad, nyckel(rad, "resultatmejl", tidigareForsok));
     return {
       status: "skickad",
       forsok: tidigareForsok + 1,
@@ -149,9 +160,37 @@ export function behoverForsok(status: LeveransStatus | null): boolean {
 }
 
 /**
+ * Lägger beslag på en rad innan cron-jobbet skickar något. En enda villkorad
+ * uppdatering: den lyckas bara om raden fortfarande väntar och ingen annan
+ * körning håller den. Databasen låter bara en av två samtidiga uppdateringar
+ * vinna, så två körningar kan aldrig skicka samma mejl. Kraschar körningen
+ * släpps låset av sig självt efter LAS_MINUTER.
+ *
+ * Returnerar true om raden är vår att behandla.
+ */
+export async function taRad(sessionId: string): Promise<boolean> {
+  const nu = new Date();
+  const till = new Date(nu.getTime() + LAS_MINUTER * 60_000).toISOString();
+  const { data, error } = await supabase()
+    .from("kompass_svar")
+    .update({ behandlas_till: till })
+    .eq("session_id", sessionId)
+    .eq("behover_forsok", true)
+    .or(`behandlas_till.is.null,behandlas_till.lt."${nu.toISOString()}"`)
+    .select("session_id");
+
+  if (error) {
+    loggaFel(`Kunde inte ta raden ${sessionId}`, error.message);
+    return false;
+  }
+  return (data?.length ?? 0) > 0;
+}
+
+/**
  * Sparar leveransstatus på raden — och om den behöver ett nytt försök, i en
  * egen kolumn. Cron-jobbet frågar efter just den kolumnen, så att det alltid
- * hittar raderna som väntar, hur många lyckade rader det än finns.
+ * hittar raderna som väntar, hur många lyckade rader det än finns. Släpper
+ * också cron-jobbets lås (se taRad).
  */
 export async function sparaStatus(
   sessionId: string,
@@ -159,7 +198,11 @@ export async function sparaStatus(
 ): Promise<void> {
   const { error } = await supabase()
     .from("kompass_svar")
-    .update({ leverans_status: status, behover_forsok: behoverForsok(status) })
+    .update({
+      leverans_status: status,
+      behover_forsok: behoverForsok(status),
+      behandlas_till: null,
+    })
     .eq("session_id", sessionId);
 
   if (error) {

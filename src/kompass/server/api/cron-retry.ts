@@ -8,12 +8,17 @@ import {
   korEftersteg,
   larmaOmUppgivnaSteg,
   sparaStatus,
+  taRad,
 } from "@/kompass/server/leverans";
 
 /**
  * Cron-jobb som försöker om misslyckade eftersteg.
  *
- * Körs var tionde minut. Skyddat av CRON_SECRET — utan rätt nyckel händer
+ * Körs en gång per dygn, någon gång under timmen efter 05 UTC (vercel.json;
+ * gratisplanen garanterar inte minuten och tillåter inte tätare). Första
+ * försöket görs direkt när mejlen lämnas; cron gör försök två och tre, så
+ * larmet till admin går vid andra körningen efter ett misslyckande — inom
+ * ungefär två dygn. Skyddat av CRON_SECRET — utan rätt nyckel händer
  * ingenting.
  */
 
@@ -111,8 +116,15 @@ export async function GET(request: Request) {
 
     let lyckade = 0;
     let kvar = 0;
+    let upptagna = 0;
 
     for (const rad of attForsoka) {
+      // Vercel kan köra samma cron-jobb två gånger. Den körning som inte får
+      // låset hoppar över raden — annars kunde en lead få två mejl.
+      if (!(await taRad(rad.session_id))) {
+        upptagna += 1;
+        continue;
+      }
       const innan = rad.leverans_status ?? {};
       const efter = await korEftersteg(rad);
 
@@ -135,6 +147,7 @@ export async function GET(request: Request) {
       forsokta: attForsoka.length,
       lyckade,
       kvar,
+      upptagna,
     });
   } catch (fel) {
     loggaFel("Oväntat fel i cron-jobbet", fel);

@@ -22,6 +22,9 @@ export const kompassApi = {
   forslag,
   analys,
   event,
-  /** GET, anropas av Vercel Cron var tionde minut. */
+  /** GET, anropas av Vercel Cron en gång per dygn (se vercel.json). */
   cronRetry,
 } as const;
+
+/** Den interna översikten på /internal/kompass. Personuppgifter — bara bakom inloggning. */
+export { hamtaOversikt, PERIODER, type Oversikt, type Period } from "@/kompass/server/oversikt";

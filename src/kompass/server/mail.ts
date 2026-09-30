@@ -44,6 +44,29 @@ function avsandare(): string {
   return from;
 }
 
+type Utskick = Parameters<Resend["emails"]["send"]>[0] & {
+  /**
+   * Idempotensnyckel: samma nyckel inom ett dygn skickas bara en gång hos
+   * Resend — skydd mot dubbletter om två körningar tar samma lead.
+   */
+  nyckel?: string;
+};
+
+/**
+ * Skickar ett mejl och kastar om Resend nekar det. Resend kastar inte själv:
+ * ett nekat utskick kommer tillbaka som { error }. Utan den här kontrollen
+ * markerades nekade mejl som skickade och försöktes aldrig igen.
+ */
+async function skicka({ nyckel, ...utskick }: Utskick): Promise<void> {
+  const { error } = await klient().emails.send(
+    utskick as Parameters<Resend["emails"]["send"]>[0],
+    nyckel ? { idempotencyKey: nyckel } : undefined,
+  );
+  if (error) {
+    throw new Error(`Resend nekade utskicket (${error.name}): ${error.message}`);
+  }
+}
+
 /** Skyddar mot att inmatad text bryter ut ur HTML:en. */
 function skyddaHtml(text: string): string {
   return text
@@ -103,7 +126,7 @@ function svarText(rad: SvarsRad, id: string): string {
 }
 
 /** Notis till säljaren: allt som behövs för att förbereda samtalet. */
-export async function skickaSaljnotis(rad: SvarsRad): Promise<void> {
+export async function skickaSaljnotis(rad: SvarsRad, nyckel?: string): Promise<void> {
   const till = process.env.SALES_EMAIL;
   if (!till) throw new Error("SALES_EMAIL saknas. Se .env.example.");
 
@@ -203,7 +226,8 @@ export async function skickaSaljnotis(rad: SvarsRad): Promise<void> {
     );
   }
 
-  await klient().emails.send({
+  await skicka({
+    nyckel,
     from: avsandare(),
     to: till,
     subject: `Nytt lead från Kompassen: ${foretag}`,
@@ -290,7 +314,7 @@ function forslagHtml(f: SparatForslag, nummer: number, rad: SvarsRad): string {
 }
 
 /** Resultatmejl till användaren — hela resultatet, alla tre förslagen. */
-export async function skickaResultatmejl(rad: SvarsRad): Promise<void> {
+export async function skickaResultatmejl(rad: SvarsRad, nyckel?: string): Promise<void> {
   const mejl = rad.mejl?.trim();
   if (!mejl) throw new Error("Ingen mejladress att skicka till.");
 
@@ -325,7 +349,8 @@ export async function skickaResultatmejl(rad: SvarsRad): Promise<void> {
     ? `Hej ${skyddaHtml(rad.kontakt_namn.trim().split(" ")[0])}!`
     : "Hej!";
 
-  await klient().emails.send({
+  await skicka({
+    nyckel,
     from: avsandare(),
     to: mejl,
     subject: "Ditt resultat från Automationskompassen",
@@ -392,7 +417,7 @@ export async function skickaKompletteringsnotis(rad: {
 
   const vem = rad.foretag?.trim() || rad.kontakt_namn?.trim() || rad.mejl || "leadet";
 
-  await klient().emails.send({
+  await skicka({
     from: avsandare(),
     to: till,
     subject: `Kompassen: ${vem} lade till kontaktuppgifter`,
@@ -413,7 +438,9 @@ export async function skickaAdminlarm(
   const till = process.env.ADMIN_EMAIL;
   if (!till) throw new Error("ADMIN_EMAIL saknas. Se .env.example.");
 
-  await klient().emails.send({
+  await skicka({
+    // Ett larm per besök och steg, även om två körningar skulle larma samtidigt.
+    nyckel: `kompass-larm-${sessionId}-${steg}`,
     from: avsandare(),
     to: till,
     subject: `Kompassen: ${steg} misslyckades tre gånger`,
