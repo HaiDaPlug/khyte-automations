@@ -37,6 +37,9 @@ const nextConfig: NextConfig = {
       { source: "/contact", destination: "/kontakt", permanent: true },
       // Legacy routes
       { source: "/automations", destination: "/", permanent: true },
+
+      // Renamed case slugs — the old slug did not describe the case.
+      { source: "/case/lead-lista", destination: "/case/foretagsresearch", permanent: true },
     ];
   },
 };

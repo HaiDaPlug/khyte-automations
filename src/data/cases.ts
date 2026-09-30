@@ -273,10 +273,10 @@ export const cases: CaseData[] = [
       { value: "1 eget system", unit: "", label: "För SMS, kunduppföljning och återaktivering" },
       { value: "Mindre verktygsberoende", unit: "", label: "Byggt runt Osteopaticentrums faktiska arbetssätt" },
     ],
-    nextSlug: "lead-lista",
+    nextSlug: "foretagsresearch",
   },
   {
-    slug: "lead-lista",
+    slug: "foretagsresearch",
     index: "05",
     company: "Observa Inkasso & Juridik",
     problem: "Automatisk research av befintlig data",
