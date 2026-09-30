@@ -60,11 +60,10 @@ export const metadata: Metadata = {
     apple: "/apple-icon.svg",
   },
 
-  // OpenGraph for social media previews
+  // OpenGraph for social media previews. No title/description here on
+  // purpose: Next fills og:* and twitter:* from each page's own title and
+  // description, so a shared case link previews as that case.
   openGraph: {
-    title: "Khyte Automations | Inget onödigt skit, bara automationer som håller",
-    description:
-      "Vi bygger AI-automationer som tar bort manuellt arbete, minskar fel och frigör tid — utan hype, bara fungerande workflows.",
     siteName: "Khyte Automations",
     // og:image comes from the file-based opengraph-image.tsx convention —
     // setting `images` here would override it with a stale URL.
@@ -75,9 +74,6 @@ export const metadata: Metadata = {
   // Twitter card configuration
   twitter: {
     card: "summary_large_image",
-    title: "KHYTE AUTOMATIONS | No Hype, Just Workflows",
-    description:
-      "Vi bygger AI-automationer som tar bort manuellt arbete, minskar fel och frigör tid — utan hype, bara fungerande workflows.",
   },
 };
 
