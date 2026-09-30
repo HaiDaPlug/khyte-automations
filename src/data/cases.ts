@@ -14,6 +14,10 @@ export interface CaseData {
   index: string;
   company: string;
   problem: string;
+  /** <title> for the case page: the workflow first, the client second. */
+  seoTitle: string;
+  /** Meta description: what was built and, where measured, the result. */
+  metaDescription: string;
   category: string;
   description: string;
   hook: string;
@@ -37,6 +41,9 @@ export const cases: CaseData[] = [
     index: "01",
     company: "JaTack AB",
     problem: "Leadgenerering för listor",
+    seoTitle: "Automatiserade prospektlistor från Allabolag – JaTack AB",
+    metaDescription:
+      "Hur JaTack AB gick från manuell research till färdiga ringlistor: ett n8n-flöde hämtar bolagen från Allabolag och levererar listan i Excel. ≈32 h sparad per 1 000 leads.",
     category: "Sälj & Prospektering",
     description:
       "Filtrera bolagen i Allabolag. Klistra in länken. Få en färdig prospektlista i Excel.",
@@ -93,6 +100,9 @@ export const cases: CaseData[] = [
     index: "02",
     company: "Etcetera Offset",
     problem: "Automatisk generering av plock- och följesedlar",
+    seoTitle: "Plock- och följesedlar direkt från Excel – Etcetera Offset",
+    metaDescription:
+      "Etcetera Offset laddar upp kundernas Excel-filer och får färdiga, brandade plock- och följesedlar – utan att föra över artikelnummer, storlekar och antal för hand.",
     category: "Dokument & Produktion",
     description:
       "Excel in. Färdiga plocksedlar ut.",
@@ -150,6 +160,9 @@ export const cases: CaseData[] = [
     index: "03",
     company: "Kom-Fort Bilvård",
     problem: "Verksamhetssystem för bokningar och personal",
+    seoTitle: "Boknings- och personalsystem för bilvård – Kom-Fort Bilvård",
+    metaDescription:
+      "Ett skräddarsytt system där Kom-Fort Bilvård samlar bokningar, kund- och fordonsuppgifter och personalens pass – med automatisk orderbekräftelse till kunden.",
     category: "Drift & Schemaläggning",
     description:
       "Från telefon, minne och lösa trådar till ett system för hela verksamheten.",
@@ -207,6 +220,9 @@ export const cases: CaseData[] = [
     index: "04",
     company: "Osteopaticentrum",
     problem: "SMS-system för kunduppföljning och återaktivering",
+    seoTitle: "SMS-system för kunduppföljning – Osteopaticentrum",
+    metaDescription:
+      "Osteopaticentrum importerar sin kundlista, skickar SMS till tidigare kunder och ser vilka utskick som leder till nya bokningar – i ett eget system för återaktivering.",
     category: "Kunduppföljning & SMS",
     description:
       "Från kundlista till mätbara återbesök.",
@@ -264,6 +280,9 @@ export const cases: CaseData[] = [
     index: "05",
     company: "Observa Inkasso & Juridik",
     problem: "Automatisk research av befintlig data",
+    seoTitle: "AI-research av företagslistor – Observa Inkasso & Juridik",
+    metaDescription:
+      "Från enbart företagsnamn till research med domän, ort, B2B/B2C och ekonomichef. Observas AI-flöde tar ~10 sekunder per företag i stället för 4 minuter.",
     category: "Research & Analys",
     description:
       "Från en lista med företagsnamn till researchade leads med domän, bolagstyp, ort och beslutsfattare.",

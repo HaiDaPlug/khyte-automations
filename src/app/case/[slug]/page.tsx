@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { cases, getCaseBySlug } from "@/data/cases";
+import { facts } from "@/data/facts";
 
 const GRAIN = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.70' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23g)' opacity='0.18'/%3E%3C/svg%3E")`;
 
@@ -20,9 +21,17 @@ export async function generateMetadata({
   const c = getCaseBySlug(slug);
   if (!c) return {};
   return {
-    title: `${c.company} — ${c.problem}`,
-    description: c.hook,
+    title: c.seoTitle,
+    description: c.metaDescription,
     alternates: { canonical: `/case/${slug}` },
+    // A page-level openGraph replaces the layout's, so siteName and locale are
+    // repeated here. Title and description are filled in from the page's own.
+    openGraph: {
+      siteName: facts.name,
+      locale: "sv_SE",
+      type: "article",
+      images: [{ url: c.image, width: 1600, height: 900, alt: `${c.company} x ${facts.name}` }],
+    },
   };
 }
 
