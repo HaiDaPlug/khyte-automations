@@ -9,7 +9,7 @@
  * och tid räknas sedan fram ur besökarens egna svar (src/lib/analys.ts).
  */
 
-import { CASE, OMRADEN, type Niva } from "@/kompass/data/kompass";
+import { CASE, OMRADEN, VERKTYG, type Niva } from "@/kompass/data/kompass";
 
 export type AiForslag = {
   /** Områdes-id:n förslaget bygger på. Styr tidsuträkningen. */
@@ -38,7 +38,9 @@ export type AiAnalys = {
 };
 
 const GRANSER = {
-  hypotes: 160,
+  // Prompten ber om högst femton ord. Taket ger marginal, så att en något
+  // längre mening inte försvinner tyst.
+  hypotes: 200,
   rubrik: 100,
   affarsnytta: 240,
   varfor: 400,
@@ -141,18 +143,19 @@ export function kontrolleraAiAnalys(indata: unknown): AiAnalys | null {
  * texten, värde = svarsalternativet som måste vara valt.
  */
 const VERKTYG_I_TEXT: Readonly<Record<string, string>> = {
-  fortnox: "Fortnox",
-  visma: "Visma",
+  fortnox: VERKTYG.fortnox,
+  visma: VERKTYG.visma,
   // Inte bara "google" — "omdöme på Google" handlar om kunden, inte deras verktyg.
-  gmail: "Google (Gmail, Kalender)",
-  "google kalender": "Google (Gmail, Kalender)",
-  "google calendar": "Google (Gmail, Kalender)",
-  "google drive": "Google (Gmail, Kalender)",
-  "google workspace": "Google (Gmail, Kalender)",
-  outlook: "Microsoft 365 (Outlook)",
-  microsoft: "Microsoft 365 (Outlook)",
-  teams: "Microsoft 365 (Outlook)",
-  excel: "Excel eller papper",
+  gmail: VERKTYG.google,
+  "google kalender": VERKTYG.google,
+  "google calendar": VERKTYG.google,
+  "google drive": VERKTYG.google,
+  "google workspace": VERKTYG.google,
+  outlook: VERKTYG.microsoft,
+  microsoft: VERKTYG.microsoft,
+  teams: VERKTYG.microsoft,
+  sharepoint: VERKTYG.microsoft,
+  excel: VERKTYG.excel,
 };
 
 /** Andra leverantörers produkter. Nämns aldrig — vi vet inte att de har dem. */

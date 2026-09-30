@@ -238,33 +238,6 @@ export default function FragaVy({
       ) : null}
 
       <div className="mt-7" {...inmatningsLyssnare}>
-        {fraga.typ === "fritext" && fraga.snabbval?.length ? (
-          <div
-            role="group"
-            aria-label={TEXT.navigering.snabbval}
-            className="mb-4 flex flex-wrap gap-2"
-          >
-            {fraga.snabbval.map((forslag, i) => {
-              const vald = svar[fraga.id] === forslag;
-              return (
-                <button
-                  key={forslag}
-                  type="button"
-                  aria-pressed={vald}
-                  data-vald={vald}
-                  style={ordning(i)}
-                  // Ett tryck fyller i, ett till tar bort. Texten går att
-                  // redigera efteråt.
-                  onClick={() => onSvara(fraga.id, vald ? "" : forslag)}
-                  className="k-snabbval k-alternativ-in"
-                >
-                  {forslag}
-                </button>
-              );
-            })}
-          </div>
-        ) : null}
-
         {fraga.typ === "fritext" ? (
           <textarea
             id={fraga.id}

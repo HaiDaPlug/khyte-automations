@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { FRAGA, MAX_TIDSTJUVAR } from "@/kompass/data/kompass";
+import { FRAGA, MAX_SPAR, MAX_TIDSTJUVAR } from "@/kompass/data/kompass";
 import Header from "@/kompass/komponenter/Header";
 import Forlopp from "@/kompass/komponenter/Forlopp";
 import Hypotes from "@/kompass/komponenter/Hypotes";
@@ -19,6 +19,7 @@ import {
   rensaSparat,
   sattSvar,
   spara,
+  SPARSKARMAR,
 } from "@/kompass/lib/flode";
 import { analysRader } from "@/kompass/lib/analys";
 import { raknaUtResultat } from "@/kompass/lib/matchning";
@@ -41,18 +42,25 @@ const ANALYS_EFTER = 400; // 3 rader × 700 ms + 400 ms = 2,5 s
 
 /**
  * Längsta vi väntar på den sista AI-analysen innan resultatet visas ändå,
- * med regelmotorns förslag. Oftast är den klar långt innan — besökaren
- * skriver fritexten medan den körs.
+ * med regelmotorns förslag. Har de beskrivit ett arbetsflöde körs en sista
+ * analys med det — den hinner sällan klart under analysögonblicket, därför
+ * lite längre marginal.
  */
-const MAX_VANTAN_PA_ANALYS = 9000;
+const MAX_VANTAN_PA_ANALYS = 12000;
 
 /**
- * Från och med den här skärmen (0-räknat) körs AI-analysen: efter
- * tidstjuvarna. Före det finns för lite att säga något träffsäkert om — de
- * tidiga skärmarna har regelbaserade reaktioner i stället. Det sparar anrop,
- * kostnad och svarstid.
+ * Högst så många skärmar kan specialspåren ge: MAX_SPAR spår, varav
+ * förfrågningsspåret har två skärmar. För förloppet innan spåren är kända.
  */
-const ANALYS_FRAN_STEG = 3;
+const MAX_SPARSKARMAR = MAX_SPAR + 1;
+
+/**
+ * AI-analysen körs från och med skärmen om vad som görs för hand. Före det
+ * finns för lite att säga något träffsäkert om — de tidiga skärmarna har
+ * regelbaserade reaktioner i stället. Det sparar anrop, kostnad och svarstid.
+ */
+const analysFran = (fragor: { id: string }[]) =>
+  fragor.findIndex((f) => f.id === FRAGA.tidstjuvar);
 
 const sov = (ms: number) => new Promise<void>((r) => window.setTimeout(r, ms));
 
@@ -214,9 +222,10 @@ export default function Kompass({ visaLogga = true, delningsSokvag }: Props) {
 
     const sparat = sparaTillServer(svar, aktuellFraga?.id, sista);
 
-    // Efter varje skärm bygger AI:n vidare på sin bild av företaget. Fritexten
-    // skickas aldrig med i analysen, så sista skärmen triggar ingen ny.
-    if (aktivtSteg >= ANALYS_FRAN_STEG && aktuellFraga?.id !== FRAGA.fritext) {
+    // Efter varje skärm bygger AI:n vidare på sin bild av företaget. Efter
+    // arbetsflödesfrågan bara om de skrivit något — annars finns inget nytt.
+    const nyttFranFritext = aktuellFraga?.id !== FRAGA.fritext || fritext.length > 0;
+    if (aktivtSteg >= analysFran(aktuellaFragor) && nyttFranFritext) {
       begarAnalys(sessionId, (a) => {
         aiAnalysRef.current = a;
         setAiAnalys(a);
@@ -314,12 +323,14 @@ export default function Kompass({ visaLogga = true, delningsSokvag }: Props) {
 
   const arSista = aktivtSteg === fragor.length - 1;
 
-  // Innan områdena valts räknar vi med max antal följdskärmar. Då kan
-  // "av"-siffran bara krympa — att målet flyttas längre bort tar musten ur folk.
+  // Innan mönstren valts räknar vi med max antal följd- och specialskärmar.
+  // Då kan "av"-siffran bara krympa — att målet flyttas längre bort tar
+  // musten ur folk.
   const harValtOmraden = Array.isArray(svar[FRAGA.tidstjuvar]);
-  const visatAntal = harValtOmraden
-    ? fragor.length
-    : fragor.length + MAX_TIDSTJUVAR;
+  const sparNu = fragor.filter((f) => SPARSKARMAR.has(f.id)).length;
+  const visatAntal =
+    fragor.length +
+    (harValtOmraden ? 0 : MAX_TIDSTJUVAR + Math.max(0, MAX_SPARSKARMAR - sparNu));
 
   const fritextSvar = svar[FRAGA.fritext];
   const fritext = typeof fritextSvar === "string" ? fritextSvar.trim() : "";
@@ -353,7 +364,7 @@ export default function Kompass({ visaLogga = true, delningsSokvag }: Props) {
             />
             {/* Under frågan, inte över: kommer AI-svaret medan besökaren ska
                 trycka får inget flytta sig under fingret. */}
-            {aiAnalys?.hypotes && aktivtSteg > ANALYS_FRAN_STEG ? (
+            {aiAnalys?.hypotes && aktivtSteg > analysFran(fragor) ? (
               <Hypotes text={aiAnalys.hypotes} />
             ) : null}
           </>

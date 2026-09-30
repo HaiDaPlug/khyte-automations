@@ -13,16 +13,20 @@
 import {
   ANDEL_MISSADE_SOM_AFFAR,
   BRANSCH,
-  FLASKHALS,
+  FOR_HAND,
   FRAGA,
   HELTID_TIMMAR,
+  KONSEKVENS,
   LANGSAM_SVARSTID,
-  MAL,
+  MAL_FRAS,
   MAL_OMRADEN,
+  MAL_UTAN_RIKTNING,
   MANGA_MISSADE_SAMTAL,
   NYCKELORD,
   OMRADEN,
+  OMRADESNYCKEL,
   TEXT,
+  VERKTYG,
   VIKT_PER_NIVA,
   type Bransch,
   type Mal,
@@ -45,7 +49,13 @@ import {
   type Tillvaxtide,
 } from "@/kompass/data/floden";
 import { kontrolleraMotSvar, type AiAnalys, type AiForslag } from "@/kompass/lib/ai-typer";
-import { flaskhalsFor, nivaFor, omradenFor, valdaOmraden } from "@/kompass/lib/flode";
+import {
+  diagnosFor as svarensDiagnos,
+  malFor as resultatMal,
+  nivaFor,
+  omradenFor,
+  valdaOmraden,
+} from "@/kompass/lib/flode";
 import { formateraKronor, formateraTimmar, summera } from "@/kompass/lib/tid";
 import type {
   Forslag,
@@ -81,8 +91,8 @@ export function analysRader(svar: Svar): string[] {
   return [
     `Läser ${antal} svar`,
     valda.length > 0
-      ? `Hittar tidstjuvarna: ${uppraknat(valda)}`
-      : "Letar efter tidstjuvarna",
+      ? `Hittar var arbetet fastnar: ${uppraknat(valda)}`
+      : "Letar efter var arbetet fastnar",
     `Bygger ${ANTAL_FORSLAG === 3 ? "tre" : ANTAL_FORSLAG} förslag för ${du ? "dig" : "er"}`,
   ];
 }
@@ -100,14 +110,18 @@ function enval(svar: Svar, id: string): string | undefined {
 
 /** Verktygsvalen som namn att skriva i text. "Annat" och "Vet inte" räknas inte. */
 const VERKTYGSNAMN: Readonly<Record<string, string>> = {
-  Fortnox: "Fortnox",
-  Visma: "Visma",
-  "Google (Gmail, Kalender)": "Google",
-  "Microsoft 365 (Outlook)": "Outlook",
-  Bokningssystem: "ert bokningssystem",
-  Branschsystem: "ert branschsystem",
-  CRM: "ert CRM",
-  "Excel eller papper": "Excel",
+  [VERKTYG.fortnox]: "Fortnox",
+  [VERKTYG.visma]: "Visma",
+  [VERKTYG.ekonomi]: "ert ekonomisystem",
+  [VERKTYG.google]: "Google Workspace",
+  [VERKTYG.microsoft]: "Microsoft 365",
+  [VERKTYG.erp]: "ert affärssystem",
+  [VERKTYG.bokning]: "ert bokningssystem",
+  [VERKTYG.bransch]: "ert branschsystem",
+  [VERKTYG.projekt]: "ert projektverktyg",
+  [VERKTYG.crm]: "ert CRM",
+  [VERKTYG.egna]: "era interna system",
+  [VERKTYG.excel]: "Excel",
 };
 
 export function byggSammanhang(svar: Svar): Sammanhang {
@@ -121,14 +135,14 @@ export function byggSammanhang(svar: Svar): Sammanhang {
     du: enval(svar, FRAGA.antal) === "Bara jag",
     ord: ordFor(bransch),
     bransch,
-    ekonomi: har("Fortnox") ? "Fortnox" : har("Visma") ? "Visma" : null,
-    kalender: har("Google (Gmail, Kalender)")
+    ekonomi: har(VERKTYG.fortnox) ? "Fortnox" : har(VERKTYG.visma) ? "Visma" : null,
+    kalender: har(VERKTYG.google)
       ? "Google Kalender"
-      : har("Microsoft 365 (Outlook)")
+      : har(VERKTYG.microsoft)
         ? "Outlook"
         : null,
-    bokningssystem: har("Bokningssystem"),
-    crm: har("CRM"),
+    bokningssystem: har(VERKTYG.bokning),
+    crm: har(VERKTYG.crm),
     system: verktyg.flatMap((v) => (VERKTYGSNAMN[v] ? [VERKTYGSNAMN[v]] : [])),
     rut: bransch === BRANSCH.stad || bransch === BRANSCH.hantverk,
   };
@@ -136,9 +150,14 @@ export function byggSammanhang(svar: Svar): Sammanhang {
 
 const IDAG_I_TEXT: Readonly<Record<string, string>> = {
   "För hand": ", och det mesta görs för hand",
-  "Delvis i ett system": ", delvis i ett system",
-  "Mest automatiserat": ", och mycket är redan automatiserat",
+  "Delvis med systemstöd": ", delvis med systemstöd",
+  "Till stor del automatiserat": ", och mycket är redan automatiserat",
 };
+
+/** Vad de svarat händer när området inte fungerar, eller undefined. */
+function konsekvensFor(omradeId: string, svar: Svar): string | undefined {
+  return enval(svar, OMRADESNYCKEL.konsekvens(omradeId));
+}
 
 /** Fakta om samtal och förfrågningar, ur deras svar. Tom om inget sticker ut. */
 function samtalsfakta(svar: Svar, k: Sammanhang): string[] {
@@ -178,6 +197,10 @@ function varfor(
     );
   }
 
+  // Affärskonsekvensen, med deras egna ord: "När det inte fungerar uppstår fel."
+  const konsekvens = KONSEKVENS[konsekvensFor(o.omrade.id, svar) ?? ""]?.text;
+  if (konsekvens) delar.push(`När det inte fungerar ${konsekvens}.`);
+
   if (o.omrade.id === "samtal") {
     const fakta = samtalsfakta(svar, k);
     if (fakta.length > 0) {
@@ -193,17 +216,43 @@ function varfor(
 
   // Verktygen: det konkreta skälet till att flödet går att bygga hos dem.
   const kopplingsomraden = ["dubbelregistrering", "fakturor", "rapporter", "bokforing"];
-  if (kalla === "valt" && o.idag !== "Mest automatiserat") {
+  if (kalla === "valt" && o.idag !== "Till stor del automatiserat") {
     if (kopplingsomraden.includes(o.omrade.id) && k.system.length >= 2) {
       delar.push(
         `${ni} har redan ${uppraknat(k.system)} — flödet kopplar ihop dem i stället för att ersätta dem.`,
       );
-    } else if (k.system.includes("Excel") && o.idag === "För hand") {
+    } else if (k.system.includes("Excel") && o.idag === FOR_HAND) {
       delar.push("Excel och papper är ofta just där tiden försvinner.");
     }
   }
 
+  // Föreslaget ur andra svar, t.ex. att samma information matas in flera gånger.
+  if (o.foreslaget && o.skal && o.omrade.id !== "samtal") delar.push(o.skal);
+
+  // Pekat ut av en specialfråga eller målet — utan egen tid.
+  // Säg vilket svar, med deras ord.
+  if (delar.length === 0 && kalla === "signal") {
+    const grund = signalKalla(o.omrade.id, svar, k);
+    if (grund) delar.push(grund);
+  }
+
   return delar.join(" ");
+}
+
+/**
+ * Svaret som pekade ut ett område när de inte valt det själva: en
+ * specialfråga eller målet — i den ordningen.
+ */
+function signalKalla(omradeId: string, svar: Svar, k: Sammanhang): string | undefined {
+  const ni = k.du ? "Du" : "Ni";
+  const d = svarensDiagnos(svar);
+  if (d?.signal.omraden.includes(omradeId)) return d.fraga.varfor(k.du, d.signal.svar);
+
+  const mal = resultatMal(svar);
+  if (mal && MAL_OMRADEN[mal].includes(omradeId)) {
+    return `${ni} sa att det som skulle göra störst skillnad är att ${MAL_FRAS[mal](k.du)}. Det här är en av de tydligaste vägarna dit.`;
+  }
+  return undefined;
 }
 
 /** Pengar nämns bara för samtal, och bara när problemet är tydligt. */
@@ -226,9 +275,10 @@ function pengar(
 }
 
 /**
- * Hur starkt ett område är som förslag. Tiden de kan spara väger tyngst.
- * Samtal får extra vikt när svaren visar att kunder faktiskt tappas, och
- * storleken avgör vad som väger mest — se VIKT_PER_NIVA.
+ * Hur starkt ett område är som förslag. Tiden de kan spara väger tyngst,
+ * sedan vad som händer när det inte fungerar (KONSEKVENS). Samtal får extra
+ * vikt när svaren visar att kunder faktiskt tappas, och storleken avgör vad
+ * som väger mest — se VIKT_PER_NIVA.
  */
 function styrka(o: OmradeResultat, svar: Svar): number {
   const vikt = VIKT_PER_NIVA[nivaFor(svar)][o.omrade.id] ?? 1;
@@ -237,7 +287,8 @@ function styrka(o: OmradeResultat, svar: Svar): number {
 
 function grundstyrka(o: OmradeResultat, svar: Svar): number {
   let poang = o.besparing.max;
-  if (o.idag === "För hand") poang += 1;
+  if (o.idag === FOR_HAND) poang += 1;
+  poang += KONSEKVENS[konsekvensFor(o.omrade.id, svar) ?? ""]?.vikt ?? 0;
 
   if (o.omrade.id === "samtal") {
     const missade = enval(svar, FRAGA.missadeSamtal);
@@ -434,7 +485,8 @@ export function omradeForFritext(fritext: string, bransch: Bransch | undefined):
 }
 
 /**
- * Det de helst vill slippa. Claude skriver flödet (se ForslagKort); stegen här
+ * Arbetsflödet de vill ska sköta sig självt. Claude skriver flödet (se
+ * ForslagKort); stegen här
  * är reserven — regelmotorns flöde för det område texten pekar på — som visas
  * om AI:n inte svarar. Pekar texten inte på något område blir stegen tomma.
  */
@@ -443,7 +495,7 @@ function onskemalForslag(fritext: string, k: Sammanhang, niva: Niva): Forslag {
   return {
     id: "onskemal",
     kalla: "onskemal",
-    rubrik: `Det ${k.du ? "du" : "ni"} helst vill slippa`,
+    rubrik: `Arbetsflödet ${k.du ? "du" : "ni"} vill ska sköta sig självt`,
     varfor: fritext,
     steg: omrade ? flodeFor(omrade.id, k, niva).steg : [],
     slipper: "",
@@ -458,9 +510,10 @@ function onskemalForslag(fritext: string, k: Sammanhang, niva: Niva): Forslag {
  *  1. En kedja om flera valda områden hänger ihop — hela flödet, inte bitar.
  *  2. Övriga områden med svar, starkast först (vägt efter storlek).
  *  3. Har de skrivit vad de helst vill slippa får det sista platsen.
- *  4. Räcker det inte fylls det på med det som brukar ge mest i branschen.
- * Har de sagt vad som är viktigast just nu leder det förslag som svarar mot
- * målet — se ledMedMal.
+ *  4. Räcker det inte fylls det på med det svaren pekar på (specialfrågor,
+ *     mål) och sist det som brukar ge mest i branschen.
+ * Har de pekat ut en riktning — målet eller en specialfråga — leder det
+ * förslag som svarar mot den. Se ledMedMal.
  */
 export function byggForslag(
   svar: Svar,
@@ -476,10 +529,9 @@ export function byggForslag(
   const regel = regelForslag(svar, omraden, resultat, k, niva, platser);
   const onskemal = fritext ? [onskemalForslag(fritext, k, niva)] : [];
   const { mal } = resultat;
+  const riktning = (mal && !MAL_UTAN_RIKTNING.includes(mal)) || !!svarensDiagnos(svar);
   const ordna = (lista: Forslag[]) =>
-    mal && mal !== "admin"
-      ? ledMedMal(lista, mal, { svar, omraden, resultat, k, niva, platser })
-      : lista;
+    riktning ? ledMedMal(lista, mal, { svar, omraden, resultat, k, niva, platser }) : lista;
 
   // AI-förslagen, tvättade mot svaren: inga verktyg de inte har, inga
   // casekunder, inga siffror, och varje område i högst ett förslag.
@@ -505,18 +557,15 @@ export function byggForslag(
   return [...ordna(regel), ...onskemal];
 }
 
-/** "Ni sa att det viktigaste just nu är att få betalt snabbare — därför börjar vi där." */
-const maletText = (mal: Mal, k: Sammanhang) => TEXT.resultat.malet(k.du, MAL[mal]);
-
 /**
- * Varför det ledande förslaget kom med, i deras egna ord: flaskhalsen de
- * valde ("Ni svarade att det oftast fastnar här: ”Fakturan skapas sent”."),
- * annars målet.
+ * Varför det ledande förslaget kom med, i deras egna ord: specialfrågan de
+ * svarade på ("Ni svarade att flödet bryts här: ”Information kopieras
+ * manuellt”."), annars målet.
  */
-function malVarfor(mal: Mal, svar: Svar, k: Sammanhang): string {
-  const fh = flaskhalsFor(svar);
-  if (fh && mal !== "admin" && fh.svar !== "Annat") return FLASKHALS[mal].varfor(k.du, fh.svar);
-  return maletText(mal, k);
+function malVarfor(mal: Mal | undefined, svar: Svar, k: Sammanhang): string {
+  const d = svarensDiagnos(svar);
+  if (d) return d.fraga.varfor(k.du, d.signal.svar);
+  return mal ? TEXT.resultat.malet(k.du, mal) : "";
 }
 
 /** En tillväxtidé som förslag — utan tid, den bygger inte på ett område. */
@@ -552,7 +601,11 @@ type MalUnderlag = {
  * det. Har de valt området (men det fick inte plats) används deras tid;
  * annars blir det utan siffror.
  */
-function forslagForOmrade(ids: readonly string[], mal: Mal, u: MalUnderlag): Forslag | undefined {
+function forslagForOmrade(
+  ids: readonly string[],
+  mal: Mal | undefined,
+  u: MalUnderlag,
+): Forslag | undefined {
   const tillgangliga = new Set(omradenFor(u.k.bransch).map((o) => o.id));
   const id = ids.find((x) => tillgangliga.has(x));
   const omrade = OMRADEN.find((o) => o.id === id);
@@ -565,38 +618,39 @@ function forslagForOmrade(ids: readonly string[], mal: Mal, u: MalUnderlag): For
 }
 
 /**
- * Målet leder. Det de sagt är viktigast just nu — och flaskhalsen de pekat ut
- * — ska vara det första de ser, inte det som råkade ge störst kalkyl.
- *  - Finns ett förslag ur svaren som bygger på flaskhalsens (annars målets)
+ * Deras riktning leder. Det de sagt skulle göra störst skillnad — och det de
+ * pekat ut i en specialfråga — ska vara det första de ser, inte det som råkade
+ * ge störst kalkyl.
+ *  - Finns ett förslag ur svaren som bygger på diagnosens (annars målets)
  *    områden flyttas det först.
- *  - Annars leder flaskhalsens tillväxtidé, i företagets storlek.
- *  - Annars skapas ett förslag för flaskhalsens första område.
- *  - För "fler förfrågningar" får branschens vanligaste (utfyllnad utan svar)
- *    ge plats åt tillväxtidéerna.
+ *  - Annars leder diagnosens tillväxtidé, i företagets storlek.
+ *  - Annars skapas ett förslag för diagnosens (målets) första område.
+ *  - När det handlar om fler affärer får branschens vanligaste (utfyllnad
+ *    utan svar) ge plats åt tillväxtidéerna.
  * Förslag som bygger på deras svar behålls i sin ordning efter ledaren.
  */
-function ledMedMal(forslag: Forslag[], mal: Mal, u: MalUnderlag): Forslag[] {
-  const fh = flaskhalsFor(u.svar);
-  const malOmraden = fh ? fh.omraden : MAL_OMRADEN[mal];
-  const ideId = fh?.ide?.[u.niva === "liten" ? "liten" : "storre"];
+function ledMedMal(forslag: Forslag[], mal: Mal | undefined, u: MalUnderlag): Forslag[] {
+  const d = svarensDiagnos(u.svar);
+  const malOmraden = d ? d.signal.omraden : mal ? MAL_OMRADEN[mal] : [];
+  const ideId = d?.signal.ide?.[u.niva === "liten" ? "liten" : "storre"];
+  const affarer = mal === "affarer" || d?.fraga.id === FRAGA.affarer;
 
   const egna = forslag.filter((f) => f.kalla !== "bransch");
   const utfyllnad = forslag.filter((f) => f.kalla === "bransch");
   const varfor = malVarfor(mal, u.svar, u.k);
-  const ideer =
-    mal === "forfragningar"
-      ? TILLVAXT.filter((ide) => ide.nivaer.includes(u.niva) && !tacks(ide, egna)).map((ide) =>
-          tillvaxtForslag(ide, u.k, varfor),
-        )
-      : [];
+  const ideer = affarer
+    ? TILLVAXT.filter((ide) => ide.nivaer.includes(u.niva) && !tacks(ide, egna)).map((ide) =>
+        tillvaxtForslag(ide, u.k, varfor),
+      )
+    : [];
 
   const i = egna.findIndex((f) => omradesIds(f).some((id) => malOmraden.includes(id)));
   const ledare =
     (i >= 0 ? egna[i] : undefined) ??
     (ideId ? ideer.find((f) => f.id === `tillvaxt-${ideId}`) : undefined) ??
-    // Fler förfrågningar utan flaskhals: idén i företagets storlek, inte
-    // ett slumpat område ur målets lista.
-    (mal === "forfragningar" && !fh ? ideer[0] : undefined) ??
+    // Fler affärer utan diagnos: idén i företagets storlek, inte ett
+    // slumpat område ur målets lista.
+    (affarer && !d ? ideer[0] : undefined) ??
     forslagForOmrade(malOmraden, mal, u);
   if (!ledare) return forslag;
 
@@ -634,7 +688,7 @@ const verktygIsvar = (svar: Svar): string[] => {
 function regelForslag(
   svar: Svar,
   omraden: OmradeResultat[],
-  resultat: Pick<Resultat, "missadeAffarer">,
+  resultat: Pick<Resultat, "missadeAffarer" | "mal">,
   k: Sammanhang,
   niva: Niva,
   platser: number,
@@ -654,18 +708,27 @@ function regelForslag(
     valda.push(tillForslag(o, o.foreslaget ? "signal" : "valt", svar, resultat, k, niva));
   }
 
-  // Fyll på med branschens vanligaste — bara områden som finns för branschen
-  // och som inte redan är med.
+  // Fyll på — först med det svaren pekar på (specialfrågor, mål),
+  // sist med branschens vanligaste. Branschen ger språket, inte problemet:
+  // den används bara när svaren inte räcker. Bara områden som finns för
+  // branschen och som inte redan är med.
   const tillgangliga = new Set(omradenFor(k.bransch).map((o) => o.id));
   const redanMed = new Set([
     ...valda.flatMap((f) => [f.omrade?.id, ...(f.omraden ?? []).map((o) => o.id)]),
   ]);
-  for (const id of BRANSCHTIPS[k.bransch ?? BRANSCH.annat]) {
+  const mal = resultat.mal;
+  const fyllnad: [string, Forslag["kalla"]][] = [
+    ...(svarensDiagnos(svar)?.signal.omraden ?? []),
+    ...(mal ? MAL_OMRADEN[mal] : []),
+  ]
+    .map((id): [string, Forslag["kalla"]] => [id, "signal"])
+    .concat(BRANSCHTIPS[k.bransch ?? BRANSCH.annat].map((id) => [id, "bransch"]));
+  for (const [id, kalla] of fyllnad) {
     if (valda.length >= platser) break;
     if (redanMed.has(id) || !tillgangliga.has(id)) continue;
     const omrade = OMRADEN.find((o) => o.id === id);
     if (!omrade) continue;
-    valda.push(tillForslag(utanSvar(omrade), "bransch", svar, resultat, k, niva));
+    valda.push(tillForslag(utanSvar(omrade), kalla, svar, resultat, k, niva));
     redanMed.add(id);
   }
 

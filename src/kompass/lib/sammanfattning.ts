@@ -40,10 +40,10 @@ export function byggSammanfattning(resultat: Resultat, svar: Svar): string {
   const inledning = konsekvens(resultat.forslag[0]);
   const [storst] = resultat.omraden.filter((o) => !o.foreslaget);
 
+  const malKonsekvens = resultat.mal ? TEXT.resultat.malKonsekvens[resultat.mal] : undefined;
+
   if (inledning) meningar.push(inledning);
-  else if (resultat.mal && resultat.mal !== "admin") {
-    meningar.push(TEXT.resultat.malKonsekvens[resultat.mal]);
-  }
+  else if (malKonsekvens) meningar.push(malKonsekvens);
   // Saknas en konsekvens (starkaste förslaget bygger inte på egna svar):
   // säg åtminstone var mest tid går.
   else if (storst) meningar.push(`Mest tid går i dag ${storst.omrade.varTiden}.`);

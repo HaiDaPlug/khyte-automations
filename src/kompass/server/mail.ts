@@ -1,7 +1,16 @@
 import "server-only";
 
 import { Resend } from "resend";
-import { CASE, OMRADEN, SAJT } from "@/kompass/data/kompass";
+import {
+  CASE,
+  FRAGA,
+  MAL_FRAS,
+  OMRADEN,
+  OMRADESNYCKEL,
+  SAJT,
+  SPECIAL,
+} from "@/kompass/data/kompass";
+import { malFranText } from "@/kompass/lib/flode";
 import { tolkaForslag } from "@/kompass/lib/forslagstext";
 import type { SvarsRad } from "@/kompass/server/rad";
 import type { SparatForslag } from "@/kompass/lib/sammanstallning";
@@ -87,6 +96,13 @@ function kallText(rad: SvarsRad): string {
   return delar.length > 0 ? delar.join(" · ") : "Direkt";
 }
 
+/** Ett svar ur raden som text, eller "—". Listor blir kommaseparerade. */
+function svarText(rad: SvarsRad, id: string): string {
+  const v = rad.svar?.[id];
+  if (Array.isArray(v)) return v.join(", ") || "—";
+  return typeof v === "string" && v.trim() ? v : "—";
+}
+
 /** Notis till säljaren: allt som behövs för att förbereda samtalet. */
 export async function skickaSaljnotis(rad: SvarsRad): Promise<void> {
   const till = process.env.SALES_EMAIL;
@@ -103,8 +119,11 @@ export async function skickaSaljnotis(rad: SvarsRad): Promise<void> {
     ["Bransch", rad.bransch ?? "—"],
     ["Antal", rad.antal_anstallda ?? "—"],
     ["Roll", rad.roll ?? "—"],
-    ["Viktigast just nu", rad.mal ?? "—"],
-    ["Flaskhals", rad.flaskhals ?? "—"],
+    ["Mål", rad.mal ?? "—"],
+    // Bara specialfrågor som ställts — en tillverkare har inga samtalssvar.
+    ...Object.values(SPECIAL)
+      .filter((f) => svarText(rad, f.id) !== "—")
+      .map((f): [string, string] => [f.etikett, svarText(rad, f.id)]),
     [
       "Stämmer bedömningen?",
       rad.bekraftelse
@@ -112,10 +131,13 @@ export async function skickaSaljnotis(rad: SvarsRad): Promise<void> {
         : "—",
     ],
     ["Vill komma igång", rad.tidshorisont ?? "—"],
-    ["Verktyg", (rad.verktyg ?? []).join(", ") || "—"],
-    ["Missade samtal", rad.missade_samtal ? `${rad.missade_samtal}/vecka` : "—"],
-    ["Svarstid", rad.svarstid ?? "—"],
-    ["Kundvärde", rad.kundvarde ?? "—"],
+    ["System", (rad.verktyg ?? []).join(", ") || "—"],
+    ["Samma info i flera system", svarText(rad, FRAGA.dubbelinmatning)],
+    ...(rad.missade_samtal
+      ? [["Missade samtal", `${rad.missade_samtal}/vecka`] as [string, string]]
+      : []),
+    ...(rad.svarstid ? [["Svarstid", rad.svarstid] as [string, string]] : []),
+    ...(rad.kundvarde ? [["Kundvärde", rad.kundvarde] as [string, string]] : []),
     ["Lägger i dag", timmar(rad.timmar_min, rad.timmar_max)],
     ["Möjlig besparing", timmar(rad.besparing_min, rad.besparing_max)],
       ["Uteblivna affärer (internt)", kronor(rad) ?? "—"],
@@ -140,6 +162,7 @@ export async function skickaSaljnotis(rad: SvarsRad): Promise<void> {
           <strong>${skyddaHtml(o.namn)}</strong>${o.foreslaget ? " (föreslaget)" : ""}:
           ${o.lagt_min !== null ? `${timmar(o.lagt_min, o.lagt_max)}, ${skyddaHtml((o.idag ?? "").toLowerCase())}` : skyddaHtml(o.skal ?? "")}
           — spara ${timmar(o.besparing_min, o.besparing_max)}
+          ${svarText(rad, OMRADESNYCKEL.konsekvens(o.id)) !== "—" ? `<br><span style="color:#5a4f48;">När det inte fungerar: ${skyddaHtml(svarText(rad, OMRADESNYCKEL.konsekvens(o.id)).toLowerCase())}</span>` : ""}
         </li>`,
     )
     .join("");
@@ -148,7 +171,7 @@ export async function skickaSaljnotis(rad: SvarsRad): Promise<void> {
 
   if (omraden) {
     extra.push(
-      `<p style="${ETIKETT}margin-top:20px;">Tidstjuvar</p>
+      `<p style="${ETIKETT}margin-top:20px;">Görs för hand</p>
        <ul style="margin:6px 0 0;padding-left:20px;">${omraden}</ul>`,
     );
   }
@@ -168,7 +191,7 @@ export async function skickaSaljnotis(rad: SvarsRad): Promise<void> {
 
   if (rad.fritext?.trim()) {
     extra.push(
-      `<p style="${ETIKETT}margin-top:20px;">Vill helst slippa</p>
+      `<p style="${ETIKETT}margin-top:20px;">Arbetsflöde de vill ska sköta sig självt</p>
        <p style="margin:4px 0 0;font-size:15px;">${skyddaHtml(rad.fritext)}</p>`,
     );
   }
@@ -294,10 +317,13 @@ export async function skickaResultatmejl(rad: SvarsRad): Promise<void> {
 
   const harTid =
     rad.timmar_max !== null && Number(rad.timmar_max) > 0;
-  // Målet först — förslagen börjar där, precis som på sidan.
-  const malet = rad.mal
-    ? `<p style="margin:0 0 14px;font-size:16px;">Du sa att det viktigaste just nu är att <strong>${skyddaHtml(rad.mal.charAt(0).toLowerCase() + rad.mal.slice(1))}</strong> — därför börjar förslagen där.</p>`
-    : "";
+  // Målet först — förslagen börjar där, precis som på sidan. "Jag vet inte"
+  // har inget mål att upprepa.
+  const mal = malFranText(rad.mal);
+  const malet =
+    mal && mal !== "vetinte"
+      ? `<p style="margin:0 0 14px;font-size:16px;">Du sa att det som skulle göra störst skillnad är att <strong>${skyddaHtml(MAL_FRAS[mal](false))}</strong> — därför börjar förslagen där.</p>`
+      : "";
   const summor = harTid
     ? `<p style="margin:0 0 6px;font-size:16px;">Ni lägger i dag <strong>${timmar(rad.timmar_min, rad.timmar_max)}</strong> på det du valde.</p>
        ${rad.besparing_max !== null && Number(rad.besparing_max) > 0 ? `<p style="margin:0 0 18px;font-size:16px;">Troligen går <strong>${timmar(rad.besparing_min, rad.besparing_max)}</strong> att spara.</p>` : ""}`

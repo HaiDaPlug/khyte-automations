@@ -8,6 +8,7 @@
 
 import { FRAGA } from "@/kompass/data/kompass";
 import type { AiAnalys } from "@/kompass/lib/ai-typer";
+import { diagnoser } from "@/kompass/lib/flode";
 import { raknaUtResultat } from "@/kompass/lib/matchning";
 import type { Svar } from "@/kompass/lib/typer";
 
@@ -99,7 +100,9 @@ export function sammanstall(svar: Svar, ai?: AiAnalys | null) {
     bransch: text(svar, FRAGA.bransch),
     antal_anstallda: text(svar, FRAGA.antal),
     mal: text(svar, FRAGA.mal),
-    flaskhals: text(svar, FRAGA.flaskhals),
+    // Kolumnen heter flaskhals sedan den första versionen. Den håller nu det
+    // första specialsvaret — deras egen bild av var det bromsar.
+    flaskhals: diagnoser(svar)[0]?.signal.svar ?? null,
     bekraftelse: text(svar, FRAGA.bekraftelse),
     bekraftelse_text: text(svar, FRAGA.bekraftelseText),
     missade_samtal: text(svar, FRAGA.missadeSamtal),

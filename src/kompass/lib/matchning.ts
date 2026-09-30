@@ -17,6 +17,7 @@ import {
   MANGA_MISSADE_SAMTAL,
   MINUTER_PER_MISSAT_SAMTAL,
   MISSADE_SAMTAL_PER_VECKA,
+  OFTA_DUBBELT,
   OMRADEN,
   OMRADESNYCKEL,
   TID_PER_VECKA,
@@ -133,6 +134,26 @@ function foreslaSamtal(svar: Svar, valda: Omrade[]): OmradeResultat | null {
   };
 }
 
+/**
+ * Integrationsområdet föreslås även när det inte valts, om de svarar att samma
+ * information ofta matas in på flera ställen. Utan tidsberäkning — de har inte
+ * sagt hur mycket tid det tar.
+ */
+function foreslaDubbel(svar: Svar, valda: Omrade[]): OmradeResultat | null {
+  const omrade = OMRADEN.find((o) => o.id === "dubbelregistrering");
+  if (!omrade || valda.some((o) => o.id === omrade.id)) return null;
+  if (enval(svar, FRAGA.dubbelinmatning) !== OFTA_DUBBELT) return null;
+
+  const du = enval(svar, FRAGA.antal) === "Bara jag";
+  return {
+    omrade,
+    besparing: INGEN_TID,
+    harledning: `${omrade.namn}: föreslaget utifrån dina svar, utan tidsberäkning.`,
+    foreslaget: true,
+    skal: `${du ? "Du" : "Ni"} svarade att samma information ofta behöver matas in eller flyttas mellan flera system.`,
+  };
+}
+
 /** Kronor i månaden som försvinner med missade samtal. */
 function raknaMissadeAffarer(svar: Svar): Resultat["missadeAffarer"] {
   // Där ett missat samtal sällan är en ny kund räknar vi inga pengar alls.
@@ -174,8 +195,9 @@ export function raknaUtResultat(svar: Svar, ai?: AiAnalys | null): Resultat {
     .map((o) => raknaOmrade(o, svar))
     .sort((a, b) => b.besparing.max - a.besparing.max);
 
-  const foreslaget = foreslaSamtal(svar, valda);
-  if (foreslaget) omraden.push(foreslaget);
+  for (const foreslaget of [foreslaSamtal(svar, valda), foreslaDubbel(svar, valda)]) {
+    if (foreslaget) omraden.push(foreslaget);
+  }
 
   const lagt = summera(
     omraden.flatMap((o) => (o.lagt ? [o.lagt] : [])),

@@ -62,21 +62,49 @@ const STANDARDORD: Ord = {
 };
 
 export const ORD: Readonly<Partial<Record<Bransch, Ord>>> = {
-  [BRANSCH.stad]: {
+  [BRANSCH.tillverkning]: {
     ...STANDARDORD,
-    foretag: "städfirmor",
-    jobb: "städning",
-    jobbet: "städningen",
+    foretag: "tillverkare",
+    jobb: "order",
+    jobbet: "ordern",
     klar: "klar",
-    nastaGang: "nästa storstädning",
+    nastaGang: "nästa beställning",
   },
-  [BRANSCH.bil]: {
+  [BRANSCH.fastighet]: {
+    kund: "hyresgäst",
+    kunden: "hyresgästen",
+    kunder: "hyresgäster",
+    foretag: "fastighetsbolag",
+    jobb: "ärende",
+    jobbet: "ärendet",
+    klar: "klart",
+    nastaGang: "nästa besiktning",
+  },
+  [BRANSCH.hotell]: {
+    kund: "gäst",
+    kunden: "gästen",
+    kunder: "gäster",
+    foretag: "hotell och restauranger",
+    jobb: "bokning",
+    jobbet: "besöket",
+    klar: "klart",
+    nastaGang: "nästa besök",
+  },
+  [BRANSCH.handel]: {
     ...STANDARDORD,
-    foretag: "verkstäder",
-    jobb: "service",
-    jobbet: "servicen",
+    foretag: "butiker och e-handlare",
+    jobb: "order",
+    jobbet: "ordern",
     klar: "klar",
-    nastaGang: "nästa service eller däckbyte",
+    nastaGang: "nästa köp",
+  },
+  [BRANSCH.transport]: {
+    ...STANDARDORD,
+    foretag: "åkerier och transportföretag",
+    jobb: "leverans",
+    jobbet: "leveransen",
+    klar: "klar",
+    nastaGang: "nästa beställning",
   },
   [BRANSCH.hantverk]: {
     ...STANDARDORD,
@@ -101,49 +129,47 @@ export const ORD: Readonly<Partial<Record<Bransch, Ord>>> = {
     klar: "klar",
     nastaGang: "nästa klippning eller behandling",
   },
-  [BRANSCH.restaurang]: {
-    kund: "gäst",
-    kunden: "gästen",
-    kunder: "gäster",
-    foretag: "restauranger",
-    jobb: "bokning",
-    jobbet: "besöket",
-    klar: "klart",
-    nastaGang: "nästa besök",
-  },
-  [BRANSCH.butik]: {
-    ...STANDARDORD,
-    foretag: "butiker",
-    jobb: "order",
-    jobbet: "ordern",
-    klar: "klar",
-    nastaGang: "nästa köp",
-  },
-  [BRANSCH.fastighet]: {
-    kund: "hyresgäst",
-    kunden: "hyresgästen",
-    kunder: "hyresgäster",
-    foretag: "fastighetsbolag",
-    jobb: "ärende",
-    jobbet: "ärendet",
-    klar: "klart",
-    nastaGang: "nästa besiktning",
-  },
-  [BRANSCH.transport]: {
-    ...STANDARDORD,
-    foretag: "åkerier och transportföretag",
-    jobb: "leverans",
-    jobbet: "leveransen",
-    klar: "klar",
-    nastaGang: "nästa beställning",
-  },
   [BRANSCH.byra]: {
     ...STANDARDORD,
-    foretag: "byråer",
+    foretag: "byråer och konsultbolag",
     jobb: "uppdrag",
     jobbet: "uppdraget",
     klar: "klart",
     nastaGang: "nästa uppdrag",
+  },
+  [BRANSCH.it]: {
+    ...STANDARDORD,
+    foretag: "IT-bolag",
+    jobb: "uppdrag",
+    jobbet: "uppdraget",
+    klar: "klart",
+    nastaGang: "nästa uppdrag",
+  },
+  [BRANSCH.forbund]: {
+    kund: "medlem",
+    kunden: "medlemmen",
+    kunder: "medlemmar",
+    foretag: "organisationer och förbund",
+    jobb: "ärende",
+    jobbet: "ärendet",
+    klar: "klart",
+    nastaGang: "nästa medlemsförnyelse",
+  },
+  [BRANSCH.stad]: {
+    ...STANDARDORD,
+    foretag: "städ-, flytt- och serviceföretag",
+    jobb: "uppdrag",
+    jobbet: "uppdraget",
+    klar: "klart",
+    nastaGang: "nästa uppdrag",
+  },
+  [BRANSCH.bil]: {
+    ...STANDARDORD,
+    foretag: "verkstäder",
+    jobb: "service",
+    jobbet: "servicen",
+    klar: "klar",
+    nastaGang: "nästa service eller däckbyte",
   },
 };
 
@@ -152,22 +178,25 @@ export function ordFor(bransch: Bransch | undefined): Ord {
 }
 
 /**
- * Områden som brukar ge mest i varje bransch, i ordning. Används för att
- * fylla upp till tre förslag när svaren inte pekar ut tillräckligt många.
- * Visas utan siffror — vi vet inget om deras tid där.
+ * Områden som brukar ge mest i varje bransch, i ordning. Sista reserven för
+ * att fylla upp till tre förslag — först kommer det som svaren pekar på
+ * (friktion, specialfrågor, mål). Visas utan siffror.
  */
 export const BRANSCHTIPS: Readonly<Record<Bransch, readonly string[]>> = {
-  [BRANSCH.stad]: ["bokning", "rut", "aterkommande", "fakturor"],
-  [BRANSCH.bil]: ["aterkommande", "bokning", "samtal", "fakturor"],
-  [BRANSCH.hantverk]: ["offerter", "fakturor", "rut", "samtal"],
+  [BRANSCH.tillverkning]: ["dubbelregistrering", "koll", "rapporter", "godkannande"],
+  [BRANSCH.fastighet]: ["arenden", "koll", "dokument", "kontakter"],
+  [BRANSCH.hotell]: ["bokning", "schema", "arenden", "rapporter"],
+  [BRANSCH.handel]: ["dubbelregistrering", "arenden", "rapporter", "kontakter"],
+  [BRANSCH.transport]: ["koll", "dubbelregistrering", "kontakter", "fakturor"],
+  [BRANSCH.hantverk]: ["offerter", "fakturor", "rut", "koll"],
   [BRANSCH.vard]: ["bokning", "aterkommande", "samtal", "dokument"],
   [BRANSCH.skonhet]: ["bokning", "aterkommande", "marknad", "samtal"],
-  [BRANSCH.restaurang]: ["bokning", "schema", "marknad", "samtal"],
-  [BRANSCH.butik]: ["samtal", "marknad", "dubbelregistrering", "rapporter"],
-  [BRANSCH.fastighet]: ["koll", "samtal", "dokument", "fakturor"],
-  [BRANSCH.transport]: ["koll", "dubbelregistrering", "fakturor", "samtal"],
   [BRANSCH.byra]: ["nya-kunder", "rapporter", "dokument", "fakturor"],
-  [BRANSCH.annat]: ["samtal", "fakturor", "dubbelregistrering", "rapporter"],
+  [BRANSCH.it]: ["arenden", "dubbelregistrering", "rapporter", "fakturor"],
+  [BRANSCH.forbund]: ["arenden", "information", "kontakter", "rapporter"],
+  [BRANSCH.stad]: ["offerter", "samtal", "rut", "fakturor"],
+  [BRANSCH.bil]: ["aterkommande", "bokning", "samtal", "fakturor"],
+  [BRANSCH.annat]: ["dubbelregistrering", "koll", "rapporter", "fakturor"],
 };
 
 // ── Hjälpare för mallarna ───────────────────────────────────────────────────
@@ -390,6 +419,62 @@ export const FLODEN: Readonly<Record<string, (k: Sammanhang) => Flode>> = {
     };
   },
 
+  information: (k) => {
+    const p = pron(k);
+    return {
+      rubrik: "Rätt svar på sekunder — utan att fråga runt",
+      steg: [
+        `Era dokument, mejl och ${k.system.length ? system(k) : "system"} görs sökbara på ett ställe.`,
+        `${p.Ni} ställer frågan med egna ord, som ”vilket pris gäller för …?” eller ”var ligger senaste versionen?”.`,
+        "Svaret kommer direkt, med en länk till källan så att det går att lita på.",
+        "Det som ofta efterfrågas men saknas flaggas, så att det kan skrivas ner en gång för alla.",
+      ],
+      slipper: "Att leta i mappar och mejltrådar, och att vänta på att rätt kollega har tid att svara.",
+    };
+  },
+
+  arenden: (k) => {
+    const p = pron(k);
+    return {
+      rubrik: "Inkorgen som sorterar sig själv",
+      steg: [
+        `Mejl, formulär och ärenden från ${k.ord.kunder} landar på ett ställe.`,
+        "Varje ärende läses av, märks med vad det gäller och hur bråttom det är.",
+        "Det skickas direkt till rätt person, med ett förberett svar att utgå från.",
+        `Blir något liggande får ${p.ni} en påminnelse innan ${k.ord.kunden} hinner fråga igen.`,
+      ],
+      slipper: "Att läsa allt för att hitta det som är viktigt, och att skicka vidare mejl för hand.",
+    };
+  },
+
+  godkannande: (k) => {
+    const p = pron(k);
+    return {
+      rubrik: "Kontroller som görs av sig själva — godkännanden som inte fastnar",
+      steg: [
+        "När ett underlag kommer in kontrolleras det automatiskt mot era regler.",
+        "Det som stämmer går vidare direkt. Det som avviker markeras, med förklaring.",
+        `Det som behöver godkännas skickas till rätt person, som godkänner i mobilen.`,
+        `Väntar något för länge går en påminnelse ut, och ${p.ni} ser var allt står.`,
+      ],
+      slipper: "Att stämma av uppgifter för hand och jaga den som ska godkänna.",
+    };
+  },
+
+  kontakter: (k) => {
+    const p = pron(k);
+    return {
+      rubrik: "Besked som går ut av sig själva när något händer",
+      steg: [
+        `När något händer — en order läggs, ${k.ord.jobbet} blir ${k.ord.klar}, en leverans är på väg — skickas rätt besked automatiskt.`,
+        "Leverantörer får beställningar och påminnelser utan att någon skriver dem.",
+        `${stor(k.ord.kunder)} får statusbesked i tid, i stället för att behöva höra av sig och fråga.`,
+        `${p.Ni} ser vad som skickats och till vem, och kan ändra texterna när ${p.ni} vill.`,
+      ],
+      slipper: "Att komma ihåg vem som ska ha besked, och att skriva samma meddelande om och om igen.",
+    };
+  },
+
   rut: (k) => ({
     rubrik: "RUT/ROT-underlaget som sköter sig självt",
     steg: [
@@ -573,6 +658,54 @@ export const FLODEN_AVANCERAD: Readonly<Record<string, (k: Sammanhang) => Flode>
     slipper: "Frågor som ”hur går det med …?”, whiteboards och lappar som försvinner.",
   }),
 
+  information: (k) => ({
+    rubrik: "En AI-assistent som kan hela verksamheten",
+    steg: [
+      `Dokument, avtal, rutiner och data från ${system(k)} kopplas till en gemensam kunskapsbas.`,
+      "Alla i teamet ställer frågor med egna ord och får svar med källa, direkt.",
+      "Behörigheter följer med, så att var och en bara ser det de får se.",
+      "Frågor som saknar bra svar samlas, så att luckorna i dokumentationen syns.",
+      `${stor(ledning(k))} ser vad som efterfrågas mest — och var kunskapen sitter hos enskilda personer.`,
+    ],
+    slipper: "Att leta, fråga runt och vänta — och kunskap som försvinner när någon slutar.",
+  }),
+
+  arenden: (k) => ({
+    rubrik: "Ärendeflöde där AI sorterar och förbereder",
+    steg: [
+      `Alla inkommande mejl, formulär och ärenden från ${k.ord.kunder}, leverantörer och kollegor samlas i ett flöde.`,
+      "En AI läser varje ärende, sorterar det efter typ och brådska och hämtar det som behövs från era system.",
+      "Ärendet går till rätt person eller team, med ett svarsutkast klart att skicka.",
+      "Enkla ärenden — status, kopior, bekräftelser — besvaras automatiskt.",
+      `${stor(ledning(k))} ser volymer, svarstider och vad som blir liggande i en översikt.`,
+    ],
+    slipper: "Delade inkorgar som ingen äger, och ärenden som faller mellan stolarna.",
+  }),
+
+  godkannande: (k) => ({
+    rubrik: "Kontroll- och attestflöde utan flaskhalsar",
+    steg: [
+      "Underlag — fakturor, beställningar, avvikelser, dokument — fångas upp automatiskt när de kommer in.",
+      "Varje underlag kontrolleras mot era regler: belopp, avtal, fält som saknas, dubbletter.",
+      "Det som ska godkännas går till rätt person efter belopp och ansvar, och godkänns i mobilen.",
+      "Påminnelser och eskalering sköts automatiskt, och varje beslut loggas.",
+      `${stor(ledning(k))} ser var godkännanden väntar och hur lång tid varje steg tar.`,
+    ],
+    slipper: "Mejlkedjor om vem som ska godkänna, och fel som upptäcks för sent.",
+  }),
+
+  kontakter: (k) => ({
+    rubrik: "Automatisk kommunikation genom hela flödet",
+    steg: [
+      `Varje händelse i verksamheten — ny order, ändrad tid, ${k.ord.jobbet} ${k.ord.klar} — kan trigga ett besked.`,
+      `${stor(k.ord.kunder)} får statusuppdateringar i rätt kanal, utan att någon skriver dem.`,
+      "Leverantörer får beställningar, avrop och påminnelser direkt från era system.",
+      "Svar som kommer tillbaka kopplas till rätt ärende och rätt person.",
+      `${stor(ledning(k))} ser vad som skickats, vad som besvarats och vad som väntar.`,
+    ],
+    slipper: "Att vara spindeln i nätet för varje besked mellan kunder, leverantörer och kollegor.",
+  }),
+
   rut: () => ({
     rubrik: "RUT/ROT helt utan handpåläggning",
     steg: [
@@ -611,7 +744,7 @@ export type Kedja = {
 export const KEDJOR: readonly Kedja[] = [
   {
     id: "offert-till-betalning",
-    omraden: ["offerter", "fakturor", "bokforing", "dubbelregistrering", "koll", "rut"],
+    omraden: ["offerter", "fakturor", "bokforing", "dubbelregistrering", "koll", "godkannande", "rut"],
     karna: ["offerter", "fakturor"],
     flode: (k) => ({
       rubrik: "Från förfrågan till betald faktura — utan en enda överlämning",
@@ -636,7 +769,7 @@ export const KEDJOR: readonly Kedja[] = [
   },
   {
     id: "forfragan-till-aterkommande",
-    omraden: ["samtal", "bokning", "aterkommande", "marknad"],
+    omraden: ["samtal", "bokning", "aterkommande", "marknad", "arenden", "kontakter"],
     karna: ["samtal", "bokning"],
     flode: (k) => ({
       rubrik: `Varje ${k.ord.kund} fångas upp, bokas in och kommer tillbaka`,
@@ -686,8 +819,8 @@ export const KEDJOR: readonly Kedja[] = [
   },
   {
     id: "drift-och-overblick",
-    omraden: ["koll", "schema", "rapporter", "dubbelregistrering", "dokument", "bokning"],
-    karna: ["koll", "schema", "rapporter", "dubbelregistrering"],
+    omraden: ["koll", "schema", "rapporter", "dubbelregistrering", "dokument", "bokning", "information", "godkannande", "arenden", "kontakter"],
+    karna: ["koll", "schema", "rapporter", "dubbelregistrering", "information"],
     flode: (k) => ({
       rubrik: "En verksamhet där alla ser samma sak — i realtid",
       steg: [
@@ -745,8 +878,8 @@ export const PLANFASER = {
  * Områden där AI-assistent respektive överblick gör skillnad. Fas 3 i planen
  * tas bara med när verksamheten har något av dem — den pressas inte in.
  */
-export const AI_OMRADEN: readonly string[] = ["samtal", "bokning"];
-export const OVERBLICK_OMRADEN: readonly string[] = ["rapporter", "koll", "dubbelregistrering", "schema"];
+export const AI_OMRADEN: readonly string[] = ["samtal", "bokning", "arenden", "information"];
+export const OVERBLICK_OMRADEN: readonly string[] = ["rapporter", "koll", "dubbelregistrering", "schema", "godkannande"];
 
 // ── Tillväxt ────────────────────────────────────────────────────────────────
 

@@ -9,6 +9,7 @@ import {
   type ReactNode,
 } from "react";
 import { FRAGA, TEXT, VISA_PER_MANAD_UNDER } from "@/kompass/data/kompass";
+import { ordFor } from "@/kompass/data/floden";
 import Bekraftelse from "@/kompass/komponenter/Bekraftelse";
 import ForslagKort, { type ForslagLage } from "@/kompass/komponenter/ForslagKort";
 import Knapp from "@/kompass/komponenter/Knapp";
@@ -125,10 +126,15 @@ export default function ResultatVy({
   // Kontrollfrågan gäller det första förslaget — vår diagnos.
   const diagnos = diagnosFor(forslag[0]);
   const bekraftelse = svar[FRAGA.bekraftelse];
-  const rubrik =
-    resultat.mal && resultat.mal !== "admin"
-      ? TEXT.resultat.malRubrik[resultat.mal](du)
-      : TEXT.resultat.rubrik;
+  // Rubriken efter målet. Mål utan riktning ("Minska administrationen",
+  // "Jag vet inte") får standardrubriken.
+  const malRubrik =
+    resultat.mal && resultat.mal in TEXT.resultat.malRubrik
+      ? TEXT.resultat.malRubrik[resultat.mal as keyof typeof TEXT.resultat.malRubrik]
+      : undefined;
+  const rubrik = malRubrik
+    ? malRubrik(du, ordFor(resultat.bransch).kunder)
+    : TEXT.resultat.rubrik;
 
   // Tidsrutorna, tidskartan och "Så räknade vi". Är tiden liten hamnar de
   // längre ner, under "Administrativ potential" — affärsnyttan först.
