@@ -48,7 +48,7 @@ export const cases: CaseData[] = [
     description:
       "Filtrera bolagen i Allabolag. Klistra in länken. Få en färdig prospektlista i Excel.",
     hook: "Från filtrering till ringlista på några sekunder.",
-    image: "/case-images/1.png",
+    image: "/case-images/1.jpg",
     gradient: [
       "radial-gradient(ellipse 55% 60% at 78% 18%, rgba(255,235,185,0.72) 0%, rgba(255,235,185,0) 65%)",
       "radial-gradient(ellipse 70% 65% at 28% 52%, rgba(212,98,43,0.90) 0%, rgba(212,98,43,0) 62%)",
@@ -107,7 +107,7 @@ export const cases: CaseData[] = [
     description:
       "Excel in. Färdiga plocksedlar ut.",
     hook: "Excel in. Färdiga plocksedlar ut.",
-    image: "/case-images/4.png",
+    image: "/case-images/4.jpg",
     gradient: [
       "radial-gradient(ellipse 55% 55% at 80% 20%, rgba(235,225,205,0.60) 0%, rgba(235,225,205,0) 62%)",
       "radial-gradient(ellipse 65% 60% at 25% 50%, rgba(200,110,40,0.80) 0%, rgba(200,110,40,0) 62%)",
@@ -167,7 +167,7 @@ export const cases: CaseData[] = [
     description:
       "Från telefon, minne och lösa trådar till ett system för hela verksamheten.",
     hook: "Från telefon, minne och lösa trådar till ett system för hela verksamheten.",
-    image: "/case-images/5.png",
+    image: "/case-images/5.jpg",
     gradient: [
       "radial-gradient(ellipse 50% 55% at 82% 15%, rgba(220,225,235,0.55) 0%, rgba(220,225,235,0) 62%)",
       "radial-gradient(ellipse 65% 60% at 22% 48%, rgba(180,90,35,0.85) 0%, rgba(180,90,35,0) 62%)",
@@ -227,7 +227,7 @@ export const cases: CaseData[] = [
     description:
       "Från kundlista till mätbara återbesök.",
     hook: "Från kundlista till mätbara återbesök.",
-    image: "/case-images/3.png",
+    image: "/case-images/3.jpg",
     gradient: [
       "radial-gradient(ellipse 55% 55% at 78% 18%, rgba(210,230,225,0.55) 0%, rgba(210,230,225,0) 62%)",
       "radial-gradient(ellipse 65% 60% at 24% 50%, rgba(40,120,100,0.80) 0%, rgba(40,120,100,0) 62%)",
@@ -287,7 +287,7 @@ export const cases: CaseData[] = [
     description:
       "Från en lista med företagsnamn till researchade leads med domän, bolagstyp, ort och beslutsfattare.",
     hook: "Från företagsnamn till färdig research på sekunder.",
-    image: "/case-images/2.png",
+    image: "/case-images/2.jpg",
     gradient: [
       "radial-gradient(ellipse 45% 55% at 15% 25%, rgba(90,20,8,0.95) 0%, rgba(90,20,8,0) 65%)",
       "radial-gradient(ellipse 60% 50% at 85% 45%, rgba(160,60,20,0.70) 0%, rgba(160,60,20,0) 60%)",

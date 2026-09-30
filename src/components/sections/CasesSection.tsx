@@ -26,7 +26,7 @@ export default function CasesSection() {
             className="relative w-full aspect-[16/9] shrink-0 overflow-hidden"
           >
             <img
-              src="/case-images/1.png"
+              src="/case-images/1.jpg"
               alt="JaTack AB x Khyte Automations"
               className="absolute inset-0 w-full h-full object-cover"
             />
@@ -71,7 +71,7 @@ export default function CasesSection() {
             className="relative w-full aspect-[16/9] shrink-0 overflow-hidden"
           >
             <img
-              src="/case-images/3.png"
+              src="/case-images/3.jpg"
               alt="Osteopaticentrum x Khyte Automations"
               className="absolute inset-0 w-full h-full object-cover"
             />
