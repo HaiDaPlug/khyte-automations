@@ -2,6 +2,7 @@ import Link from "next/link";
 import Container from "@/components/Container";
 import Button from "@/components/Button";
 import PageHeader from "@/components/PageHeader";
+import { facts } from "@/data/facts";
 
 /**
  * Custom 404.
@@ -32,7 +33,7 @@ const destinations = [
   {
     href: "/kontakt",
     label: "Kontakt",
-    desc: "Boka ett intro på 30 minuter, eller mejla oss.",
+    desc: `Boka ett intro på ${facts.introCall.minutes} minuter, eller mejla oss.`,
   },
 ];
 

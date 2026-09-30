@@ -2,8 +2,9 @@
 
 import { useEffect, useRef } from "react";
 import { useCalendly } from "./CalendlyContext";
+import { facts } from "@/data/facts";
 
-const CALENDLY_URL = "https://calendly.com/hai-khyteteam/30min";
+const CALENDLY_URL = facts.introCall.url;
 
 export default function CalendlyDrawer() {
   const { open, closeCalendly } = useCalendly();
@@ -121,7 +122,7 @@ export default function CalendlyDrawer() {
               Boka samtal
             </p>
             <p style={{ fontSize: "0.8rem", color: "#8A7D78", marginTop: "4px" }}>
-              30 min · Utan bindningstid
+              {facts.introCall.minutes} min · Utan bindningstid
             </p>
           </div>
           <button

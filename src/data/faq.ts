@@ -6,6 +6,8 @@
  * the page, so these must never be maintained separately.
  */
 
+import { facts } from "./facts";
+
 export interface FAQEntry {
   q: string;
   a: string;
@@ -15,11 +17,11 @@ export interface FAQEntry {
 export const homeFaqs: FAQEntry[] = [
   {
     q: "Vad kostar det?",
-    a: "Det beror på omfattningen. Vi börjar med en kartläggning till fast pris. Efter den får ni ett fast pris för bygget, från 15 000 kr, innan ni bestämmer er.",
+    a: `Det beror på omfattningen. Vi börjar med en kartläggning till fast pris. Efter den får ni ett fast pris för bygget, från ${facts.priceFrom}, innan ni bestämmer er.`,
   },
   {
     q: "Hur lång tid tar det?",
-    a: "Det beror på era verktyg och processer. Mindre automationer är ofta klara på 1–2 veckor, större system tar 4–6 veckor. Ni får en tidsplan i kartläggningen.",
+    a: `Det beror på era verktyg och processer. Mindre automationer är ofta klara på ${facts.delivery.small}, större system tar ${facts.delivery.large}. Ni får en tidsplan i kartläggningen.`,
   },
   {
     q: "Behöver vi ändra hur vi jobbar?",
