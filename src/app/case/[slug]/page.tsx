@@ -136,11 +136,11 @@ export default async function CaseDetailPage({
         <section className="pt-12 pb-14 md:pt-14 md:pb-16 border-b" style={{ borderColor: "var(--color-border)" }}>
           <div className="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-6 md:gap-16 items-start">
             <div className="md:pt-1">
-              <p
+              <h2
                 style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--color-accent)" }}
               >
                 Utmaningen
-              </p>
+              </h2>
             </div>
             <div
               className="font-medium leading-relaxed flex flex-col gap-4"
@@ -157,11 +157,11 @@ export default async function CaseDetailPage({
         <section className="py-14 md:py-20 border-b" style={{ borderColor: "var(--color-border)" }}>
           <div className="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-6 md:gap-16 items-start">
             <div className="md:pt-1">
-              <p
+              <h2
                 style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--color-accent)" }}
               >
                 Lösningen
-              </p>
+              </h2>
             </div>
             <div>
               <div
@@ -188,12 +188,12 @@ export default async function CaseDetailPage({
                       {String(i + 1).padStart(2, "0")}
                     </span>
                     <div>
-                      <p
+                      <h3
                         className="font-semibold mb-1.5"
                         style={{ fontSize: "1rem", color: "var(--color-text)", lineHeight: 1.3 }}
                       >
                         {step.label}
-                      </p>
+                      </h3>
                       <p
                         className="text-sm leading-relaxed"
                         style={{ color: "var(--color-text-body)" }}
@@ -216,12 +216,12 @@ export default async function CaseDetailPage({
           style={{ backgroundImage: GRAIN, backgroundSize: "160px 160px", mixBlendMode: "screen", opacity: 0.055 }}
         />
         <div className="relative max-w-[1200px] mx-auto px-6 py-16 md:py-24">
-          <p
+          <h2
             className="mb-12 md:mb-16"
             style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase", color: "rgba(255,255,255,0.35)" }}
           >
             Resultat
-          </p>
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
             {(() => {
               const longestValue = Math.max(...c.metrics.map((m) => m.value.length));
