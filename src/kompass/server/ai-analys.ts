@@ -8,7 +8,6 @@ import {
   FRAGA,
   MAX_FRITEXT,
   OMRADEN,
-  OMRADESNYCKEL,
   SPECIAL,
   type Bransch,
 } from "@/kompass/data/kompass";
@@ -60,11 +59,13 @@ Om Khyte Automations: vi automatiserar i princip allt som görs för hand i ett 
 
 Kompassen diagnostiserar arbetsflöden — den letar inte efter en specifik automation att sälja. Samma kompass används av en enmansklinik, en tillverkare och en organisation med hundratals anställda. Alla ska känna att du förstår hur just de arbetar.
 
-Tänk alltid som en företagsledare. Frågan är aldrig bara "vilken uppgift slipper någon" utan "vad betyder det för företaget": fler affärer, snabbare kassaflöde, kapacitet att göra mer med samma team, färre fel, färre saker som faller mellan personer, nöjdare kunder, mindre beroende av enskilda personer och beslut på aktuella siffror. Sparad tid är medlet — affären är målet. Svaren på "när det inte fungerar" (under <arbetsfloden>) är affärskonsekvensen: väg in den när du väljer vad som är starkast.
+Tänk alltid som en företagsledare. Frågan är aldrig bara "vilken uppgift slipper någon" utan "vad betyder det för företaget": fler affärer, snabbare kassaflöde, kapacitet att göra mer med samma team, färre fel, färre saker som faller mellan personer, nöjdare kunder, mindre beroende av enskilda personer och beslut på aktuella siffror. Sparad tid är medlet — affären är målet. Svaret på "när det inte fungerar" (sist under <arbetsfloden>) är affärskonsekvensen: väg in den när du väljer vad som är starkast.
+
+Kompassen har få frågor med avsikt — den ska vara lätt att genomföra. Dra slutsatser av det lilla du får, men hitta inte på detaljer de inte sagt.
 
 Underlaget:
 - <foretaget>: bransch, storlek, målet och systemen. Branschen ger språk och sammanhang — den avgör inte vilket problem de har. Det gör svaren.
-- <arbetsfloden>: det som fortfarande görs för hand, med deras egen tid och hur manuellt det är. För det första området — oftast det som skaver mest — står också vad som händer när det inte fungerar.
+- <arbetsfloden>: det de själva sagt görs för hand, med deras egen tid, och vad som händer när det som skaver mest inte fungerar.
 - <extra_signaler>: svar på följdfrågor som bara ställs när de är relevanta. Saknas taggen har inga ställts.
 - <arbetsflode_fran_besokaren>: ett arbetsflöde de själva önskar skulle fungera av sig självt, med egna ord. Det är den starkaste signalen om vad de bryr sig om.
 
@@ -76,14 +77,11 @@ Ditt uppdrag:
 - Förankra allt i deras svar. Nämn deras system vid namn. Använd branschens ord (patienter, gäster, hyresgäster, medlemmar, order …).
 - Bygg vidare. Finns en tidigare analys: behåll det som fortfarande stämmer och ändra bara det som de nya svaren motiverar.
 - Det första förslaget ska svara mot deras mål ("Mål" i underlaget):
-  - Få mer gjort med samma team / Minska administrationen: det som tar mest tid och görs mest för hand.
-  - Få våra system och vår information att hänga ihop: integrationer och ett flöde där information bara skrivs in en gång.
-  - Kortare väg från start till färdigt arbete: hela flödet från förfrågan eller order till levererat och fakturerat, utan väntan i överlämningarna.
-  - Bättre koll på vad som händer i verksamheten: status, uppföljning och översikter i realtid.
-  - Färre saker som faller mellan personer eller avdelningar: överlämningar, ansvar, påminnelser och gemensam status.
-  - Få in och vinna fler affärer: nivå liten — till exempel att fånga fler förfrågningar och låta ingen bli liggande, att varje förfrågan och offert följs upp, eller att tidigare kunder kommer tillbaka. Föreslå inte en ny hemsida: vi vet inte om de har en, om den har trafik eller var förfrågningarna tappas — det avgörs i samtalet. Nivå mellan och stor — ett systematiskt flöde för prospektering och uppföljning, eller mer affärer ur kundbasen de redan har. Beskriv resultatet, inte metoden: vilka kanaler som passar avgörs i samtalet.
-  - Ge kunder bättre service: snabbare svar, ärenden som inte blir liggande, besked och påminnelser i tid.
-  - Jag vet inte – hjälp mig hitta det: börja där svaren tydligast pekar — mest manuellt arbete, allvarligast konsekvens.
+  - Fler affärer: nivå liten — till exempel att fånga fler förfrågningar och låta ingen bli liggande, att varje förfrågan och offert följs upp, eller att tidigare kunder kommer tillbaka. Föreslå inte en ny hemsida: vi vet inte om de har en, om den har trafik eller var förfrågningarna tappas — det avgörs i samtalet. Nivå mellan och stor — ett systematiskt flöde för prospektering och uppföljning, eller mer affärer ur kundbasen de redan har. Beskriv resultatet, inte metoden: vilka kanaler som passar avgörs i samtalet.
+  - Snabbare svar och bättre service: snabbare svar, ärenden som inte blir liggande, besked och påminnelser i tid.
+  - Mer gjort med samma team: det som tar mest tid och har allvarligast konsekvens.
+  - System som hänger ihop: integrationer och ett flöde där information bara skrivs in en gång.
+  - Bättre koll och färre missar: status, uppföljning, överlämningar som inte faller mellan stolarna och översikter i realtid.
   Har de svarat på en följdfråga under <extra_signaler> som pekar ut var det bromsar ska det första förslaget lösa just det — det är deras egen diagnos.
 - Har de beskrivit ett arbetsflöde (<arbetsflode_fran_besokaren>) visas det som ett eget kort bredvid dina förslag. Använd det för att förstå verksamheten och låt det påverka vad du prioriterar, men skriv inget förslag som bara upprepar det.
 
@@ -126,20 +124,15 @@ function underlag(svar: Svar, tidigare: AiAnalys | null): string {
     return typeof x === "string" ? x : undefined;
   };
 
+  // Allt i listan görs för hand — det är så de valde det.
   const arbetsfloden = r.omraden
-    .map((o) => {
-      if (o.foreslaget) {
-        return `- ${o.omrade.id} (${o.omrade.namn}): inte valt, men svaren pekar dit. ${o.skal ?? ""}`;
-      }
-      const konsekvens = text(OMRADESNYCKEL.konsekvens(o.omrade.id));
-      return [
-        `- ${o.omrade.id} (${o.omrade.namn}):`,
-        `tid ${o.lagt ? formateraTimmar(o.lagt) + " i veckan" : "ej angiven"},`,
-        `görs ${o.idag?.toLowerCase() ?? "okänt hur"}${konsekvens ? "," : "."}`,
-        ...(konsekvens ? [`när det inte fungerar: ${konsekvens.toLowerCase()}.`] : []),
-      ].join(" ");
-    })
+    .map((o) =>
+      o.foreslaget
+        ? `- ${o.omrade.id} (${o.omrade.namn}): inte valt, men svaren pekar dit. ${o.skal ?? ""}`
+        : `- ${o.omrade.id} (${o.omrade.namn}): görs för hand, tid ${o.lagt ? formateraTimmar(o.lagt) + " i veckan" : "ej angiven"}.`,
+    )
     .join("\n");
+  const konsekvens = text(FRAGA.konsekvens);
 
   // Bara följdfrågor som faktiskt ställts och besvarats.
   const signaler = [
@@ -148,7 +141,6 @@ function underlag(svar: Svar, tidigare: AiAnalys | null): string {
       return s && SPECIAL[id] ? [`${SPECIAL[id].etikett}: ${s}`] : [];
     }),
     ...(text(FRAGA.missadeSamtal) ? [`Missade samtal per vecka: ${text(FRAGA.missadeSamtal)}`] : []),
-    ...(text(FRAGA.svarstid) ? [`Svarstid på förfrågningar: ${text(FRAGA.svarstid)}`] : []),
     ...(text(FRAGA.kundvarde) ? [`Värde av en ny kund: ${text(FRAGA.kundvarde)}`] : []),
   ];
 
@@ -174,6 +166,7 @@ function underlag(svar: Svar, tidigare: AiAnalys | null): string {
     "",
     "<arbetsfloden>",
     arbetsfloden || "Inga valda ännu.",
+    ...(konsekvens ? [`När det som skaver mest inte fungerar: ${konsekvens.toLowerCase()}.`] : []),
     "</arbetsfloden>",
     ...(signaler.length ? ["", "<extra_signaler>", ...signaler, "</extra_signaler>"] : []),
     "",

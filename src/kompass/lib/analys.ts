@@ -1,8 +1,8 @@
 /**
  * Analysen bakom förslagen på resultatsidan.
  *
- * Läser alla svar tillsammans — bransch, storlek, verktyg, hur det görs i dag,
- * missade samtal, svarstid — och väljer de tre förslag där vi ser tydligast
+ * Läser alla svar tillsammans — bransch, storlek, mål, vad som görs för hand,
+ * system, missade samtal — och väljer de tre förslag där vi ser tydligast
  * att vi kan hjälpa. Varje förslag är ett konkret flöde (src/data/floden.ts)
  * ifyllt med deras egna ord och verktyg.
  *
@@ -13,18 +13,15 @@
 import {
   ANDEL_MISSADE_SOM_AFFAR,
   BRANSCH,
-  FOR_HAND,
   FRAGA,
   HELTID_TIMMAR,
   KONSEKVENS,
-  LANGSAM_SVARSTID,
   MAL_FRAS,
   MAL_OMRADEN,
   MAL_UTAN_RIKTNING,
   MANGA_MISSADE_SAMTAL,
   NYCKELORD,
   OMRADEN,
-  OMRADESNYCKEL,
   TEXT,
   VERKTYG,
   VIKT_PER_NIVA,
@@ -108,19 +105,15 @@ function enval(svar: Svar, id: string): string | undefined {
   return typeof v === "string" ? v : undefined;
 }
 
-/** Verktygsvalen som namn att skriva i text. "Annat" och "Vet inte" räknas inte. */
+/** Verktygsvalen som namn att skriva i text. "Annat" räknas inte. */
 const VERKTYGSNAMN: Readonly<Record<string, string>> = {
   [VERKTYG.fortnox]: "Fortnox",
   [VERKTYG.visma]: "Visma",
-  [VERKTYG.ekonomi]: "ert ekonomisystem",
-  [VERKTYG.google]: "Google Workspace",
+  [VERKTYG.google]: "Google",
   [VERKTYG.microsoft]: "Microsoft 365",
   [VERKTYG.erp]: "ert affärssystem",
-  [VERKTYG.bokning]: "ert bokningssystem",
   [VERKTYG.bransch]: "ert branschsystem",
-  [VERKTYG.projekt]: "ert projektverktyg",
   [VERKTYG.crm]: "ert CRM",
-  [VERKTYG.egna]: "era interna system",
   [VERKTYG.excel]: "Excel",
 };
 
@@ -141,22 +134,20 @@ export function byggSammanhang(svar: Svar): Sammanhang {
       : har(VERKTYG.microsoft)
         ? "Outlook"
         : null,
-    bokningssystem: har(VERKTYG.bokning),
+    // Frågas inte längre — flödena skriver då kalendern i stället.
+    bokningssystem: false,
     crm: har(VERKTYG.crm),
     system: verktyg.flatMap((v) => (VERKTYGSNAMN[v] ? [VERKTYGSNAMN[v]] : [])),
     rut: bransch === BRANSCH.stad || bransch === BRANSCH.hantverk,
   };
 }
 
-const IDAG_I_TEXT: Readonly<Record<string, string>> = {
-  "För hand": ", och det mesta görs för hand",
-  "Delvis med systemstöd": ", delvis med systemstöd",
-  "Till stor del automatiserat": ", och mycket är redan automatiserat",
-};
-
-/** Vad de svarat händer när området inte fungerar, eller undefined. */
+/**
+ * Vad de svarat händer när det inte fungerar. Frågas en gång och gäller det
+ * första området de valde — oftast det som skaver mest.
+ */
 function konsekvensFor(omradeId: string, svar: Svar): string | undefined {
-  return enval(svar, OMRADESNYCKEL.konsekvens(omradeId));
+  return valdaOmraden(svar)[0]?.id === omradeId ? enval(svar, FRAGA.konsekvens) : undefined;
 }
 
 /** Fakta om samtal och förfrågningar, ur deras svar. Tom om inget sticker ut. */
@@ -164,15 +155,9 @@ function samtalsfakta(svar: Svar, k: Sammanhang): string[] {
   const ni = k.du ? "Du" : "Ni";
   const fakta: string[] = [];
   const missade = enval(svar, FRAGA.missadeSamtal);
-  const svarstid = enval(svar, FRAGA.svarstid);
 
   if (missade && MANGA_MISSADE_SAMTAL.some((m) => m === missade)) {
     fakta.push(`${ni} missar ${missade.toLowerCase()} samtal i veckan`);
-  }
-  if (svarstid === "Nästa dag") {
-    fakta.push("förfrågningar får ofta svar först nästa dag");
-  } else if (svarstid === "Det varierar") {
-    fakta.push("svarstiden på förfrågningar varierar");
   }
   return fakta;
 }
@@ -191,9 +176,9 @@ function varfor(
     return `Det här är ett av de ställen där ${k.ord.foretag} oftast tappar tid, och där ett enkelt flöde brukar göra stor skillnad.`;
   }
 
-  if (o.lagt && o.idag) {
+  if (o.lagt) {
     delar.push(
-      `${ni} lägger ${formateraTimmar(o.lagt)} i veckan på ${o.omrade.namn.toLowerCase()}${IDAG_I_TEXT[o.idag] ?? ""}.`,
+      `${ni} lägger ${formateraTimmar(o.lagt)} i veckan på ${o.omrade.namn.toLowerCase()}, och det görs för hand.`,
     );
   }
 
@@ -207,21 +192,23 @@ function varfor(
       const mening = fakta.join(", och ");
       delar.push(`${mening.charAt(0).toUpperCase()}${mening.slice(1)}.`);
     }
-    if (kalla === "signal") {
+    // Bara när svaren visar att samtal faktiskt tappas — annars säger
+    // signalKalla varför (målet eller följdfrågan).
+    if (kalla === "signal" && fakta.length > 0) {
       delar.push(
-        `Det valde ${k.du ? "du" : "ni"} inte som tidstjuv — men det är ofta just där ${k.ord.kunder} försvinner.`,
+        `Det valde ${k.du ? "du inte själv" : "ni inte själva"} — men det är ofta just där ${k.ord.kunder} försvinner.`,
       );
     }
   }
 
   // Verktygen: det konkreta skälet till att flödet går att bygga hos dem.
   const kopplingsomraden = ["dubbelregistrering", "fakturor", "rapporter", "bokforing"];
-  if (kalla === "valt" && o.idag !== "Till stor del automatiserat") {
+  if (kalla === "valt") {
     if (kopplingsomraden.includes(o.omrade.id) && k.system.length >= 2) {
       delar.push(
         `${ni} har redan ${uppraknat(k.system)} — flödet kopplar ihop dem i stället för att ersätta dem.`,
       );
-    } else if (k.system.includes("Excel") && o.idag === FOR_HAND) {
+    } else if (k.system.includes("Excel")) {
       delar.push("Excel och papper är ofta just där tiden försvinner.");
     }
   }
@@ -287,14 +274,11 @@ function styrka(o: OmradeResultat, svar: Svar): number {
 
 function grundstyrka(o: OmradeResultat, svar: Svar): number {
   let poang = o.besparing.max;
-  if (o.idag === FOR_HAND) poang += 1;
   poang += KONSEKVENS[konsekvensFor(o.omrade.id, svar) ?? ""]?.vikt ?? 0;
 
   if (o.omrade.id === "samtal") {
     const missade = enval(svar, FRAGA.missadeSamtal);
-    const svarstid = enval(svar, FRAGA.svarstid);
     if (MANGA_MISSADE_SAMTAL.some((m) => m === missade)) poang += 2;
-    if (LANGSAM_SVARSTID.some((l) => l === svarstid)) poang += 1;
   }
   return poang;
 }
@@ -486,7 +470,7 @@ export function omradeForFritext(fritext: string, bransch: Bransch | undefined):
 
 /**
  * Arbetsflödet de vill ska sköta sig självt. Claude skriver flödet (se
- * ForslagKort); stegen här
+ * ResultatVy); stegen här
  * är reserven — regelmotorns flöde för det område texten pekar på — som visas
  * om AI:n inte svarar. Pekar texten inte på något område blir stegen tomma.
  */
@@ -638,24 +622,35 @@ function ledMedMal(forslag: Forslag[], mal: Mal | undefined, u: MalUnderlag): Fo
   const egna = forslag.filter((f) => f.kalla !== "bransch");
   const utfyllnad = forslag.filter((f) => f.kalla === "bransch");
   const varfor = malVarfor(mal, u.svar, u.k);
+  // En idé räknas som täckt bara av förslag ur deras egna svar — utfyllnad
+  // som målet pekat ut får inte slå ut den (den ger vika för idén nedan).
   const ideer = affarer
-    ? TILLVAXT.filter((ide) => ide.nivaer.includes(u.niva) && !tacks(ide, egna)).map((ide) =>
-        tillvaxtForslag(ide, u.k, varfor),
-      )
+    ? TILLVAXT.filter(
+        (ide) => ide.nivaer.includes(u.niva) && !tacks(ide, egna.filter((f) => !f.fyllnad)),
+      ).map((ide) => tillvaxtForslag(ide, u.k, varfor))
     : [];
 
-  const i = egna.findIndex((f) => omradesIds(f).some((id) => malOmraden.includes(id)));
-  const ledare =
-    (i >= 0 ? egna[i] : undefined) ??
+  // Ordningen: ett förslag ur deras egna svar, sedan tillväxtidén, sist
+  // utfyllnad som bara målet eller följdfrågan pekat ut.
+  const matchar = (f: Forslag) => omradesIds(f).some((id) => malOmraden.includes(id));
+  const ide =
     (ideId ? ideer.find((f) => f.id === `tillvaxt-${ideId}`) : undefined) ??
     // Fler affärer utan diagnos: idén i företagets storlek, inte ett
     // slumpat område ur målets lista.
-    (affarer && !d ? ideer[0] : undefined) ??
-    forslagForOmrade(malOmraden, mal, u);
+    (affarer && !d ? ideer[0] : undefined);
+  const iSvar = egna.findIndex((f) => !f.fyllnad && matchar(f));
+  const i = iSvar >= 0 ? iSvar : ide ? -1 : egna.findIndex((f) => !!f.fyllnad && matchar(f));
+  const ledare = (i >= 0 ? egna[i] : undefined) ?? ide ?? forslagForOmrade(malOmraden, mal, u);
   if (!ledare) return forslag;
 
-  const resten = i >= 0 ? egna.filter((_, j) => j !== i) : egna;
   const ovrigaIdeer = ideer.filter((f) => f !== ledare);
+  // Utfyllnad som en visad idé redan täcker tas bort — samma sak två gånger.
+  const visadeIdeer = TILLVAXT.filter((t) =>
+    [ledare, ...ovrigaIdeer].some((f) => f.id === `tillvaxt-${t.id}`),
+  );
+  const resten = (i >= 0 ? egna.filter((_, j) => j !== i) : egna).filter(
+    (f) => !f.fyllnad || !visadeIdeer.some((t) => tacks(t, [f])),
+  );
 
   return [ledare, ...resten, ...ovrigaIdeer, ...utfyllnad].slice(0, u.platser);
 }
@@ -728,7 +723,10 @@ function regelForslag(
     if (redanMed.has(id) || !tillgangliga.has(id)) continue;
     const omrade = OMRADEN.find((o) => o.id === id);
     if (!omrade) continue;
-    valda.push(tillForslag(utanSvar(omrade), kalla, svar, resultat, k, niva));
+    valda.push({
+      ...tillForslag(utanSvar(omrade), kalla, svar, resultat, k, niva),
+      ...(kalla === "signal" ? { fyllnad: true } : {}),
+    });
     redanMed.add(id);
   }
 

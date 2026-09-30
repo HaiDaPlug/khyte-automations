@@ -62,23 +62,28 @@ const STANDARDORD: Ord = {
 };
 
 export const ORD: Readonly<Partial<Record<Bransch, Ord>>> = {
-  [BRANSCH.tillverkning]: {
+  [BRANSCH.hantverk]: {
     ...STANDARDORD,
-    foretag: "tillverkare",
-    jobb: "order",
-    jobbet: "ordern",
-    klar: "klar",
-    nastaGang: "nästa beställning",
+    foretag: "hantverkare och verkstäder",
+    nastaGang: "nästa översyn eller service",
   },
-  [BRANSCH.fastighet]: {
-    kund: "hyresgäst",
-    kunden: "hyresgästen",
-    kunder: "hyresgäster",
-    foretag: "fastighetsbolag",
-    jobb: "ärende",
-    jobbet: "ärendet",
+  [BRANSCH.stad]: {
+    ...STANDARDORD,
+    foretag: "serviceföretag",
+    jobb: "uppdrag",
+    jobbet: "uppdraget",
     klar: "klart",
-    nastaGang: "nästa besiktning",
+    nastaGang: "nästa gång",
+  },
+  [BRANSCH.vard]: {
+    kund: "patient",
+    kunden: "patienten",
+    kunder: "patienter",
+    foretag: "kliniker och mottagningar",
+    jobb: "besök",
+    jobbet: "besöket",
+    klar: "klart",
+    nastaGang: "nästa besök",
   },
   [BRANSCH.hotell]: {
     kund: "gäst",
@@ -98,6 +103,14 @@ export const ORD: Readonly<Partial<Record<Bransch, Ord>>> = {
     klar: "klar",
     nastaGang: "nästa köp",
   },
+  [BRANSCH.tillverkning]: {
+    ...STANDARDORD,
+    foretag: "tillverkare",
+    jobb: "order",
+    jobbet: "ordern",
+    klar: "klar",
+    nastaGang: "nästa beställning",
+  },
   [BRANSCH.transport]: {
     ...STANDARDORD,
     foretag: "åkerier och transportföretag",
@@ -106,70 +119,23 @@ export const ORD: Readonly<Partial<Record<Bransch, Ord>>> = {
     klar: "klar",
     nastaGang: "nästa beställning",
   },
-  [BRANSCH.hantverk]: {
-    ...STANDARDORD,
-    foretag: "hantverkare",
-    nastaGang: "nästa översyn",
-  },
-  [BRANSCH.vard]: {
-    kund: "patient",
-    kunden: "patienten",
-    kunder: "patienter",
-    foretag: "kliniker och mottagningar",
-    jobb: "besök",
-    jobbet: "besöket",
-    klar: "klart",
-    nastaGang: "nästa besök",
-  },
-  [BRANSCH.skonhet]: {
-    ...STANDARDORD,
-    foretag: "salonger",
-    jobb: "behandling",
-    jobbet: "behandlingen",
-    klar: "klar",
-    nastaGang: "nästa klippning eller behandling",
-  },
-  [BRANSCH.byra]: {
-    ...STANDARDORD,
-    foretag: "byråer och konsultbolag",
-    jobb: "uppdrag",
-    jobbet: "uppdraget",
-    klar: "klart",
-    nastaGang: "nästa uppdrag",
-  },
-  [BRANSCH.it]: {
-    ...STANDARDORD,
-    foretag: "IT-bolag",
-    jobb: "uppdrag",
-    jobbet: "uppdraget",
-    klar: "klart",
-    nastaGang: "nästa uppdrag",
-  },
-  [BRANSCH.forbund]: {
-    kund: "medlem",
-    kunden: "medlemmen",
-    kunder: "medlemmar",
-    foretag: "organisationer och förbund",
+  [BRANSCH.fastighet]: {
+    kund: "hyresgäst",
+    kunden: "hyresgästen",
+    kunder: "hyresgäster",
+    foretag: "fastighetsbolag",
     jobb: "ärende",
     jobbet: "ärendet",
     klar: "klart",
-    nastaGang: "nästa medlemsförnyelse",
+    nastaGang: "nästa besiktning",
   },
-  [BRANSCH.stad]: {
+  [BRANSCH.byra]: {
     ...STANDARDORD,
-    foretag: "städ-, flytt- och serviceföretag",
+    foretag: "byråer, konsult- och IT-bolag",
     jobb: "uppdrag",
     jobbet: "uppdraget",
     klar: "klart",
     nastaGang: "nästa uppdrag",
-  },
-  [BRANSCH.bil]: {
-    ...STANDARDORD,
-    foretag: "verkstäder",
-    jobb: "service",
-    jobbet: "servicen",
-    klar: "klar",
-    nastaGang: "nästa service eller däckbyte",
   },
 };
 
@@ -180,22 +146,18 @@ export function ordFor(bransch: Bransch | undefined): Ord {
 /**
  * Områden som brukar ge mest i varje bransch, i ordning. Sista reserven för
  * att fylla upp till tre förslag — först kommer det som svaren pekar på
- * (friktion, specialfrågor, mål). Visas utan siffror.
+ * (specialfrågan, målet). Visas utan siffror.
  */
 export const BRANSCHTIPS: Readonly<Record<Bransch, readonly string[]>> = {
-  [BRANSCH.tillverkning]: ["dubbelregistrering", "koll", "rapporter", "godkannande"],
-  [BRANSCH.fastighet]: ["arenden", "koll", "dokument", "kontakter"],
+  [BRANSCH.hantverk]: ["offerter", "fakturor", "rut", "koll"],
+  [BRANSCH.stad]: ["bokning", "samtal", "aterkommande", "rut"],
+  [BRANSCH.vard]: ["bokning", "aterkommande", "samtal", "dokument"],
   [BRANSCH.hotell]: ["bokning", "schema", "arenden", "rapporter"],
   [BRANSCH.handel]: ["dubbelregistrering", "arenden", "rapporter", "kontakter"],
+  [BRANSCH.tillverkning]: ["dubbelregistrering", "koll", "rapporter", "godkannande"],
   [BRANSCH.transport]: ["koll", "dubbelregistrering", "kontakter", "fakturor"],
-  [BRANSCH.hantverk]: ["offerter", "fakturor", "rut", "koll"],
-  [BRANSCH.vard]: ["bokning", "aterkommande", "samtal", "dokument"],
-  [BRANSCH.skonhet]: ["bokning", "aterkommande", "marknad", "samtal"],
+  [BRANSCH.fastighet]: ["arenden", "koll", "dokument", "kontakter"],
   [BRANSCH.byra]: ["nya-kunder", "rapporter", "dokument", "fakturor"],
-  [BRANSCH.it]: ["arenden", "dubbelregistrering", "rapporter", "fakturor"],
-  [BRANSCH.forbund]: ["arenden", "information", "kontakter", "rapporter"],
-  [BRANSCH.stad]: ["offerter", "samtal", "rut", "fakturor"],
-  [BRANSCH.bil]: ["aterkommande", "bokning", "samtal", "fakturor"],
   [BRANSCH.annat]: ["dubbelregistrering", "koll", "rapporter", "fakturor"],
 };
 
@@ -834,8 +796,10 @@ export const KEDJOR: readonly Kedja[] = [
     }),
     affarsnytta:
       "Ett företag som kan växa utan att administrationen växer i samma takt — och där ledningen styr på fakta.",
+    // Allmän: kedjan kan väljas för uppföljning och rapporter även när
+    // systemen i sig fungerar bra.
     konsekvens:
-      "När information flyttas för hand mellan system blir uppföljningen långsammare och verksamheten beroende av manuella rutiner.",
+      "När status, siffror och uppgifter hålls ihop för hand blir uppföljningen långsammare och verksamheten beroende av enskilda personer.",
     klartNar:
       "Klart när ledningen och alla i teamet ser status på varje uppdrag i realtid, utan att någon behöver fråga.",
     forstaSteget:

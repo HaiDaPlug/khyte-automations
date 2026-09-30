@@ -1,34 +1,43 @@
 /**
  * Flödets ordning.
  *
- * Listan byggs om varje gång svaren ändras. Del 1 är samma för alla: bransch,
- * storlek, mål och vad som görs för hand. Sedan väljer flödet frågor efter
- * deras situation — specialspår, en följdskärm per valt arbetsmönster — så
- * att ingen behöver svara på något som inte tydligt kan gälla dem, eller på
- * samma sak två gånger. Den som backar och ändrar sig får alltid rätt frågor,
- * inte gamla.
+ * Kompassen ska vara lätt att genomföra: några få skärmar, få val per fråga,
+ * och varje fråga ska ge något vi använder — i resultatet, i AI-analysen eller
+ * i mötet. Listan byggs om varje gång svaren ändras:
+ *
+ *   1. Om er — bransch och storlek på samma skärm
+ *   2. Vad som skulle göra störst skillnad
+ *   3. Vad som görs för hand
+ *   4. Högst en följdfråga, bara när den är relevant
+ *   5. Tid per valt område och vad som händer när det inte fungerar — en skärm
+ *   6. Systemen
+ *   7. Arbetsflödet, frivilligt
+ *
+ * Den som backar och ändrar sig får alltid rätt frågor, inte gamla.
  */
 
 import { ordFor } from "@/kompass/data/floden";
 import {
-  AFFARER_OM_FORFRAGNINGAR,
   BRANSCH,
   FRAGA,
   FRAGOR,
   INGA_PENGAR_FOR,
   KANALER_MED_TELEFON,
+  KONSEKVENS,
   KUNDBOKNING,
   MAL,
   MANGA_MISSADE_SAMTAL,
   MAX_SPAR,
   MAX_TIDSTJUVAR,
+  MONSTER,
   NIVA_FOR_ANTAL,
   OMRADEN,
-  OMRADESFRAGOR,
   OMRADESNYCKEL,
   SPECIAL,
+  TIDSSKARM,
   tidsskalaFor,
   type Bransch,
+  type Delfraga,
   type Fraga,
   type Mal,
   type Niva,
@@ -52,191 +61,16 @@ const branschFor = (svar: Svar) => enval(svar, FRAGA.bransch) as Bransch | undef
 
 // ── Mål ─────────────────────────────────────────────────────────────────────
 
-/** Service-målet i branschens ord: "Ge era patienter bättre service". */
-function serviceText(bransch: Bransch | undefined): string {
-  return `Ge era ${ordFor(bransch).kunder} bättre service`;
+/** Målet som id, ur ett sparat svar — för mejlen. */
+export function malFranText(text: string | null | undefined): Mal | undefined {
+  if (!text) return undefined;
+  return (Object.keys(MAL) as Mal[]).find((m) => MAL[m] === text);
 }
 
 /** Vad de sagt skulle göra störst skillnad, eller undefined om de inte svarat. */
 export function malFor(svar: Svar): Mal | undefined {
-  const varde = enval(svar, FRAGA.mal);
-  if (!varde) return undefined;
-  if (varde === serviceText(branschFor(svar))) return "service";
-  return (Object.keys(MAL) as Mal[]).find((m) => MAL[m] === varde);
+  return malFranText(enval(svar, FRAGA.mal));
 }
-
-/** Målet som text, tillbaka från ett sparat svar — för mejlen. */
-export function malFranText(text: string | null | undefined): Mal | undefined {
-  if (!text) return undefined;
-  if (/^Ge era .+ bättre service$/.test(text)) return "service";
-  return (Object.keys(MAL) as Mal[]).find((m) => MAL[m] === text);
-}
-
-// ── Specialspår ─────────────────────────────────────────────────────────────
-
-/** Spåret målet öppnar. */
-const SPAR_FOR_MAL: Readonly<Partial<Record<Mal, string>>> = {
-  affarer: FRAGA.affarer,
-  service: FRAGA.kanaler,
-  integration: FRAGA.systembrott,
-};
-
-/** Spåret branschen öppnar — frågor byggda för just deras verksamhet. */
-const SPAR_FOR_BRANSCH: Readonly<Partial<Record<Bransch, string>>> = {
-  [BRANSCH.tillverkning]: FRAGA.produktion,
-};
-
-/** Spåret ett valt arbetsmönster öppnar — en fråga som gräver djupare i det. */
-const SPAR_FOR_MONSTER: Readonly<Record<string, string>> = {
-  "Flyttar information mellan system": FRAGA.systembrott,
-};
-
-/**
- * Specialspåren som visas, i ordning: först det målet öppnar, sedan
- * branschens, sedan mönstrens. Högst MAX_SPAR.
- *
- * Svarar de att intresserade inte hör av sig, eller att förfrågningar inte
- * följs upp, öppnas spåret om hur förfrågningar kommer in direkt efter —
- * det är där frågan om missade samtal hör hemma, och bara där.
- */
-export function aktivaSpar(svar: Svar): string[] {
-  const spar: string[] = [];
-  const lagg = (id: string | undefined) => {
-    if (!id || spar.includes(id)) return;
-    spar.push(id);
-    const affarer = enval(svar, FRAGA.affarer);
-    if (id === FRAGA.affarer && AFFARER_OM_FORFRAGNINGAR.some((a) => a === affarer)) {
-      lagg(FRAGA.kanaler);
-    }
-  };
-
-  const mal = malFor(svar);
-  lagg(mal ? SPAR_FOR_MAL[mal] : undefined);
-  const bransch = branschFor(svar);
-  lagg(bransch ? SPAR_FOR_BRANSCH[bransch] : undefined);
-  for (const m of lista(svar, FRAGA.tidstjuvar)) lagg(SPAR_FOR_MONSTER[m]);
-
-  return spar.slice(0, MAX_SPAR);
-}
-
-function specialSkarm(fraga: Specialfraga): Fraga {
-  return {
-    id: fraga.id,
-    typ: "enval",
-    fraga: fraga.fraga,
-    hjalptext: fraga.hjalptext,
-    alternativ: fraga.alternativ.map((a) => a.svar),
-  };
-}
-
-/** Ett besvarat specialspår: frågan och signalen i svaret. */
-export type Diagnos = { fraga: Specialfraga; signal: Signal };
-
-/** Alla besvarade specialspår, i spårens ordning. */
-export function diagnoser(svar: Svar): Diagnos[] {
-  return aktivaSpar(svar).flatMap((id) => {
-    const fraga = SPECIAL[id];
-    const varde = enval(svar, id);
-    const signal = fraga?.alternativ.find((a) => a.svar === varde);
-    return fraga && signal ? [{ fraga, signal }] : [];
-  });
-}
-
-/**
- * Den första diagnosen som pekar ut något — deras egen bild av var det
- * bromsar. Styr vilket förslag som leder. "Vet inte" pekar inte ut något.
- */
-export function diagnosFor(svar: Svar): Diagnos | undefined {
-  return diagnoser(svar).find((d) => d.signal.omraden.length > 0 || d.signal.ide);
-}
-
-/** Frågar vi om missade samtal? Bara när förfrågningar kommer in via telefon. */
-function fragaMissade(svar: Svar): boolean {
-  const kanal = enval(svar, FRAGA.kanaler);
-  return (
-    aktivaSpar(svar).includes(FRAGA.kanaler) &&
-    KANALER_MED_TELEFON.some((k) => k === kanal)
-  );
-}
-
-/** Frågar vi om kundvärde? Bara vid många missade samtal — annars används det inte. */
-function fragaKundvarde(svar: Svar): boolean {
-  return (
-    fragaMissade(svar) &&
-    pengarGallerFor(branschFor(svar)) &&
-    MANGA_MISSADE_SAMTAL.some((m) => m === enval(svar, FRAGA.missadeSamtal))
-  );
-}
-
-/**
- * Skärmen om samtal och förfrågningar, i branschens ord — "Vad är en ny
- * patient värd?". Missade samtal bara om de tar in förfrågningar via
- * telefon; kundvärdet bara när de missar många (det används bara till
- * kronorna för missade samtal), och aldrig där vi inte räknar pengar.
- */
-function kundskarm(svar: Svar): Fraga {
-  const ord = ordFor(branschFor(svar));
-  const telefon = fragaMissade(svar);
-  return {
-    id: FRAGA.kunder,
-    typ: "grupp",
-    fraga: telefon ? "Era samtal och förfrågningar" : "Era förfrågningar",
-    delar: [
-      ...(telefon
-        ? [
-            {
-              id: FRAGA.missadeSamtal,
-              fraga: "Hur många samtal missar ni en vanlig vecka?",
-              alternativ: ["Inga", "1–5", "6–15", "16–30", "Fler än 30"],
-              reaktioner: {
-                Inga: "Bra. Då lägger vi krutet på annat.",
-                "16–30": "Den som inte får svar ringer ofta nästa firma på listan.",
-                "Fler än 30":
-                  "Det blir många samtal i veckan som aldrig blir en affär. Här finns ofta mest att hämta.",
-              },
-            },
-          ]
-        : []),
-      {
-        id: FRAGA.svarstid,
-        fraga: "Hur snabbt får en förfrågan på mejl eller formulär svar?",
-        alternativ: ["Inom en timme", "Samma dag", "Nästa dag", "Det varierar"],
-        reaktioner: {
-          "Inom en timme": "Snabbt. Det är precis det kunder märker.",
-          "Det varierar": "Ärligt svar. Det är ofta det enklaste hålet att täppa till.",
-        },
-      },
-      ...(fragaKundvarde(svar)
-        ? [
-            {
-              id: FRAGA.kundvarde,
-              fraga: `Vad är en ny ${ord.kund} värd för er?`,
-              hjalptext: `Ungefär vad en ny ${ord.kund} köper för under första året.`,
-              alternativ: [
-                "Mindre än 1 000 kr",
-                "1 000–5 000 kr",
-                "5 000–20 000 kr",
-                "20 000–100 000 kr",
-                "Över 100 000 kr",
-                "Vet inte",
-              ],
-            },
-          ]
-        : []),
-    ],
-  };
-}
-
-/** Skärmarna för ett specialspår. Förfrågningsspåret har två. */
-function sparSkarmar(id: string, svar: Svar): Fraga[] {
-  const fraga = SPECIAL[id];
-  if (!fraga) return [];
-  const skarm = specialSkarm(fraga);
-  return id === FRAGA.kanaler ? [skarm, kundskarm(svar)] : [skarm];
-}
-
-/** Id:n för alla spårens skärmar — för förloppet och analysens startpunkt. */
-export const SPARSKARMAR: ReadonlySet<string> = new Set([...Object.keys(SPECIAL), FRAGA.kunder]);
 
 // ── Storlek och områden ─────────────────────────────────────────────────────
 
@@ -254,78 +88,224 @@ export function omradenFor(bransch: string | undefined): Omrade[] {
 }
 
 /**
- * Området ett arbetsmönster pekar på. Delar två områden mönster avgör
- * branschen: där kunderna bokar tider blir det bokningar, annars planering.
+ * Området ett mönster pekar på. Där kunderna bokar tider blir planering
+ * kundbokningar; från tio anställda blir förfrågningar ett ärendeflöde.
  */
-export function omradeForMonster(monster: string, bransch: Bransch | undefined): Omrade | undefined {
-  const kandidater = omradenFor(bransch).filter((o) => o.monster === monster);
-  if (kandidater.length <= 1) return kandidater[0];
-  const kundbokning = bransch !== undefined && KUNDBOKNING.includes(bransch);
-  return kandidater.find((o) => (o.id === "bokning") === kundbokning) ?? kandidater[0];
+export function omradeForMonster(
+  text: string,
+  bransch: Bransch | undefined,
+  niva: Niva,
+): Omrade | undefined {
+  const m = MONSTER.find((x) => x.text === text);
+  if (!m) return undefined;
+  const id =
+    (m.kundbokning && bransch && KUNDBOKNING.includes(bransch) ? m.kundbokning : undefined) ??
+    (m.storre && niva !== "liten" ? m.storre : undefined) ??
+    m.omrade;
+  return omradenFor(bransch).find((o) => o.id === id);
 }
 
 /** De områden besökarens valda mönster pekar på, i den ordning de valdes. */
 export function valdaOmraden(svar: Svar): Omrade[] {
   const bransch = branschFor(svar);
+  const niva = nivaFor(svar);
   const omraden = lista(svar, FRAGA.tidstjuvar)
-    .map((m) => omradeForMonster(m, bransch))
+    .map((m) => omradeForMonster(m, bransch, niva))
     .filter((o): o is Omrade => o !== undefined);
   return [...new Set(omraden)].slice(0, MAX_TIDSTJUVAR);
 }
 
+/** Räknar vi pengar för den här branschen? Se INGA_PENGAR_FOR. */
+export function pengarGallerFor(bransch: string | undefined): boolean {
+  return !INGA_PENGAR_FOR.includes(bransch as Bransch);
+}
+
+// ── Specialspåret ───────────────────────────────────────────────────────────
+
+/** Spåret målet öppnar. */
+const SPAR_FOR_MAL: Readonly<Partial<Record<Mal, string>>> = {
+  affarer: FRAGA.affarer,
+  service: FRAGA.kanaler,
+  integration: FRAGA.systembrott,
+};
+
+/** Spåret branschen öppnar — en fråga byggd för just deras verksamhet. */
+const SPAR_FOR_BRANSCH: Readonly<Partial<Record<Bransch, string>>> = {
+  [BRANSCH.tillverkning]: FRAGA.produktion,
+};
+
+/** Spåret ett valt mönster öppnar — en fråga som gräver djupare i det. */
+const SPAR_FOR_MONSTER: Readonly<Record<string, string>> = {
+  "Flytta information mellan system": FRAGA.systembrott,
+};
+
 /**
- * Följdskärmen för ett valt område: tid i veckan och hur det görs i dag. Den
- * första skärmen frågar också vad som händer när det inte fungerar — en gång
- * räcker. Tidsvalen följer storleken — större företag mäter i dagar och
- * tjänster.
+ * Specialspåret som visas: det målet öppnar, annars branschens, annars
+ * mönstrens. Högst MAX_SPAR — en följdfråga räcker för att gräva där de pekat.
  */
-export function omradesFraga(
-  omrade: Omrade,
-  nu: number,
-  av: number,
-  niva: Niva = "liten",
-): Fraga {
-  const medKonsekvens = nu === 1;
-  return {
-    id: OMRADESNYCKEL.skarm(omrade.id),
-    typ: "grupp",
-    overrubrik: OMRADESFRAGOR.overrubrik(nu, av, medKonsekvens ? 3 : 2),
-    fraga: omrade.namn,
-    hjalptext: omrade.exempel,
-    delar: [
-      {
-        id: OMRADESNYCKEL.tid(omrade.id),
-        fraga: OMRADESFRAGOR.tid.fraga,
-        alternativ: Object.keys(tidsskalaFor(niva)),
-        // Bara reaktionerna för den skala som visas.
-        reaktioner: Object.fromEntries(
-          Object.entries(OMRADESFRAGOR.tid.reaktioner).filter(
-            ([alt]) => alt in tidsskalaFor(niva),
-          ),
-        ),
-      },
-      {
-        id: OMRADESNYCKEL.idag(omrade.id),
-        fraga: OMRADESFRAGOR.idag.fraga,
-        alternativ: OMRADESFRAGOR.idag.alternativ,
-      },
-      ...(medKonsekvens
-        ? [
-            {
-              id: OMRADESNYCKEL.konsekvens(omrade.id),
-              fraga: OMRADESFRAGOR.konsekvens.fraga,
-              alternativ: OMRADESFRAGOR.konsekvens.alternativ,
+export function aktivaSpar(svar: Svar): string[] {
+  const mal = malFor(svar);
+  const bransch = branschFor(svar);
+  const kandidater = [
+    mal ? SPAR_FOR_MAL[mal] : undefined,
+    bransch ? SPAR_FOR_BRANSCH[bransch] : undefined,
+    ...lista(svar, FRAGA.tidstjuvar).map((m) => SPAR_FOR_MONSTER[m]),
+  ].filter((id): id is string => id !== undefined);
+  return [...new Set(kandidater)].slice(0, MAX_SPAR);
+}
+
+/** Ett besvarat specialspår: frågan och signalen i svaret. */
+export type Diagnos = { fraga: Specialfraga; signal: Signal };
+
+/** Alla besvarade specialspår, i spårens ordning. */
+export function diagnoser(svar: Svar): Diagnos[] {
+  return aktivaSpar(svar).flatMap((id) => {
+    const fraga = SPECIAL[id];
+    const varde = enval(svar, id);
+    const signal = fraga?.alternativ.find((a) => a.svar === varde);
+    return fraga && signal ? [{ fraga, signal }] : [];
+  });
+}
+
+/**
+ * Diagnosen — deras egen bild av var det bromsar. Styr vilket förslag som
+ * leder.
+ */
+export function diagnosFor(svar: Svar): Diagnos | undefined {
+  return diagnoser(svar).find((d) => d.signal.omraden.length > 0 || d.signal.ide);
+}
+
+/**
+ * Frågar vi om missade samtal? När förfrågningar kommer in via telefon, och
+ * för små företag som vill ha fler affärer — där ett missat samtal ofta är en
+ * förlorad kund. Aldrig där vi inte räknar pengar på samtal.
+ */
+function fragaMissade(svar: Svar): boolean {
+  const spar = aktivaSpar(svar);
+  if (spar.includes(FRAGA.kanaler)) {
+    return KANALER_MED_TELEFON.some((k) => k === enval(svar, FRAGA.kanaler));
+  }
+  return (
+    spar.includes(FRAGA.affarer) &&
+    nivaFor(svar) === "liten" &&
+    pengarGallerFor(branschFor(svar))
+  );
+}
+
+/** Frågar vi om kundvärde? Bara vid många missade samtal — annars används det inte. */
+function fragaKundvarde(svar: Svar): boolean {
+  return (
+    fragaMissade(svar) &&
+    pengarGallerFor(branschFor(svar)) &&
+    MANGA_MISSADE_SAMTAL.some((m) => m === enval(svar, FRAGA.missadeSamtal))
+  );
+}
+
+/** Raderna om samtal och kundvärde, när de är relevanta. */
+function samtalsrader(svar: Svar): Delfraga[] {
+  const ord = ordFor(branschFor(svar));
+  return [
+    ...(fragaMissade(svar)
+      ? [
+          {
+            id: FRAGA.missadeSamtal,
+            fraga: "Hur många samtal missar ni en vanlig vecka?",
+            alternativ: ["Nästan inga", "1–5", "6–15", "Fler än 15"],
+            reaktioner: {
+              "Fler än 15":
+                "Det blir många samtal i veckan som aldrig blir en affär. Här finns ofta mest att hämta.",
             },
-          ]
-        : []),
+          },
+        ]
+      : []),
+    ...(fragaKundvarde(svar)
+      ? [
+          {
+            id: FRAGA.kundvarde,
+            fraga: `Vad är en ny ${ord.kund} värd för er, ungefär?`,
+            hjalptext: "Det en ny kund köper för under första året.",
+            alternativ: ["Under 5 000 kr", "5 000–50 000 kr", "Över 50 000 kr", "Vet inte"],
+          },
+        ]
+      : []),
+  ];
+}
+
+/** Rubriken när spårets fråga delar skärm med samtalsraderna. */
+const SPARRUBRIK: Readonly<Record<string, string>> = {
+  [FRAGA.affarer]: "Era affärer",
+  [FRAGA.kanaler]: "Era förfrågningar",
+};
+
+/**
+ * Skärmen för specialspåret. Har spåret samtalsrader blir det en skärm med
+ * flera rader; annars en vanlig fråga som går vidare med ett tryck.
+ */
+function sparSkarm(id: string, svar: Svar): Fraga | null {
+  const fraga = SPECIAL[id];
+  if (!fraga) return null;
+  const alternativ = fraga.alternativ.map((a) => a.svar);
+  const rader = id in SPARRUBRIK ? samtalsrader(svar) : [];
+
+  if (rader.length === 0 && id !== FRAGA.kanaler) {
+    return { id, typ: "enval", fraga: fraga.fraga, alternativ };
+  }
+  return {
+    id: `skarm_${id}`,
+    typ: "grupp",
+    fraga: SPARRUBRIK[id] ?? fraga.fraga,
+    delar: [{ id, fraga: fraga.fraga, alternativ }, ...rader],
+  };
+}
+
+/** Id:n för spårets skärmar — för förloppet. */
+export const SPARSKARMAR: ReadonlySet<string> = new Set(
+  Object.keys(SPECIAL).flatMap((id) => [id, `skarm_${id}`]),
+);
+
+// ── Tidsskärmen ─────────────────────────────────────────────────────────────
+
+const TIDSREAKTIONER: Readonly<Record<string, string>> = {
+  "Mer än 10 h":
+    "Det är över en arbetsdag i veckan, varje vecka. Där brukar det finnas mycket att hämta.",
+  "Mer än en heltid":
+    "Mer än en heltidstjänst. Här handlar det inte om minuter utan om hur verksamheten är byggd.",
+};
+
+/**
+ * En skärm för allt de valt: en tidsrad per område, sist vad som händer när
+ * det inte fungerar. Tidsvalen följer storleken — större företag mäter i
+ * dagar och tjänster.
+ */
+function tidSkarm(valda: Omrade[], niva: Niva): Fraga {
+  const skala = Object.keys(tidsskalaFor(niva));
+  const reaktioner = Object.fromEntries(
+    Object.entries(TIDSREAKTIONER).filter(([alt]) => skala.includes(alt)),
+  );
+  return {
+    id: FRAGA.tid,
+    typ: "grupp",
+    fraga: valda.length > 0 ? TIDSSKARM.fraga : TIDSSKARM.fragaUtanTid,
+    hjalptext: valda.length > 0 ? TIDSSKARM.hjalptext : undefined,
+    delar: [
+      ...valda.map((o) => ({
+        id: OMRADESNYCKEL.tid(o.id),
+        fraga: o.namn,
+        alternativ: skala,
+        reaktioner,
+      })),
+      {
+        id: FRAGA.konsekvens,
+        fraga: valda.length > 0 ? TIDSSKARM.konsekvens : "Välj det som stämmer bäst",
+        alternativ: Object.keys(KONSEKVENS),
+      },
     ],
   };
 }
 
 /**
- * Har de redan sagt att information flyttas mellan system — som mönster
- * eller i spåret om var flödet bryts? Då frågar systemskärmen inte om
- * samma sak igen.
+ * Har de redan sagt att information flyttas mellan system? Då frågar
+ * systemskärmen inte om samma sak igen.
  */
 function vetOmDubbelinmatning(svar: Svar): boolean {
   return (
@@ -334,31 +314,21 @@ function vetOmDubbelinmatning(svar: Svar): boolean {
   );
 }
 
-/** Räknar vi pengar för den här branschen? Se INGA_PENGAR_FOR. */
-export function pengarGallerFor(bransch: string | undefined): boolean {
-  return !INGA_PENGAR_FOR.includes(bransch as Bransch);
-}
+// ── Frågelistan ─────────────────────────────────────────────────────────────
 
 /** Bygger hela frågelistan utifrån svaren hittills. */
 export function byggFragor(svar: Svar): Fraga[] {
-  const bransch = branschFor(svar);
-  const valda = valdaOmraden(svar);
   const fragor: Fraga[] = [];
 
   for (const fraga of FRAGOR) {
-    if (fraga.id === FRAGA.mal && fraga.typ === "enval") {
-      fragor.push({
-        ...fraga,
-        alternativ: fraga.alternativ.map((a) => (a === MAL.service ? serviceText(bransch) : a)),
-      });
-      continue;
-    }
     if (fraga.id === FRAGA.tidstjuvar) {
       fragor.push(fraga);
-      // Specialspåren direkt efter — de gräver i det de nyss pekade ut.
-      for (const id of aktivaSpar(svar)) fragor.push(...sparSkarmar(id, svar));
-      const niva = nivaFor(svar);
-      valda.forEach((o, i) => fragor.push(omradesFraga(o, i + 1, valda.length, niva)));
+      // Följdfrågan direkt efter — den gräver i det de nyss pekade ut.
+      for (const id of aktivaSpar(svar)) {
+        const skarm = sparSkarm(id, svar);
+        if (skarm) fragor.push(skarm);
+      }
+      fragor.push(tidSkarm(valdaOmraden(svar), nivaFor(svar)));
       continue;
     }
     if (fraga.id === FRAGA.slutet && fraga.typ === "grupp" && vetOmDubbelinmatning(svar)) {
@@ -394,64 +364,36 @@ export function arBesvarad(fraga: Fraga, svar: Svar): boolean {
 /**
  * Sätter ett svar och rensar det som blivit ogiltigt av ändringen.
  *
- * - Specialspår som inte längre visas — eller vars svar inte längre finns för
- *   branschen — ska bort, annars styr de förslagen.
+ * - Ett specialspår som inte längre visas ska bort, annars styr det förslagen.
  * - Frågor om samtal och kundvärde som inte längre ställs ska bort, annars
  *   ger de en kronsiffra.
- * - Väljer man bort ett område ska dess följdsvar bort, annars räknas de in.
+ * - Väljer man bort ett område ska dess tid bort, annars räknas den in.
  */
 export function sattSvar(svar: Svar, id: string, varde: string | string[]): Svar {
   const nya: Svar = { ...svar, [id]: varde };
 
-  // Byter man bransch byter service-målet ord: "kunder" blir "patienter".
-  if (id === FRAGA.bransch && malFor(svar) === "service") {
-    nya[FRAGA.mal] = serviceText(branschFor(nya));
+  const aktiva = new Set(aktivaSpar(nya));
+  for (const sid of Object.keys(SPECIAL)) {
+    if (nya[sid] !== undefined && !aktiva.has(sid)) delete nya[sid];
   }
 
-  // Spåren beror på varandra (affärsspåret öppnar förfrågningsspåret), så
-  // rensa tills inget mer ändras.
-  for (let varv = 0; varv < 3; varv++) {
-    const aktiva = new Set(aktivaSpar(nya));
-    let andrat = false;
-    for (const sid of Object.keys(SPECIAL)) {
-      const v = nya[sid];
-      if (v === undefined) continue;
-      const giltiga = aktiva.has(sid) ? SPECIAL[sid].alternativ.map((a) => a.svar) : [];
-      if (typeof v !== "string" || !giltiga.includes(v)) {
-        delete nya[sid];
-        andrat = true;
-      }
-    }
-    if (!andrat) break;
-  }
-
-  if (!aktivaSpar(nya).includes(FRAGA.kanaler)) delete nya[FRAGA.svarstid];
   if (!fragaMissade(nya)) delete nya[FRAGA.missadeSamtal];
   if (!fragaKundvarde(nya)) delete nya[FRAGA.kundvarde];
+  if (vetOmDubbelinmatning(nya)) delete nya[FRAGA.dubbelinmatning];
 
   // Byter man storlek så att tidsskalan byts passar de gamla tidssvaren inte
   // längre — "Mer än 10 h" finns inte för ett företag med 30 anställda.
-  if (id === FRAGA.antal && nivaFor(svar) !== nivaFor(nya)) {
-    const skala = tidsskalaFor(nivaFor(nya));
-    for (const omrade of OMRADEN) {
-      const nyckel = OMRADESNYCKEL.tid(omrade.id);
-      const gammalt = nya[nyckel];
-      if (typeof gammalt === "string" && !(gammalt in skala)) delete nya[nyckel];
-    }
-  }
-
-  if (vetOmDubbelinmatning(nya)) delete nya[FRAGA.dubbelinmatning];
-
-  // Rensa följdsvar för områden som inte längre är valda — även när ett
-  // mönster byter område för att branschen ändrats. Konsekvensen hör bara
-  // till det första valda området.
-  const valda = valdaOmraden(nya);
-  const valdaIds = new Set(valda.map((o) => o.id));
+  const skala = tidsskalaFor(nivaFor(nya));
+  const valdaIds = new Set(valdaOmraden(nya).map((o) => o.id));
   for (const omrade of OMRADEN) {
-    if (omrade.id !== valda[0]?.id) delete nya[OMRADESNYCKEL.konsekvens(omrade.id)];
-    if (valdaIds.has(omrade.id)) continue;
-    delete nya[OMRADESNYCKEL.tid(omrade.id)];
-    delete nya[OMRADESNYCKEL.idag(omrade.id)];
+    const nyckel = OMRADESNYCKEL.tid(omrade.id);
+    const tid = nya[nyckel];
+    if (tid === undefined) continue;
+    // Bortvalt område — eller ett mönster som bytt område när branschen
+    // eller storleken ändrats.
+    if (!valdaIds.has(omrade.id) || typeof tid !== "string" || !(tid in skala)) {
+      delete nya[nyckel];
+    }
   }
 
   return nya;
@@ -459,9 +401,9 @@ export function sattSvar(svar: Svar, id: string, varde: string | string[]): Svar
 
 // ── localStorage ────────────────────────────────────────────────────────────
 
-// v3: frågorna gjordes om 2026-09-30 (mål, mönster, specialspår). Gamla
-// sparade svar passar inte in.
-const LAGRINGSNYCKEL = "khyte-kompass-v3";
+// v4: kompassen kortades 2026-09-30 (färre frågor och val). Gamla sparade
+// svar passar inte in.
+const LAGRINGSNYCKEL = "khyte-kompass-v4";
 
 export type SparatLage = {
   sessionId: string;

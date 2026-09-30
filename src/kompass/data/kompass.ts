@@ -19,6 +19,8 @@ export const SAJT = {
   mejl: "hai@khyte.se",
   telefon: "070-099 68 38",
   telefonLank: "tel:+46700996838",
+  /** Samma bokning som sajtens "Boka samtal". */
+  bokaMote: "https://calendly.com/hai-khyteteam/30min",
 } as const;
 
 // ── Frågornas identiteter ───────────────────────────────────────────────────
@@ -26,29 +28,31 @@ export const SAJT = {
 // eller sparade svar i localStorage går sönder. Frågor på samma skärm har egna
 // id:n för varje del — svaren sparas platt, ett per del.
 //
-// Kompassen har två delar. Först förstår den företaget — bransch, storlek,
-// mål, vad som görs för hand — med frågor som alla kan svara på. Sedan väljer
-// den frågor efter deras situation: ingen ska behöva svara på något som inte
-// tydligt kan gälla dem, och ingen fråga ställs två gånger i olika ord.
+// Kompassen ska vara lätt att genomföra: få skärmar, få val, varje fråga
+// ska ge något vi använder — i resultatet, i AI-analysen eller i mötet.
+// Ingen ska behöva svara på något som inte tydligt kan gälla dem, och ingen
+// fråga ställs två gånger i olika ord.
 
 export const FRAGA = {
+  // Skärm: om er
+  omEr: "om_er",
   bransch: "bransch",
   antal: "antal",
   // Frågas på tacksidan, efter mejlet — se ROLLER.
   roll: "roll",
   mal: "mal",
-  // Specialfrågorna — visas bara när svaren pekar dit, se SPAR.
+  // Vad som görs för hand
+  tidstjuvar: "tidstjuvar",
+  // Specialspåret — högst ett, se SPECIAL.
   affarer: "affarer",
   kanaler: "kanaler",
-  // Skärm: era samtal och förfrågningar (hör till spåret "kund")
-  kunder: "kunder",
   missadeSamtal: "missade_samtal",
-  svarstid: "svarstid",
   kundvarde: "kundvarde",
   systembrott: "systembrott",
   produktion: "produktion",
-  // Vad som görs för hand, följt av en skärm per valt område
-  tidstjuvar: "tidstjuvar",
+  // Skärm: tid per område och vad som händer när det inte fungerar
+  tid: "tid",
+  konsekvens: "konsekvens",
   // Skärm: systemen och om samma sak matas in flera gånger
   slutet: "verktyg_start",
   verktyg: "verktyg",
@@ -62,10 +66,7 @@ export const FRAGA = {
 
 /** Svarsnycklar för följdfrågorna per område. */
 export const OMRADESNYCKEL = {
-  skarm: (omradeId: string) => `omrade_${omradeId}`,
   tid: (omradeId: string) => `omrade_${omradeId}_tid`,
-  idag: (omradeId: string) => `omrade_${omradeId}_idag`,
-  konsekvens: (omradeId: string) => `omrade_${omradeId}_konsekvens`,
 } as const;
 
 // ── Branscher ───────────────────────────────────────────────────────────────
@@ -73,29 +74,25 @@ export const OMRADESNYCKEL = {
 // företaget har. Det gör svaren.
 
 export const BRANSCH = {
-  tillverkning: "Tillverkning och produktion",
-  fastighet: "Fastighet och förvaltning",
+  hantverk: "Bygg, hantverk och verkstad",
+  stad: "Städ, skönhet och lokal service",
+  vard: "Vård och hälsa",
   hotell: "Hotell, restaurang och besöksnäring",
   handel: "Handel och e-handel",
+  tillverkning: "Tillverkning och industri",
   transport: "Transport och logistik",
-  hantverk: "Bygg och hantverk",
-  vard: "Vård och hälsa",
-  skonhet: "Frisör och skönhet",
-  byra: "Konsult, byrå och professionella tjänster",
-  it: "IT och teknik",
-  forbund: "Organisation och förbund",
-  stad: "Städ, flytt och lokal service",
-  bil: "Bil och verkstad",
+  fastighet: "Fastighet och förvaltning",
+  byra: "Konsult, byrå och IT",
   annat: "Annat",
 } as const;
 
 export type Bransch = (typeof BRANSCH)[keyof typeof BRANSCH];
 
 /**
- * Branscher där kunderna själva bokar tider. Där betyder "planerar tider"
- * kundbokningar — annars schema och bemanning.
+ * Branscher där kunderna själva bokar tider. Där betyder "planering och
+ * bokningar" kundbokningar — annars schema och bemanning.
  */
-export const KUNDBOKNING: readonly Bransch[] = [BRANSCH.vard, BRANSCH.skonhet, BRANSCH.bil];
+export const KUNDBOKNING: readonly Bransch[] = [BRANSCH.vard, BRANSCH.stad];
 
 // ── Frågetyper ──────────────────────────────────────────────────────────────
 
@@ -156,20 +153,13 @@ export type Fraga =
 
 // ── Områden ─────────────────────────────────────────────────────────────────
 // Allt vi kan hjälpa till med, inte bara det som redan är byggt. Besökaren
-// väljer arbetsmönster ("Flyttar information mellan system"), och varje
-// mönster pekar på ett område. Områden utan mönster nås via specialfrågorna,
-// målet och AI-analysen.
+// väljer bland ett fåtal arbetsmönster (MONSTER), och varje mönster pekar på
+// ett område. Övriga områden nås via specialfrågan, målet och AI-analysen.
 
 export type Omrade = {
   id: string;
   /** Kort namn — visas som rubrik på följdfrågan och i resultatet. */
   namn: string;
-  /**
-   * Arbetsmönstret, som det står på frågan "Vad görs fortfarande för hand?".
-   * Flera områden kan dela mönster — branschen avgör då vilket (KUNDBOKNING).
-   * Saknas = området väljs inte direkt.
-   */
-  monster?: string;
   /** Vad som ingår. Visas under rubriken på följdfrågan. */
   exempel: string;
   /** Fortsättning på "Mest tid går …" i sammanfattningen. */
@@ -207,9 +197,6 @@ export type Omrade = {
   branscher?: readonly Bransch[];
 };
 
-/** Mönstret som delas av bokning och schema — branschen avgör vilket. */
-const PLANERING = "Planerar och fördelar arbete, tider eller bemanning";
-
 export const OMRADEN: readonly Omrade[] = [
   {
     id: "samtal",
@@ -233,7 +220,6 @@ export const OMRADEN: readonly Omrade[] = [
   {
     id: "bokning",
     namn: "Bokningar och påminnelser",
-    monster: PLANERING,
     exempel: "Boka in, flytta tider, påminna kunder om besöket.",
     varTiden: "till bokningar och påminnelser",
     losning:
@@ -253,7 +239,6 @@ export const OMRADEN: readonly Omrade[] = [
   {
     id: "offerter",
     namn: "Offerter, order och underlag",
-    monster: "Tar fram offerter, order eller underlag",
     exempel: "Räkna, skriva, skicka och följa upp offerter, order och underlag.",
     varTiden: "till offerter, order och underlag",
     losning:
@@ -273,7 +258,6 @@ export const OMRADEN: readonly Omrade[] = [
   {
     id: "fakturor",
     namn: "Fakturor och betalningar",
-    monster: "Fakturerar och jagar betalningar",
     exempel: "Skapa fakturor, stämma av, påminna om obetalt.",
     varTiden: "till fakturor och betalningar",
     losning:
@@ -312,7 +296,6 @@ export const OMRADEN: readonly Omrade[] = [
   {
     id: "schema",
     namn: "Planering och bemanning",
-    monster: PLANERING,
     exempel: "Fördela arbete, lägga schema, planera resurser, byta pass.",
     varTiden: "till planering och bemanning",
     losning:
@@ -390,7 +373,6 @@ export const OMRADEN: readonly Omrade[] = [
   {
     id: "rapporter",
     namn: "Rapporter och statuslistor",
-    monster: "Uppdaterar Excel, rapporter eller status",
     exempel: "Ta fram siffror, sammanställa rapporter, uppdatera Excel och statuslistor.",
     varTiden: "till rapporter och statuslistor",
     losning:
@@ -410,7 +392,6 @@ export const OMRADEN: readonly Omrade[] = [
   {
     id: "dubbelregistrering",
     namn: "Information mellan system",
-    monster: "Flyttar information mellan system",
     exempel: "Skriva in eller kopiera kunder, ordrar och uppgifter på mer än ett ställe.",
     varTiden: "till att flytta information mellan system",
     losning:
@@ -430,7 +411,6 @@ export const OMRADEN: readonly Omrade[] = [
   {
     id: "information",
     namn: "Sökande efter information",
-    monster: "Letar efter information",
     exempel: "Leta i mejl, mappar, system och hos kollegor efter rätt uppgift eller version.",
     varTiden: "till att leta efter information",
     losning:
@@ -450,7 +430,6 @@ export const OMRADEN: readonly Omrade[] = [
   {
     id: "arenden",
     namn: "Inkommande mejl och ärenden",
-    monster: "Läser och sorterar mejl eller ärenden",
     exempel: "Läsa, sortera och skicka vidare mejl, beställningar och ärenden till rätt person.",
     varTiden: "till att läsa och sortera mejl och ärenden",
     losning:
@@ -470,7 +449,6 @@ export const OMRADEN: readonly Omrade[] = [
   {
     id: "dokument",
     namn: "Dokument och avtal",
-    monster: "Skriver eller sammanställer dokument",
     exempel: "Skriva avtal, fylla i blanketter, sammanställa dokument, samla underskrifter.",
     varTiden: "till dokument och avtal",
     losning:
@@ -490,7 +468,6 @@ export const OMRADEN: readonly Omrade[] = [
   {
     id: "koll",
     namn: "Uppföljning av vem som gör vad",
-    monster: "Följer upp att saker blir gjorda",
     exempel: "Följa upp, påminna, svara på ”hur går det med …”.",
     varTiden: "till att följa upp att saker blir gjorda",
     losning:
@@ -510,7 +487,6 @@ export const OMRADEN: readonly Omrade[] = [
   {
     id: "godkannande",
     namn: "Kontroller och godkännanden",
-    monster: "Kontrollerar eller godkänner information",
     exempel: "Stämma av uppgifter, attestera, godkänna underlag och jaga den som ska godkänna.",
     varTiden: "till kontroller och godkännanden",
     losning:
@@ -530,7 +506,6 @@ export const OMRADEN: readonly Omrade[] = [
   {
     id: "kontakter",
     namn: "Besked och utskick",
-    monster: "Kontaktar kunder, leverantörer eller andra manuellt",
     exempel: "Skicka besked, påminnelser, statusuppdateringar och beställningar till kunder och leverantörer.",
     varTiden: "till att kontakta kunder, leverantörer och andra",
     losning:
@@ -573,22 +548,29 @@ export const OMRADEN: readonly Omrade[] = [
 export const ANNAT_MONSTER = "Något annat";
 
 /**
- * Mönstren i den ordning de visas. Ett mönster per rad, även när två
- * områden delar det (PLANERING).
+ * Ett val på "Vad görs fortfarande för hand?". Kort text, ett område.
+ * Några mönster byter område efter verksamheten: där kunderna bokar tider
+ * blir planering kundbokningar, och från tio anställda blir förfrågningar
+ * ett ärendeflöde i stället för missade samtal.
  */
-export const MONSTER: readonly string[] = [
-  "Flyttar information mellan system",
-  "Letar efter information",
-  "Läser och sorterar mejl eller ärenden",
-  "Skriver eller sammanställer dokument",
-  "Uppdaterar Excel, rapporter eller status",
-  "Följer upp att saker blir gjorda",
-  PLANERING,
-  "Kontrollerar eller godkänner information",
-  "Tar fram offerter, order eller underlag",
-  "Fakturerar och jagar betalningar",
-  "Kontaktar kunder, leverantörer eller andra manuellt",
-  ANNAT_MONSTER,
+export type Monster = {
+  text: string;
+  omrade: string;
+  /** Området när branschen är en KUNDBOKNING-bransch. */
+  kundbokning?: string;
+  /** Området från nivå mellan och uppåt. */
+  storre?: string;
+};
+
+export const MONSTER: readonly Monster[] = [
+  { text: "Svara på förfrågningar, mejl och samtal", omrade: "samtal", storre: "arenden" },
+  { text: "Offerter och order", omrade: "offerter" },
+  { text: "Fakturor och betalningar", omrade: "fakturor" },
+  { text: "Planering, bokningar och schema", omrade: "schema", kundbokning: "bokning" },
+  { text: "Flytta information mellan system", omrade: "dubbelregistrering" },
+  { text: "Rapporter och Excel", omrade: "rapporter" },
+  { text: "Följa upp vem som gör vad", omrade: "koll" },
+  { text: "Dokument och avtal", omrade: "dokument" },
 ];
 
 /**
@@ -608,7 +590,6 @@ export const INGA_PENGAR_FOR: readonly Bransch[] = [
   BRANSCH.fastighet,
   BRANSCH.handel,
   BRANSCH.tillverkning,
-  BRANSCH.forbund,
 ];
 
 /**
@@ -656,7 +637,7 @@ export const LAGRING = {
 export const MAX_TIDSTJUVAR = 3;
 
 /** Högst så många specialspår visas — kompassen ska inte bli ett formulär. */
-export const MAX_SPAR = 2;
+export const MAX_SPAR = 1;
 
 // ── Beräkningar ─────────────────────────────────────────────────────────────
 
@@ -669,33 +650,31 @@ export type Niva = "liten" | "mellan" | "stor";
 
 export const NIVA_FOR_ANTAL: Readonly<Record<string, Niva>> = {
   "Bara jag": "liten",
-  "2–5": "liten",
-  "6–20": "mellan",
-  "21–50": "stor",
-  "Fler än 50": "stor",
+  "2–9": "liten",
+  "10–49": "mellan",
+  "50 eller fler": "stor",
 };
 
 /**
  * Tid per vecka för ett område, som besökaren själv angett. Timmar.
  * Två skalor: små företag mäter i timmar, större i arbetsdagar och tjänster —
  * "Mer än 10 h" räcker inte när fakturahanteringen är en halv heltid.
+ * Fyra val per skala: tillräckligt för att räkna, snabbt att svara.
  */
 export const TIDSSKALA: Readonly<
   Record<"liten" | "storre", Readonly<Record<string, { min: number; max: number }>>>
 > = {
   liten: {
-    "Under 1 h": { min: 0.5, max: 1 },
-    "1–3 h": { min: 1, max: 3 },
-    "3–6 h": { min: 3, max: 6 },
-    "6–10 h": { min: 6, max: 10 },
+    "Under 2 h": { min: 0.5, max: 2 },
+    "2–5 h": { min: 2, max: 5 },
+    "5–10 h": { min: 5, max: 10 },
     // KALIBRERA: taket för "mer än 10". Hellre för lågt än för högt.
     "Mer än 10 h": { min: 10, max: 15 },
   },
   storre: {
-    "Under 3 h": { min: 1, max: 3 },
-    "3–10 h": { min: 3, max: 10 },
-    "10–25 h": { min: 10, max: 25 },
-    "25–40 h": { min: 25, max: 40 },
+    "Under 5 h": { min: 1, max: 5 },
+    "5–20 h": { min: 5, max: 20 },
+    "20–40 h": { min: 20, max: 40 },
     // KALIBRERA: taket för "mer än en heltid".
     "Mer än en heltid": { min: 40, max: 60 },
   },
@@ -754,34 +733,23 @@ export const VIKT_PER_NIVA: Readonly<Record<Niva, Readonly<Record<string, number
 };
 
 /**
- * Hur stor andel av tiden som brukar gå att automatisera, efter hur det görs
- * i dag. Det som redan är automatiserat har minst kvar att hämta.
+ * Hur stor andel av tiden som brukar gå att automatisera. Allt som räknas har
+ * de själva sagt görs för hand — men sällan helt, så spannet är försiktigt.
  */
-export const ANDEL_SPARBAR: Readonly<Record<string, { min: number; max: number }>> = {
-  // KALIBRERA: alla fyra. Försiktiga uppskattningar tills vi har egen data.
-  "För hand": { min: 0.4, max: 0.7 },
-  "Delvis med systemstöd": { min: 0.25, max: 0.5 },
-  "Till stor del automatiserat": { min: 0.05, max: 0.15 },
-  // Försiktigt: vi vet inte, så vi räknar lågt.
-  "Vet inte": { min: 0.2, max: 0.4 },
-};
-
-/** Svaret som ger extra tyngd åt ett område i rangordningen. */
-export const FOR_HAND = "För hand";
+// KALIBRERA: försiktig uppskattning tills vi har egen data.
+export const ANDEL_SPARBAR = { min: 0.3, max: 0.6 } as const;
 
 /** Missade samtal per vecka. Ett tal mitt i spannet, för kronberäkningen. */
 export const MISSADE_SAMTAL_PER_VECKA: Readonly<Record<string, number>> = {
-  Inga: 0,
+  "Nästan inga": 0,
   "1–5": 3,
   "6–15": 10,
-  "16–30": 22,
-  // KALIBRERA: "fler än 30" räknas lågt.
-  "Fler än 30": 35,
+  // KALIBRERA: "fler än 15" räknas lågt.
+  "Fler än 15": 20,
 };
 
 /** Från och med dessa svar föreslår vi samtalsområdet även om det inte valts. */
-export const MANGA_MISSADE_SAMTAL = ["6–15", "16–30", "Fler än 30"] as const;
-export const LANGSAM_SVARSTID = ["Nästa dag", "Det varierar"] as const;
+export const MANGA_MISSADE_SAMTAL = ["6–15", "Fler än 15"] as const;
 
 /** Minuter det tar att ringa tillbaka och reda ut ett missat samtal. */
 // KALIBRERA
@@ -793,11 +761,9 @@ export const MINUTER_PER_MISSAT_SAMTAL = { min: 3, max: 8 } as const;
  */
 export const KUNDVARDE_KR: Readonly<Record<string, number | null>> = {
   // KALIBRERA: alla.
-  "Mindre än 1 000 kr": 500,
-  "1 000–5 000 kr": 2500,
-  "5 000–20 000 kr": 10000,
-  "20 000–100 000 kr": 40000,
-  "Över 100 000 kr": 120000,
+  "Under 5 000 kr": 2000,
+  "5 000–50 000 kr": 15000,
+  "Över 50 000 kr": 60000,
   "Vet inte": null,
 };
 
@@ -830,69 +796,50 @@ export const VISA_PER_MANAD_UNDER = 5;
 // ── Mål ─────────────────────────────────────────────────────────────────────
 
 /**
- * Svaren på "Om ni kunde förbättra en del av verksamheten …". Målet bestämmer
- * resultatets rubrik och vilket förslag som leder — så att förslaget svarar på
- * det de bryr sig om, inte bara på var kalkylen blev störst. Fungerar för en
- * enmansfirma och en organisation med hundratals anställda.
+ * Svaren på "Vad skulle göra störst skillnad för er just nu?". Målet
+ * bestämmer resultatets rubrik och vilket förslag som leder — så att
+ * förslaget svarar på det de bryr sig om, inte bara på var kalkylen blev
+ * störst. Fem korta val som fungerar för alla storlekar.
  */
 export const MAL = {
-  effektivitet: "Få mer gjort med samma team",
-  integration: "Få våra system och vår information att hänga ihop",
-  ledtid: "Kortare väg från start till färdigt arbete",
-  overblick: "Bättre koll på vad som händer i verksamheten",
-  overlamningar: "Färre saker som faller mellan personer eller avdelningar",
-  affarer: "Få in och vinna fler affärer",
-  // Visas i branschens ord: "Ge era patienter bättre service". Se malFor.
-  service: "Ge era kunder bättre service",
-  admin: "Minska administrationen",
-  vetinte: "Jag vet inte – hjälp mig hitta det",
+  affarer: "Fler affärer",
+  service: "Snabbare svar och bättre service",
+  effektivitet: "Mer gjort med samma team",
+  integration: "System som hänger ihop",
+  overblick: "Bättre koll och färre missar",
 } as const;
 
 export type Mal = keyof typeof MAL;
 
 /** Mål där tiden får avgöra vad som leder — inget särskilt område svarar mot dem. */
-export const MAL_UTAN_RIKTNING: readonly Mal[] = ["effektivitet", "admin", "vetinte"];
+export const MAL_UTAN_RIKTNING: readonly Mal[] = ["effektivitet"];
 
 /**
  * Områden som svarar mot varje mål. Det första förslaget som bygger på något
  * av dem leder resultatet. Tomt = det som sparar mest tid leder.
  */
 export const MAL_OMRADEN: Readonly<Record<Mal, readonly string[]>> = {
-  effektivitet: [],
-  integration: ["dubbelregistrering", "information", "rapporter"],
-  ledtid: ["koll", "godkannande", "offerter", "fakturor", "schema"],
-  overblick: ["rapporter", "koll"],
-  overlamningar: ["koll", "dubbelregistrering", "godkannande", "arenden"],
   affarer: ["nya-kunder", "offerter", "samtal", "aterkommande", "marknad"],
   service: ["samtal", "arenden", "bokning", "kontakter"],
-  admin: [],
-  vetinte: [],
+  effektivitet: [],
+  integration: ["dubbelregistrering", "information", "rapporter"],
+  overblick: ["koll", "rapporter", "godkannande"],
 };
 
-/**
- * Målet som bisats, för "det viktigaste just nu är att …". Du-formen byter
- * "era" mot "dina".
- */
+/** Målet som bisats, för "det som skulle göra störst skillnad är att …". */
 export const MAL_FRAS: Readonly<Record<Mal, (du: boolean) => string>> = {
+  affarer: () => "få in fler affärer",
+  service: (du) => (du ? "ge dina kunder snabbare svar och bättre service" : "ge era kunder snabbare svar och bättre service"),
   effektivitet: (du) => (du ? "få mer gjort på samma tid" : "få mer gjort med samma team"),
-  integration: (du) =>
-    du ? "få dina system och din information att hänga ihop" : "få era system och er information att hänga ihop",
-  ledtid: () => "korta vägen från start till färdigt arbete",
-  overblick: () => "få bättre koll på vad som händer i verksamheten",
-  overlamningar: () => "färre saker ska falla mellan personer eller avdelningar",
-  affarer: () => "få in och vinna fler affärer",
-  service: (du) => (du ? "ge dina kunder bättre service" : "ge era kunder bättre service"),
-  admin: () => "minska administrationen",
-  vetinte: () => "hitta var det finns mest att vinna",
+  integration: (du) => (du ? "få dina system att hänga ihop" : "få era system att hänga ihop"),
+  overblick: () => "få bättre koll och färre missar",
 };
 
 // ── Konsekvens ──────────────────────────────────────────────────────────────
 
 /**
- * "Vad händer när det här inte fungerar?" — frågas för det första valda
- * området, det som oftast skaver mest. Ger AI:n och regelmotorn
- * affärskonsekvensen, inte bara timmarna. En gång räcker: samma fråga tre
- * gånger kändes som ett formulär.
+ * "Vad händer när det här inte fungerar?" — frågas en gång, på tidsskärmen.
+ * Ger AI:n, regelmotorn och säljaren affärskonsekvensen, inte bara timmarna.
  */
 export const KONSEKVENS: Readonly<
   Record<
@@ -905,14 +852,11 @@ export const KONSEKVENS: Readonly<
     }
   >
 > = {
-  "Arbetet tar längre tid": { text: "tar arbetet längre tid", vikt: 0 },
   "Kunder eller affärer påverkas": { text: "påverkas kunder och affärer", vikt: 2 },
-  "Vi behöver fler personer": { text: "behövs fler personer", vikt: 1.5 },
   "Fel uppstår": { text: "uppstår fel", vikt: 1 },
-  "Ingen har riktigt överblick": { text: "har ingen riktigt överblick", vikt: 1 },
-  "Saker blir liggande mellan personer": { text: "blir saker liggande mellan personer", vikt: 1 },
-  "Det skapar risk eller kvalitetsproblem": { text: "skapar det risk och kvalitetsproblem", vikt: 1.5 },
-  "Inte så mycket – mest irritation": { text: null, vikt: -1 },
+  "Saker blir liggande": { text: "blir saker liggande", vikt: 1 },
+  "Vi behöver fler personer": { text: "behövs fler personer", vikt: 1.5 },
+  "Mest irritation": { text: null, vikt: -1 },
 };
 
 // ── Specialspår ─────────────────────────────────────────────────────────────
@@ -956,76 +900,69 @@ const nidu = (du: boolean) => ({ Ni: du ? "Du" : "Ni", ni: du ? "du" : "ni" });
 export const SPECIAL: Readonly<Record<string, Specialfraga>> = {
   [FRAGA.affarer]: {
     id: FRAGA.affarer,
-    fraga: "Var tappar ni mest fart på vägen till en ny affär?",
+    fraga: "Var tappar ni mest affärer i dag?",
     etikett: "Var de tappar affärer",
     varfor: (du, svar) =>
-      `${nidu(du).Ni} svarade att ${nidu(du).ni} tappar mest fart här: ”${svar}”.`,
+      `${nidu(du).Ni} svarade att ${nidu(du).ni} tappar mest affärer här: ”${svar}”.`,
     alternativ: [
-      { svar: "För få rätt personer hittar oss", omraden: ["marknad", "nya-kunder"], ide: { storre: "prospektering" } },
+      { svar: "För få hittar oss", omraden: ["marknad", "nya-kunder"], ide: { storre: "prospektering" } },
       // Först här blir hemsidan en fråga — och den avgörs i samtalet.
-      { svar: "Intresserade hör inte av sig", omraden: [], ide: { liten: "fanga-forfragningar", storre: "fanga-forfragningar" } },
-      { svar: "Förfrågningar eller offerter följs inte upp", omraden: ["offerter", "samtal"] },
-      { svar: "Tidigare kunder kommer inte tillbaka", omraden: ["aterkommande"], ide: { storre: "kundbasen" } },
+      { svar: "Förfrågningar blir liggande", omraden: ["samtal", "offerter"], ide: { liten: "fanga-forfragningar" } },
+      { svar: "Offerter följs inte upp", omraden: ["offerter"] },
+      { svar: "Kunder kommer inte tillbaka", omraden: ["aterkommande"], ide: { storre: "kundbasen" } },
+      { svar: "Vet inte", omraden: [] },
     ],
   },
   [FRAGA.kanaler]: {
     id: FRAGA.kanaler,
-    fraga: "Hur kommer de flesta förfrågningar och ärenden in?",
-    etikett: "Hur ärenden kommer in",
+    fraga: "Hur kommer de flesta förfrågningar in?",
+    etikett: "Hur förfrågningar kommer in",
     varfor: (du, svar) =>
       `${nidu(du).Ni} svarade att de flesta förfrågningar kommer in så här: ”${svar}”.`,
     alternativ: [
       { svar: "Telefon", omraden: ["samtal"] },
-      { svar: "Mejl", omraden: ["arenden", "samtal"] },
-      { svar: "Formulär på hemsidan", omraden: ["samtal"] },
-      { svar: "Chatt eller sociala medier", omraden: ["samtal"] },
+      { svar: "Mejl och formulär", omraden: ["arenden", "samtal"] },
       { svar: "Flera kanaler", omraden: ["arenden", "samtal"] },
     ],
   },
   [FRAGA.systembrott]: {
     id: FRAGA.systembrott,
-    fraga: "Var bryts flödet i dag?",
-    etikett: "Var flödet bryts",
+    // Neutral fråga: den som har system som fungerar ska kunna säga det.
+    fraga: "Hur flyttas information mellan era system i dag?",
+    etikett: "Hur information flyttas mellan system",
     varfor: (du, svar) =>
-      `${nidu(du).Ni} svarade att flödet bryts här: ”${svar}”.`,
+      `${nidu(du).Ni} svarade att information flyttas mellan systemen så här: ”${svar}”.`,
     alternativ: [
-      { svar: "Information kopieras manuellt", omraden: ["dubbelregistrering"] },
-      { svar: "Systemen har olika information", omraden: ["dubbelregistrering", "rapporter"] },
-      { svar: "Någon måste exportera och importera filer", omraden: ["dubbelregistrering"] },
-      { svar: "Information skickas via mejl", omraden: ["arenden", "dubbelregistrering"] },
-      { svar: "Vi saknar en gemensam överblick", omraden: ["rapporter", "koll"] },
+      { svar: "Vi skriver in eller kopierar för hand", omraden: ["dubbelregistrering"] },
+      { svar: "Vi exporterar och importerar filer", omraden: ["dubbelregistrering"] },
+      { svar: "Den skickas via mejl", omraden: ["arenden", "dubbelregistrering"] },
+      // Pekar inte ut något — då leder målet i stället.
+      { svar: "Systemen är kopplade och fungerar bra", omraden: [] },
       { svar: "Vet inte", omraden: [] },
     ],
   },
   [FRAGA.produktion]: {
     id: FRAGA.produktion,
-    fraga: "Vilken del av flödet kräver mest manuell koordinering?",
+    fraga: "Var krävs mest manuell samordning?",
     etikett: "Produktionsflödet",
     varfor: (du, svar) =>
-      `${nidu(du).Ni} svarade att det här kräver mest manuell koordinering: ”${svar}”.`,
+      `${nidu(du).Ni} svarade att det här kräver mest manuell samordning: ”${svar}”.`,
     alternativ: [
       { svar: "Order → planering", omraden: ["dubbelregistrering", "schema"] },
       { svar: "Planering → produktion", omraden: ["schema", "koll"] },
-      { svar: "Inköp → lager", omraden: ["kontakter", "dubbelregistrering"] },
-      { svar: "Kvalitetskontroll", omraden: ["godkannande"] },
-      { svar: "Dokumentation", omraden: ["dokument"] },
-      { svar: "Produktion → leverans", omraden: ["koll", "kontakter"] },
-      { svar: "Rapportering", omraden: ["rapporter"] },
+      { svar: "Inköp och lager", omraden: ["kontakter", "dubbelregistrering"] },
+      { svar: "Kvalitet och dokumentation", omraden: ["godkannande", "dokument"] },
+      { svar: "Leverans och uppföljning", omraden: ["koll", "kontakter"] },
+      { svar: "Inget särskilt", omraden: [] },
     ],
   },
 };
 
 /**
- * Svar på "Hur kommer ärenden in?" som gör frågan om missade samtal relevant.
- * Den som bara får mejl ska aldrig behöva svara på den.
+ * Svar på "Hur kommer förfrågningar in?" som gör frågan om missade samtal
+ * relevant. Den som bara får mejl ska aldrig behöva svara på den.
  */
 export const KANALER_MED_TELEFON = ["Telefon", "Flera kanaler"] as const;
-
-/** Svar på affärsfrågan som öppnar spåret om förfrågningar. */
-export const AFFARER_OM_FORFRAGNINGAR = [
-  "Intresserade hör inte av sig",
-  "Förfrågningar eller offerter följs inte upp",
-] as const;
 
 // Frågas på tacksidan, efter mejlet. De hjälper säljaren — inte svaret — så
 // de hör inte hemma före resultatet.
@@ -1043,22 +980,16 @@ export const DUBBELINMATNING = ["Ja, ofta", "Ibland", "Sällan", "Vet inte"] as 
 /** Från det här svaret föreslår vi integrationsområdet även om det inte valts. */
 export const OFTA_DUBBELT = "Ja, ofta";
 
-/** Systemen, som de står på frågan. */
+/** Systemen, som de står på frågan. Få och breda — detaljerna tas i mötet. */
 export const VERKTYG = {
-  microsoft: "Microsoft 365 (Outlook, Teams, SharePoint)",
-  google: "Google Workspace (Gmail, Kalender, Drive)",
+  microsoft: "Microsoft 365 (Outlook, Teams)",
+  google: "Google (Gmail, Kalender)",
   fortnox: "Fortnox",
   visma: "Visma",
-  ekonomi: "Annat ekonomisystem",
-  erp: "ERP eller affärssystem",
+  erp: "Affärssystem eller ERP",
   crm: "CRM",
   bransch: "Branschsystem",
-  projekt: "Projektverktyg",
-  bokning: "Bokningssystem",
-  excel: "Excel eller kalkylblad",
-  egna: "Egna interna system",
-  mejl: "Mejl",
-  papper: "Papper eller manuella dokument",
+  excel: "Excel",
   annat: "Annat",
 } as const;
 
@@ -1068,54 +999,57 @@ export const VERKTYG = {
 
 export const FRAGOR: readonly Fraga[] = [
   {
-    id: FRAGA.bransch,
-    typ: "enval",
-    fraga: "Vilken typ av verksamhet har ni?",
-    alternativ: Object.values(BRANSCH),
-    rutnat: true,
-  },
-  {
-    id: FRAGA.antal,
-    typ: "enval",
-    fraga: "Hur många är ni?",
-    alternativ: ["Bara jag", "2–5", "6–20", "21–50", "Fler än 50"],
-    rutnat: true,
-    reaktioner: {
-      "Bara jag":
-        "Då är det du som svarar, planerar och fakturerar. Varje timme du får tillbaka märks direkt.",
-    },
+    id: FRAGA.omEr,
+    typ: "grupp",
+    fraga: "Berätta kort om er",
+    delar: [
+      {
+        id: FRAGA.bransch,
+        fraga: "Vilken typ av verksamhet har ni?",
+        alternativ: Object.values(BRANSCH),
+      },
+      {
+        id: FRAGA.antal,
+        fraga: "Hur många är ni?",
+        alternativ: Object.keys(NIVA_FOR_ANTAL),
+        reaktioner: {
+          "Bara jag":
+            "Då är det du som svarar, planerar och fakturerar. Varje timme du får tillbaka märks direkt.",
+        },
+      },
+    ],
   },
   {
     id: FRAGA.mal,
     typ: "enval",
-    fraga: "Om ni kunde förbättra en del av verksamheten de kommande månaderna, vad skulle göra störst skillnad?",
-    // Service-alternativet skrivs i branschens ord av flödet.
+    fraga: "Vad skulle göra störst skillnad för er just nu?",
     alternativ: Object.values(MAL),
   },
   {
     id: FRAGA.tidstjuvar,
     typ: "flerval",
-    fraga: "Vilka av de här sakerna gör människor fortfarande för hand hos er?",
+    fraga: "Vad görs fortfarande för hand hos er?",
     hjalptext: `Välj upp till ${MAX_TIDSTJUVAR === 3 ? "tre" : MAX_TIDSTJUVAR}.`,
-    alternativ: MONSTER,
+    alternativ: [...MONSTER.map((m) => m.text), ANNAT_MONSTER],
     max: MAX_TIDSTJUVAR,
+    rutnat: true,
   },
-  // Specialspåren och följdfrågorna per valt område läggs in här av flödet.
+  // Specialspåret och tidsskärmen läggs in här av flödet.
   {
     id: FRAGA.slutet,
     typ: "grupp",
-    fraga: "Var finns informationen som behövs för arbetet i dag?",
+    fraga: "Vilka system använder ni?",
     delar: [
       {
         id: FRAGA.verktyg,
         flerval: true,
-        fraga: "Välj alla system och ställen som stämmer",
+        fraga: "Välj alla som stämmer",
         hjalptext: "Då vet vi vad som går att koppla ihop.",
         alternativ: Object.values(VERKTYG),
       },
       {
         id: FRAGA.dubbelinmatning,
-        fraga: "Behöver samma information matas in eller flyttas mellan flera av dem?",
+        fraga: "Skrivs samma information in på flera ställen?",
         alternativ: DUBBELINMATNING,
         reaktioner: {
           "Ja, ofta":
@@ -1127,41 +1061,20 @@ export const FRAGOR: readonly Fraga[] = [
   {
     id: FRAGA.fritext,
     typ: "fritext",
-    fraga: "Om du fick välja ett arbetsflöde som bara skulle fungera av sig självt – vilket skulle det vara?",
-    hjalptext: "Beskriv gärna från början till slut. Skriv inga namn eller personuppgifter.",
+    fraga: "Om ett arbetsflöde kunde sköta sig självt — vilket skulle det vara?",
+    hjalptext: "Frivilligt. Skriv inga namn eller personuppgifter.",
     platshallare: "Skriv med egna ord …",
     valfri: true,
   },
 ];
 
-/**
- * Följdfrågornas delar. Tidsvalen beror på storlek, se TIDSSKALA. Konsekvensen
- * frågas bara på den första skärmen.
- */
-export const OMRADESFRAGOR = {
-  // Rubriken är områdets namn — överrubriken säger vad som ska göras.
-  overrubrik: (nu: number, av: number, delar: number) =>
-    `Del ${nu} av ${av} · ${delar === 3 ? "tre" : "två"} snabba frågor`,
-  tid: {
-    fraga: "Hur mycket tid går ungefär åt till det här i veckan, sammanlagt?",
-    reaktioner: {
-      "6–10 h": "Det är mer än en arbetsdag i veckan.",
-      "Mer än 10 h":
-        "Det är över en arbetsdag i veckan, varje vecka. Där brukar det finnas mycket att hämta.",
-      "10–25 h": "Det är upp till tre arbetsdagar i veckan — ofta utspritt på flera personer.",
-      "25–40 h": "Det är nästan en heltidstjänst som går åt till det här.",
-      "Mer än en heltid":
-        "Mer än en heltidstjänst. Här handlar det inte om minuter utan om hur verksamheten är byggd.",
-    } as Readonly<Record<string, string>>,
-  },
-  idag: {
-    fraga: "Hur görs det i dag?",
-    alternativ: Object.keys(ANDEL_SPARBAR),
-  },
-  konsekvens: {
-    fraga: "Vad händer när det här inte fungerar som det ska?",
-    alternativ: Object.keys(KONSEKVENS),
-  },
+/** Tidsskärmen: en rad per valt område, sist konsekvensen. */
+export const TIDSSKARM = {
+  fraga: "Ungefär hur mycket tid går åt i veckan?",
+  hjalptext: "Sammanlagt, för alla som gör det.",
+  // När inget område valts ("Något annat") finns bara konsekvensraden.
+  fragaUtanTid: "Vad händer när det här inte fungerar?",
+  konsekvens: "Och vad händer när det inte fungerar?",
 } as const;
 
 // ── Case ────────────────────────────────────────────────────────────────────
@@ -1211,7 +1124,7 @@ export const CASE: Readonly<Record<string, Case>> = {
 
 export const TEXT = {
   start: {
-    rubrik: "VAR TAPPAR DU MEST TID?",
+    rubrik: "Var tappar du mest tid?",
     underrubrik:
       "Svara på några snabba frågor om hur ni arbetar, så visar vi var arbetet fastnar — och tre konkreta sätt att lösa det.",
     knapp: "Kör igång",
@@ -1220,7 +1133,7 @@ export const TEXT = {
     integritet:
       "Dina svar sparas medan du svarar, utan namn eller kontaktuppgifter, så att vi kan ta fram ditt resultat och förbättra kompassen.",
     integritetLank: "Så hanterar vi uppgifterna",
-    fakta: ["Ett par minuter", "Mest snabba tryck", "Resultatet direkt"],
+    fakta: ["Under två minuter", "Mest snabba tryck", "Resultatet direkt"],
   },
   navigering: {
     tillbaka: "Tillbaka",
@@ -1231,7 +1144,7 @@ export const TEXT = {
     valda: (antal: number, max: number) => `${antal} av ${max} valda`,
   },
   resultat: {
-    rubrik: "HÄR GÅR ER TID.",
+    rubrik: "Här går er tid",
     lagt: "Lägger ni i dag",
     lagtFot: "på det du valde, i veckan",
     besparing: "Går troligen att spara",
@@ -1260,6 +1173,20 @@ export const TEXT = {
       manad: `Tid per månad är veckotiden gånger ${String(VECKOR_PER_MANAD).replace(".", ",")} veckor.`,
     },
     forslagRubrik: "Tre saker vi skulle börja med",
+    // Den enda siffran på sidan. Allt annat står i mejlet.
+    frigor: "Går troligen att frigöra",
+    frigorFot: "i veckan",
+    frigorFotManad: "i månaden",
+    // Arbetsflödet de beskrev, i listan.
+    duSkrev: "Du skrev:",
+    // Avslutet: möte först, mejl som alternativ.
+    mote: {
+      etikett: "Nästa steg",
+      rubrik: "Vill du veta mer?",
+      brodtext: "30 minuter, kostnadsfritt. Vi visar hur det skulle se ut hos er.",
+      knapp: "Boka ett möte",
+    },
+    tidEtikett: "Er tid",
     plan: {
       rubrik: "Så skulle vi lägga upp det",
       fas: (n: number) => `Fas ${n}`,
@@ -1292,42 +1219,32 @@ export const TEXT = {
       etikett: "Ingår i hela resultatet på mejl",
     },
     // Rubriken efter deras mål. Mål utan riktning får standardrubriken.
-    // kunder = branschens ord, i versaler: "PATIENTER", "GÄSTER".
+    // kunder = branschens ord: "patienter", "gäster".
     malRubrik: {
-      effektivitet: (du: boolean) =>
-        du ? "SÅ FÅR DU MER GJORT PÅ SAMMA TID." : "SÅ FÅR NI MER GJORT MED SAMMA TEAM.",
-      integration: (du: boolean) =>
-        `SÅ FÅR ${du ? "DU DINA" : "NI ERA"} SYSTEM ATT HÄNGA IHOP.`,
-      ledtid: () => "SÅ BLIR VÄGEN TILL FÄRDIGT ARBETE KORTARE.",
-      overblick: (du: boolean) => `SÅ FÅR ${du ? "DU" : "NI"} KOLL PÅ VERKSAMHETEN.`,
-      overlamningar: () => "SÅ SLUTAR SAKER FALLA MELLAN STOLARNA.",
-      affarer: (du: boolean) => `SÅ FÅR ${du ? "DU" : "NI"} IN FLER AFFÄRER.`,
+      affarer: (du: boolean) => `Så får ${du ? "du" : "ni"} in fler affärer`,
       service: (du: boolean, kunder: string) =>
-        `SÅ GER ${du ? "DU DINA" : "NI ERA"} ${kunder.toUpperCase()} BÄTTRE SERVICE.`,
+        `Så ger ${du ? "du dina" : "ni era"} ${kunder} snabbare svar`,
+      integration: (du: boolean) =>
+        `Så får ${du ? "du dina" : "ni era"} system att hänga ihop`,
+      overblick: (du: boolean) => `Så får ${du ? "du" : "ni"} koll på verksamheten`,
     },
     // Vad det kostar affären, per mål. Inleder sammanfattningen när det
     // ledande förslaget saknar en egen konsekvens (t.ex. en tillväxtidé).
     malKonsekvens: {
-      effektivitet:
-        "När teamets tid går åt till manuella moment blir det mindre kvar till det som faktiskt driver verksamheten framåt.",
-      integration:
-        "När systemen inte hänger ihop flyttas information för hand — det tar tid, ger fel och gör verksamheten beroende av enskilda personer.",
-      ledtid:
-        "Varje manuellt steg mellan start och färdigt arbete gör att det tar längre tid innan kunden får sitt och pengarna kommer in.",
-      overblick:
-        "Utan en samlad bild fattas besluten på gammal information, och problem upptäcks först när de redan har kostat.",
-      overlamningar:
-        "Det som faller mellan personer och avdelningar blir liggande — och märks ofta först när en kund eller kollega frågar.",
       affarer:
         "Utan en jämn ström av nya affärer blir tillväxten ryckig — och beroende av att någon hinner sälja.",
       service:
         "Kunder märker direkt när svar dröjer och ärenden blir liggande — och det avgör om de kommer tillbaka.",
+      effektivitet:
+        "När teamets tid går åt till manuella moment blir det mindre kvar till det som faktiskt driver verksamheten framåt.",
+      integration:
+        "När systemen inte hänger ihop flyttas information för hand — det tar tid, ger fel och gör verksamheten beroende av enskilda personer.",
+      overblick:
+        "Utan en samlad bild blir saker liggande, och problem upptäcks först när de redan har kostat.",
     } as Readonly<Partial<Record<Mal, string>>>,
-    /** "Du sa att det viktigaste just nu är att få betalt snabbare." */
+    /** "Ni sa att det som skulle göra störst skillnad är att få in fler affärer." */
     malet: (du: boolean, mal: Mal) =>
-      mal === "vetinte"
-        ? `${du ? "Du" : "Ni"} ville ha hjälp att hitta var det finns mest att vinna — därför börjar vi där svaren pekar tydligast.`
-        : `${du ? "Du" : "Ni"} sa att det som skulle göra störst skillnad är att ${MAL_FRAS[mal](du)} — därför börjar vi där.`,
+      `${du ? "Du" : "Ni"} sa att det som skulle göra störst skillnad är att ${MAL_FRAS[mal](du)} — därför börjar vi där.`,
     // Tidsrutorna när tiden är liten (LITEN_TID_UNDER): längre ner, efter förslagen.
     potential: {
       rubrik: "Administrativ potential",
@@ -1338,9 +1255,7 @@ export const TEXT = {
       "En stor del av kostnaden kan ofta finansieras via en regional digitaliseringscheck. Vi hjälper till med ansökan.",
   },
   kontakt: {
-    rubrik: "FÅ HELA RESULTATET PÅ MEJL.",
-    brodtext:
-      "Få alla tre förslagen med hela flödet på mejl. Sedan hör vi av oss för en kort genomgång — inget säljsnack.",
+    rubrik: "Eller få hela resultatet på mejl",
     // När inget stort att hämta hittades.
     namn: "Namn",
     foretag: "Företag",
@@ -1388,11 +1303,11 @@ export const TEXT = {
     tack: "Tack — det hjälper oss att börja på rätt ställe.",
   },
   tack: {
-    rubrik: "TACK!",
+    rubrik: "Tack!",
     brodtext: (mejl: string) =>
       `Hela resultatet är på väg till ${mejl}. Vi hör av oss inom ett dygn.`,
-    ocksaHar: "Här är hela resultatet, upplåst:",
-    direktkontakt: "Vill du höra av dig direkt går det bra på:",
+    mote: "Vill du inte vänta? Boka en tid direkt.",
+    direktkontakt: "Eller hör av dig direkt:",
   },
   fel: {
     kontaktMisslyckades:

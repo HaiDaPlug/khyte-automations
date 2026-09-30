@@ -223,7 +223,7 @@ export default function FragaVy({
       <h1
         ref={rubrikRef}
         tabIndex={-1}
-        className="k-rubrik text-3xl sm:text-4xl outline-none"
+        className="text-2xl leading-tight font-semibold tracking-tight text-[var(--k-text)] outline-none sm:text-[1.75rem]"
       >
         {fraga.fraga}
       </h1>

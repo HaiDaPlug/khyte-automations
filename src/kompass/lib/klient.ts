@@ -48,7 +48,8 @@ export type Handelse =
   | "fraga_besvarad"
   | "resultat_visat"
   | "delning"
-  | "kontakt_lamnad";
+  | "kontakt_lamnad"
+  | "mote_klick";
 
 export async function loggaHandelse(
   sessionId: string,

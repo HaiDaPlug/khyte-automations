@@ -66,6 +66,12 @@ export type Forslag = {
    * onskemal = det de helst vill slippa.
    */
   kalla: "valt" | "signal" | "bransch" | "ide" | "onskemal";
+  /**
+   * Utfyllnad utan egna svar bakom — pekad ut av målet eller följdfrågan,
+   * men utan tid eller annat underlag. Leder bara om inget förslag ur deras
+   * svar och ingen tillväxtidé passar bättre.
+   */
+  fyllnad?: boolean;
   rubrik: string;
   /** Vad det betyder för företaget. Leder kortet, direkt under rubriken. */
   affarsnytta?: string;

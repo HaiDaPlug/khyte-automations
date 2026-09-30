@@ -2,14 +2,14 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { FRAGA, MAX_SPAR, MAX_TIDSTJUVAR } from "@/kompass/data/kompass";
+import { FRAGA, MAX_SPAR } from "@/kompass/data/kompass";
 import Header from "@/kompass/komponenter/Header";
 import Forlopp from "@/kompass/komponenter/Forlopp";
 import Hypotes from "@/kompass/komponenter/Hypotes";
 import StartVy from "@/kompass/komponenter/StartVy";
 import FragaVy from "@/kompass/komponenter/FragaVy";
 import AnalysVy, { ANALYS_STEG } from "@/kompass/komponenter/AnalysVy";
-import ResultatVy, { type ForslagLage } from "@/kompass/komponenter/ResultatVy";
+import ResultatVy from "@/kompass/komponenter/ResultatVy";
 import KontaktVy, { type KontaktUppgifter } from "@/kompass/komponenter/KontaktVy";
 import KompletteraVy from "@/kompass/komponenter/KompletteraVy";
 import TackVy from "@/kompass/komponenter/TackVy";
@@ -47,12 +47,6 @@ const ANALYS_EFTER = 400; // 3 rader × 700 ms + 400 ms = 2,5 s
  * lite längre marginal.
  */
 const MAX_VANTAN_PA_ANALYS = 12000;
-
-/**
- * Högst så många skärmar kan specialspåren ge: MAX_SPAR spår, varav
- * förfrågningsspåret har två skärmar. För förloppet innan spåren är kända.
- */
-const MAX_SPARSKARMAR = MAX_SPAR + 1;
 
 /**
  * AI-analysen körs från och med skärmen om vad som görs för hand. Före det
@@ -97,7 +91,6 @@ export default function Kompass({ visaLogga = true, delningsSokvag }: Props) {
   const [riktning, setRiktning] = useState<"fram" | "bak">("fram");
   /** Adressen resultatet skickades till. Visas på tacksidan. */
   const [skickatTill, setSkickatTill] = useState("");
-  const [forslag, setForslag] = useState<ForslagLage>({ status: "laddar" });
   const [analys, setAnalys] = useState<string[]>([]);
   /** Den löpande AI-analysen — uppdateras efter varje skärm. */
   const [aiAnalys, setAiAnalys] = useState<AiAnalys | null>(null);
@@ -248,15 +241,15 @@ export default function Kompass({ visaLogga = true, delningsSokvag }: Props) {
   }
 
   /**
-   * Ber servern om Claudes förslag på fritexten. Väntar in det sista
-   * sparandet först — servern läser fritexten från raden, inte från oss.
+   * Ber servern ta fram Claudes förslag på arbetsflödet redan nu. Det visas
+   * inte på sidan — det står i resultatmejlet och säljnotisen, och är då
+   * redan klart när mejl lämnas. Väntar in det sista sparandet först —
+   * servern läser fritexten från raden, inte från oss.
    */
   async function taFramForslag(sparat: Promise<boolean>) {
     if (!fritext) return;
-    setForslag({ status: "laddar" });
     await sparat;
-    const text = await hamtaForslag(sessionId);
-    setForslag(text ? { status: "klar", text } : { status: "saknas" });
+    await hamtaForslag(sessionId);
   }
 
   /**
@@ -292,23 +285,6 @@ export default function Kompass({ visaLogga = true, delningsSokvag }: Props) {
     sparaLage(svar, nyttSteg);
   }
 
-  /**
-   * Kontrollfrågan på resultatsidan. Sparas som ett svar bland de andra, så
-   * att det följer med raden — och med säljnotisen om det kom före mejlet.
-   */
-  function hanteraBekraftelse(varde: string, text?: string) {
-    const nya: Svar = {
-      ...svar,
-      [FRAGA.bekraftelse]: varde,
-      ...(text ? { [FRAGA.bekraftelseText]: text } : {}),
-    };
-    setSvar(nya);
-    // På tacksidan är det lokala läget redan rensat — spara det inte igen,
-    // annars erbjuds "Fortsätt där du var" för ett avslutat besök.
-    if (vy !== "tack") sparaLage(nya, aktivtSteg);
-    void sparaTillServer(nya, FRAGA.bekraftelse, true);
-  }
-
   async function hanteraKontakt(uppgifter: KontaktUppgifter) {
     // Kontakten uppdaterar en befintlig rad. Gick sparandet vid resultatet
     // inte igenom finns ingen rad — spara igen först. Kön i sparaSvar gör
@@ -323,14 +299,12 @@ export default function Kompass({ visaLogga = true, delningsSokvag }: Props) {
 
   const arSista = aktivtSteg === fragor.length - 1;
 
-  // Innan mönstren valts räknar vi med max antal följd- och specialskärmar.
-  // Då kan "av"-siffran bara krympa — att målet flyttas längre bort tar
+  // Innan mönstren valts kan följdfrågan fortfarande dyka upp — räkna med
+  // den. Då kan "av"-siffran bara krympa — att målet flyttas längre bort tar
   // musten ur folk.
   const harValtOmraden = Array.isArray(svar[FRAGA.tidstjuvar]);
   const sparNu = fragor.filter((f) => SPARSKARMAR.has(f.id)).length;
-  const visatAntal =
-    fragor.length +
-    (harValtOmraden ? 0 : MAX_TIDSTJUVAR + Math.max(0, MAX_SPARSKARMAR - sparNu));
+  const visatAntal = fragor.length + (harValtOmraden ? 0 : Math.max(0, MAX_SPAR - sparNu));
 
   const fritextSvar = svar[FRAGA.fritext];
   const fritext = typeof fritextSvar === "string" ? fritextSvar.trim() : "";
@@ -376,11 +350,9 @@ export default function Kompass({ visaLogga = true, delningsSokvag }: Props) {
           <ResultatVy
             resultat={resultat}
             svar={svar}
-            last={true}
-            claude={forslag}
             delningsSokvag={delningsSokvag}
             onDelning={() => void loggaHandelse(sessionId, "delning")}
-            onBekrafta={hanteraBekraftelse}
+            onMote={() => void loggaHandelse(sessionId, "mote_klick")}
           >
             <KontaktVy onSkicka={hanteraKontakt} />
           </ResultatVy>
@@ -389,20 +361,9 @@ export default function Kompass({ visaLogga = true, delningsSokvag }: Props) {
         {vy === "tack" ? (
           <TackVy
             mejl={skickatTill}
+            onMote={() => void loggaHandelse(sessionId, "mote_klick", "tack")}
             komplettera={<KompletteraVy sessionId={sessionId} />}
-          >
-            {/* Belöningen: hela resultatet låses upp direkt, inte bara på mejl. */}
-            <ResultatVy
-              resultat={resultat}
-              svar={svar}
-              last={false}
-              inbaddad
-              claude={forslag}
-              delningsSokvag={delningsSokvag}
-              onDelning={() => void loggaHandelse(sessionId, "delning")}
-              onBekrafta={hanteraBekraftelse}
-            />
-          </TackVy>
+          />
         ) : null}
       </main>
     </div>

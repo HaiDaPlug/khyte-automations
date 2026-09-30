@@ -106,7 +106,8 @@ export function sammanstall(svar: Svar, ai?: AiAnalys | null) {
     bekraftelse: text(svar, FRAGA.bekraftelse),
     bekraftelse_text: text(svar, FRAGA.bekraftelseText),
     missade_samtal: text(svar, FRAGA.missadeSamtal),
-    svarstid: text(svar, FRAGA.svarstid),
+    // Svarstid frågas inte längre. Kolumnen finns kvar för äldre rader.
+    svarstid: null,
     kundvarde: text(svar, FRAGA.kundvarde),
     verktyg: lista(svar, FRAGA.verktyg),
     fritext: text(svar, FRAGA.fritext),

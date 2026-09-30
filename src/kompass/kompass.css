@@ -62,17 +62,6 @@
   }
 }
 
-/* Versala rubriker i sajtens displayfont. */
-.kompass .k-rubrik {
-  font-family: var(--k-font-display);
-  font-weight: 400;
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
-  line-height: 1.05;
-  /* Ingen färg här: den ärvs från .kompass. En färg på en klass utanför
-     Tailwinds lager skulle slå text-[…]-klasser på samma element. */
-}
-
 /* Primärknapp — sajtens kopparton, utan gradient. */
 .kompass .k-btn-primar {
   background-color: var(--k-cta);
@@ -214,54 +203,6 @@
   animation-delay: calc(var(--i, 0) * 90ms);
 }
 
-/* Låsta modulkort: innehållet anas men går inte att läsa. */
-.kompass .k-last-innehall {
-  filter: blur(5px);
-  user-select: none;
-  pointer-events: none;
-}
-
-/*
- * Flödet i ett förslag: numrerade steg med en tunn linje emellan, så att
- * det läses som en kedja — det här händer, sedan det här.
- */
-.kompass .k-flode {
-  display: flex;
-  flex-direction: column;
-  gap: 0.875rem;
-}
-
-.kompass .k-flode-steg {
-  position: relative;
-  display: flex;
-  gap: 0.75rem;
-  align-items: flex-start;
-}
-
-.kompass .k-flode-steg:not(:last-child)::after {
-  content: "";
-  position: absolute;
-  left: 0.8125rem;
-  top: 1.875rem;
-  bottom: -0.75rem;
-  width: 2px;
-  background-color: rgba(192, 94, 32, 0.25);
-}
-
-.kompass .k-flode-nummer {
-  display: inline-flex;
-  flex-shrink: 0;
-  align-items: center;
-  justify-content: center;
-  width: 1.75rem;
-  height: 1.75rem;
-  border-radius: 9999px;
-  background-color: var(--k-cta);
-  color: #ffffff;
-  font-size: 0.875rem;
-  font-weight: 700;
-}
-
 /*
  * Draken från khyte.se. Yttre diven lutar sig mot pekaren och flyger iväg
  * vid start (transition); svg:n tonar in; kroppen svävar; svansen gungar.
@@ -342,38 +283,6 @@
   transition:
     opacity 0.4s ease,
     transform 0.4s ease;
-}
-
-/*
- * Tidskartan. Två steg ur kopparrampen, validerade med dataviz-skriptet mot
- * bakgrunden #f8f6f3: alla kontroller godkända, kontrast under 3:1 för den
- * ljusa — därför skrivs värdena alltid ut vid stapeln.
- * Stapel 16 px, 2 px mellanrum mellan delarna, 4 px rundning bara i änden.
- */
-.kompass .k-karta-spara {
-  background-color: #a94f19;
-}
-
-.kompass .k-karta-rest {
-  background-color: #e0915a;
-}
-
-.kompass .k-karta-stapel {
-  gap: 2px;
-  transform-origin: left center;
-  animation: k-karta-vaxa 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
-  animation-delay: calc(var(--i, 0) * 120ms + 350ms);
-}
-
-.kompass .k-karta-stapel > span:last-child {
-  border-radius: 0 4px 4px 0;
-}
-
-.kompass .k-karta-nyckel {
-  display: inline-block;
-  width: 0.625rem;
-  height: 0.625rem;
-  border-radius: 2px;
 }
 
 /* Analysögonblicket: raderna dyker upp en i taget. */
@@ -459,15 +368,6 @@
 @keyframes k-poppa {
   50% {
     transform: scale(1.015);
-  }
-}
-
-@keyframes k-karta-vaxa {
-  from {
-    transform: scaleX(0);
-  }
-  to {
-    transform: scaleX(1);
   }
 }
 
@@ -592,32 +492,5 @@
   .kompass .k-drake-start {
     height: 7.5rem;
     width: 5.375rem;
-  }
-}
-
-/*
- * Flytande knapp på resultatet, bara mobil: leder ner till mejlfältet, som
- * annars ligger långt ner. Döljs när formuläret syns.
- */
-.kompass .k-flytande {
-  position: fixed;
-  left: 50%;
-  bottom: max(1rem, env(safe-area-inset-bottom));
-  z-index: 20;
-  transform: translateX(-50%);
-  box-shadow: 0 10px 30px rgba(27, 8, 3, 0.25);
-  transition:
-    opacity 0.25s ease,
-    transform 0.25s ease;
-}
-.kompass .k-flytande[data-dold="true"] {
-  opacity: 0;
-  transform: translate(-50%, 1rem);
-  pointer-events: none;
-}
-/* Döljs på dator och surfplatta — men inte på en telefon i liggande läge. */
-@media (min-width: 640px) and (min-height: 501px), (min-width: 640px) and (pointer: fine) {
-  .kompass .k-flytande {
-    display: none;
   }
 }

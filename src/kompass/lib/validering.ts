@@ -88,6 +88,7 @@ export const eventSchema = z.object({
     "resultat_visat",
     "delning",
     "kontakt_lamnad",
+    "mote_klick",
   ]),
   steg: z.string().max(80).optional(),
 });

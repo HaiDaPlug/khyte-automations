@@ -12,7 +12,6 @@ import {
   ANDEL_SPARBAR,
   FRAGA,
   KUNDVARDE_KR,
-  LANGSAM_SVARSTID,
   LITEN_TID_UNDER,
   MANGA_MISSADE_SAMTAL,
   MINUTER_PER_MISSAT_SAMTAL,
@@ -47,20 +46,20 @@ const procent = (andel: number) => `${Math.round(andel * 100)}`;
 
 const INGEN_TID: Intervall = { min: 0, max: 0 };
 
-/** Ett valt område: besökarens tid × andelen som brukar gå att automatisera. */
+/**
+ * Ett valt område: besökarens tid × andelen som brukar gå att automatisera.
+ * De har själva sagt att det görs för hand, så ingen fråga om hur.
+ */
 function raknaOmrade(omrade: Omrade, svar: Svar): OmradeResultat {
   const tidSvar = enval(svar, OMRADESNYCKEL.tid(omrade.id));
-  const idag = enval(svar, OMRADESNYCKEL.idag(omrade.id));
   const lagt = tidSvar ? TID_PER_VECKA[tidSvar] : undefined;
-  const andel = idag ? ANDEL_SPARBAR[idag] : undefined;
+  const andel = ANDEL_SPARBAR;
 
   // Halvt besvarat (t.ex. avhopp mitt på skärmen) — visa området utan siffror
   // hellre än att gissa.
-  if (!lagt || !andel || !idag) {
+  if (!lagt) {
     return {
       omrade,
-      lagt,
-      idag,
       besparing: INGEN_TID,
       harledning: `${omrade.namn}: inte tillräckligt med svar för att räkna.`,
       foreslaget: false,
@@ -75,13 +74,11 @@ function raknaOmrade(omrade: Omrade, svar: Svar): OmradeResultat {
   return {
     omrade,
     lagt,
-    idag,
     besparing,
     harledning:
-      `${omrade.namn}: du angav ${formateraTimmar(lagt)} i veckan, ` +
-      `${idag.toLowerCase()}. Vi räknar med att ${procent(andel.min)}–` +
-      `${procent(andel.max)} % brukar gå att automatisera, alltså ` +
-      `${formateraTimmar(besparing)}.`,
+      `${omrade.namn}: du angav ${formateraTimmar(lagt)} i veckan. Vi räknar med att ` +
+      `${procent(andel.min)}–${procent(andel.max)} % av det som görs för hand ` +
+      `brukar gå att automatisera, alltså ${formateraTimmar(besparing)}.`,
     foreslaget: false,
   };
 }
@@ -96,41 +93,23 @@ function foreslaSamtal(svar: Svar, valda: Omrade[]): OmradeResultat | null {
   if (!samtal || valda.some((o) => o.id === samtal.id)) return null;
 
   const missade = enval(svar, FRAGA.missadeSamtal);
-  const svarstid = enval(svar, FRAGA.svarstid);
-  const mangaMissade = MANGA_MISSADE_SAMTAL.some((m) => m === missade);
-  const langsam = LANGSAM_SVARSTID.some((l) => l === svarstid);
-  if (!mangaMissade && !langsam) return null;
+  if (!missade || !MANGA_MISSADE_SAMTAL.some((m) => m === missade)) return null;
 
-  const skal: string[] = [];
-  let besparing = INGEN_TID;
-  let harledning = `${samtal.namn}: föreslaget utifrån dina svar, utan tidsberäkning.`;
-
-  if (mangaMissade && missade) {
-    const perVecka = MISSADE_SAMTAL_PER_VECKA[missade] ?? 0;
-    besparing = {
-      min: avrundaHalvtimme((perVecka * MINUTER_PER_MISSAT_SAMTAL.min) / 60),
-      max: avrundaHalvtimme((perVecka * MINUTER_PER_MISSAT_SAMTAL.max) / 60),
-    };
-    skal.push(`Ni missar ${missade.toLowerCase()} samtal i veckan.`);
-    harledning =
-      `${samtal.namn}: runt ${perVecka} missade samtal i veckan × ` +
-      `${MINUTER_PER_MISSAT_SAMTAL.min}–${MINUTER_PER_MISSAT_SAMTAL.max} minuter ` +
-      `att ringa tillbaka och reda ut = ${formateraTimmar(besparing)}.`;
-  }
-  if (langsam && svarstid) {
-    skal.push(
-      svarstid === "Det varierar"
-        ? "Svarstiden på förfrågningar varierar."
-        : "Förfrågningar får svar först nästa dag.",
-    );
-  }
+  const perVecka = MISSADE_SAMTAL_PER_VECKA[missade] ?? 0;
+  const besparing = {
+    min: avrundaHalvtimme((perVecka * MINUTER_PER_MISSAT_SAMTAL.min) / 60),
+    max: avrundaHalvtimme((perVecka * MINUTER_PER_MISSAT_SAMTAL.max) / 60),
+  };
 
   return {
     omrade: samtal,
     besparing,
-    harledning,
+    harledning:
+      `${samtal.namn}: runt ${perVecka} missade samtal i veckan × ` +
+      `${MINUTER_PER_MISSAT_SAMTAL.min}–${MINUTER_PER_MISSAT_SAMTAL.max} minuter ` +
+      `att ringa tillbaka och reda ut = ${formateraTimmar(besparing)}.`,
     foreslaget: true,
-    skal: skal.join(" "),
+    skal: `Ni missar ${missade.toLowerCase()} samtal i veckan.`,
   };
 }
 

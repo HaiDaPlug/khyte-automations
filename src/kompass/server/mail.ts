@@ -6,7 +6,6 @@ import {
   FRAGA,
   MAL_FRAS,
   OMRADEN,
-  OMRADESNYCKEL,
   SAJT,
   SPECIAL,
 } from "@/kompass/data/kompass";
@@ -120,16 +119,11 @@ export async function skickaSaljnotis(rad: SvarsRad): Promise<void> {
     ["Antal", rad.antal_anstallda ?? "—"],
     ["Roll", rad.roll ?? "—"],
     ["Mål", rad.mal ?? "—"],
+    ["När det inte fungerar", svarText(rad, FRAGA.konsekvens)],
     // Bara specialfrågor som ställts — en tillverkare har inga samtalssvar.
     ...Object.values(SPECIAL)
       .filter((f) => svarText(rad, f.id) !== "—")
       .map((f): [string, string] => [f.etikett, svarText(rad, f.id)]),
-    [
-      "Stämmer bedömningen?",
-      rad.bekraftelse
-        ? `${rad.bekraftelse}${rad.bekraftelse_text ? ` — ”${rad.bekraftelse_text}”` : ""}`
-        : "—",
-    ],
     ["Vill komma igång", rad.tidshorisont ?? "—"],
     ["System", (rad.verktyg ?? []).join(", ") || "—"],
     ["Samma info i flera system", svarText(rad, FRAGA.dubbelinmatning)],
@@ -160,9 +154,8 @@ export async function skickaSaljnotis(rad: SvarsRad): Promise<void> {
       (o) =>
         `<li style="margin:0 0 6px;font-size:15px;">
           <strong>${skyddaHtml(o.namn)}</strong>${o.foreslaget ? " (föreslaget)" : ""}:
-          ${o.lagt_min !== null ? `${timmar(o.lagt_min, o.lagt_max)}, ${skyddaHtml((o.idag ?? "").toLowerCase())}` : skyddaHtml(o.skal ?? "")}
+          ${o.lagt_min !== null ? timmar(o.lagt_min, o.lagt_max) : skyddaHtml(o.skal ?? "")}
           — spara ${timmar(o.besparing_min, o.besparing_max)}
-          ${svarText(rad, OMRADESNYCKEL.konsekvens(o.id)) !== "—" ? `<br><span style="color:#5a4f48;">När det inte fungerar: ${skyddaHtml(svarText(rad, OMRADESNYCKEL.konsekvens(o.id)).toLowerCase())}</span>` : ""}
         </li>`,
     )
     .join("");
@@ -317,11 +310,10 @@ export async function skickaResultatmejl(rad: SvarsRad): Promise<void> {
 
   const harTid =
     rad.timmar_max !== null && Number(rad.timmar_max) > 0;
-  // Målet först — förslagen börjar där, precis som på sidan. "Jag vet inte"
-  // har inget mål att upprepa.
+  // Målet först — förslagen börjar där, precis som på sidan.
   const mal = malFranText(rad.mal);
   const malet =
-    mal && mal !== "vetinte"
+    mal
       ? `<p style="margin:0 0 14px;font-size:16px;">Du sa att det som skulle göra störst skillnad är att <strong>${skyddaHtml(MAL_FRAS[mal](false))}</strong> — därför börjar förslagen där.</p>`
       : "";
   const summor = harTid

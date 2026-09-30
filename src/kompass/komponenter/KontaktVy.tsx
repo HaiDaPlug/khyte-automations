@@ -68,22 +68,16 @@ export default function KontaktVy({ onSkicka }: Props) {
     }
   }
 
+  // Ligger under mötesknappen i resultatets avslut — alternativet för den som
+  // inte vill boka än.
   return (
-    <section
-      id="kontakt"
-      aria-labelledby="kontakt-rubrik"
-      style={{ "--i": 8 } as React.CSSProperties}
-      className="k-tona-in mt-10 scroll-mt-6 rounded-3xl border-2 border-[var(--k-cta)] bg-[var(--k-card-bg)] p-6 sm:p-8"
-    >
-      <h2 id="kontakt-rubrik" className="k-rubrik text-3xl sm:text-4xl">
+    <div aria-labelledby="kontakt-rubrik" role="group">
+      <h3 id="kontakt-rubrik" className="text-[0.9375rem] font-semibold text-[var(--k-text)]">
         {TEXT.kontakt.rubrik}
-      </h2>
-      <p className="mt-3 text-[1rem] leading-relaxed text-[var(--k-text-body)]">
-        {TEXT.kontakt.brodtext}
-      </p>
+      </h3>
 
-      <form onSubmit={hanteraSkicka} noValidate className="mt-6">
-        <label htmlFor="mejl" className="mb-1.5 block text-sm font-semibold">
+      <form onSubmit={hanteraSkicka} noValidate className="mt-3">
+        <label htmlFor="mejl" className="k-bara-skarmlasare">
           {TEXT.kontakt.mejl}
         </label>
         <div className="flex flex-col gap-3 sm:flex-row">
@@ -102,7 +96,7 @@ export default function KontaktVy({ onSkicka }: Props) {
             aria-describedby={fel ? "kontakt-fel" : undefined}
             className="min-h-12 w-full flex-1 rounded-full border border-[var(--k-border)] bg-[var(--k-bg)] px-5 text-base text-[var(--k-text)] placeholder:text-[var(--k-muted)]"
           />
-          <Knapp type="submit" disabled={skickar} className="w-full sm:w-auto">
+          <Knapp type="submit" variant="sekundar" disabled={skickar} className="w-full sm:w-auto">
             {skickar ? TEXT.kontakt.skickar : TEXT.kontakt.skicka}
           </Knapp>
         </div>
@@ -130,7 +124,7 @@ export default function KontaktVy({ onSkicka }: Props) {
           </p>
         ) : null}
 
-        <p className="mt-4 text-sm leading-relaxed text-[var(--k-muted)]">
+        <p className="mt-3 text-[0.8125rem] leading-relaxed text-[var(--k-muted)]">
           {TEXT.kontakt.gdpr}{" "}
           <a
             href={SAJT.integritetspolicy}
@@ -141,6 +135,6 @@ export default function KontaktVy({ onSkicka }: Props) {
           .
         </p>
       </form>
-    </section>
+    </div>
   );
 }

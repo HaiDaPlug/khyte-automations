@@ -50,7 +50,7 @@ export default function AnalysVy({ rader, klar: analysKlar }: Props) {
       <h1
         ref={rubrikRef}
         tabIndex={-1}
-        className="k-rubrik k-tona-in mt-6 text-3xl outline-none sm:text-4xl"
+        className="k-tona-in mt-6 text-2xl leading-tight font-semibold tracking-tight text-[var(--k-text)] outline-none sm:text-[1.75rem]"
       >
         {TEXT.analys.rubrik}
       </h1>

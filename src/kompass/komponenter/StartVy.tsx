@@ -52,7 +52,7 @@ export default function StartVy({
         </div>
 
         <div className={flyger ? "k-start-lamnar" : ""}>
-          <h1 className="k-rubrik k-tona-in text-4xl text-balance sm:text-5xl">
+          <h1 className="k-tona-in text-3xl leading-tight text-balance font-semibold tracking-tight text-[var(--k-text)] sm:text-4xl">
             {TEXT.start.rubrik}
           </h1>
           <p
