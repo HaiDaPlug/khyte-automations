@@ -15,11 +15,11 @@ export interface FAQEntry {
 export const homeFaqs: FAQEntry[] = [
   {
     q: "Vad kostar det?",
-    a: "Det beror på projektets omfattning. Är det en simpel implementation kommer det att kosta mindre, och större mer. Man får ett pris på kartläggningen så att ni vet innan ni bestämmer er.",
+    a: "Det beror på omfattningen. Vi börjar med en kartläggning till fast pris. Efter den får ni ett fast pris för bygget, från 15 000 kr, innan ni bestämmer er.",
   },
   {
     q: "Hur lång tid tar det?",
-    a: "Beror på komplexitet av dina verktyg och processer. Vi värderar snabb service och försöker att få ut det åtminstone inom en till två veckor. Tidsramen läggs tydligt i kartläggningen.",
+    a: "Det beror på era verktyg och processer. Mindre automationer är ofta klara på 1–2 veckor, större system tar 4–6 veckor. Ni får en tidsplan i kartläggningen.",
   },
   {
     q: "Behöver vi ändra hur vi jobbar?",
@@ -27,7 +27,7 @@ export const homeFaqs: FAQEntry[] = [
   },
   {
     q: "Kan ni integrera med vårt system?",
-    a: "Om ert system har en API kommer det troligtvis att kunna koppla. Vi dyker djupt in i era processer och system och säger ja/nej om det inte går.",
+    a: "Har ert system ett API går det oftast att koppla. Vi går igenom era system i kartläggningen och säger direkt om något inte går.",
   },
 ];
 

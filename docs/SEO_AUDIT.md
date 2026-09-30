@@ -46,7 +46,7 @@ Verified from the outside (live HTML fetched as Googlebot, Lighthouse, DNS, redi
 | Date | Decision |
 |---|---|
 | 2026-09-30 | The March "24 pieces in 90 days" plan is retired. Strengthen the existing small site first; new pages only when GSC data or sales reality earns them. |
-| 2026-09-30 | **Business facts live in `src/data/facts.ts`** and are read from there: intro call **30 min** (what Calendly books), delivery **ofta 2–6 veckor beroende på scope**, price **från 15 000 kr, fast pris efter scope**, public name for the first step **Kartläggning**, Calendly URL, address/phone/email. Kept small — numbers and contact details, not whole paragraphs. |
+| 2026-09-30 | **Business facts live in `src/data/facts.ts`** and are read from there: intro call **30 min** (what Calendly books), delivery **1–2 veckor för mindre automationer, 4–6 veckor för större system** (owner's call, 2026-09-30 — replaces "ofta 2–6 veckor"), price **från 15 000 kr, fast pris efter kartläggning**, public name for the first step **Kartläggning** — a **paid, required** step (owner confirmed 2026-09-30), Calendly URL, address/phone/email. Kept small — numbers and contact details, not whole paragraphs. |
 | 2026-09-30 | **No site-wide "hours saved" claim.** Hours saved is only stated per case, where it was measured. Generic copy stays qualitative. |
 | 2026-09-30 | Team: only render members we can present properly (Hai, Abdi). Erik is added when his profile is ready; `src/lib/signature-profiles.ts` is the future team source. |
 | 2026-09-30 | Home page owns **"automatisering för företag"** (workflows, systems, repetitive work). AI-specific intent goes to a dedicated service page later. |

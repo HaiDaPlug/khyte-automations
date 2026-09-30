@@ -354,7 +354,17 @@ Skills live in `~/.claude/skills/` and are invoked via `/skill-name` or triggere
 
 ### Services Page (Consolidated)
 **Route**: `/tjanster` (accessible via "Tjänster" link in nav; 301 redirect from `/services`)
-- **Launch-ready**: 9 sections — Hero, Vad vi automatiserar, Så jobbar vi, Skräddarsydd automation, Support, Automationsresa, Resultat, FAQ, CTA
+- **Role**: the services pillar and the canonical page for process, pricing logic and timelines. Service
+  subpages (`/tjanster/<slug>`) are planned; see the Decisions table in `docs/SEO_AUDIT.md`.
+  The homepage owns the search term "automatisering för företag" — `/tjanster` targets "tjänster och priser".
+- **Sections**: Hero (H1 "TJÄNSTER / OCH PRISER.") → Vad vi automatiserar → Så jobbar vi (Introsamtal →
+  Kartläggning → Implementation → Överlämning) → Vad det kostar (price + vad ingår + support) → Resultat
+  (espresso band) → **Det här har vi byggt** → FAQ
+- **Det här har vi byggt**: one row per case, rendered from `src/data/cases.ts` (index, company, `problem`,
+  arrow) and linking to `/case/{slug}` — the only contextual links from services to proof. New cases appear
+  here with no edit to the page. Mobile: name + arrow on row 1, problem wraps beneath.
+- **Resultat band**: no generic hours-saved claim. The time figure is Observa's measured ≈65h per 1 000
+  företag, attributed by name — hours saved is only stated where it was measured.
 - Price card: `border border-[rgba(58,51,48,0.25)]` (heavier border signals hierarchy)
 - Step numbers: `text-[var(--color-muted)]`
 - FAQ: native `<details>`/`<summary>`, `focus-visible:ring-[rgba(58,51,48,0.30)]`
@@ -699,7 +709,7 @@ npm run dev                     # Dev mode (Turbopack bug exists)
 9. No tailwind.config.ts — all config in globals.css `@theme`
 10. Nav uses absolute positioning for centered links (requires `relative` on parent)
 11. Small SVG icons use plain `<img>` instead of Next Image for simplicity
-12. Pricing on /tjanster: "15 000+ kr, fast pris efter scope". Exact number set in förstudie.
+12. Pricing on /tjanster: "15 000+ kr, fast pris efter kartläggning". The first step is called **Kartläggning** everywhere (never "förstudie") and is a paid, required step; the exact build price is set there. Delivery: 1–2 veckor för mindre automationer, 4–6 veckor för större system. Intro call: 30 min.
 13. Legal pages are live at `/integritetspolicy` and `/villkor`.
 14. **Full-bleed sections belong at page root** — never nest `w-screen` / viewport-escape sections inside `<Container>`. Statement is the one exception (see Homepage Layout Architecture).
 15. **ROIBand needs `relative`** — its inner `absolute inset-0` gradient anchors to it; removing `relative` causes the gradient to escape to the nearest positioned ancestor.
@@ -802,12 +812,31 @@ Moved to `docs/INTENTIONS.md` — the living log for ideas, directions, and thin
 - **Homepage title carries no brand.** Next skips `title.template` for the root segment, so
   `/` renders bare. The SEO audit suggests adding a geo signal here — a copy decision.
 - **Missing schema**: `Service` on `/tjanster`, `BreadcrumbList` on subpages.
-- **Google Search Console** not yet verified; **Google Business Profile** not yet created.
-  Both are the top remaining items in `docs/SEO_AUDIT.md`.
+- **Google Search Console** is verified (DNS TXT) and a **Google Business Profile** exists — see
+  `docs/SEO_AUDIT.md`, which is now the single place for SEO state and decisions.
 
 ---
 
 ## Changelog
+
+### v2.29 — Services page Phase 0: one set of facts, proof links, clean Swedish
+- **Business facts aligned across the site** (owner's decisions, 2026-09-30): the first step is
+  **Kartläggning** (paid, required) — `/tjanster` said "Förstudie" while the homepage said "Kartläggning";
+  delivery is **1–2 veckor för mindre automationer, 4–6 för större system** (was "1–2" on the homepage FAQ and
+  "2–6" on `/tjanster`); the intro call is **30 min** everywhere (pre-footer and `/tjanster` said 15, the Calendly
+  event is 30). "Kvalificeringssamtal" → "Introsamtal", matching `/kontakt`.
+- **`/tjanster` metadata + H1**: title "Tjänster och priser – automation, AI och egna system", new description
+  with price and ownership, H1 "VÅRA TJÄNSTER." → "TJÄNSTER / OCH PRISER." (verified: fits 375px, no overflow).
+- **Pricing section renamed** "SKRÄDDARSYDD AUTOMATION." → "VAD DET KOSTAR." so it cannot be confused with a
+  future custom-systems service page.
+- **New "Det här har vi byggt" section** on `/tjanster` linking every case, driven by `cases.ts`.
+- **Generic "5–20h / vecka" removed** from the Resultat band in favour of Observa's measured figure.
+- **Swedish fixes**: "ta hand av" ×2, "andra källorna", "integrar", "sköter sig själv", "era nuläge", "full
+  fokus", "Ni gör", "vart ni tappar tid" (homepage process card), "har en API" (homepage FAQ). Em dashes removed
+  from edited copy.
+- Homepage FAQ answers for price and delivery rewritten to the same facts; FAQPage JSON-LD follows automatically.
+- Verified with `npm run build` + `npm run start`: `/tjanster` 200, one H1, links to all 5 cases, FAQ schema
+  matches the accordion, 30 min on every page's pre-footer, no horizontal overflow at 375px or 1920px.
 
 ### v2.28 — Real case photos + strongest-case ordering
 - **Replaced procedural gradient+text mockups with real photos** on both the homepage testimonial cards (`CasesSection.tsx`) and the `/case` listing grid (`case/page.tsx`). Each case now has an `image` field in `cases.ts` pointing at a Canva-made "Company x Khyte" photo in `public/case-images/`.

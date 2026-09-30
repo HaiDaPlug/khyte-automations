@@ -7,7 +7,7 @@ const steps = [
   {
     num: "01.",
     title: "Kartläggning",
-    body: "Vi går igenom era flöden och strategi. Vad som är manuellt, vart ni tappar tid och vad som går att automatisera så att ni får bra koll nu.",
+    body: "Vi går igenom era flöden och strategi. Vad som är manuellt, var ni tappar tid och vad som går att automatisera så att ni får bra koll nu.",
   },
   {
     num: "02.",
