@@ -14,9 +14,11 @@ import { homeFaqs, faqPageSchema } from "@/data/faq";
 import EspressoBand from "@/components/EspressoBand";
 
 export const metadata: Metadata = {
-  title: "AI-automation för företag – Frigör tid från manuellt arbete",
+  // The root page is not covered by the layout's title template, so the
+  // brand is written out here.
+  title: { absolute: "Automatisering för företag – mindre manuellt arbete | Khyte Automations" },
   description:
-    "Vi bygger AI-automationer som eliminerar repetitivt arbete i er verksamhet. Snabb implementering, tydlig process. Se konkreta exempel från säljautomation och research.",
+    "Vi automatiserar manuella arbetsflöden och kopplar ihop era system – från leads och kunduppföljning till dokument och bokningar. Baserade i Borås. Se våra case.",
   alternates: {
     canonical: "/",
   },
