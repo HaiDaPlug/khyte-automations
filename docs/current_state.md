@@ -1,4 +1,4 @@
-# Khyte Automations - Current State (v2.29)
+# Khyte Automations - Current State (v2.30)
 
 ## Tech Stack
 - **Next.js** 16.1.1 (App Router)
@@ -681,8 +681,12 @@ FAQ schema, and never let the schema list and the accordion list drift apart —
 - Trigger: `openCalendly()` from `CalendlyContext` — used in Nav CTA, PreFooterCTA, CalendlyButton
 - `CalendlyProvider` wraps the full app in layout.tsx; `CalendlyDrawer` renders globally alongside Nav
 
-## Automationskompassen (v2.29)
-Lead magnet moved in from the separate `khyte-kompass` repo with its `npm run flytta` script. **Source of truth is still `khyte-kompass`** — never edit `src/kompass/` here; change it there and move it again.
+## Automationskompassen (v2.30)
+Lead magnet moved in from the separate `khyte-kompass` repo with its `npm run flytta` script. **Since 2026-09-30 this repo is the source of truth** — edit `src/kompass/` here. `khyte-kompass` is archived (it was never deployed on its own; its move script refuses to overwrite and has no update path, so don't use it).
+
+- **Logic and prompts**: `docs/KOMPASS_LOGIK.md` — the full question flow, both AI prompts, how proposals are chosen, and the result page.
+- **Database**: `supabase/schema.sql` + `supabase/migrations/` (moved from `khyte-kompass`). Run new migrations in the Supabase SQL Editor. `kompass_events.handelse` is plain text — new event types need no migration.
+- **Tests**: `npm test` (Vitest, `vitest.config.ts`). Tests live next to the code as `src/kompass/**/*.test.ts`; `grans.test.ts` guards the module boundary (only `@/kompass`, `@/kompass/og`, `@/kompass/server` may be imported from `src/app`) and CSS isolation (every `k-*` class used and defined).
 
 - **Module**: `src/kompass/` (self-contained: CSS scoped under `.kompass`, classes `k-*`, API under `/api/kompass/*`, images under `public/kompass/`). Entry points: `@/kompass`, `@/kompass/og`, `@/kompass/server`.
 - **Routes**: `/kompass` (full page, site chrome, in sitemap) · `/kompass/inbaddad` (no chrome, `noindex` — only loaded inside the popup iframe) · `/api/kompass/{svar,analys,forslag,event,kontakt,komplettera,cron}`.
@@ -698,6 +702,7 @@ Lead magnet moved in from the separate `khyte-kompass` repo with its `npm run fl
 ```bash
 npm run build && npm run start  # Production (recommended)
 npm run dev                     # Dev mode (Turbopack bug exists)
+npm test                        # Kompassens tester (Vitest)
 ```
 
 ## Key Implementation Notes
@@ -821,6 +826,13 @@ Moved to `docs/INTENTIONS.md` — the living log for ideas, directions, and thin
 ---
 
 ## Changelog
+
+### v2.30 — Kompassen: kortare, generell, och källan flyttad hit
+- **This repo is now the source of truth for the compass**; `khyte-kompass` is archived. Schema, migrations and tests moved here; Vitest added (`npm test`, 152 tests).
+- **Questions rebuilt for any business, then shortened**: 6–7 screens (om er, mål, vad görs för hand, at most one relevant follow-up, one time screen, system, optional workflow text). Fewer options everywhere. Follow-ups are neutral — "Vet inte" / "fungerar bra" never steer the result.
+- **Result page simplified**: one sentence, one number, three proposal titles, then "Boka ett möte" (Calendly, new tab) with the email field as the alternative. Steps, plan and cases are in the result email only. Satoshi headings instead of Bebas across the compass.
+- **AI analysis** gets a generalized input and reads the visitor's workflow text (as data, with PII stripped). New event `mote_klick`.
+- Full logic and prompts: `docs/KOMPASS_LOGIK.md`.
 
 ### v2.29 — Automationskompassen on the site
 - Moved the compass module in from `khyte-kompass` (`src/kompass/`, `/kompass`, `/api/kompass/*`, `public/kompass/`). New deps: `@anthropic-ai/sdk`, `@supabase/supabase-js`, `resend`, `server-only`, `zod`.
