@@ -19,23 +19,25 @@ visitor sees proof → conversation → client work.
 ## 1. Current state (verified 2026-09-30)
 
 Verified from the outside (live HTML fetched as Googlebot, Lighthouse, DNS, redirects) and inside (code).
+Rows marked **(main)** describe the P1 pass committed on 2026-09-30 and verified on a local production
+build. They reach khyte.se on the next deploy.
 
 | Area | State |
 |---|---|
 | Domains | `khyte.se` is canonical. `www.khyte.se`, `khyteteam.com`, `khyteautomations.com` 308 → `khyte.se` with path kept (≤2 hops). Unknown URLs return a real 404. |
 | Crawling | `robots.ts` allows everything except `/internal/`. AI crawlers (incl. `OAI-SearchBot`) are allowed. |
-| Sitemap | 12 URLs (7 static + 5 cases), generated from `src/data/cases.ts`. |
+| Sitemap | 12 URLs (7 static + 5 cases), generated from `src/data/cases.ts`. **(main)** No `lastmod` until real edit dates are tracked. |
 | Google Search Console | **Verified** (DNS TXT record on `khyte.se`). Data not yet reviewed. |
 | Google Business Profile | Exists. Not yet audited. |
 | Bing Webmaster Tools | Not set up. |
 | Analytics | GA4 `G-F91HE9L5LS` (lazy) + Vercel Analytics. |
-| Structured data | Organization, ProfessionalService (city-level address only), WebSite, Person (Hai). FAQPage on `/` and `/tjanster`, matching the visible accordions. |
-| Titles / descriptions | Unique per page. Case titles lead with the client name; case descriptions are short taglines. |
-| Social previews | `og:title` / `twitter:title` are the same generic line on every page (twitter title is in English). Every page shares one OG image. |
-| Headings | Home H1 reads "manuellt arbete manuellt arbete" to crawlers (`RollingWord` sr-only copy). `PageHeader` H1s are brand statements ("VÅRA TJÄNSTER."). Case pages have no content headings. |
-| Cases | 5 case pages with real first-party detail. Each links only to the next case — no route to services. |
-| Performance (Lighthouse mobile, lab) | Home: 46, 8.3 MB. Case page: 61, 8.2 MB. Five 1.5 MB PNG case photos are preloaded on most pages via Next link prefetch. `khyte-logo-text.svg` is 510 KB (embedded bitmap) and is the LCP element. No field data. |
-| Content signals | "Borås" is absent from main content on every page except `/kontakt`. "Systemintegration" appears nowhere. Home title says "AI-automation"; home body never says AI. |
+| Structured data | **(main)** Organization (with `logo.png`), ProfessionalService with full street address, postcode and coordinates for Västerbrogatan 8A, WebSite, Person (Hai). Values read from `src/data/facts.ts`. FAQPage on `/` and `/tjanster`, matching the visible accordions. |
+| Titles / descriptions | Unique per page. **(main)** Home: "Automatisering för företag – mindre manuellt arbete". `/tjanster`: "Tjänster och priser". Case titles lead with the workflow (`seoTitle` / `metaDescription` in `cases.ts`). |
+| Social previews | **(main)** `og:*` / `twitter:*` inherit each page's own title and description. Case pages preview with their co-branded case photo. |
+| Headings | **(main)** Home H1 reads once. Case pages have h2 sections (Utmaningen / Lösningen / Resultat) and h3 steps. `PageHeader` H1s are still brand statements on `/case` and `/om-oss`; `/tjanster` is "TJÄNSTER OCH PRISER." |
+| Cases | 5 case pages with real first-party detail. `/tjanster` links to all five ("Det här har vi byggt"). Case pages still link only to the next case — no route to services. `lead-lista` is now `/case/foretagsresearch` (308 from the old URL). |
+| Performance (Lighthouse mobile, lab) | **(main)** Page weight 8.3 MB → 1.5 MB. Case photos are ~80 KB JPGs; the text logo is 100 KB. The score is now bound by JavaScript: LCP render delay ~9.7 s and TBT 0.6–1.4 s (animations, particles, smooth scroll). `icon.svg` / `apple-icon.svg` are 381 KB each. No field data. |
+| Content signals | "Borås" is absent from main content on every page except `/kontakt` (home meta description now names it). "Systemintegration" appears nowhere. |
 | Off-site | Allabolag lists the sole trader under Hai's name, not "Khyte". No Hitta listing. E-handelsstaden member page links to `khyteteam.com`. No client sites link to khyte.se. |
 | Rankings | No non-brand rankings observed (external check, approximate). Brand SERP still shows some old `khyteautomations.com` URLs; they redirect, so this resolves with time. |
 
@@ -66,17 +68,23 @@ Verified from the outside (live HTML fetched as Googlebot, Lighthouse, DNS, redi
 - [ ] Make client-system GitHub repos private (`kalender-system` contains a real client contact and internal notes). Preserve collaborator access.
 - [ ] Owner to check whether `bni-references` contains real member names (not verified).
 
-**P1 — invisible pass (no visual/layout change)**
-- [ ] `src/data/facts.ts` + align call length, price and delivery everywhere outside `/tjanster`
-- [ ] Complete the LocalBusiness address (street, postcode) and add an Organization logo
-- [ ] Home H1: render the rotating word once
-- [ ] Social titles/descriptions per page (inherit from each page's own metadata)
-- [ ] Home title/description for "automatisering för företag"
-- [ ] Case pages: workflow-first titles, real descriptions, case photo as OG image
-- [ ] Case pages: section labels become headings (identical styling)
-- [ ] Compress case photos, testimonial photos and the logo
-- [ ] Sitemap: stop stamping every URL with the build date
-- [ ] Rename `lead-lista` → `foretagsresearch` with a permanent redirect
+**P1 — invisible pass (no visual/layout change)** — done 2026-09-30 (`d805f26`…`06cd8e4`), not yet deployed
+- [x] `src/data/facts.ts`; pre-footer, Calendly drawer, `/kontakt` metadata, 404 and home FAQ read from it
+- [x] Complete the LocalBusiness address (street, postcode, coordinates) and add an Organization logo
+- [x] Home H1: render the rotating word once
+- [x] Social titles/descriptions per page (inherit from each page's own metadata)
+- [x] Home title/description for "automatisering för företag"
+- [x] Case pages: workflow-first titles, real descriptions, case photo as OG image
+- [x] Case pages: section labels become headings (identical styling)
+- [x] Compress case photos and the logo (testimonial photos were already 3–12 KB)
+- [x] Sitemap: stop stamping every URL with the build date
+- [x] Rename `lead-lista` → `foretagsresearch` with a permanent redirect
+- [ ] `/tjanster` still hardcodes 30 min, 15 000 kr and the delivery ranges — switch to `facts.ts` (services rework)
+- [ ] After deploy: re-crawl live, check a case link in LinkedIn Post Inspector, re-run Lighthouse on khyte.se
+
+**Performance (next lever, not invisible)**
+- [ ] LCP is held by render delay (~9.7 s lab), not bytes: the logo/hero wait on JavaScript. Look at what the hero waits for (page transition, animation libraries, particles) before hydration. Design-sensitive — plan first.
+- [ ] `icon.svg` and `apple-icon.svg` are 381 KB each, and iOS does not support SVG touch icons. Replace with small PNGs (32/180 px).
 
 **P2 — connect the flywheel** *(coordinate with the `/tjanster` rework)*
 - [ ] Case → service: contextual link from each case to the relevant part of `/tjanster`. Needs stable section anchors on `/tjanster` (e.g. `#uppfoljning`).
@@ -100,10 +108,10 @@ Verified from the outside (live HTML fetched as Googlebot, Lighthouse, DNS, redi
 - [ ] Bing Webmaster Tools (import from GSC), check the AI Performance report. IndexNow optional.
 
 **Copy (Swedish pass, not SEO-critical but trust-critical)**
-- [ ] Home: "3-15h / vecka" and payback stats conflict with the no-site-wide-hours decision — make qualitative or case-backed.
-- [ ] Home FAQ: "har en API" → "har ett API"; "säger ja/nej om det inte går"; "vart ni tappar tid" → "var"; mixed du/ni.
+- [ ] Home ROI/COI bands: "3-15h / vecka" (twice) and "3–6 månader" payback conflict with the no-site-wide-hours decision — make qualitative or case-backed (e.g. Observa ≈65 h per 1 000 företag, JaTack ≈32 h per 1 000 leads, client named). Visible design copy — needs sign-off.
+- [x] Home FAQ: "har ett API", "var ni tappar tid" (services rework, `e7f24f4`). Mixed du/ni on the home page remains.
 - [ ] `/om-oss`: "Vart allt började" → "Där allt började"; "fick med han" → "fick med honom".
-- [ ] `/tjanster` (owned by the services rework): "tar hand av" → "tar hand om", "integrar" → "integrerar", "era nuläge" → "ert nuläge", "Testing och quality check", "Monitoring", "full fokus" → "fullt fokus", "Förstudie" → "Kartläggning", "15-minuters" → 30.
+- [x] `/tjanster` Swedish fixes and "Kartläggning" (services rework, `e7f24f4`).
 
 ---
 
@@ -146,6 +154,9 @@ Hypotheses, each with how we'll know.
 |---|---|---|---|---|
 | 2026-09-30 | Baseline | Lighthouse mobile, home | 46 · 8.3 MB | — |
 | 2026-09-30 | Baseline | Lighthouse mobile, `/case/osteopaticentrum` | 61 · 8.2 MB | — |
+| 2026-09-30 | P1 (local build, not yet live) | Page weight, home / case page | 8.3 / 8.2 MB | 1.5 / 1.5 MB |
+| 2026-09-30 | P1 (local build, not yet live) | Lab LCP, home / case page | 19.6 / 10.5 s | 10.1 / 7.5 s |
+| 2026-09-30 | P1 (local build, not yet live) | Perf score, home / case page | 46 / 61 | 39 / 62 — JS-bound, and the local run shared the machine with the server; re-measure on khyte.se after deploy |
 | — | Baseline | GSC clicks / impressions (3 mo) | pending export | — |
 
 ---
