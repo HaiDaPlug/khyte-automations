@@ -28,7 +28,7 @@ build. They reach khyte.se on the next deploy.
 | Crawling | `robots.ts` allows everything except `/internal/`. AI crawlers (incl. `OAI-SearchBot`) are allowed. |
 | Sitemap | 12 URLs (7 static + 5 cases), generated from `src/data/cases.ts`. **(main)** No `lastmod` until real edit dates are tracked. |
 | Google Search Console | **Verified** Domain property (DNS TXT), under the second Google account in Chrome (`/u/1/`); the default account has an unverified duplicate. Baseline exported 2026-10-02 (see Evidence). **No sitemap submitted.** 11 pages indexed; the 5 not indexed are old `www.`/font URLs and the `www.` home (canonical → `khyte.se`). No Core Web Vitals field data. |
-| Google Business Profile | Exists. Not yet audited. |
+| Google Business Profile | Verified, 5.0★ (1 review), ~230 customer interactions. **Primary category changed 2026-10-02** from Automationsföretag to Programvaruföretag; secondary Datorkonsult and Automationsföretag (pending Google review). "IT-konsult" does not exist as a Swedish category; Datorkonsult is Google's "Computer consultant". Description is still the old one (new draft awaiting owner approval). |
 | Bing Webmaster Tools | Not set up. |
 | Analytics | GA4 `G-F91HE9L5LS` (lazy) + Vercel Analytics. |
 | Structured data | **(main)** Organization (with `logo.png`), ProfessionalService with full street address, postcode and coordinates for Västerbrogatan 8A, WebSite, Person (Hai). Values read from `src/data/facts.ts`. FAQPage on `/` and `/tjanster`, matching the visible accordions. |
@@ -66,7 +66,8 @@ build. They reach khyte.se on the next deploy.
 
 **P0 — truth, security, measurement**
 - [x] Export GSC baseline (2026-10-02, all data Apr–Sep 2026; findings under Evidence). Re-export 4–6 weeks after the P1 deploy to compare.
-- [ ] Submit `https://khyte.se/sitemap.xml` in GSC (none has ever been submitted). Ask BNI Sjuhärad to update their link to `https://khyte.se`.
+- [x] Submitted `https://khyte.se/sitemap.xml` in GSC (2026-10-02). It showed "Couldn't fetch" right after submitting although the live file returns 200 `application/xml`; recheck in a few days.
+- [ ] Ask BNI Sjuhärad to update their link to `https://khyte.se`.
 - [x] All GitHub repos private (owner's call, 2026-10-02 — 20 repos, incl. this site). Anonymous access returns 404. Vercel deploys through its GitHub app, so deploys are unaffected; confirm on the next push that `vercel[bot]` still creates the deployment. Old GitHub results drop out of Google as it recrawls.
 - [x] `bni-references` member-name check — moot now that the repo is private.
 
@@ -96,7 +97,7 @@ build. They reach khyte.se on the next deploy.
 - [ ] Descriptive H1 via a small eyebrow above the display heading in `PageHeader` (design sign-off; frontend-design skill first).
 
 **P3 — entity and local**
-- [ ] Audit and improve the existing Google Business Profile (categories, services, photos, posts, reviews).
+- [ ] Audit and improve the existing Google Business Profile (categories, services, photos, posts, reviews). Categories done 2026-10-02 (Programvaruföretag primary; Datorkonsult + Automationsföretag secondary). Next: new description (draft ready), services list, photos, posts, review requests.
 - [ ] Hitta and Allabolag under the Khyte name; same NAP everywhere.
 - [ ] Ask E-handelsstaden to change their link to `khyte.se`.
 - [ ] Ask clients (JaTack, Osteopaticentrum, Observa, Etcetera) for a link or mention.
