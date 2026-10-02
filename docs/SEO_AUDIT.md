@@ -65,8 +65,8 @@ build. They reach khyte.se on the next deploy.
 
 **P0 — truth, security, measurement**
 - [ ] Export GSC (last 3–6 months): query × page × clicks × impressions × CTR × position. The UI exports queries and pages separately; for combinations use the "Search Analytics for Sheets" add-on. Look for: position 8–30 with impressions, low CTR, several URLs on one query, unexpected automation/process/system/problem language, Borås terms. Expect thin, brand-heavy data.
-- [ ] Make client-system GitHub repos private (`kalender-system` contains a real client contact and internal notes). Preserve collaborator access.
-- [ ] Owner to check whether `bni-references` contains real member names (not verified).
+- [x] All GitHub repos private (owner's call, 2026-10-02 — 20 repos, incl. this site). Anonymous access returns 404. Vercel deploys through its GitHub app, so deploys are unaffected; confirm on the next push that `vercel[bot]` still creates the deployment. Old GitHub results drop out of Google as it recrawls.
+- [x] `bni-references` member-name check — moot now that the repo is private.
 
 **P1 — invisible pass (no visual/layout change)** — done 2026-09-30 (`d805f26`…`06cd8e4`), not yet deployed
 - [x] `src/data/facts.ts`; pre-footer, Calendly drawer, `/kontakt` metadata, 404 and home FAQ read from it
