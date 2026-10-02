@@ -27,7 +27,7 @@ build. They reach khyte.se on the next deploy.
 | Domains | `khyte.se` is canonical. `www.khyte.se`, `khyteteam.com`, `khyteautomations.com` 308 → `khyte.se` with path kept (≤2 hops). Unknown URLs return a real 404. |
 | Crawling | `robots.ts` allows everything except `/internal/`. AI crawlers (incl. `OAI-SearchBot`) are allowed. |
 | Sitemap | 12 URLs (7 static + 5 cases), generated from `src/data/cases.ts`. **(main)** No `lastmod` until real edit dates are tracked. |
-| Google Search Console | **Verified** (DNS TXT record on `khyte.se`). Data not yet reviewed. |
+| Google Search Console | **Verified** Domain property (DNS TXT), under the second Google account in Chrome (`/u/1/`); the default account has an unverified duplicate. Baseline exported 2026-10-02 (see Evidence). **No sitemap submitted.** 11 pages indexed; the 5 not indexed are old `www.`/font URLs and the `www.` home (canonical → `khyte.se`). No Core Web Vitals field data. |
 | Google Business Profile | Exists. Not yet audited. |
 | Bing Webmaster Tools | Not set up. |
 | Analytics | GA4 `G-F91HE9L5LS` (lazy) + Vercel Analytics. |
@@ -65,7 +65,8 @@ build. They reach khyte.se on the next deploy.
 ## 3. Open items
 
 **P0 — truth, security, measurement**
-- [ ] Export GSC (last 3–6 months): query × page × clicks × impressions × CTR × position. The UI exports queries and pages separately; for combinations use the "Search Analytics for Sheets" add-on. Look for: position 8–30 with impressions, low CTR, several URLs on one query, unexpected automation/process/system/problem language, Borås terms. Expect thin, brand-heavy data.
+- [x] Export GSC baseline (2026-10-02, all data Apr–Sep 2026; findings under Evidence). Re-export 4–6 weeks after the P1 deploy to compare.
+- [ ] Submit `https://khyte.se/sitemap.xml` in GSC (none has ever been submitted). Ask BNI Sjuhärad to update their link to `https://khyte.se`.
 - [x] All GitHub repos private (owner's call, 2026-10-02 — 20 repos, incl. this site). Anonymous access returns 404. Vercel deploys through its GitHub app, so deploys are unaffected; confirm on the next push that `vercel[bot]` still creates the deployment. Old GitHub results drop out of Google as it recrawls.
 - [x] `bni-references` member-name check — moot now that the repo is private.
 
@@ -131,6 +132,12 @@ build. They reach khyte.se on the next deploy.
 | 2026-09-30 | "n8n konsult" SERP is thin. n8n Expert Partners is a closed pilot (n8n as main revenue, 3+ active n8n customers); waitlist open. | n8n.io/expert-partners |
 | 2026-09-30 | Fortnox SERPs are dominated by fortnox.se and established integrators; the consultant list (fortnox.se/kopplingar/konsulter) has ~15 firms. | External SERP check |
 | 2026-09-30 | Lighthouse mobile (lab): home 46 / LCP 19.6 s / 8.3 MB; case page 61 / LCP 10.5 s. LCP element is the logo, delayed by render. | Local Lighthouse 12 run |
+| 2026-10-02 | GSC: brand drives the clicks ("khyte automations" 32 of 54, avg pos 3.7). 60% of impressions sit in queries GSC hides as too rare. | GSC export |
+| 2026-10-02 | GSC: local intent already shows up — "automationsföretag borås" pos 1.8 (23 impr), "automation konsult borås" pos 15.3, "ai konsult borås" pos 67 — plus many one-off misspelt "automation" queries at pos 4–13, typical of Maps/local-pack searches (Google Business Profile). | GSC export |
+| 2026-10-02 | GSC: some queries read Khyte as *industrial* automation ("automationsföretag", "manufacturer", "hersteller", "produktion"). The name plus "automation" invites it; GBP category/description and page copy should say office/system automation. | GSC export |
+| 2026-10-02 | GSC: case pages surface for client-name searches ("komfort bilvård" pos 11, "etcetera offset" pos 23.5) and brand sitelinks, not yet for workflow queries ("kunduppföljning" pos 60). | GSC export |
+| 2026-10-02 | GSC: `http://khyte.se/` (170 impr) and `www.khyte.se/om-oss` (67 impr) still appeared in the last 28 days, but Google already picks `https://khyte.se/` as canonical (recrawled 2026-10-02). Consolidating; no action. | URL Inspection |
+| 2026-10-02 | Backlink found: BNI Sjuhärad member page links to `http://khyte.se`. | URL Inspection, referring pages |
 | 2026-09-30 | Link prefetch adds `<link rel="preload" as="image">` for linked pages' images (e.g. `/villkor` preloads home case photos; case pages preload all five `/case` photos). | Headless Chrome rendered DOM |
 
 ---
@@ -158,7 +165,9 @@ Hypotheses, each with how we'll know.
 | 2026-09-30 | P1 (local build, not yet live) | Page weight, home / case page | 8.3 / 8.2 MB | 1.5 / 1.5 MB |
 | 2026-09-30 | P1 (local build, not yet live) | Lab LCP, home / case page | 19.6 / 10.5 s | 10.1 / 7.5 s |
 | 2026-09-30 | P1 (local build, not yet live) | Perf score, home / case page | 46 / 61 | 39 / 62 — JS-bound, and the local run shared the machine with the server; re-measure on khyte.se after deploy |
-| — | Baseline | GSC clicks / impressions (3 mo) | pending export | — |
+| 2026-10-02 | Baseline (before P1 deploy) | GSC, all data (Apr–Sep 2026) | 54 clicks · 558 impr · CTR 9.7% · pos 4.5 | — |
+| 2026-10-02 | Baseline (before P1 deploy) | GSC, September 2026 | 41 clicks · 250 impr | — |
+| 2026-10-02 | Baseline (before P1 deploy) | Case pages (impr, all data): lead-engine / etcetera / komfort / osteopati | 33 / 30 / 30 / 19, clicks 0 / 0 / 1 / 0 | — |
 
 ---
 ---
