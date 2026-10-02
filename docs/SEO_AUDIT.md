@@ -72,7 +72,7 @@ build. They reach khyte.se on the next deploy.
 - [x] All GitHub repos private (owner's call, 2026-10-02 — 20 repos, incl. this site). Anonymous access returns 404. Vercel deploys through its GitHub app, so deploys are unaffected; confirm on the next push that `vercel[bot]` still creates the deployment. Old GitHub results drop out of Google as it recrawls.
 - [x] `bni-references` member-name check — moot now that the repo is private.
 
-**P1 — invisible pass (no visual/layout change)** — done 2026-09-30 (`d805f26`…`06cd8e4`), not yet deployed
+**P1 — invisible pass (no visual/layout change)** — done 2026-09-30 (`d805f26`…`06cd8e4`), **live 2026-10-02** (deployed with `97567a2`)
 - [x] `src/data/facts.ts`; pre-footer, Calendly drawer, `/kontakt` metadata, 404 and home FAQ read from it
 - [x] Complete the LocalBusiness address (street, postcode, coordinates) and add an Organization logo
 - [x] Home H1: render the rotating word once
@@ -84,7 +84,8 @@ build. They reach khyte.se on the next deploy.
 - [x] Sitemap: stop stamping every URL with the build date
 - [x] Rename `lead-lista` → `foretagsresearch` with a permanent redirect
 - [ ] `/tjanster` still hardcodes 30 min, 15 000 kr and the delivery ranges — switch to `facts.ts` (services rework)
-- [ ] After deploy: re-crawl live, check a case link in LinkedIn Post Inspector, re-run Lighthouse on khyte.se
+- [x] After deploy (2026-10-02): live crawl clean (13 URLs, one H1 each, per-page titles and previews, 308s for `lead-lista` and `custom-build`); LinkedIn Post Inspector shows the case title, photo and description; Lighthouse re-run (see Measured outcomes); GSC indexing requested for `/`, `/tjanster/egna-system`, `/case/foretagsresearch` and four case pages.
+- [ ] Deploys: after the repos went private, Vercel (Hobby) blocks commits whose author email is not linked to the GitHub account. This repo's local override (`hai@khyteteam.com`) was removed 2026-10-02, so commits use the linked global email. `bni-references` and `hovaliden` still commit as `hai@khyteteam.com` and will be blocked on their next push — remove the override there too, or add `hai@khyteteam.com` to the GitHub account.
 
 **Performance (next lever, not invisible)**
 - [ ] LCP is held by render delay (~9.7 s lab), not bytes: the logo/hero wait on JavaScript. Look at what the hero waits for (page transition, animation libraries, particles) before hydration. Design-sensitive — plan first.
@@ -168,6 +169,8 @@ Hypotheses, each with how we'll know.
 | 2026-09-30 | P1 (local build, not yet live) | Page weight, home / case page | 8.3 / 8.2 MB | 1.5 / 1.5 MB |
 | 2026-09-30 | P1 (local build, not yet live) | Lab LCP, home / case page | 19.6 / 10.5 s | 10.1 / 7.5 s |
 | 2026-09-30 | P1 (local build, not yet live) | Perf score, home / case page | 46 / 61 | 39 / 62 — JS-bound, and the local run shared the machine with the server; re-measure on khyte.se after deploy |
+| 2026-10-02 | P1 live on khyte.se (Lighthouse mobile, same method as baseline) | Home: score · weight · LCP · TBT | 46 · 8.3 MB · 19.6 s · 600 ms | **59 · 1.4 MB · 9.5 s · 300 ms** |
+| 2026-10-02 | P1 live on khyte.se (Lighthouse mobile, same method as baseline) | `/case/osteopaticentrum`: score · weight · LCP · TBT | 61 · 8.2 MB · 10.5 s · 310 ms | **68 · 1.4 MB · 8.1 s · 180 ms** |
 | 2026-10-02 | Baseline (before P1 deploy) | GSC, all data (Apr–Sep 2026) | 54 clicks · 558 impr · CTR 9.7% · pos 4.5 | — |
 | 2026-10-02 | Baseline (before P1 deploy) | GSC, September 2026 | 41 clicks · 250 impr | — |
 | 2026-10-02 | Baseline (before P1 deploy) | Case pages (impr, all data): lead-engine / etcetera / komfort / osteopati | 33 / 30 / 30 / 19, clicks 0 / 0 / 1 / 0 | — |
