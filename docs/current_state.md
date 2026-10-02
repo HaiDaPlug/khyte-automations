@@ -357,22 +357,30 @@ Skills live in `~/.claude/skills/` and are invoked via `/skill-name` or triggere
 - **Role**: the services pillar and the canonical page for process, pricing logic and timelines. Service
   subpages live under `/tjanster/<slug>` (see Service Pages below).
   The homepage owns the search term "automatisering för företag" — `/tjanster` targets "tjänster och priser".
-- **Sections**: Hero (H1 "TJÄNSTER / OCH PRISER.") → Vad vi automatiserar (+ one card per service page) →
-  Så jobbar vi (Introsamtal → Kartläggning → Implementation → Överlämning) → Vad det kostar (price + vad
-  ingår + support) → Resultat (espresso band) → **Det här har vi byggt** → FAQ
-- **Stable anchors** — link targets for service and case pages, don't rename: `#vad-vi-automatiserar`,
-  `#sa-jobbar-vi`, `#vad-det-kostar`, `#resultat`, `#case`, `#vanliga-fragor`. Each carries `scroll-mt-28`
+- **A short hub, on purpose** — what we solve, how we work, what it costs, proof. Service depth lives on the
+  subpages; don't grow sections here into service descriptions.
+- **Sections**: Hero (H1 "TJÄNSTER / OCH PRISER." + intro CTA) → **Vad vi löser** (5 tiles) → Så jobbar vi
+  (4-step strip: Introsamtal → Kartläggning → Implementering → Överlämning) → **Vad det kostar** (espresso
+  band: från-pris, delivery, "Er kod" + one "Ingår alltid" line) → **Det här har vi byggt** → FAQ (6)
+- **Vad vi löser** (`components/sections/ServiceAreas.tsx`, data `serviceAreas` in `services.ts`): Excel-
+  sammanställningar, Manuella steg, Verktyg som inte pratar med varandra, Allt på ett ställe, and a wide
+  **Rådgivning** tile with an intro CTA. Each tile links to its service page if one exists, else to a case,
+  else nowhere (`areaLink()`, which fails the build on unknown slugs). Server component; only the drawings
+  are client-side.
+- **Tile drawings** (`components/AreaIllustration.tsx`): inline SVG, looping before → after on a shared
+  7.5s CSS cycle defined in `globals.css` (`.area-ill`, keyframes `area-gather/-appear/-draw/-dim`).
+  Elements declare a role via `data-a` plus `--dx/--dy/--o` and a delay; tiles are phase-shifted 600ms
+  apart. An IntersectionObserver sets `data-on`, so loops pause off screen. Reduced motion shows the
+  finished state. No motion/react — zero animation JS.
+- **Stable anchors** — link targets for service and case pages, don't rename: `#vad-vi-loser`,
+  `#sa-jobbar-vi`, `#vad-det-kostar`, `#case`, `#vanliga-fragor`. Each carries `scroll-mt-28`
   so the heading clears the fixed nav pill (there is no global `scroll-padding-top`).
 - **Facts** (intro length, price, delivery) are read from `src/data/facts.ts`, never typed in.
 - **Det här har vi byggt**: `<CaseList items={cases} />` — one row per case (number, company, `problem`,
   arrow) linking to `/case/{slug}`. New cases appear with no edit to the page. Mobile: name + arrow on row 1,
   problem wraps beneath.
-- **Resultat band**: no generic hours-saved claim. The time figure is Observa's measured ≈65h per 1 000
-  företag, attributed by name — hours saved is only stated where it was measured.
-- Price card: `border border-[rgba(58,51,48,0.25)]` (heavier border signals hierarchy)
-- Step numbers: `text-[var(--color-muted)]`
-- FAQ: native `<details>`/`<summary>`, `focus-visible:ring-[rgba(58,51,48,0.30)]`
-- CTA hierarchy: Tier 1 = `CalendlyButton primary` (book now). Tier 2 = underline `<Link>` to /kontakt.
+- **No sitewide hours-saved claim** on this page; measured figures live on the case pages.
+- CTA hierarchy: Tier 1 = `CalendlyButton primary` (book now). Tier 2 = underline `<Link>`.
 - Anchor links use `text-[var(--color-muted)] hover:text-[var(--color-text)]`
 
 **Subpage Redirects**: `/tjanster/audit` → permanent 308 to `/tjanster`; `/tjanster/custom-build`
@@ -766,6 +774,7 @@ npm run dev                     # Dev mode (Turbopack bug exists)
 | Services (consolidated) | `src/app/tjanster/page.tsx` |
 | Service pages (data + template) | `src/data/services.ts`, `src/app/tjanster/[slug]/page.tsx` |
 | Case row list (/tjanster + service pages) | `src/components/CaseList.tsx` |
+| "Vad vi löser" tiles + looping drawings | `src/components/sections/ServiceAreas.tsx`, `src/components/AreaIllustration.tsx` (keyframes in `globals.css`) |
 | Navigation | `src/components/Nav.tsx` |
 | Global pre-footer CTA | `src/components/PreFooterCTA.tsx` |
 | Global footer | `src/components/Footer.tsx` |
@@ -845,6 +854,20 @@ Moved to `docs/INTENTIONS.md` — the living log for ideas, directions, and thin
 ---
 
 ## Changelog
+
+### v2.31 — /tjanster becomes a short hub; "Vad vi löser" with looping drawings
+- **Six domain cards → "Vad vi löser"**: five tiles (Excelsammanställningar, Manuella steg, Verktyg som inte
+  pratar med varandra, Allt på ett ställe, wide **Rådgivning** tile) that double as the menu into service
+  pages and cases. Each has a small SVG drawing looping before → after (CSS keyframes, paused off screen,
+  static "after" frame under reduced motion).
+- **Condensed**: process cards → a 4-step strip ("Implementation" → "Implementering", matching the home
+  page); price card, "vad ingår", support and the results band → one "Vad det kostar" band; FAQ 8 → 6
+  (adds "Vad påverkar priset?" and "Kan vi köpa bara rådgivning?"). Around 44 list items → 23.
+- **Rådgivning** added as a separate service (owner's call): tile + FAQ now, own page once defined.
+- Anchors: `#vad-vi-automatiserar` → `#vad-vi-loser`; `#resultat` removed (nothing linked to either).
+- Verified with `npm run build` + `next start` (port 3100 — a `next dev` server held :3000): `/tjanster` and
+  `/tjanster/egna-system` 200, 6 FAQ in schema, 25 element animations on a 7.5s infinite cycle, correct
+  before/after/rest states per role, paused off screen; no horizontal overflow at 1536px or 375px.
 
 ### v2.30 — First service page: Egna system
 - **New route `/tjanster/egna-system`**, generated from the new `src/data/services.ts` (same pattern as

@@ -59,6 +59,7 @@ build. They reach khyte.se on the next deploy.
 | 2026-09-30 | **Deprioritised:** FAQ schema as a growth tactic (Google deprecated FAQ rich results), self-serving review stars (ineligible), hreflang (single-language site), mass city/vertical pages, generic AI blog posts, strict title/description character limits, "one H1" as doctrine. |
 | 2026-09-30 | BreadcrumbList: cheap and valid, but Google only shows breadcrumbs on desktop since Jan 2025. Low priority. |
 | 2026-10-02 | **Service pages live under `/tjanster/<slug>`, driven by `src/data/services.ts`.** First page: **Egna system** (`/tjanster/egna-system`, owner's name), proven by Etcetera Offset, Kom-Fort and Osteopaticentrum. The service ↔ case relationship lives only in `services.ts` (`caseSlugs`); case pages link back with `servicesForCase(slug)`. Generic questions (price, ownership, timeline) stay on `/tjanster`; a service FAQ only answers what is specific to it. AI and workflow automation pages follow when evidence earns them; systemintegration waits for a delivered case. `/tjanster/custom-build` and `/services/custom-build` now 308 to Egna system. |
+| 2026-10-02 | **`/tjanster` is a short hub, not a service description** (owner's call): what we solve → how we work → what it costs → proof → FAQ. Depth lives on the subpages. "Vad vi löser" tiles (`serviceAreas` in `services.ts`) double as the menu: each links to its service page when one exists, otherwise to a case. **Rådgivning is a separate service** (advice on what to automate, tools and AI, with no build required); it has a tile and an FAQ entry now and gets its own page once its content and price model are defined. |
 
 ---
 
@@ -90,7 +91,7 @@ build. They reach khyte.se on the next deploy.
 - [ ] `icon.svg` and `apple-icon.svg` are 381 KB each, and iOS does not support SVG touch icons. Replace with small PNGs (32/180 px).
 
 **P2 — connect the flywheel** *(coordinate with the `/tjanster` rework)*
-- [ ] Case → service: contextual link from each case to the relevant part of `/tjanster`. Anchors now exist (2026-10-02): `/tjanster#vad-vi-automatiserar`, `#sa-jobbar-vi`, `#vad-det-kostar`, `#resultat`, `#case`, `#vanliga-fragor`; service pages have `#nar-behovs`, `#vad-vi-bygger`, `#case`, `#pris`, `#vanliga-fragor`. Where a case proves a service, link to the service page itself via `servicesForCase(c.slug)` from `src/data/services.ts`.
+- [ ] Case → service: contextual link from each case to the relevant part of `/tjanster`. Anchors now exist (2026-10-02): `/tjanster#vad-vi-loser`, `#sa-jobbar-vi`, `#vad-det-kostar`, `#case`, `#vanliga-fragor`; service pages have `#nar-behovs`, `#vad-vi-bygger`, `#case`, `#pris`, `#vanliga-fragor`. Where a case proves a service, link to the service page itself via `servicesForCase(c.slug)` from `src/data/services.ts`.
 - [x] Service → case (2026-10-02): `/tjanster` lists every case, `/tjanster/egna-system` lists its three — both through the shared `CaseList` component.
 - [ ] Systems line on each case (e.g. `System: n8n · Allabolag · Excel`) near the existing "Case 03 av 5" (keep the numbering).
 - [ ] Replace the five identical "Läs mer" anchors on `/case` with contextual labels where it fits.

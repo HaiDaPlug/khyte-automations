@@ -659,3 +659,64 @@ details[open] > div {
 .khyte-popup .leaflet-popup-tip {
   background: #FAFAF8;
 }
+
+/* ── Service area illustrations (/tjanster "Vad vi löser") ──────────────────
+   Looping before → after line drawings, one shared 7.5s cycle: a calm build,
+   a long hold on the "after" state, a soft fade back, a short rest. Each SVG
+   element picks a role with data-a and gets its offsets (--dx/--dy), its
+   mid-cycle opacity (--o) and its stagger (animation-delay) inline from
+   AreaIllustration.tsx. Loops only run while the tile is on screen
+   ([data-on="true"]); otherwise they sit paused on the "before" frame.
+   Only translate, scale and opacity animate (compositor-only). */
+.area-ill [data-a] {
+  animation-duration: 7.5s;
+  animation-iteration-count: infinite;
+  animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
+  animation-fill-mode: both;
+  animation-play-state: paused;
+  transform-box: fill-box;
+}
+.area-ill[data-on="true"] [data-a] {
+  animation-play-state: running;
+}
+/* gather: travels to (--dx, --dy), holds at opacity --o, fades, returns unseen */
+.area-ill [data-a="gather"] { animation-name: area-gather; }
+/* appear: the orange "after" layer */
+.area-ill [data-a="appear"] { animation-name: area-appear; opacity: 0; }
+/* draw: a connector growing from its left edge */
+.area-ill [data-a="draw"] { animation-name: area-draw; transform-origin: left center; scale: 0 1; }
+/* dim: "before" detail that gives way (dashed links, paths not taken) */
+.area-ill [data-a="dim"] { animation-name: area-dim; }
+
+@keyframes area-gather {
+  0%, 10%   { translate: 0 0; opacity: 1; }
+  32%, 74%  { translate: var(--dx, 0px) var(--dy, 0px); opacity: var(--o, 0); }
+  84%       { translate: var(--dx, 0px) var(--dy, 0px); opacity: 0; }
+  85%       { translate: 0 0; opacity: 0; }
+  97%, 100% { translate: 0 0; opacity: 1; }
+}
+@keyframes area-appear {
+  0%, 24%   { opacity: 0; }
+  36%, 76%  { opacity: 1; }
+  86%, 100% { opacity: 0; }
+}
+@keyframes area-draw {
+  0%, 14%   { scale: 0 1; opacity: 1; }
+  34%, 76%  { scale: 1 1; opacity: 1; }
+  86%       { scale: 1 1; opacity: 0; }
+  87%, 100% { scale: 0 1; opacity: 0; }
+}
+@keyframes area-dim {
+  0%, 14%   { opacity: 1; }
+  34%, 76%  { opacity: var(--o, 0); }
+  90%, 100% { opacity: 1; }
+}
+
+/* Reduced motion: no loop, show the finished "after" state. */
+@media (prefers-reduced-motion: reduce) {
+  .area-ill [data-a] { animation: none; }
+  .area-ill [data-a="gather"] { translate: var(--dx, 0px) var(--dy, 0px); opacity: var(--o, 0); }
+  .area-ill [data-a="appear"] { opacity: 1; }
+  .area-ill [data-a="draw"] { scale: 1 1; }
+  .area-ill [data-a="dim"] { opacity: var(--o, 0); }
+}

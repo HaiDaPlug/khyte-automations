@@ -107,6 +107,82 @@ export const services: ServiceData[] = [
   },
 ];
 
+/**
+ * The "Vad vi löser" tiles on /tjanster: what we solve, in the buyer's words,
+ * short on purpose. Each tile is also the way into the matching service page;
+ * the depth lives on the subpages, not here.
+ *
+ * A tile links to its service page when it exists, otherwise to a case that
+ * shows the work, otherwise nowhere. Setting `serviceSlug` once a new service
+ * page ships is all it takes to repoint a tile.
+ */
+export interface ServiceArea {
+  /** Also picks the tile's illustration in <AreaIllustration />. */
+  id: "excel" | "steg" | "verktyg" | "system" | "radgivning";
+  title: string;
+  body: string;
+  /** Service name shown above the title when the tile is a service in its own right. */
+  label?: string;
+  serviceSlug?: string;
+  caseSlug?: string;
+  /** Book the intro call instead of linking anywhere. */
+  bookIntro?: boolean;
+  /** Spans the full row. */
+  wide?: boolean;
+}
+
+export const serviceAreas: ServiceArea[] = [
+  {
+    id: "excel",
+    title: "Excelsammanställningar",
+    body: "Rapporter och listor som byggs för hand, rad för rad, varje vecka.",
+    caseSlug: "lead-engine",
+  },
+  {
+    id: "steg",
+    title: "Manuella steg",
+    body: "Kopiera, klistra in, kolla, skicka. Steg som någon gör om och om igen i CRM, mejl och Excel.",
+    caseSlug: "foretagsresearch",
+  },
+  {
+    id: "verktyg",
+    title: "Verktyg som inte pratar med varandra",
+    body: "Samma uppgifter skrivs in i bokningssystem, CRM och bokföring, och något faller mellan stolarna.",
+  },
+  {
+    id: "system",
+    title: "Allt på ett ställe",
+    body: "När bokningar, kunder och personal lever i telefoner, mejl och minnet.",
+    serviceSlug: "egna-system",
+  },
+  {
+    id: "radgivning",
+    label: "Rådgivning",
+    title: "Vet inte var ni ska börja?",
+    body: "Ni vet att något borde gå enklare, men inte vad. Vi ger råd om vad som lönar sig att automatisera, vilka verktyg som passar och var AI gör nytta, utan krav på att vi bygger något.",
+    bookIntro: true,
+    wide: true,
+  },
+];
+
+/**
+ * Where a tile leads. Throws on an unknown slug, like casesForService(), so a
+ * renamed page or case fails the build instead of leaving a dead tile.
+ */
+export function areaLink(area: ServiceArea): { href: string; label: string } | null {
+  if (area.serviceSlug) {
+    const s = getServiceBySlug(area.serviceSlug);
+    if (!s) throw new Error(`services.ts: area "${area.id}" points at unknown service "${area.serviceSlug}"`);
+    return { href: `/tjanster/${s.slug}`, label: `Läs om ${s.name.toLowerCase()}` };
+  }
+  if (area.caseSlug) {
+    const c = cases.find((x) => x.slug === area.caseSlug);
+    if (!c) throw new Error(`services.ts: area "${area.id}" points at unknown case "${area.caseSlug}"`);
+    return { href: `/case/${c.slug}`, label: "Se ett exempel" };
+  }
+  return null;
+}
+
 export function getServiceBySlug(slug: string): ServiceData | undefined {
   return services.find((s) => s.slug === slug);
 }
