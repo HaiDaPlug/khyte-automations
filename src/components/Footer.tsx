@@ -25,7 +25,7 @@ const Footer = () => {
               <p className="text-[14px] leading-[1.45] text-white/50 mb-6">Automatisering för svenska företag.</p>
 
               <div className="mb-[18px] flex flex-col gap-2">
-                <p className="text-label !text-white/95 tracking-[0.12em]">Address</p>
+                <p className="text-label !text-white/95 tracking-[0.12em]">Adress</p>
                 <p className="text-[14px] leading-[1.45] text-white/55">
                   Västerbrogatan 8A, 503 30, Borås
                 </p>

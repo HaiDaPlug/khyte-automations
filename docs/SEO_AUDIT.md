@@ -98,7 +98,7 @@ build. They reach khyte.se on the next deploy.
 
 **P3 — entity and local**
 - [ ] Audit and improve the existing Google Business Profile. Done 2026-10-02: categories (Programvaruföretag primary; Datorkonsult + Automationsföretag secondary), description, services list. Remaining: photos, posts. **Reviews are owned by Hai** (ask the case clients; the wording customers use counts).
-- [ ] Footer label "Address" is English on a Swedish site; Google currently uses footer text as the home snippet ("Automatisering för svenska företag. Address. Västerbrogatan 8A…"). Change to "Adress" (footer is a protected component; a text-only change).
+- [x] (Fixed 2026-10-02) Footer label "Address" was English on a Swedish site; Google currently uses footer text as the home snippet ("Automatisering för svenska företag. Address. Västerbrogatan 8A…"). Change to "Adress" (footer is a protected component; a text-only change).
 - [ ] Hitta and Allabolag under the Khyte name; same NAP everywhere.
 - [ ] Ask E-handelsstaden to change their link to `khyte.se`.
 - [ ] Ask clients (JaTack, Osteopaticentrum, Observa, Etcetera) for a link or mention.
