@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import CalendlyButton from "@/components/CalendlyButton";
+import CaseList from "@/components/CaseList";
 import FAQAccordion from "@/components/FAQAccordion";
 import EspressoBand from "@/components/EspressoBand";
 import PageHeader from "@/components/PageHeader";
@@ -8,10 +9,12 @@ import SectionHeading from "@/components/SectionHeading";
 import JsonLd from "@/components/JsonLd";
 import { faqPageSchema } from "@/data/faq";
 import { cases } from "@/data/cases";
+import { facts } from "@/data/facts";
+import { services } from "@/data/services";
 
 export const metadata: Metadata = {
   title: "Tjänster och priser – automation, AI och egna system",
-  description: "Automatiserade flöden, AI och skräddarsydda system för svenska företag. Fast pris från 15 000 kr efter kartläggning. Ni äger allt vi bygger.",
+  description: `Automatiserade flöden, AI och skräddarsydda system för svenska företag. Fast pris från ${facts.priceFrom} efter kartläggning. Ni äger allt vi bygger.`,
   alternates: {
     canonical: "/tjanster",
   },
@@ -24,7 +27,7 @@ const faqs = [
   },
   {
     q: "Hur lång tid tar en implementation?",
-    a: "Det beror på komplexiteten. Mindre automationer är ofta klara på 1–2 veckor, större system tar 4–6 veckor. Ni får en tidsplan i kartläggningen, så att ni vet exakt vad som gäller."
+    a: `Det beror på komplexiteten. Mindre automationer är ofta klara på ${facts.delivery.small}, större system tar ${facts.delivery.large}. Ni får en tidsplan i kartläggningen, så att ni vet exakt vad som gäller.`
   },
   {
     q: "Vad händer om det inte är värt att automatisera?",
@@ -44,7 +47,7 @@ const faqs = [
   },
   {
     q: "Hur mycket kostar det typiskt?",
-    a: "Vi jobbar med fast pris från 15 000 kr, beroende på omfattning. Exakt pris bestäms i kartläggningen, så ni vet vad det kostar innan ni bestämmer er."
+    a: `Vi jobbar med fast pris från ${facts.priceFrom}, beroende på omfattning. Exakt pris bestäms i kartläggningen, så ni vet vad det kostar innan ni bestämmer er.`
   },
   {
     q: "Vem äger automationen efteråt?",
@@ -65,7 +68,7 @@ const steps = [
   {
     step: "01",
     title: "Introsamtal (gratis)",
-    desc: "Ett intro på 30 minuter där vi går igenom era flöden på hög nivå. Inga slides och ingen säljpitch. Vi avgör tillsammans om vi kan hjälpa er.",
+    desc: `Ett intro på ${facts.introCall.minutes} minuter där vi går igenom era flöden på hög nivå. Inga slides och ingen säljpitch. Vi avgör tillsammans om vi kan hjälpa er.`,
   },
   {
     step: "02",
@@ -124,9 +127,9 @@ const results = [
     body: "Automation följer regler konsekvent, men resultaten beror på datakvalitet.",
   },
   {
-    num: "1–2",
-    unit: "veckor",
-    body: "Från kartläggning till drift för mindre automationer. Större system tar 4–6 veckor.",
+    num: facts.delivery.small,
+    unit: null,
+    body: `Från kartläggning till drift för mindre automationer. Större system tar ${facts.delivery.large}.`,
   },
 ];
 
@@ -146,8 +149,9 @@ export default function ServicesPage() {
         </div>
       </section>
 
-      {/* 2. VAD VI AUTOMATISERAR */}
-      <section className="py-16 md:py-20">
+      {/* 2. VAD VI AUTOMATISERAR — anchors on every section are stable link
+          targets for service and case pages; don't rename them. */}
+      <section id="vad-vi-automatiserar" className="scroll-mt-28 py-16 md:py-20">
         <div className="max-w-[1100px] mx-auto px-6">
           <div className="mb-10">
             <SectionHeading
@@ -170,11 +174,35 @@ export default function ServicesPage() {
               </div>
             ))}
           </div>
+
+          {/* Service pages — one card per entry in services.ts */}
+          {services.map((s) => (
+            <Link
+              key={s.slug}
+              href={`/tjanster/${s.slug}`}
+              className="group mt-3 flex flex-col md:flex-row md:items-end md:justify-between gap-6 rounded-2xl bg-transparent p-8 lg:p-10 border border-[rgba(58,51,48,0.28)] transition-colors duration-300 hover:border-[rgba(58,51,48,0.52)]"
+            >
+              <div>
+                <h3 className="text-lg md:text-xl font-semibold tracking-[-0.02em] text-[var(--color-text)] leading-[1.2] mb-3 transition-colors duration-300 group-hover:text-[#D4622B]">
+                  {s.name}
+                </h3>
+                <p className="text-[15px] font-medium text-[var(--color-text-body)] leading-relaxed max-w-[60ch]">
+                  {s.summary}
+                </p>
+              </div>
+              <span className="inline-flex items-center gap-2 shrink-0 font-display text-sm font-bold tracking-[0.18em] uppercase text-[var(--color-text)] transition-colors duration-300 group-hover:text-[#D4622B]">
+                LÄS MER
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </span>
+            </Link>
+          ))}
         </div>
       </section>
 
       {/* 3. SÅ JOBBAR VI */}
-      <section id="sa-jobbar-vi" className="border-t border-[var(--color-border)] py-16 md:py-20">
+      <section id="sa-jobbar-vi" className="scroll-mt-28 border-t border-[var(--color-border)] py-16 md:py-20">
         <div className="max-w-[1100px] mx-auto px-6">
           <div className="mb-10">
             <SectionHeading
@@ -206,7 +234,7 @@ export default function ServicesPage() {
       </section>
 
       {/* 4. VAD DET KOSTAR — pris, vad ingår, support */}
-      <section className="border-t border-[var(--color-border)] py-16 md:py-20">
+      <section id="vad-det-kostar" className="scroll-mt-28 border-t border-[var(--color-border)] py-16 md:py-20">
         <div className="max-w-[1100px] mx-auto px-6">
           <div className="mb-10">
             <SectionHeading
@@ -220,7 +248,7 @@ export default function ServicesPage() {
             {/* Price */}
             <div className="rounded-2xl bg-transparent p-8 lg:p-10 border border-[rgba(58,51,48,0.28)]">
               <div className="font-display text-[2rem] md:text-[2.5rem] leading-none tracking-[-0.01em] text-[var(--color-text)]">
-                15 000+ kr
+                Från {facts.priceFrom}
               </div>
               <p className="text-[15px] font-medium text-[var(--color-text-body)] mt-3">
                 Fast pris efter kartläggning
@@ -297,7 +325,7 @@ export default function ServicesPage() {
 
       {/* 5. RESULTAT — dark band */}
       <EspressoBand>
-        <div className="relative z-10 max-w-[1100px] mx-auto px-6 py-20 md:py-28">
+        <div id="resultat" className="scroll-mt-28 relative z-10 max-w-[1100px] mx-auto px-6 py-20 md:py-28">
           <div className="mb-12 md:mb-16">
             <SectionHeading
               tone="dark"
@@ -327,7 +355,7 @@ export default function ServicesPage() {
 
       {/* 6. CASE — bevis efter löftena ovan. Läser från cases.ts, så ett nytt
           case dyker upp här utan att sidan behöver röras. */}
-      <section className="py-16 md:py-20">
+      <section id="case" className="scroll-mt-28 py-16 md:py-20">
         <div className="max-w-[1100px] mx-auto px-6">
           <div className="mb-10">
             <SectionHeading
@@ -337,32 +365,7 @@ export default function ServicesPage() {
             />
           </div>
 
-          <ul className="border-t border-[var(--color-border)]">
-            {cases.map((c) => (
-              <li key={c.slug} className="border-b border-[var(--color-border)]">
-                <Link
-                  href={`/case/${c.slug}`}
-                  className="group grid grid-cols-[2.75rem_1fr_auto] md:grid-cols-[3.5rem_13rem_1fr_auto] lg:grid-cols-[4rem_16rem_1fr_auto] items-baseline gap-x-4 md:gap-x-8 gap-y-1 py-6 md:py-7"
-                >
-                  <span className="col-start-1 row-start-1 font-display text-[1.75rem] leading-none tracking-wide text-[var(--color-accent)]">
-                    {c.index}
-                  </span>
-                  <span className="col-start-2 row-start-1 text-lg md:text-xl font-semibold tracking-[-0.02em] leading-[1.2] text-[var(--color-text)] transition-colors duration-300 group-hover:text-[#D4622B]">
-                    {c.company}
-                  </span>
-                  <span className="col-start-2 row-start-2 md:col-start-3 md:row-start-1 text-base font-medium leading-relaxed text-[var(--color-text-body)]">
-                    {c.problem}
-                  </span>
-                  <svg
-                    className="col-start-3 row-start-1 md:col-start-4 self-center text-[var(--color-text)] transition-[color,transform] duration-300 group-hover:translate-x-1 group-hover:text-[#D4622B]"
-                    width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"
-                  >
-                    <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                </Link>
-              </li>
-            ))}
-          </ul>
+          <CaseList items={cases} />
 
           <Link
             href="/case"
@@ -377,7 +380,7 @@ export default function ServicesPage() {
       </section>
 
       {/* 7. FAQ */}
-      <section className="border-t border-[var(--color-border)] py-16 md:py-20">
+      <section id="vanliga-fragor" className="scroll-mt-28 border-t border-[var(--color-border)] py-16 md:py-20">
         <div className="max-w-[1100px] mx-auto px-6">
           <div className="mb-10">
             <SectionHeading line1="VANLIGA" line2="FRÅGOR." />

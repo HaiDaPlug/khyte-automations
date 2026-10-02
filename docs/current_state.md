@@ -355,14 +355,18 @@ Skills live in `~/.claude/skills/` and are invoked via `/skill-name` or triggere
 ### Services Page (Consolidated)
 **Route**: `/tjanster` (accessible via "Tjänster" link in nav; 301 redirect from `/services`)
 - **Role**: the services pillar and the canonical page for process, pricing logic and timelines. Service
-  subpages (`/tjanster/<slug>`) are planned; see the Decisions table in `docs/SEO_AUDIT.md`.
+  subpages live under `/tjanster/<slug>` (see Service Pages below).
   The homepage owns the search term "automatisering för företag" — `/tjanster` targets "tjänster och priser".
-- **Sections**: Hero (H1 "TJÄNSTER / OCH PRISER.") → Vad vi automatiserar → Så jobbar vi (Introsamtal →
-  Kartläggning → Implementation → Överlämning) → Vad det kostar (price + vad ingår + support) → Resultat
-  (espresso band) → **Det här har vi byggt** → FAQ
-- **Det här har vi byggt**: one row per case, rendered from `src/data/cases.ts` (index, company, `problem`,
-  arrow) and linking to `/case/{slug}` — the only contextual links from services to proof. New cases appear
-  here with no edit to the page. Mobile: name + arrow on row 1, problem wraps beneath.
+- **Sections**: Hero (H1 "TJÄNSTER / OCH PRISER.") → Vad vi automatiserar (+ one card per service page) →
+  Så jobbar vi (Introsamtal → Kartläggning → Implementation → Överlämning) → Vad det kostar (price + vad
+  ingår + support) → Resultat (espresso band) → **Det här har vi byggt** → FAQ
+- **Stable anchors** — link targets for service and case pages, don't rename: `#vad-vi-automatiserar`,
+  `#sa-jobbar-vi`, `#vad-det-kostar`, `#resultat`, `#case`, `#vanliga-fragor`. Each carries `scroll-mt-28`
+  so the heading clears the fixed nav pill (there is no global `scroll-padding-top`).
+- **Facts** (intro length, price, delivery) are read from `src/data/facts.ts`, never typed in.
+- **Det här har vi byggt**: `<CaseList items={cases} />` — one row per case (number, company, `problem`,
+  arrow) linking to `/case/{slug}`. New cases appear with no edit to the page. Mobile: name + arrow on row 1,
+  problem wraps beneath.
 - **Resultat band**: no generic hours-saved claim. The time figure is Observa's measured ≈65h per 1 000
   företag, attributed by name — hours saved is only stated where it was measured.
 - Price card: `border border-[rgba(58,51,48,0.25)]` (heavier border signals hierarchy)
@@ -371,9 +375,30 @@ Skills live in `~/.claude/skills/` and are invoked via `/skill-name` or triggere
 - CTA hierarchy: Tier 1 = `CalendlyButton primary` (book now). Tier 2 = underline `<Link>` to /kontakt.
 - Anchor links use `text-[var(--color-muted)] hover:text-[var(--color-text)]`
 
-**Subpage Redirects**: `/tjanster/audit` and `/tjanster/custom-build` → permanent 308 to
-`/tjanster`, declared in `next.config.ts`. The `page.tsx` stubs that used to do this were
-deleted in v2.25 — they emitted 307 temporary, which tells Google the old URL may return.
+**Subpage Redirects**: `/tjanster/audit` → permanent 308 to `/tjanster`; `/tjanster/custom-build`
+(and `/services/custom-build`) → permanent 308 to `/tjanster/egna-system`, its real successor. All
+declared in `next.config.ts`. The `page.tsx` stubs that used to do this were deleted in v2.25 — they
+emitted 307 temporary, which tells Google the old URL may return.
+
+### Service Pages (`/tjanster/[slug]`)
+- **Data**: `src/data/services.ts` drives the route (`generateStaticParams`, `dynamicParams = false`, so
+  unknown slugs 404), the sitemap, the service cards on `/tjanster` and the structured data. Adding a service
+  is a data entry, not new code.
+- **Live**: `/tjanster/egna-system` ("Egna system") — proven by Etcetera Offset, Kom-Fort, Osteopaticentrum.
+- **Service ↔ case relationship** lives only in `services.ts` (`caseSlugs`). `casesForService()` throws on an
+  unknown slug, so renaming a case fails the build instead of silently dropping proof. `servicesForCase(slug)`
+  is the hook for linking a case page back to its service.
+- **Sections**: breadcrumb (Tjänster / name) → `PageHeader` + CalendlyButton ("Boka ett intro (30 min)") +
+  "Se vad vi har byggt" → När behövs (problem cards) → Vad vi bygger (numbered cards) → Det här har vi byggt
+  (`CaseList`, numbered 01–03 by position) → Pris och upplägg (espresso band, summary from `facts.ts`, links up
+  to `/tjanster#sa-jobbar-vi` and `#vad-det-kostar`) → FAQ.
+- **Anchors**: `#nar-behovs`, `#vad-vi-bygger`, `#case`, `#pris`, `#vanliga-fragor`.
+- **FAQ rule**: a service FAQ only answers questions specific to that service. Price, ownership and timeline
+  questions live on `/tjanster` — never duplicate them here.
+- **Schema**: Service (provider → `#organization`, `minPrice` parsed from `facts.priceFrom`), BreadcrumbList
+  (Hem → Tjänster → service) and FAQPage. No page-level `openGraph`, so the layout's siteName/locale/image apply.
+- **Breadcrumb colours** are set on the `<li>`s, not the `<ol>`: `.text-label` sets its own colour and wins
+  over a colour utility on the same element.
 
 **FAQ**: `/tjanster` defines its own longer FAQ list locally and passes it to
 `<FAQAccordion items={faqs} />`, then emits matching JSON-LD via
@@ -739,6 +764,8 @@ npm run dev                     # Dev mode (Turbopack bug exists)
 | SEO audit + reconciliation log | `docs/SEO_AUDIT.md` |
 | Homepage | `src/app/page.tsx` |
 | Services (consolidated) | `src/app/tjanster/page.tsx` |
+| Service pages (data + template) | `src/data/services.ts`, `src/app/tjanster/[slug]/page.tsx` |
+| Case row list (/tjanster + service pages) | `src/components/CaseList.tsx` |
 | Navigation | `src/components/Nav.tsx` |
 | Global pre-footer CTA | `src/components/PreFooterCTA.tsx` |
 | Global footer | `src/components/Footer.tsx` |
@@ -818,6 +845,20 @@ Moved to `docs/INTENTIONS.md` — the living log for ideas, directions, and thin
 ---
 
 ## Changelog
+
+### v2.30 — First service page: Egna system
+- **New route `/tjanster/egna-system`**, generated from the new `src/data/services.ts` (same pattern as
+  `cases.ts`). Problems and builds are drawn only from the three cases that prove it; positioning is
+  "custom, built from parts we already know work", not a bespoke software house.
+- **`/tjanster`** gains a card per service page, stable section anchors (with `scroll-mt-28`), and reads intro
+  length, price and delivery from `facts.ts`. Price card now reads "Från 15 000 kr" (was "15 000+ kr").
+- **`CaseList` extracted** from `/tjanster` so both pages render case rows identically; rows are numbered by
+  position in the list.
+- **Plumbing**: sitemap includes service pages; `/tjanster/custom-build` + `/services/custom-build` 308 to the
+  new page; Service + BreadcrumbList + FAQPage JSON-LD on the service page.
+- Verified with `npm run build` + `npm run start`: 200 on the new page, 404 on unknown slugs, redirects single
+  hop, one H1, 3 case links + 3 links up to `/tjanster`, FAQ schema matches the 5 visible questions, no em
+  dashes, no horizontal overflow at 1920px or 375px.
 
 ### v2.29 — Services page Phase 0: one set of facts, proof links, clean Swedish
 - **Business facts aligned across the site** (owner's decisions, 2026-09-30): the first step is
