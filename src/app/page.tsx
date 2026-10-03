@@ -58,8 +58,9 @@ export default function Home() {
               </h2>
               <ul className="flex flex-col gap-12">
                 {[
-                  { num: "3-15h", unit: "/ vecka", body: "Tid över för det viktiga och det som verkligen skapar värde." },
-                  { num: "3–6", unit: "månader", body: "Beräknad tid att få tillbaka investerad summa." },
+                  // Measured on real cases — no site-wide hours claims (see docs/SEO_AUDIT.md → Decisions).
+                  { num: "≈32h", unit: "per 1 000 leads", body: "JaTack AB slipper bygga ringlistor för hand. Varje lead tar nu 5 sekunder i stället för 2 minuter." },
+                  { num: "≈65h", unit: "per 1 000 företag", body: "Hos Observa Inkasso & Juridik tar researchen nu cirka 10 sekunder per bolag i stället för 4 minuter." },
                   { num: "24/7", unit: "utan extra kostnad", body: "Automationen är igång medan du och ditt team sover." },
                 ].map(({ num, unit, body }) => (
                   <li key={num} className="border-l border-white/10 pl-8">
@@ -105,9 +106,10 @@ export default function Home() {
               </h2>
               <ul className="flex flex-col gap-12">
                 {[
-                  { num: "3-15h", unit: "/ vecka", body: "Tid som försvinner i manuella uppgifter som aldrig borde ha krävt en människa." },
-                  { num: "3x", unit: "längre än det borde", body: "Uppgifter som kan ta minuter, tar istället timmar." },
-                  { num: "0", unit: "integrerade system", body: "Era verktyg pratar inte med varandra. Varje manuellt steg som skalas är ett steg bakåt." },
+                  // The "before" side of the same cases.
+                  { num: "2 min", unit: "per lead", body: "Så lång tid tog varje lead för JaTack AB när listorna byggdes för hand. Öppna, kopiera, klistra in." },
+                  { num: "4 min", unit: "per företag", body: "Så lång tid tog Observas research per bolag för hand: hemsida, ort och ekonomichef, ett bolag i taget." },
+                  { num: "1", unit: "telefon", body: "Hos Kom-Fort Bilvård låg bokningar, personal och kunduppgifter i ägarens telefon och minne." },
                 ].map(({ num, unit, body }) => (
                   <li key={num} className="border-l border-white/10 pl-8">
                     <div className="flex items-baseline gap-3 mb-3">

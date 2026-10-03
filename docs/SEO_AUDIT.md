@@ -114,7 +114,7 @@ build. They reach khyte.se on the next deploy.
 - [ ] Bing Webmaster Tools (import from GSC), check the AI Performance report. IndexNow optional.
 
 **Copy (Swedish pass, not SEO-critical but trust-critical)**
-- [ ] Home ROI/COI bands: "3-15h / vecka" (twice) and "3–6 månader" payback conflict with the no-site-wide-hours decision — make qualitative or case-backed (e.g. Observa ≈65 h per 1 000 företag, JaTack ≈32 h per 1 000 leads, client named). Visible design copy — needs sign-off.
+- [x] (Done 2026-10-03) Home ROI/COI bands now use measured, client-named case numbers: after = ≈32h per 1 000 leads (JaTack), ≈65h per 1 000 företag (Observa), 24/7; before = 2 min per lead (JaTack), 4 min per företag (Observa), 1 telefon (Kom-Fort). Seconds are written out in the sentence because the display font capitalises "sek" into "SEK" (reads as kronor).
 - [x] Home FAQ: "har ett API", "var ni tappar tid" (services rework, `e7f24f4`). Mixed du/ni on the home page remains.
 - [ ] `/om-oss`: "Vart allt började" → "Där allt började"; "fick med han" → "fick med honom".
 - [x] `/tjanster` Swedish fixes and "Kartläggning" (services rework, `e7f24f4`).
