@@ -843,13 +843,27 @@ Moved to `docs/INTENTIONS.md` — the living log for ideas, directions, and thin
 - **`npm run lint` is broken.** `eslint-config-next` is pinned to `^0.2.4` in `package.json`
   — not the real Next 16 package (should be `^16`). ESLint fails to resolve
   `eslint-config-next/core-web-vitals`. Pre-existing; `npm run build` is unaffected.
-- **`twitter:title` is English** — "KHYTE AUTOMATIONS | No Hype, Just Workflows" — while
-  `og:title` is Swedish. Inconsistent on a Swedish site (`layout.tsx`).
 - **Homepage title carries no brand.** Next skips `title.template` for the root segment, so
   `/` renders bare. The SEO audit suggests adding a geo signal here — a copy decision.
-- **Missing schema**: `Service` on `/tjanster`, `BreadcrumbList` on subpages.
+- **Schema**: `Service` + `BreadcrumbList` exist on service pages (`/tjanster/egna-system`).
+  `BreadcrumbList` is still missing on case pages (low priority — see `docs/SEO_AUDIT.md`).
 - **Google Search Console** is verified (DNS TXT) and a **Google Business Profile** exists — see
   `docs/SEO_AUDIT.md`, which is now the single place for SEO state and decisions.
+
+### Open items — services work (as of 2026-10-03)
+- [ ] **Eyeball the "Vad vi löser" loop** on khyte.se/tjanster in a normal browser window. It was
+  verified through the browser's animation API and frozen frames only (the test tab was hidden), so the
+  pacing has not been judged by eye. Tune with the single `7.5s` in `.area-ill` (`globals.css`).
+- [ ] **Rådgivning subpage** — Rådgivning is a separate service (tile + FAQ on `/tjanster` today, CTA books
+  the intro). Needs the owner to define what's included and the price model before a page is written.
+  When it exists: add an entry to `services` in `services.ts` and set `serviceSlug` on the `radgivning` area.
+- [ ] **Next service pages (AI automation, workflow automation)** — decide from the next GSC export,
+  4–6 weeks after the 2026-10-02 deploy. Proof is ready (Observa for AI, JaTack for workflows); once a
+  page ships, set `serviceSlug` on the matching area (`steg` / `excel`) and the tile repoints itself.
+- [ ] **Systemintegration page** — only once there's a delivered integration case. Until then the
+  "Verktyg som inte pratar med varandra" tile deliberately has no link.
+- [ ] **Case → service links** (the other agent's P2): call `servicesForCase(c.slug)` from
+  `src/data/services.ts` on case pages; anchors are listed in `docs/SEO_AUDIT.md` → Open items → P2.
 
 ---
 
