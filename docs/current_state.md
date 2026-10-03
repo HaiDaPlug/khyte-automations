@@ -654,16 +654,18 @@ Components requiring `"use client"`:
   everywhere (metadata, sitemap, robots, every JSON-LD `@id`) until v2.25. The npm package
   is still named `khyte-automations`, so the stale domain tends to creep back in — watch for it.
 - Title template: `"%s | Khyte Automations"`
-  - **Does not apply to `/`** — Next.js skips the template for the segment that defines it,
-    so the homepage title renders bare with no brand suffix. Worth knowing, not a bug.
+  - **Does not apply to `/`** — Next.js skips the template for the segment that defines it, so
+    `page.tsx` sets `title: { absolute: "… | Khyte Automations" }` with the brand written out.
   - Page titles must therefore **not** end in `| Khyte` themselves, or the suffix doubles up.
     `/case`, `/case/[slug]` and `/om-oss` all did until v2.25.
 - Canonical URLs per page (Swedish routes: `/`, `/tjanster`, `/case`, `/om-oss`, `/kontakt`, `/integritetspolicy`, `/villkor`)
 - **JSON-LD** — rendered through `components/JsonLd.tsx`, which escapes non-ASCII to
   backslash-u codepoints so Swedish diacritics survive any response encoding and nothing in
   the payload can close the `<script>` tag.
-  - **Sitewide** (`layout.tsx`): Organization, ProfessionalService (LocalBusiness w/ Borås
-    address, geo, areaServed, `priceRange: "Från 15 000 SEK"`, openingHours), WebSite, Person.
+  - **Sitewide** (`layout.tsx`): Organization (with `logo` → `public/logo.png`, a 512px PNG of
+    the K mark), ProfessionalService (full street address and postcode, coordinates for
+    Västerbrogatan 8A, areaServed, `priceRange`, openingHours), WebSite, Person. Name, URL,
+    email, phone, address and price come from `src/data/facts.ts`.
   - **Per-page**: FAQPage is emitted **only on `/` and `/tjanster`** — the two pages that
     actually render `<FAQAccordion />`. It used to sit in `layout.tsx`, which fired it on
     `/villkor` and `/kontakt` where no FAQ exists, with answer text that did not match the
@@ -675,12 +677,22 @@ Components requiring `"use client"`:
   rendered blank.
   - `openGraph.images` / `twitter.images` are deliberately **absent** from `layout.tsx` —
     setting them overrides the file convention and reintroduces a stale URL.
+  - The layout's `openGraph` / `twitter` also carry **no title or description**: Next fills
+    `og:*` and `twitter:*` from each page's own title and description, so every page previews
+    as itself. Don't add them back.
+  - **Case pages** set their own `openGraph` (type `article`, image = the co-branded case
+    photo). A page-level `openGraph` *replaces* the layout's, so it repeats `siteName` and
+    `locale` — copy that pattern for any page that needs its own image.
   - No external assets by design: satori cannot rasterize the filter/clipPath-heavy logo
     SVGs in `/public`, and neither Bebas nor Satoshi exists on disk as a `.ttf`. Only Geist
     Regular ships with `@vercel/og`, so `fontWeight` is inert — weight comes from scale and
     colour instead. Card is built from the espresso tokens.
-- Sitemap: `/sitemap.xml` — static routes **plus every case detail page**, generated from
-  `src/data/cases.ts`, so a new case indexes itself with no edit to `sitemap.ts`.
+- Sitemap: `/sitemap.xml` — static routes **plus every service and case page**, generated from
+  `src/data/services.ts` and `src/data/cases.ts`, so a new one indexes itself with no edit to
+  `sitemap.ts`. No `lastmod`: stamping every URL with the build time teaches Google to ignore it.
+  Submitted in Search Console 2026-10-02 (status Success).
+- Case titles/descriptions come from `seoTitle` / `metaDescription` in `cases.ts` (workflow
+  first, client second) — separate from `problem`, which is visible copy on `/tjanster`.
 - Robots: `/robots.txt` — allows all, disallows `/internal/` (also password-gated in `proxy.ts`)
 - **Host normalisation** — configured **in Vercel** (Settings → Domains), *not* in
   `next.config.ts`. `khyte.se` is the canonical production host; `www.khyte.se`,
@@ -695,8 +707,10 @@ Components requiring `"use client"`:
   > and the whole site returned redirect-loop errors until the rule was removed.
 - **Path redirects** (all in `next.config.ts`, all permanent 308, all single-hop):
   `/services→/tjanster`, `/cases→/case`, `/cases/:path*→/case/:path*`, `/about→/om-oss`,
-  `/contact→/kontakt`, `/automations→/`, and the retired sub-pages `/tjanster/audit`,
-  `/tjanster/custom-build`, `/services/audit`, `/services/custom-build` → `/tjanster`.
+  `/contact→/kontakt`, `/automations→/`, the retired sub-pages `/tjanster/audit` and
+  `/services/audit` → `/tjanster`, `/tjanster/custom-build` and `/services/custom-build` →
+  `/tjanster/egna-system`, and the renamed case slug `/case/lead-lista` →
+  `/case/foretagsresearch` (the old slug didn't describe Observa's research case).
   - The retired sub-pages were previously `redirect()` stubs in `page.tsx` files, which emit
     **307 temporary**. Moved to config so they are permanent and resolve at the edge.
   - The `/services/*` entries sit **before** the `/services/:path*` wildcard so the old
@@ -705,7 +719,9 @@ Components requiring `"use client"`:
   shell and links onward to the four main routes. Returns a real 404 status. Renders inside
   the root layout, so Nav / PreFooterCTA / Footer come for free.
 - **Analytics**: GA4 `G-F91HE9L5LS` (lazy-loaded `next/script` in `layout.tsx`) + Vercel
-  Analytics. Google Search Console verification is still outstanding.
+  Analytics. **Google Search Console** is verified (DNS TXT) under the *second* Google account
+  in Chrome — use `https://search.google.com/u/1/search-console?resource_id=sc-domain%3Akhyte.se`;
+  the default account only has an unverified duplicate.
 
 ## FAQ Content
 `src/data/faq.ts` is the **single source of truth** for FAQ copy.
@@ -843,12 +859,37 @@ Moved to `docs/INTENTIONS.md` — the living log for ideas, directions, and thin
 - **`npm run lint` is broken.** `eslint-config-next` is pinned to `^0.2.4` in `package.json`
   — not the real Next 16 package (should be `^16`). ESLint fails to resolve
   `eslint-config-next/core-web-vitals`. Pre-existing; `npm run build` is unaffected.
-- **Homepage title carries no brand.** Next skips `title.template` for the root segment, so
-  `/` renders bare. The SEO audit suggests adding a geo signal here — a copy decision.
 - **Schema**: `Service` + `BreadcrumbList` exist on service pages (`/tjanster/egna-system`).
   `BreadcrumbList` is still missing on case pages (low priority — see `docs/SEO_AUDIT.md`).
-- **Google Search Console** is verified (DNS TXT) and a **Google Business Profile** exists — see
-  `docs/SEO_AUDIT.md`, which is now the single place for SEO state and decisions.
+- **Deploys and git identity.** All GitHub repos are private since 2026-10-02. On Vercel Hobby a
+  private repo only deploys commits whose author email is linked to the GitHub account, so this
+  repo uses the global `haigillarris@gmail.com`. Don't set a repo-local `user.email` (e.g.
+  `hai@khyteteam.com`) — Vercel will block the deploy ("Deployment was blocked").
+- SEO state, decisions, evidence and measurements live in `docs/SEO_AUDIT.md`; the list below is
+  the short version.
+
+### Open items — SEO & local (as of 2026-10-03)
+Full detail and reasoning in `docs/SEO_AUDIT.md` → Open items.
+- [ ] **Homepage stat bands** — "3-15h / vecka" (twice) and "3–6 månader" break the owner's rule of no
+  site-wide hours claim (hours saved only on the case where it was measured). Proposal waiting for a yes:
+  real before/after case numbers (JaTack 2 min → 5 sek per lead, ≈32 h per 1 000 leads; Observa 4 min →
+  ~10 sek per företag). Visible change — design pass first.
+- [ ] **Case → service links** (P2) — see the services list above; needs a design pass.
+- [ ] **`/boras`** — a real local page (team, office, Borås cases, map/GBP), not a city-swap page. GSC
+  already shows Borås demand: "automationsföretag borås" at position 1.8. Should say plainly that Khyte
+  automates office and system work, since Google partly reads the name as industrial automation.
+- [ ] **`/om-oss`** — Swedish fixes ("Vart allt började" → "Där allt började", "fick med han" → "fick med
+  honom"), mention the Borås office, founder background; add Erik when his photo is ready.
+- [ ] **Performance** — load is now held by JavaScript render delay (LCP ~9.5 s lab on mobile), not bytes:
+  look at what the hero waits for before hydration. Design-sensitive; plan first.
+- [ ] **Favicons** — `icon.svg` / `apple-icon.svg` are 381 KB each, and iOS needs a PNG touch icon.
+- [ ] **Other repos' deploys** — `bni-references` and `hovaliden` still commit as `hai@khyteteam.com` and
+  will be blocked on their next push (remove the local override, or add the email to GitHub).
+- [ ] **Off-site (owner)** — Google reviews from case clients; ask BNI Sjuhärad and E-handelsstaden to link
+  `https://khyte.se` (E-handelsstaden points at khyteteam.com); Hitta and Allabolag under the Khyte name;
+  Bing Webmaster Tools (import from GSC); GBP photos and posts.
+- [ ] **Measure** — re-export GSC around mid-November 2026 and compare with the 2026-10-02 baseline in
+  `docs/SEO_AUDIT.md`; that export also picks the next service pages.
 
 ### Open items — services work (as of 2026-10-03)
 - [ ] **Eyeball the "Vad vi löser" loop** on khyte.se/tjanster in a normal browser window. It was
@@ -868,6 +909,21 @@ Moved to `docs/INTENTIONS.md` — the living log for ideas, directions, and thin
 ---
 
 ## Changelog
+
+### v2.32 — SEO pass, Search Console, Business Profile (2026-09-30 – 10-02)
+- **Invisible SEO pass** (no layout change, live 2026-10-02): `src/data/facts.ts` as the one place for the
+  intro-call length, Calendly URL, price, delivery and contact details; full address, coordinates and logo
+  in the sitewide schema; home H1 reads once (`RollingWord` no longer renders a hidden duplicate); every page
+  previews with its own title and description; home retargeted at "automatisering för företag"; case pages
+  get workflow-first titles, real descriptions, the case photo as preview image and h2/h3 headings; case
+  photos PNG → JPG (~1.5 MB → ~80 KB each) and the text logo 510 KB → 100 KB; no sitemap `lastmod`;
+  `/case/lead-lista` → `/case/foretagsresearch`; footer label "Address" → "Adress".
+- **Measured live** (Lighthouse mobile): home 46 → 59, 8.3 MB → 1.4 MB, LCP 19.6 s → 9.5 s; case page 61 → 68.
+- **Search Console**: baseline exported, sitemap submitted (first time ever), recrawls requested for 7 pages.
+- **Business Profile**: primary category Automationsföretag → Programvaruföretag (secondary: Datorkonsult,
+  Automationsföretag), new short description, services list (IT-konsultverksamhet, Programutveckling,
+  Automatisering av arbetsflöden, Systemintegration, AI-automation, Excel-automatisering, Skräddarsydda system).
+- **Repos** made private; Vercel deploy block fixed by dropping the repo-local commit email.
 
 ### v2.31 — /tjanster becomes a short hub; "Vad vi löser" with looping drawings
 - **Six domain cards → "Vad vi löser"**: five tiles (Excelsammanställningar, Manuella steg, Verktyg som inte
