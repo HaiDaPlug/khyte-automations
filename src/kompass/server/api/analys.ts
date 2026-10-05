@@ -5,7 +5,7 @@ import { FRAGA } from "@/kompass/data/kompass";
 import { kontrolleraAiAnalys, kontrolleraMotSvar } from "@/kompass/lib/ai-typer";
 import { nivaFor } from "@/kompass/lib/flode";
 import { lasIp, slappIgenom } from "@/kompass/server/spamskydd";
-import { supabase } from "@/kompass/server/supabase";
+import { fraga, uppdateraSvarsrad } from "@/kompass/server/db";
 import type { Svar } from "@/kompass/lib/typer";
 import { analysSchema } from "@/kompass/lib/validering";
 
@@ -40,13 +40,12 @@ export async function POST(request: Request) {
   const sessionId = tolkat.data.session_id;
 
   try {
-    const { data, error } = await supabase()
-      .from("kompass_svar")
-      .select("svar, ai_analys, ai_anrop")
-      .eq("session_id", sessionId)
-      .maybeSingle();
+    const [data] = await fraga<{ svar: unknown; ai_analys: unknown; ai_anrop: number }>(
+      "select svar, ai_analys, ai_anrop from kompass_svar where session_id = $1",
+      [sessionId],
+    );
 
-    if (error || !data) return NextResponse.json({ analys: null });
+    if (!data) return NextResponse.json({ analys: null });
 
     const tidigare = kontrolleraAiAnalys(data.ai_analys);
     const anrop = Number(data.ai_anrop ?? 0);
@@ -66,14 +65,15 @@ export async function POST(request: Request) {
       ? { ...analys, hypotes: kontrolleraMotSvar(analys, verktyg(svar), nivaFor(svar)).hypotes }
       : null;
 
-    const { error: sparfel } = await supabase()
-      .from("kompass_svar")
-      .update({
-        ai_anrop: anrop + 1,
-        ...(ny ? { ai_analys: ny } : {}),
-      })
-      .eq("session_id", sessionId);
-    if (sparfel) loggaFel("Kunde inte spara analys", sparfel.message);
+    try {
+      await uppdateraSvarsrad(
+        { ai_anrop: anrop + 1, ...(ny ? { ai_analys: ny } : {}) },
+        "session_id = $1",
+        [sessionId],
+      );
+    } catch (fel) {
+      loggaFel("Kunde inte spara analys", fel);
+    }
 
     return NextResponse.json({ analys: ny ?? tidigare });
   } catch (fel) {

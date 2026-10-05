@@ -9,7 +9,7 @@ import { RAD_KOLUMNER } from "@/kompass/server/rad";
  * läggs till med "add column if not exists".
  */
 function schemakolumner(): { skapade: Set<string>; tillagda: Set<string> } {
-  const sql = readFileSync(join(process.cwd(), "supabase/schema.sql"), "utf8");
+  const sql = readFileSync(join(process.cwd(), "db/schema.sql"), "utf8");
   const tabell = sql.slice(
     sql.indexOf("create table if not exists kompass_svar ("),
     sql.indexOf("\n);", sql.indexOf("create table if not exists kompass_svar (")),
@@ -47,7 +47,7 @@ describe("databasschemat", () => {
   });
 
   it("har en migreringsfil för varje tillagd kolumn", () => {
-    const dir = join(process.cwd(), "supabase/migrations");
+    const dir = join(process.cwd(), "db/migrations");
     const migreringar = readdirSync(dir)
       .filter((f) => f.endsWith(".sql"))
       .map((f) => readFileSync(join(dir, f), "utf8"))

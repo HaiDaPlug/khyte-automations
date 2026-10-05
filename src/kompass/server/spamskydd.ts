@@ -2,7 +2,7 @@ import "server-only";
 
 import { loggaFel } from "@/kompass/server/logg";
 import { createHash } from "node:crypto";
-import { supabase } from "@/kompass/server/supabase";
+import { fraga } from "@/kompass/server/db";
 
 /**
  * Enkel begränsning: max antal inskick per IP och timme.
@@ -59,24 +59,17 @@ export async function slappIgenom(
   typ: Gransttyp = "inskick",
 ): Promise<boolean> {
   const hash = hasha(ip);
-  const enTimmeSedan = new Date(Date.now() - 60 * 60 * 1000).toISOString();
 
   try {
-    const { count, error } = await supabase()
-      .from("kompass_inskick")
-      .select("*", { count: "exact", head: true })
-      .eq("ip_hash", hash)
-      .eq("typ", typ)
-      .gte("created_at", enTimmeSedan);
+    const [{ antal }] = await fraga<{ antal: number }>(
+      `select count(*)::int as antal from kompass_inskick
+       where ip_hash = $1 and typ = $2 and created_at >= now() - interval '1 hour'`,
+      [hash, typ],
+    );
 
-    if (error) {
-      loggaFel("Kunde inte kontrollera inskick", error.message);
-      return true;
-    }
+    if (antal >= GRANSER[typ]) return false;
 
-    if ((count ?? 0) >= GRANSER[typ]) return false;
-
-    await supabase().from("kompass_inskick").insert({ ip_hash: hash, typ });
+    await fraga("insert into kompass_inskick (ip_hash, typ) values ($1, $2)", [hash, typ]);
     return true;
   } catch (fel) {
     loggaFel("Oväntat fel i spamskyddet", fel);

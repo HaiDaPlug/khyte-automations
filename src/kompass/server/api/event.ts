@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { loggaFel } from "@/kompass/server/logg";
 import { lasIp, slappIgenom } from "@/kompass/server/spamskydd";
-import { supabase } from "@/kompass/server/supabase";
+import { fraga } from "@/kompass/server/db";
 import { eventSchema } from "@/kompass/lib/validering";
 
 /**
@@ -18,11 +18,10 @@ export async function POST(request: Request) {
     // Begränsat per IP. Mätning är inte viktig nog att få fylla databasen.
     if (tolkat.success && (await slappIgenom(lasIp(request), "event"))) {
       const d = tolkat.data;
-      await supabase().from("kompass_events").insert({
-        session_id: d.session_id,
-        handelse: d.handelse,
-        steg: d.steg ?? null,
-      });
+      await fraga(
+        "insert into kompass_events (session_id, handelse, steg) values ($1, $2, $3)",
+        [d.session_id, d.handelse, d.steg ?? null],
+      );
     }
   } catch (fel) {
     // Loggas för felsökning, men användaren ska aldrig märka något.

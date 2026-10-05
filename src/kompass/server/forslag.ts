@@ -5,7 +5,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { MAX_FRITEXT } from "@/kompass/data/kompass";
 import { otillatenText } from "@/kompass/lib/ai-typer";
 import { utanPersonuppgifter } from "@/kompass/lib/personuppgifter";
-import { supabase } from "@/kompass/server/supabase";
+import { uppdateraSvarsrad } from "@/kompass/server/db";
 import type { SvarsRad } from "@/kompass/server/rad";
 
 /**
@@ -111,11 +111,11 @@ export async function hamtaForslag(rad: SvarsRad): Promise<string | null> {
   try {
     const forslag = await fragaClaude(rad);
     if (forslag) {
-      const { error } = await supabase()
-        .from("kompass_svar")
-        .update({ ai_forslag: forslag })
-        .eq("session_id", rad.session_id);
-      if (error) loggaFel("Kunde inte spara förslag", error.message);
+      try {
+        await uppdateraSvarsrad({ ai_forslag: forslag }, "session_id = $1", [rad.session_id]);
+      } catch (fel) {
+        loggaFel("Kunde inte spara förslag", fel);
+      }
     }
     return forslag;
   } catch (fel) {

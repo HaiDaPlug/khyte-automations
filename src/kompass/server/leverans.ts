@@ -1,7 +1,7 @@
 import "server-only";
 
 import { loggaFel, tvattadFeltext } from "@/kompass/server/logg";
-import { supabase } from "@/kompass/server/supabase";
+import { fraga, uppdateraSvarsrad } from "@/kompass/server/db";
 import {
   skickaAdminlarm,
   skickaResultatmejl,
@@ -160,6 +160,16 @@ export function behoverForsok(status: LeveransStatus | null): boolean {
 }
 
 /**
+ * Ska cron-jobbet köra efterstegen för raden? Ja om ett steg ska försökas
+ * igen — eller om säljmejlet saknar status helt. Säljmejlet går ut för varje
+ * lead, så saknas dess status har efterstegen aldrig sparats: kontaktvägen
+ * kraschade, eller statusen gick inte att spara efteråt.
+ */
+export function behoverKoras(status: LeveransStatus | null): boolean {
+  return !status?.saljmejl || behoverForsok(status);
+}
+
+/**
  * Lägger beslag på en rad innan cron-jobbet skickar något. En enda villkorad
  * uppdatering: den lyckas bara om raden fortfarande väntar och ingen annan
  * körning håller den. Databasen låter bara en av två samtidiga uppdateringar
@@ -169,21 +179,23 @@ export function behoverForsok(status: LeveransStatus | null): boolean {
  * Returnerar true om raden är vår att behandla.
  */
 export async function taRad(sessionId: string): Promise<boolean> {
-  const nu = new Date();
-  const till = new Date(nu.getTime() + LAS_MINUTER * 60_000).toISOString();
-  const { data, error } = await supabase()
-    .from("kompass_svar")
-    .update({ behandlas_till: till })
-    .eq("session_id", sessionId)
-    .eq("behover_forsok", true)
-    .or(`behandlas_till.is.null,behandlas_till.lt."${nu.toISOString()}"`)
-    .select("session_id");
-
-  if (error) {
-    loggaFel(`Kunde inte ta raden ${sessionId}`, error.message);
+  try {
+    // Databasens klocka, inte serverns — så att två körningar på olika
+    // servrar jämför mot samma tid.
+    const rader = await fraga(
+      `update kompass_svar
+       set behandlas_till = now() + make_interval(mins => $2)
+       where session_id = $1
+         and behover_forsok
+         and (behandlas_till is null or behandlas_till < now())
+       returning session_id`,
+      [sessionId, LAS_MINUTER],
+    );
+    return rader.length > 0;
+  } catch (fel) {
+    loggaFel(`Kunde inte ta raden ${sessionId}`, fel);
     return false;
   }
-  return (data?.length ?? 0) > 0;
 }
 
 /**
@@ -196,17 +208,14 @@ export async function sparaStatus(
   sessionId: string,
   status: LeveransStatus,
 ): Promise<void> {
-  const { error } = await supabase()
-    .from("kompass_svar")
-    .update({
-      leverans_status: status,
-      behover_forsok: behoverForsok(status),
-      behandlas_till: null,
-    })
-    .eq("session_id", sessionId);
-
-  if (error) {
-    loggaFel(`Kunde inte spara leveransstatus för ${sessionId}`, error.message);
+  try {
+    await uppdateraSvarsrad(
+      { leverans_status: status, behover_forsok: behoverForsok(status), behandlas_till: null },
+      "session_id = $1",
+      [sessionId],
+    );
+  } catch (fel) {
+    loggaFel(`Kunde inte spara leveransstatus för ${sessionId}`, fel);
   }
 }
 

@@ -2,9 +2,10 @@ import { NextResponse } from "next/server";
 import { LAGRING } from "@/kompass/data/kompass";
 import { loggaFel } from "@/kompass/server/logg";
 import { RAD_KOLUMNER, type SvarsRad } from "@/kompass/server/rad";
-import { supabase } from "@/kompass/server/supabase";
+import { fraga } from "@/kompass/server/db";
 import {
   behoverForsok,
+  behoverKoras,
   korEftersteg,
   larmaOmUppgivnaSteg,
   sparaStatus,
@@ -32,43 +33,24 @@ const MAX_RADER_PER_KORNING = 25;
  * omförsöken av mejl.
  */
 async function rensaGammalData(): Promise<Record<string, number | null>> {
-  const fore = (dagar: number) =>
-    new Date(Date.now() - dagar * 24 * 60 * 60 * 1000).toISOString();
   const resultat: Record<string, number | null> = {};
 
-  const jobb: [string, () => PromiseLike<{ error: { message: string } | null; count: number | null }>][] = [
-    [
-      "avbrutna",
-      () =>
-        supabase()
-          .from("kompass_svar")
-          .delete({ count: "exact" })
-          .is("mejl", null)
-          .lt("updated_at", fore(LAGRING.avbrutnaDagar)),
-    ],
-    [
-      "handelser",
-      () =>
-        supabase()
-          .from("kompass_events")
-          .delete({ count: "exact" })
-          .lt("created_at", fore(LAGRING.handelserDagar)),
-    ],
-    [
-      "spamskydd",
-      () =>
-        supabase()
-          .from("kompass_inskick")
-          .delete({ count: "exact" })
-          .lt("created_at", fore(LAGRING.spamskyddDagar)),
-    ],
+  // Tabell, villkor och antal dagar. Antal dagar skickas som parameter.
+  const jobb: [string, string, string, number][] = [
+    ["avbrutna", "kompass_svar", "mejl is null and updated_at", LAGRING.avbrutnaDagar],
+    ["handelser", "kompass_events", "created_at", LAGRING.handelserDagar],
+    ["spamskydd", "kompass_inskick", "created_at", LAGRING.spamskyddDagar],
   ];
 
-  for (const [namn, kor] of jobb) {
+  for (const [namn, tabell, villkor, dagar] of jobb) {
     try {
-      const { error, count } = await kor();
-      if (error) loggaFel(`Kunde inte rensa ${namn}`, error.message);
-      resultat[namn] = error ? null : (count ?? 0);
+      const [{ antal }] = await fraga<{ antal: number }>(
+        `with borttagna as (
+           delete from ${tabell} where ${villkor} < now() - make_interval(days => $1) returning 1
+         ) select count(*)::int as antal from borttagna`,
+        [dagar],
+      );
+      resultat[namn] = antal;
     } catch (fel) {
       loggaFel(`Kunde inte rensa ${namn}`, fel);
       resultat[namn] = null;
@@ -96,23 +78,24 @@ export async function GET(request: Request) {
     // det bort i efterhand bland de 25 äldsta raderna — med fler än 25 lyckade
     // rader nåddes de misslyckade aldrig. Och kontakt_namn användes som villkor,
     // men de flesta leads lämnar bara mejl.
-    const { data, error } = await supabase()
-      .from("kompass_svar")
-      .select(RAD_KOLUMNER)
-      .eq("behover_forsok", true)
-      .not("mejl", "is", null)
-      .order("updated_at", { ascending: true })
-      .limit(MAX_RADER_PER_KORNING);
-
-    if (error) {
-      loggaFel("Cron kunde inte hämta rader", error.message);
+    let rader: SvarsRad[];
+    try {
+      rader = await fraga<SvarsRad>(
+        `select ${RAD_KOLUMNER} from kompass_svar
+         where behover_forsok and mejl is not null
+         order by updated_at asc
+         limit $1`,
+        [MAX_RADER_PER_KORNING],
+      );
+    } catch (fel) {
+      loggaFel("Cron kunde inte hämta rader", fel);
       return NextResponse.json({ fel: "Kunde inte hämta." }, { status: 500 });
     }
-
-    const rader = (data ?? []) as unknown as SvarsRad[];
     // Dubbelkontroll mot själva statusen, om kolumnen och statusen skulle
-    // glida isär.
-    const attForsoka = rader.filter((r) => behoverForsok(r.leverans_status));
+    // glida isär. Ett lead vars status aldrig sparades körs från början —
+    // samma idempotensnycklar som första gången, så Resend skickar inte om
+    // ett mejl som faktiskt gick ut (nycklarna gäller i 24 timmar).
+    const attForsoka = rader.filter((r) => behoverKoras(r.leverans_status));
 
     let lyckade = 0;
     let kvar = 0;

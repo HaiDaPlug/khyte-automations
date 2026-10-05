@@ -224,11 +224,10 @@ function EjKopplad({ skal }: { skal: string }) {
       <h2 className="font-semibold">Ingen data att visa</h2>
       <p className="mt-2 text-sm">{skal}</p>
       <ol className="mt-4 list-decimal space-y-1.5 pl-5 text-sm text-black/70">
-        <li>Skapa ett projekt på supabase.com (region EU).</li>
-        <li>Kör <code>supabase/schema.sql</code> i projektets SQL Editor.</li>
+        <li>Kör <code>db/schema.sql</code> mot Neon-databasen (Neons SQL Editor).</li>
         <li>
-          Lägg in <code>SUPABASE_URL</code> och <code>SUPABASE_SERVICE_ROLE_KEY</code> i Vercel (Settings →
-          Environment Variables), plus <code>CRON_SECRET</code> och mejlnycklarna.
+          Lägg in <code>DATABASE_URL</code> i Vercel (Settings → Environment Variables), plus{" "}
+          <code>CRON_SECRET</code> och mejlnycklarna.
         </li>
         <li>Driftsätt om, gör en genomkörning av kompassen och ladda om den här sidan.</li>
       </ol>

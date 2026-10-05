@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { loggaFel } from "@/kompass/server/logg";
 import { lasIp, slappIgenom } from "@/kompass/server/spamskydd";
-import { supabase } from "@/kompass/server/supabase";
+import { fraga, sparaSvarsrad } from "@/kompass/server/db";
 import { sammanstall } from "@/kompass/lib/sammanstallning";
 import { svarSchema } from "@/kompass/lib/validering";
 
@@ -34,11 +34,7 @@ export async function POST(request: Request) {
   // Nya besök begränsas per IP — annars kan vem som helst fylla databasen.
   // Ett pågående besök sparar fritt: det sparas efter varje skärm.
   try {
-    const { data: finns } = await supabase()
-      .from("kompass_svar")
-      .select("session_id")
-      .eq("session_id", d.session_id)
-      .maybeSingle();
+    const [finns] = await fraga("select 1 from kompass_svar where session_id = $1", [d.session_id]);
     if (!finns && !(await slappIgenom(lasIp(request), "session"))) {
       return NextResponse.json({ fel: "För många försök." }, { status: 429 });
     }
@@ -53,42 +49,29 @@ export async function POST(request: Request) {
   const { forslag, plan, ...kolumner } = sammanstall(d.svar);
 
   try {
-    const { error } = await supabase()
-      .from("kompass_svar")
-      .upsert(
-        {
-          session_id: d.session_id,
-          svar: d.svar,
-          // Bransch, områden, summor osv. — egna kolumner så att leads går
-          // att sortera och filtrera utan att gräva i jsonb.
-          ...kolumner,
-          ref: d.ref ?? null,
-          // Källan skickas med varje gång och ändras inte under ett besök.
-          // Saknas den rör vi inte kolumnerna, så att inget nollas av misstag.
-          ...(d.kalla
-            ? {
-                utm_source: d.kalla.utm_source ?? null,
-                utm_medium: d.kalla.utm_medium ?? null,
-                utm_campaign: d.kalla.utm_campaign ?? null,
-                referrer: d.kalla.referrer ?? null,
-                enhet: d.kalla.enhet ?? null,
-              }
-            : {}),
-          senaste_fraga: d.senaste_fraga ?? null,
-          // Bara med när det är sant: en upsert rör inte kolumner som saknas,
-          // så en klar rad blir aldrig oklar om någon backar i flödet.
-          ...(d.klar ? { klar: true } : {}),
-        },
-        { onConflict: "session_id" },
-      );
-
-    if (error) {
-      loggaFel("Kunde inte spara svar", error.message);
-      return NextResponse.json(
-        { fel: "Kunde inte spara just nu." },
-        { status: 500 },
-      );
-    }
+    await sparaSvarsrad({
+      session_id: d.session_id,
+      svar: d.svar,
+      // Bransch, områden, summor osv. — egna kolumner så att leads går
+      // att sortera och filtrera utan att gräva i jsonb.
+      ...kolumner,
+      ref: d.ref ?? null,
+      // Källan skickas med varje gång och ändras inte under ett besök.
+      // Saknas den rör vi inte kolumnerna, så att inget nollas av misstag.
+      ...(d.kalla
+        ? {
+            utm_source: d.kalla.utm_source ?? null,
+            utm_medium: d.kalla.utm_medium ?? null,
+            utm_campaign: d.kalla.utm_campaign ?? null,
+            referrer: d.kalla.referrer ?? null,
+            enhet: d.kalla.enhet ?? null,
+          }
+        : {}),
+      senaste_fraga: d.senaste_fraga ?? null,
+      // Bara med när det är sant: en upsert rör inte kolumner som saknas,
+      // så en klar rad blir aldrig oklar om någon backar i flödet.
+      ...(d.klar ? { klar: true } : {}),
+    });
 
     return NextResponse.json({ ok: true });
   } catch (fel) {

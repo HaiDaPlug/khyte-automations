@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { loggaFel } from "@/kompass/server/logg";
 import { TEXT } from "@/kompass/data/kompass";
 import { skickaKompletteringsnotis } from "@/kompass/server/mail";
-import { supabase } from "@/kompass/server/supabase";
+import { uppdateraSvarsrad } from "@/kompass/server/db";
 import { kompletteraSchema } from "@/kompass/lib/validering";
 
 /**
@@ -47,17 +47,17 @@ export async function POST(request: Request) {
   try {
     // Villkoren i själva uppdateringen gör den atomär: två snabba inskick kan
     // inte båda gå igenom.
-    const { data, error } = await supabase()
-      .from("kompass_svar")
-      .update({ ...uppgifter, kompletterad_at: new Date().toISOString() })
-      .eq("session_id", d.session_id)
-      .not("mejl", "is", null)
-      .is("kompletterad_at", null)
-      .select("mejl, kontakt_namn, foretag, telefon, ort, tips_namn, tips_kontakt, roll, tidshorisont")
-      .maybeSingle();
-
-    if (error) {
-      loggaFel("Kunde inte komplettera", error.message);
+    type Kompletterad = Parameters<typeof skickaKompletteringsnotis>[0];
+    let data: Kompletterad | undefined;
+    try {
+      [data] = await uppdateraSvarsrad<Kompletterad>(
+        { ...uppgifter, kompletterad_at: new Date().toISOString() },
+        "session_id = $1 and mejl is not null and kompletterad_at is null",
+        [d.session_id],
+        "mejl, kontakt_namn, foretag, telefon, ort, tips_namn, tips_kontakt, roll, tidshorisont",
+      );
+    } catch (fel) {
+      loggaFel("Kunde inte komplettera", fel);
       return NextResponse.json({ fel: TEXT.komplettera.fel }, { status: 500 });
     }
 

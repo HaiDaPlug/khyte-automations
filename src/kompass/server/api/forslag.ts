@@ -3,7 +3,7 @@ import { loggaFel } from "@/kompass/server/logg";
 import { hamtaForslag } from "@/kompass/server/forslag";
 import { RAD_KOLUMNER, type SvarsRad } from "@/kompass/server/rad";
 import { lasIp, slappIgenom } from "@/kompass/server/spamskydd";
-import { supabase } from "@/kompass/server/supabase";
+import { fraga } from "@/kompass/server/db";
 import { forslagSchema } from "@/kompass/lib/validering";
 
 /**
@@ -28,17 +28,14 @@ export async function POST(request: Request) {
   }
 
   try {
-    const { data, error } = await supabase()
-      .from("kompass_svar")
-      .select(RAD_KOLUMNER)
-      .eq("session_id", tolkat.data.session_id)
-      // Bara rader där resultatet visats — inte halvfärdiga eller påhittade.
-      .eq("klar", true)
-      .maybeSingle();
+    // Bara rader där resultatet visats — inte halvfärdiga eller påhittade.
+    const [rad] = await fraga<SvarsRad>(
+      `select ${RAD_KOLUMNER} from kompass_svar where session_id = $1 and klar`,
+      [tolkat.data.session_id],
+    );
 
-    if (error || !data) return NextResponse.json({ forslag: null });
+    if (!rad) return NextResponse.json({ forslag: null });
 
-    const rad = data as unknown as SvarsRad;
     if (rad.ai_forslag) return NextResponse.json({ forslag: rad.ai_forslag });
     if (!rad.fritext?.trim()) return NextResponse.json({ forslag: null });
 

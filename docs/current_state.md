@@ -1,4 +1,4 @@
-# Khyte Automations - Current State (v2.31)
+# Khyte Automations - Current State (v2.32)
 
 ## Tech Stack
 - **Next.js** 16.1.1 (App Router)
@@ -682,11 +682,11 @@ FAQ schema, and never let the schema list and the accordion list drift apart —
 - Trigger: `openCalendly()` from `CalendlyContext` — used in Nav CTA, PreFooterCTA, CalendlyButton
 - `CalendlyProvider` wraps the full app in layout.tsx; `CalendlyDrawer` renders globally alongside Nav
 
-## Automationskompassen (v2.31)
+## Automationskompassen (v2.32)
 Lead magnet moved in from the separate `khyte-kompass` repo with its `npm run flytta` script. **Since 2026-09-30 this repo is the source of truth** — edit `src/kompass/` here. `khyte-kompass` is archived (it was never deployed on its own; its move script refuses to overwrite and has no update path, so don't use it).
 
 - **Logic and prompts**: `docs/KOMPASS_LOGIK.md` — the full question flow, both AI prompts, how proposals are chosen, and the result page.
-- **Database**: `supabase/schema.sql` + `supabase/migrations/` (moved from `khyte-kompass`). Run new migrations in the Supabase SQL Editor. `kompass_events.handelse` is plain text — new event types need no migration.
+- **Database**: Neon Postgres — project "Ai kompass" on Hai's Neon account (`hai@khyte.se`), region `aws-eu-central-1`, branch `production`. `neon link --project-id steep-darkness-99457678 --branch production` connects a local checkout (writes the git-ignored `.neon` and `.env.local`). Code: `src/kompass/server/db.ts` (`@neondatabase/serverless`, one HTTP request per query, parameterized SQL only). Schema: `db/schema.sql` + `db/migrations/` — run new migrations in Neon's SQL Editor or with `psql "$DATABASE_URL" -f …`. `kompass_events.handelse` is plain text — new event types need no migration.
 - **Tests**: `npm test` (Vitest, `vitest.config.ts`). Tests live next to the code as `src/kompass/**/*.test.ts`; `grans.test.ts` guards the module boundary (only `@/kompass`, `@/kompass/og`, `@/kompass/server` may be imported from `src/app`) and CSS isolation (every `k-*` class used and defined).
 
 - **Module**: `src/kompass/` (self-contained: CSS scoped under `.kompass`, classes `k-*`, API under `/api/kompass/*`, images under `public/kompass/`). Entry points: `@/kompass`, `@/kompass/og`, `@/kompass/server`.
@@ -696,18 +696,19 @@ Lead magnet moved in from the separate `khyte-kompass` repo with its `npm run fl
 - **Nav**: secondary ghost button left of the CTA — icon only at `lg`, icon + "Kompassen" from `xl`, hidden below `lg` (right side has no room; the nav already overlaps at 768px). Mobile drawer: full-width ghost button above "Kontakta oss". Logo/CTA/centered links untouched. On `/kompass` the button just scrolls to top.
 - **Teaser** (`KompassTeaser.tsx`): homepage only. Dark card bottom-right (mobile: bottom, full width) after scrolling past ~0.8 viewport or 20 s. Hidden for 7 days after close or after the compass is opened (`localStorage` key `khyte-kompass-ruta`). Hidden while the compass or Calendly is open.
 - **SiteChrome** also hides nav/footer/Calendly on `/kompass/inbaddad`.
-- **Env vars (Vercel)**: `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `RESEND_API_KEY`, `MAIL_FROM`, `SALES_EMAIL`, `ADMIN_EMAIL`, `ANTHROPIC_API_KEY`, `CRON_SECRET` — see `.env.example`. **Without Supabase, saving answers and the contact form return 500** (the visitor sees "Vi kunde inte skicka just nu"). Without `ANTHROPIC_API_KEY` the result falls back to the rule engine.
+- **Env vars (Vercel)**: `DATABASE_URL`, `RESEND_API_KEY`, `MAIL_FROM`, `SALES_EMAIL`, `ADMIN_EMAIL`, `ANTHROPIC_API_KEY`, `CRON_SECRET` — see `.env.example`. Locally, `neon link` writes `DATABASE_URL` to the git-ignored `.env.local`. **Without `DATABASE_URL`, saving answers and the contact form return 500** (the visitor sees "Vi kunde inte skicka just nu"). Without `ANTHROPIC_API_KEY` the result falls back to the rule engine.
 - **Cron, once a day** (`vercel.json`, `0 5 * * *` UTC — on Hobby it runs at some point within that hour, and daily is the most it allows): retries failed mails and deletes data past its retention (`LAGRING`: answers without email and events after 90 days, spam counters after 2). The first send attempt happens when the email is submitted; cron makes attempts two and three, so the admin alarm goes out on the second cron run after a failure (within ~2 days). Needs `CRON_SECRET` in Vercel — without it the route answers 500 and nothing runs.
 - **Mail delivery is checked**: Resend doesn't throw when it rejects a send — it returns `{ error }`. `skicka()` in `mail.ts` turns that into a thrown error, so a rejected mail is marked `misslyckad` and retried (before 2026-09-30 it was silently marked `skickad`). Each send carries an idempotency key per visit, step and attempt.
-- **No duplicate mails from cron**: before sending, cron claims the row with one conditional update (`taRad` in `leverans.ts`, column `behandlas_till`, 10-minute lease). A second concurrent run skips it; a crashed run's lease expires. The database decides — verify once against the real Supabase (step 6 below).
+- **No lead left without retries**: the contact route saves the lead with `behover_forsok = true` and holds the row's lock (`behandlas_till`) while it sends. `sparaStatus` then sets the real value. If the status never gets saved (crash, or the save fails), the lock expires and cron runs the steps from the start (`behoverKoras`: the sales mail has no status). Same idempotency keys as the first time, so Resend won't resend a mail that actually went out within 24 h; after that a duplicate is possible — better than a lost lead. Test: `src/kompass/server/api/kontakt.test.ts`.
+- **No duplicate mails from cron**: before sending, cron claims the row with one conditional update (`taRad` in `leverans.ts`, column `behandlas_till`, 10-minute lease). A second concurrent run skips it; a crashed run's lease expires. The database decides (`now()` in Postgres, not the server clock) — verify once in production (step 6 below).
 - **Overview: `/internal/kompass`** — funnel (started → saw result → left email → clicked "Boka ett möte"), answered per screen, where non-finishers stopped, the latest leads (email, company, answers, whether the sales/result mails went out, meeting click) and the latest 100 visits without contact details. Period 7/30/90 days. Behind the same Basic auth as the signature tool (`proxy.ts` matches `/internal/*`, no change there); contains personal data — never move it outside `/internal/`. Shows setup steps instead of crashing when no database is connected. Queries: `src/kompass/server/oversikt.ts`; calculations: `src/kompass/lib/oversikt.ts`.
-- **Setting up the database** (status unknown as of 2026-09-30 — there's no local `.env`, and Vercel/Supabase weren't checked. If it isn't set up, no data is saved):
-  1. Create a Supabase project (EU region).
-  2. Run `supabase/schema.sql` in its SQL Editor (fresh project: the migrations are already included; an existing database: run the files in `supabase/migrations/` that are newer than it, e.g. `20260930_behandlas_till.sql`).
-  3. In Vercel → Settings → Environment Variables: `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `CRON_SECRET`, `RESEND_API_KEY`, `MAIL_FROM`, `SALES_EMAIL`, `ADMIN_EMAIL`, `ANTHROPIC_API_KEY`.
+- **Going live** (as of 2026-10-05):
+  1. ✅ Neon project created and linked (`neon link`).
+  2. ✅ `db/schema.sql` run against the Neon `production` branch (fresh database: the migrations are already included; an existing database: run the files in `db/migrations/` that are newer than it).
+  3. In Vercel → Settings → Environment Variables: `DATABASE_URL` (the pooled connection string from Neon → Connect), `CRON_SECRET`, `RESEND_API_KEY`, `MAIL_FROM`, `SALES_EMAIL`, `ADMIN_EMAIL`, `ANTHROPIC_API_KEY`. Not checked in Vercel yet.
   4. Redeploy, do one full run-through with a real email, then check `/internal/kompass` (lead, both mails ✓) and your inbox.
   5. Trigger the cron once by hand: `curl -H "Authorization: Bearer $CRON_SECRET" https://www.khyte.se/api/kompass/cron` — expect `{"ok":true,…}`.
-  6. Check the lock: make a row need a retry (e.g. a lead whose result mail failed), then call the cron twice at the same time. One run should report it under `forsokta`/`lyckade`, the other under `upptagna` — and only one mail should arrive.
+  6. Check the lock: make a row need a retry (e.g. a lead whose result mail failed), then call the cron twice at the same time. One run should report it under `kvar` or `lyckade`, the other under `upptagna` — and only one mail should arrive. (`forsokta` counts rows that needed a retry before the lock, so both runs show it; `lyckade` means the row no longer needs retries — including when it gave up after the third attempt.) Verified locally against the Neon database on 2026-10-05: attempts went from 1 to 2, not 3.
 
 ## Development
 ```bash
@@ -838,6 +839,12 @@ Moved to `docs/INTENTIONS.md` — the living log for ideas, directions, and thin
 
 ## Changelog
 
+### v2.32 — Kompassen: databasen flyttad till Neon
+- **Supabase → Neon Postgres** (project "Ai kompass" on Hai's account). `@supabase/supabase-js` removed, `@neondatabase/serverless` added; `src/kompass/server/supabase.ts` replaced by `db.ts` with plain parameterized SQL. Same tables and behavior — the schema needed no changes.
+- `supabase/` renamed to `db/`. Env: `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` → `DATABASE_URL`.
+- Cron lock now uses the database clock (`now()`) for the lease; cleanup counts deleted rows in SQL.
+- **Fix (pre-existing gap, found in review)**: if the mails failed and the delivery status then couldn't be saved, the visitor got OK but cron never found the row. The contact route now marks the row pending and locked before sending; cron also picks up leads whose status was never saved.
+
 ### v2.31 — Kompassen: intern översikt och dagligt cron-jobb
 - **Fixes after review**: rejected Resend sends are now errors (were marked sent — pre-existing bug), cron claims rows before sending (new column `behandlas_till` + migration), funnel percentages count only visits that started in the period (could exceed 100 %), lead list is paginated with a real total.
 - **`/internal/kompass`**: funnel, answered per screen, drop-off, leads (with mail delivery status and meeting click) and all visits. Behind the existing `/internal` Basic auth — no `proxy.ts` change.
@@ -852,7 +859,7 @@ Moved to `docs/INTENTIONS.md` — the living log for ideas, directions, and thin
 - Full logic and prompts: `docs/KOMPASS_LOGIK.md`.
 
 ### v2.29 — Automationskompassen on the site
-- Moved the compass module in from `khyte-kompass` (`src/kompass/`, `/kompass`, `/api/kompass/*`, `public/kompass/`). New deps: `@anthropic-ai/sdk`, `@supabase/supabase-js`, `resend`, `server-only`, `zod`.
+- Moved the compass module in from `khyte-kompass` (`src/kompass/`, `/kompass`, `/api/kompass/*`, `public/kompass/`). New deps: `@anthropic-ai/sdk`, `@supabase/supabase-js` (replaced by Neon in v2.32), `resend`, `server-only`, `zod`.
 - Popup: `KompassProvider` in layout, `KompassModal` (iframe to `/kompass/inbaddad`), homepage `KompassTeaser`. Nav button (lg+) and mobile drawer button. See "Automationskompassen" above.
 - `/kompass` added to the sitemap.
 

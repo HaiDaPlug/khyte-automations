@@ -4,7 +4,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 // { error }. De här testerna låtsas vara Resend och kontrollerar att ett
 // nekat mejl blir "misslyckad" och försöks igen, inte "skickad".
 vi.mock("server-only", () => ({}));
-vi.mock("@/kompass/server/supabase", () => ({ supabase: () => ({}) }));
+vi.mock("@/kompass/server/db", () => ({}));
 
 const send = vi.fn();
 vi.mock("resend", () => ({

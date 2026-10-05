@@ -1,13 +1,14 @@
 import { NextResponse } from "next/server";
 import { loggaFel } from "@/kompass/server/logg";
 import { TEXT } from "@/kompass/data/kompass";
-import { supabase } from "@/kompass/server/supabase";
+import { fraga, uppdateraSvarsrad } from "@/kompass/server/db";
 import { kontrolleraAiAnalys } from "@/kompass/lib/ai-typer";
 import { hamtaForslag } from "@/kompass/server/forslag";
 import { sammanstall } from "@/kompass/lib/sammanstallning";
 import type { Svar } from "@/kompass/lib/typer";
 import {
   korEftersteg,
+  LAS_MINUTER,
   larmaOmUppgivnaSteg,
   sparaStatus,
 } from "@/kompass/server/leverans";
@@ -75,9 +76,8 @@ export async function POST(request: Request) {
   let rad: SvarsRad;
 
   try {
-    const { data, error } = await supabase()
-      .from("kompass_svar")
-      .update({
+    const [data] = await uppdateraSvarsrad<SvarsRad>(
+      {
         kontakt_namn: d.kontakt_namn.trim() || null,
         foretag: d.foretag.trim() || null,
         telefon: d.telefon.trim() || null,
@@ -87,36 +87,39 @@ export async function POST(request: Request) {
         tips_namn: d.tips_namn.trim() || null,
         tips_kontakt: d.tips_kontakt.trim() || null,
         kontakt_at: new Date().toISOString(),
-      })
-      .eq("session_id", d.session_id)
+        // Raden markeras som väntande redan nu, och den här förfrågan håller
+        // den med samma lås som cron-jobbet tar (se taRad). Sparas statusen
+        // aldrig — krasch, eller fel vid sparandet — löper låset ut och
+        // cron-jobbet tar raden. sparaStatus sätter det riktiga värdet.
+        behover_forsok: true,
+        behandlas_till: new Date(Date.now() + LAS_MINUTER * 60_000).toISOString(),
+      },
       // Idempotent: bara första inskicket för ett besök går igenom. Ett
       // dubbelklick eller ett nytt försök från webbläsaren träffar ingen rad
       // här — och då skickas inga mejl en gång till.
-      .is("kontakt_at", null)
-      .select(RAD_KOLUMNER)
-      .maybeSingle();
+      "session_id = $1 and kontakt_at is null",
+      [d.session_id],
+      RAD_KOLUMNER,
+    );
 
-    if (!error && !data) {
-      const { data: finns } = await supabase()
-        .from("kompass_svar")
-        .select("kontakt_at")
-        .eq("session_id", d.session_id)
-        .maybeSingle();
+    if (!data) {
+      const [finns] = await fraga<{ kontakt_at: Date | null }>(
+        "select kontakt_at from kompass_svar where session_id = $1",
+        [d.session_id],
+      );
       if (finns?.kontakt_at) {
         // Redan mottaget. Svara ok, så att besökaren kommer till tacksidan.
         return NextResponse.json({ ok: true, redanMottaget: true });
       }
-    }
-
-    if (error || !data) {
-      loggaFel("Kunde inte spara kontaktuppgifter", error?.message);
+      // Ingen rad alls — sparandet av svaren gick aldrig igenom.
+      loggaFel("Kunde inte spara kontaktuppgifter", "ingen svarsrad för besöket");
       return NextResponse.json(
         { fel: TEXT.fel.kontaktMisslyckades },
         { status: 500 },
       );
     }
 
-    rad = data as unknown as SvarsRad;
+    rad = data;
   } catch (fel) {
     loggaFel("Oväntat fel vid kontaktsparande", fel);
     return NextResponse.json(
@@ -134,11 +137,7 @@ export async function POST(request: Request) {
       kontrolleraAiAnalys(rad.ai_analys),
     );
     rad = { ...rad, forslag, plan };
-    const { error } = await supabase()
-      .from("kompass_svar")
-      .update({ forslag, plan })
-      .eq("session_id", d.session_id);
-    if (error) loggaFel("Kunde inte spara förslag", error.message);
+    await uppdateraSvarsrad({ forslag, plan }, "session_id = $1", [d.session_id]);
   } catch (fel) {
     loggaFel(`Kunde inte räkna fram förslag för ${d.session_id}`, fel);
   }

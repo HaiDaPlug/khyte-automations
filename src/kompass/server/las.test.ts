@@ -1,61 +1,59 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 // Cron-jobbets lås. Själva samtidigheten avgörs av databasen och kan bara
-// provas mot en riktig Supabase — här kontrolleras att uppdateringen ställer
+// provas mot en riktig databas — här kontrolleras att uppdateringen ställer
 // rätt villkor, och att sparandet släpper låset.
 vi.mock("server-only", () => ({}));
 vi.mock("@/kompass/server/mail", () => ({}));
 
-type Anrop = { metod: string; args: unknown[] };
+type Anrop = { sql: string; params: unknown[] };
 let anrop: Anrop[] = [];
-let svar: { data: unknown[] | null; error: { message: string } | null } = { data: [], error: null };
+let svar: () => unknown[] = () => [];
 
-const kedja: Record<string, unknown> = {};
-for (const metod of ["from", "update", "eq", "or", "select"]) {
-  kedja[metod] = (...args: unknown[]) => {
-    anrop.push({ metod, args });
-    return kedja;
-  };
-}
-// Klienten är "thenable": await på kedjan ger svaret.
-kedja.then = (los: (v: unknown) => void) => los(svar);
-vi.mock("@/kompass/server/supabase", () => ({ supabase: () => kedja }));
+vi.mock("@/kompass/server/db", () => ({
+  fraga: async (sql: string, params: unknown[] = []) => {
+    anrop.push({ sql, params });
+    return svar();
+  },
+  uppdateraSvarsrad: async (falt: Record<string, unknown>, villkor: string, params: unknown[] = []) => {
+    anrop.push({ sql: `update ${villkor}`, params: [...params, falt] });
+    return svar();
+  },
+}));
 
 const { taRad, sparaStatus, LAS_MINUTER } = await import("@/kompass/server/leverans");
 
-const hitta = (metod: string) => anrop.filter((a) => a.metod === metod).map((a) => a.args);
+const enRad = (sql: string) => sql.replace(/\s+/g, " ").trim();
 
 beforeEach(() => {
   anrop = [];
-  svar = { data: [], error: null };
+  svar = () => [];
 });
 
 describe("taRad", () => {
   it("tar bara en rad som väntar och som ingen annan körning håller", async () => {
-    svar = { data: [{ session_id: "s1" }], error: null };
-    const fore = Date.now();
+    svar = () => [{ session_id: "s1" }];
     expect(await taRad("s1")).toBe(true);
 
-    expect(hitta("eq")).toEqual([
-      ["session_id", "s1"],
-      ["behover_forsok", true],
-    ]);
-    const [villkor] = hitta("or")[0] as [string];
-    expect(villkor).toMatch(/^behandlas_till\.is\.null,behandlas_till\.lt\."[^"]+"$/);
-
-    const [{ behandlas_till }] = hitta("update")[0] as [{ behandlas_till: string }];
-    const minuter = (Date.parse(behandlas_till) - fore) / 60_000;
-    expect(minuter).toBeGreaterThanOrEqual(LAS_MINUTER - 0.1);
-    expect(minuter).toBeLessThanOrEqual(LAS_MINUTER + 0.1);
+    const [{ sql, params }] = anrop;
+    expect(enRad(sql)).toContain("set behandlas_till = now() + make_interval(mins => $2)");
+    expect(enRad(sql)).toContain(
+      "where session_id = $1 and behover_forsok and (behandlas_till is null or behandlas_till < now())",
+    );
+    expect(enRad(sql)).toContain("returning session_id");
+    expect(params).toEqual(["s1", LAS_MINUTER]);
   });
 
   it("säger nej när en annan körning redan tagit raden", async () => {
-    svar = { data: [], error: null };
+    svar = () => [];
     expect(await taRad("s1")).toBe(false);
   });
 
   it("säger nej vid databasfel — hellre inget mejl än två", async () => {
-    svar = { data: null, error: { message: "timeout" } };
+    svar = () => {
+      throw new Error("timeout");
+    };
+    vi.spyOn(console, "error").mockImplementation(() => {});
     expect(await taRad("s1")).toBe(false);
   });
 });
@@ -63,7 +61,10 @@ describe("taRad", () => {
 describe("sparaStatus", () => {
   it("släpper låset när statusen sparas", async () => {
     await sparaStatus("s1", { saljmejl: { status: "skickad", forsok: 2 } });
-    const [falt] = hitta("update")[0] as [Record<string, unknown>];
+    const [{ sql, params }] = anrop;
+    expect(sql).toBe("update session_id = $1");
+    const falt = params[1] as Record<string, unknown>;
+    expect(params[0]).toBe("s1");
     expect(falt.behandlas_till).toBeNull();
     expect(falt.behover_forsok).toBe(false);
   });

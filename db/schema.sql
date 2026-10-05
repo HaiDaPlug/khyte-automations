@@ -1,9 +1,10 @@
 -- Automationskompassen — databasschema
--- Kör i Supabase Dashboard → SQL Editor.
+-- Databasen ligger hos Neon (Postgres). Kör filen i Neons SQL Editor eller
+-- med psql "$DATABASE_URL" -f db/schema.sql. Går att köra flera gånger.
 --
--- RLS är på och det finns MEDVETET inga policies. Klienten når aldrig
--- tabellerna direkt; all läsning och skrivning går via serverfunktionerna,
--- som använder service role-nyckeln och därför går förbi RLS.
+-- RLS är på och det finns MEDVETET inga policies. Besökarens webbläsare når
+-- aldrig tabellerna; all läsning och skrivning går via serverfunktionerna,
+-- som ansluter som tabellernas ägare och därför inte stoppas av RLS.
 
 create extension if not exists pgcrypto;
 
@@ -113,7 +114,7 @@ create table if not exists kompass_svar (
 -- Kolumner som lagts till efter att tabellen först skapades. `create table if
 -- not exists` rör inte en tabell som redan finns — de här raderna gör det, så
 -- att filen alltid går att köra om. En ny kolumn läggs in på båda ställena,
--- och som en fil i supabase/migrations/.
+-- och som en fil i db/migrations/.
 alter table kompass_svar add column if not exists mal text;
 alter table kompass_svar add column if not exists flaskhals text;
 alter table kompass_svar add column if not exists bekraftelse text;
@@ -177,7 +178,7 @@ create table if not exists kompass_inskick (
 create index if not exists kompass_inskick_idx on kompass_inskick (ip_hash, typ, created_at desc);
 
 -- ── RLS ─────────────────────────────────────────────────────────────────────
--- På, utan policies: ingen anon- eller authenticated-åtkomst alls.
+-- På, utan policies: ingen annan roll än ägaren kommer åt tabellerna.
 
 alter table kompass_svar enable row level security;
 alter table kompass_events enable row level security;
