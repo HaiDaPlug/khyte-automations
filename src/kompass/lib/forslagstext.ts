@@ -1,8 +1,8 @@
 /**
- * Tolkar Claudes förslag till samma form som våra egna flöden: en mening om
+ * Tolkar AI:ns förslag till samma form som våra egna flöden: en mening om
  * vad lösningen gör, följd av stegen. Används både på sidan och i mejlet.
  *
- * Claude ombeds skriva stegen som rader som börjar med "- ". Följer svaret
+ * AI:n ombeds skriva stegen som rader som börjar med "- ". Följer svaret
  * inte formatet blir hela texten sammanfattningen och stegen tomma — kortet
  * visar då bara texten, vilket fortfarande fungerar.
  */

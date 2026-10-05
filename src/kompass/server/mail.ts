@@ -2,18 +2,18 @@ import "server-only";
 
 import { Resend } from "resend";
 import {
-  CASE,
   FRAGA,
   MAL_FRAS,
-  OMRADEN,
   SAJT,
   SPECIAL,
+  TEXT,
+  VISA_PER_MANAD_UNDER,
 } from "@/kompass/data/kompass";
 import { malFranText } from "@/kompass/lib/flode";
 import { tolkaForslag } from "@/kompass/lib/forslagstext";
 import type { SvarsRad } from "@/kompass/server/rad";
 import type { SparatForslag } from "@/kompass/lib/sammanstallning";
-import { formateraKronor, formateraTal } from "@/kompass/lib/tid";
+import { formateraKronor, formateraTal, formateraTimmarKort, perManad } from "@/kompass/lib/tid";
 
 /**
  * Mejlutskick via Resend.
@@ -80,13 +80,17 @@ function skyddaHtml(text: string): string {
 function ram(innehall: string): string {
   return `<!doctype html>
 <html lang="sv">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"></head>
 <body style="margin:0;padding:24px;background:#f8f6f3;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;color:#3a3330;">
   <div style="max-width:560px;margin:0 auto;background:#ffffff;border-radius:16px;padding:32px;">
     ${innehall}
     <hr style="border:none;border-top:1px solid rgba(58,51,48,0.12);margin:28px 0 18px;">
-    <p style="margin:0;font-size:13px;color:#9c8e82;">
-      Khyte Automations · <a href="${SAJT.bas}" style="color:#c05e20;">khyte.se</a>
-    </p>
+    <table role="presentation" style="border-collapse:collapse;">
+      <tr>
+        <td style="vertical-align:middle;padding:0 8px 0 0;"><img src="${SAJT.bas}/signature-assets/khyte-logo.png" width="20" height="20" alt="" style="display:block;border:0;"></td>
+        <td style="vertical-align:middle;font-size:13px;color:#9c8e82;"><strong style="font-weight:600;color:#3a3330;">Khyte Automations</strong> · <a href="${SAJT.bas}" style="color:#9c8e82;">khyte.se</a></td>
+      </tr>
+    </table>
   </div>
 </body>
 </html>`;
@@ -240,139 +244,118 @@ export async function skickaSaljnotis(rad: SvarsRad, nyckel?: string): Promise<v
   });
 }
 
-/** Ett förslag som HTML — samma innehåll och ordning som kortet på sidan. */
-function forslagHtml(f: SparatForslag, nummer: number, rad: SvarsRad): string {
-  const omrade = OMRADEN.find((o) => o.id === f.id);
-
-  // Önskemålets flöde kommer från Claude och tolkas till samma form.
-  const claude =
-    f.kalla === "onskemal" && rad.ai_forslag ? tolkaForslag(rad.ai_forslag) : null;
-  const steg = claude ? claude.steg : f.steg;
-
-  const kallaText =
-    f.kalla === "signal"
-      ? "Syns i dina svar"
-      : f.kalla === "bransch"
-        ? "Vanligt i er bransch"
-        : f.kalla === "ide"
-          ? "Ett steg längre"
-          : null;
-
-  // Kedjor och AI-förslag bygger ofta på flera områden — visa vilka.
-  const flera = (f.omraden ?? [])
-    .map((id) => OMRADEN.find((o) => o.id === id)?.namn)
-    .filter(Boolean);
-  const byggerIhop =
-    flera.length > 1
-      ? `<p style="margin:0 0 12px;font-size:13px;color:#5a4f48;">Binder ihop: ${flera.map((n) => skyddaHtml(n ?? "")).join(" · ")}</p>`
-      : "";
-
-  const stegHtml = steg
-    .map(
-      (s, i) => `
-        <tr>
-          <td style="vertical-align:top;padding:0 10px 10px 0;">
-            <span style="display:inline-block;width:24px;height:24px;line-height:24px;border-radius:12px;background:#c05e20;color:#fff;text-align:center;font-size:13px;font-weight:700;">${i + 1}</span>
-          </td>
-          <td style="vertical-align:top;padding:2px 0 10px;font-size:14px;color:#3a3330;">${skyddaHtml(s)}</td>
-        </tr>`,
-    )
-    .join("");
-
-  const fall = (omrade?.caseIds ?? [])
-    .map((id) => CASE[id])
-    .filter(Boolean)
-    .map(
-      (c) => `
-      <p style="margin:12px 0 0;padding-left:12px;border-left:2px solid #c05e20;font-size:14px;color:#3a3330;">
-        ${c.citat ? `<em>”${skyddaHtml(c.citat)}”</em><br><span style="color:#9c8e82;">${skyddaHtml(c.namn ?? "")}, ${skyddaHtml(c.foretag)}</span>` : `${skyddaHtml(c.resultat ?? "")}<br><span style="color:#9c8e82;">${skyddaHtml(c.foretag)}</span>`}
-      </p>`,
-    )
-    .join("");
-
-  const besparing =
-    f.besparing_min !== null && f.besparing_max !== null
-      ? `Sparar troligen <strong>${timmar(f.besparing_min, f.besparing_max)}</strong>${f.tjanster ? ` — ${skyddaHtml(f.tjanster)}` : ""}${f.lagt_min !== null ? `, av de ${timmar(f.lagt_min, f.lagt_max)} som går åt i dag` : ""}.`
-      : null;
-
-  return `
-    <div style="background:#f0ede9;border-radius:12px;padding:20px;margin:0 0 14px;${f.kalla === "onskemal" ? "border:2px solid #c05e20;" : ""}">
-      <p style="margin:0 0 4px;font-size:13px;color:#c05e20;font-weight:700;">${String(nummer).padStart(2, "0")}.${kallaText ? ` · ${kallaText}` : ""}${omrade ? ` · ${omrade.fardig ? "Färdig lösning" : "Byggs skräddarsytt"}` : ""}</p>
-      <p style="margin:0 0 10px;font-size:18px;font-weight:700;">${skyddaHtml(f.rubrik)}</p>
-      ${byggerIhop}
-      ${f.affarsnytta ? `<p style="margin:0 0 14px;padding-left:12px;border-left:3px solid #c05e20;font-size:15px;font-weight:600;">${skyddaHtml(f.affarsnytta)}</p>` : ""}
-      ${f.varfor ? `<p style="${ETIKETT}">${f.kalla === "onskemal" ? "Du skrev" : "Därför föreslår vi det här"}</p><p style="margin:4px 0 14px;font-size:15px;">${f.kalla === "onskemal" ? `<strong>”${skyddaHtml(f.varfor)}”</strong>` : skyddaHtml(f.varfor)}</p>` : ""}
-      <p style="${ETIKETT}">Så skulle det kunna se ut</p>
-      ${claude?.sammanfattning ? `<p style="margin:4px 0 10px;font-size:15px;">${skyddaHtml(claude.sammanfattning)}</p>` : ""}
-      ${f.kalla === "onskemal" && !claude && !stegHtml ? `<p style="margin:4px 0 10px;font-size:14px;color:#5a4f48;">Vi tar med det här i genomgången och visar hur det skulle kunna se ut.</p>` : ""}
-      ${stegHtml ? `<table style="border-collapse:collapse;margin-top:8px;">${stegHtml}</table>` : ""}
-      ${f.slipper ? `<p style="margin:6px 0 0;font-size:14px;color:#5a4f48;"><strong style="color:#3a3330;">Det här försvinner:</strong> ${skyddaHtml(f.slipper)}</p>` : ""}
-      ${besparing || f.pengar ? `<div style="margin:14px 0 0;padding:12px 14px;background:#c05e20;border-radius:8px;color:#fff;font-size:14px;">${besparing ?? ""}${besparing && f.pengar ? "<br>" : ""}${f.pengar ? skyddaHtml(f.pengar) : ""}</div>` : ""}
-      ${fall}
-      ${f.forsta_steget ? `<p style="margin:14px 0 0;padding:10px 12px;background:#f8f6f3;border-radius:8px;font-size:14px;"><strong>Första steget:</strong> ${skyddaHtml(f.forsta_steget)}</p>` : ""}
-    </div>`;
+/** Kortar en text till högst max tecken, vid ett ord. */
+function kortad(text: string, max: number): string {
+  const t = text.trim();
+  if (t.length <= max) return t;
+  return `${t.slice(0, t.lastIndexOf(" ", max - 1) > 0 ? t.lastIndexOf(" ", max - 1) : max - 1)}…`;
 }
 
-/** Resultatmejl till användaren — hela resultatet, alla tre förslagen. */
+/**
+ * Ett förslag i resultatmejlet: rubrik och en mening. Hur det skulle se ut
+ * steg för steg tar vi på mötet — mejlet ska gå att läsa på en halv minut.
+ *
+ * Arbetsflödet besökaren beskrev får deras egna ord och, om AI:n hunnit ta
+ * fram ett förslag, dess första mening — det mest personliga i resultatet.
+ * Stegen står bara i säljnotisen.
+ */
+function forslagRad(f: SparatForslag, nummer: number, aiForslag: string | null): string {
+  const rad =
+    f.kalla === "onskemal"
+      ? `${TEXT.resultat.duSkrev} ”${skyddaHtml(kortad(f.varfor, 160))}”`
+      : skyddaHtml(f.affarsnytta ?? f.varfor);
+  const losning =
+    f.kalla === "onskemal" && aiForslag ? kortad(tolkaForslag(aiForslag).sammanfattning, 220) : "";
+
+  return `
+    <tr>
+      <td style="vertical-align:top;width:34px;padding:16px 0;border-top:1px solid #ece7e2;font-size:14px;font-weight:700;color:#c05e20;">${String(nummer).padStart(2, "0")}</td>
+      <td style="vertical-align:top;padding:16px 0;border-top:1px solid #ece7e2;">
+        <p style="margin:0;font-size:16px;line-height:1.35;font-weight:700;color:#3a3330;">${skyddaHtml(f.rubrik)}</p>
+        ${rad ? `<p style="margin:6px 0 0;font-size:14px;line-height:1.5;color:#5a4f48;">${rad}</p>` : ""}
+        ${losning ? `<p style="margin:6px 0 0;font-size:14px;line-height:1.5;color:#3a3330;">${skyddaHtml(losning)}</p>` : ""}
+      </td>
+    </tr>`;
+}
+
+/** Resultatmejl till användaren: en siffra, tre förslag, ett möte. */
 export async function skickaResultatmejl(rad: SvarsRad, nyckel?: string): Promise<void> {
   const mejl = rad.mejl?.trim();
   if (!mejl) throw new Error("Ingen mejladress att skicka till.");
 
-  const forslag = (rad.forslag ?? []).map((f, i) => forslagHtml(f, i + 1, rad)).join("");
-
-  const plan = (rad.plan ?? []).length
-    ? `<p style="${ETIKETT}margin-top:6px;">Så skulle vi lägga upp det</p>
-       <table style="border-collapse:collapse;width:100%;margin:8px 0 18px;">${(rad.plan ?? [])
-         .map(
-           (p, i) => `<tr>
-             <td style="vertical-align:top;padding:0 10px 10px 0;font-size:13px;font-weight:700;color:#c05e20;white-space:nowrap;">Fas ${i + 1}</td>
-             <td style="vertical-align:top;padding:0 0 10px;font-size:14px;"><strong>${skyddaHtml(p.rubrik)}.</strong> ${skyddaHtml(p.text)}${p.klartNar ? `<br><span style="color:#5a4f48;">✓ ${skyddaHtml(p.klartNar)}</span>` : ""}</td>
-           </tr>`,
-         )
-         .join("")}</table>`
-    : "";
-
-  const harTid =
-    rad.timmar_max !== null && Number(rad.timmar_max) > 0;
-  // Målet först — förslagen börjar där, precis som på sidan.
-  const mal = malFranText(rad.mal);
-  const malet =
-    mal
-      ? `<p style="margin:0 0 14px;font-size:16px;">Du sa att det som skulle göra störst skillnad är att <strong>${skyddaHtml(MAL_FRAS[mal](false))}</strong> — därför börjar förslagen där.</p>`
-      : "";
-  const summor = harTid
-    ? `<p style="margin:0 0 6px;font-size:16px;">Ni lägger i dag <strong>${timmar(rad.timmar_min, rad.timmar_max)}</strong> på det du valde.</p>
-       ${rad.besparing_max !== null && Number(rad.besparing_max) > 0 ? `<p style="margin:0 0 18px;font-size:16px;">Troligen går <strong>${timmar(rad.besparing_min, rad.besparing_max)}</strong> att spara.</p>` : ""}`
-    : "";
-
-  const halsning = rad.kontakt_namn?.trim()
-    ? `Hej ${skyddaHtml(rad.kontakt_namn.trim().split(" ")[0])}!`
-    : "Hej!";
-
+  const { amne, html } = resultatmejl(rad);
   await skicka({
     nyckel,
     from: avsandare(),
+    // Mejlet ber besökaren svara — svaret ska alltid landa hos oss.
+    replyTo: SAJT.mejl,
     to: mejl,
-    subject: "Ditt resultat från Automationskompassen",
+    subject: amne,
+    html,
+  });
+}
+
+/**
+ * Resultatmejlets ämne och innehåll. Skickar inget — går att förhandsvisa.
+ * Samma upplägg som resultatsidan: siffran, tre förslag och ett möte.
+ */
+export function resultatmejl(rad: SvarsRad): { amne: string; html: string } {
+  const halsning = rad.kontakt_namn?.trim()
+    ? `Hej ${skyddaHtml(rad.kontakt_namn.trim().split(" ")[0])}!`
+    : "Hej!";
+  const mal = malFranText(rad.mal);
+  const intro = `${halsning} Utifrån dina svar har vi tagit fram tre saker vi skulle börja med.${
+    mal ? ` Du ville ${skyddaHtml(MAL_FRAS[mal](false))}, så vi börjar där.` : ""
+  }`;
+
+  // Samma siffra som på sidan: per månad när veckotiden är liten.
+  const besparing = { min: Number(rad.besparing_min ?? 0), max: Number(rad.besparing_max ?? 0) };
+  const perManadVisas = besparing.max > 0 && besparing.max < VISA_PER_MANAD_UNDER;
+  // Draken från kompassens startsida flyger i rutans högra kant. Den har
+  // mindre luft runt sig än texten, så rutan blir inte högre och texten
+  // står där den alltid stått.
+  const siffra =
+    besparing.max > 0
+      ? `<table role="presentation" cellspacing="0" cellpadding="0" style="width:100%;margin:0 0 28px;border-collapse:separate;border-spacing:0;background:#f8f6f3;border-radius:12px;">
+           <tr>
+             <td style="vertical-align:middle;padding:20px 22px;">
+               <p style="${ETIKETT}">${TEXT.resultat.frigor}</p>
+               <p style="margin:6px 0 0;font-size:30px;line-height:1.1;font-weight:700;color:#c05e20;">
+                 ${formateraTimmarKort(perManadVisas ? perManad(besparing) : besparing)}
+                 <span style="font-size:15px;font-weight:400;color:#5a4f48;">${perManadVisas ? TEXT.resultat.frigorFotManad : TEXT.resultat.frigorFot}</span>
+               </p>
+             </td>
+             <td style="vertical-align:middle;width:37px;padding:8px 22px 8px 0;"><img src="${SAJT.bas}/kompass/drake-mejl.png" width="37" height="76" alt="" style="display:block;border:0;"></td>
+           </tr>
+         </table>`
+      : "";
+
+  const forslag = (rad.forslag ?? []).map((f, i) => forslagRad(f, i + 1, rad.ai_forslag)).join("");
+
+  return {
+    amne: "Ditt resultat från Automationskompassen",
     html: ram(
-      `<h1 style="margin:0 0 6px;font-size:22px;">Här är ditt resultat</h1>
-       <p style="margin:0 0 20px;font-size:15px;color:#5a4f48;">${halsning} Det här såg vi utifrån dina svar — och tre saker vi skulle börja med.</p>
-       ${malet}
-       ${summor}
-       ${plan}
-       ${forslag}
-       <p style="margin:20px 0 0;font-size:15px;color:#5a4f48;">
-         Det här är en första uppskattning byggd på dina svar — inte ett löfte.
-         Varje område räknas bara en gång. Vi validerar siffrorna i ett kort
-         förprojekt, mot hur det faktiskt ser ut hos er.
-       </p>
-       <p style="margin:20px 0 0;font-size:15px;">
-         Vi hör av oss inom ett dygn. Vill du höra av dig först går det bra på
-         <a href="mailto:${SAJT.mejl}" style="color:#c05e20;">${SAJT.mejl}</a>
-         eller ${SAJT.telefon}.
+      `<h1 style="margin:0 0 10px;font-size:24px;line-height:1.25;">Här är ditt resultat</h1>
+       <p style="margin:0 0 28px;font-size:15px;line-height:1.55;color:#5a4f48;">${intro}</p>
+       ${siffra}
+       ${
+         forslag
+           ? `<p style="${ETIKETT}">${TEXT.resultat.forslagRubrik}</p>
+              <table role="presentation" style="border-collapse:collapse;width:100%;margin:8px 0 0;border-bottom:1px solid #ece7e2;">${forslag}</table>`
+           : ""
+       }
+       <div style="margin:32px 0 0;padding:24px 22px;background:#f8f6f3;border-radius:12px;">
+         <p style="margin:0;font-size:18px;line-height:1.3;font-weight:700;">${TEXT.resultat.mote.rubrik}</p>
+         <p style="margin:6px 0 18px;font-size:15px;line-height:1.5;color:#5a4f48;">${TEXT.resultat.mote.brodtext}</p>
+         <a href="${SAJT.bokaMote}" style="display:inline-block;padding:14px 28px;background:#c05e20;border-radius:999px;color:#ffffff;font-size:15px;font-weight:700;text-decoration:none;">${TEXT.resultat.mote.knapp}</a>
+       </div>
+       <p style="margin:24px 0 0;font-size:13px;line-height:1.55;color:#9c8e82;">
+         Siffran är en första uppskattning utifrån dina svar, inte ett löfte.
+         Vi hör av oss inom ett dygn. Vill du höra av dig innan, svara på det här
+         mejlet eller ring <span style="white-space:nowrap;">${SAJT.telefon}</span>.
        </p>`,
     ),
-  });
+  };
 }
 
 /**

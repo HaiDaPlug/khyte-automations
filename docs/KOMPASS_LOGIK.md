@@ -152,10 +152,12 @@ Alla konstanter märkta `KALIBRERA` i `kompass.ts` är uppskattningar.
 | | Löpande analys | Förslag på arbetsflödet |
 |---|---|---|
 | När | Efter varje skärm från och med mönsterfrågan. Efter arbetsflödesfrågan bara om de skrivit något | En gång, om text finns |
-| Modell | `claude-opus-5`, `effort: "low"` | `claude-opus-5`, `effort: "low"` |
-| Tak | 10 per besök, plus spamskydd per IP | 1 per besök |
+| Modell | OpenAI `gpt-6-luna`, `reasoning.effort: "none"` (hinner klart på 7–8 s; `"low"` tog 12–13 s, längre än resultatsidan väntar), strikt JSON-schema | OpenAI `gpt-6-luna`, `reasoning.effort: "low"`, fri text |
+| Tak | 5 per besök, 60 per IP och timme | 1 per besök (sparas och återanvänds) |
 | Får arbetsflödestexten? | Ja, i egen tagg, med personuppgifter bortrensade och instruktionen att behandla den som data | Ja |
 | Om det går fel | Regelmotorns förslag | "Vi tar med det här i genomgången …" |
+
+Båda går via Responses API med `store: false` (inget sparas hos OpenAI). Systemprompten skickas först och oförändrad, så OpenAI cachar den mellan anropen under ett besök. Modell, klient och felloggning finns i `src/kompass/server/openai.ts` — byt modell där. Hela sajten har dessutom ett tak på 3 000 AI-anrop per dygn (`GRANSER_PER_DYGN` i `spamskydd.ts`), oavsett IP — när det nås tar regelmotorn över. Nyckeln heter `OPENAI_API_KEY`; utan den används regelmotorn.
 
 ---
 
@@ -312,11 +314,13 @@ Resultatsidan är kort med avsikt. Vill besökaren veta mer tar vi ett möte.
 1. **Rubrik** efter målet, till exempel "SÅ FÅR NI IN FLER AFFÄRER.".
 2. **En mening** om vad det kostar i dag.
 3. **En siffra:** "Går troligen att frigöra X h i veckan". Små tider visas per månad och större uttrycks i tjänster.
-4. **Tre förslag som en lista:** nummer, rubrik och en rad om vad det betyder för företaget. För arbetsflödet de beskrev visas deras egna ord och Claudes förslag i en mening.
+4. **Tre förslag som en lista:** nummer, rubrik och en rad om vad det betyder för företaget. För arbetsflödet de beskrev visas deras egna ord och AI:ns förslag i en mening.
 5. **"Så räknade vi"**, stängd från början.
 6. **"Vill du veta mer?"** med knappen **Boka ett möte**, som öppnar samma Calendly som sajtens "Boka samtal" i en ny flik. Under den kommer mejlfältet: "Eller få hela resultatet på mejl".
 
-Stegen, planen, kundcitaten och "Första steget" står bara i resultatmejlet. Tacksidan visar tack, mötesknappen, det frivilliga steget och direktkontakt.
+Tacksidan visar tack, mötesknappen, det frivilliga steget och direktkontakt.
+
+**Resultatmejlet** är lika kort som sidan och går att läsa på en halv minut: en hälsning med målet, samma siffra som på sidan, de tre förslagen med rubrik och en mening (för arbetsflödet de beskrev: deras egna ord), och "Vill du veta mer?" med knappen **Boka ett möte**. Svar på mejlet går till `SAJT.mejl`. Stegen, planen, kundcitaten och "Första steget" visas inte för besökaren — det tar vi på mötet. Säljnotisen har fortfarande allt.
 
 Klick på mötesknappen loggas som händelsen `mote_klick`, med steget `tack` när det sker på tacksidan.
 

@@ -1,8 +1,6 @@
 import "server-only";
 
-import { loggaFel } from "@/kompass/server/logg";
-import Anthropic from "@anthropic-ai/sdk";
-import { betaZodOutputFormat } from "@anthropic-ai/sdk/helpers/beta/zod";
+import { zodTextFormat } from "openai/helpers/zod";
 import { z } from "zod";
 import {
   FRAGA,
@@ -18,9 +16,10 @@ import { raknaUtResultat } from "@/kompass/lib/matchning";
 import { utanPersonuppgifter } from "@/kompass/lib/personuppgifter";
 import { formateraTimmar } from "@/kompass/lib/tid";
 import type { Svar } from "@/kompass/lib/typer";
+import { aiKlient, harAi, loggaAiFel, MODELL } from "@/kompass/server/openai";
 
 /**
- * Den löpande analysen: efter varje skärm läser Claude alla svar hittills,
+ * Den löpande analysen: efter varje skärm läser AI:n alla svar hittills,
  * bygger vidare på sin förra analys och formar förslag och en plan.
  *
  * Säkerhet och ärlighet:
@@ -28,12 +27,10 @@ import type { Svar } from "@/kompass/lib/typer";
  *    och instruktionen att behandla den som data. Svaret är strukturerat och
  *    kontrolleras efteråt — en text som försöker styra modellen kan inte ta
  *    sig förbi schemat eller kontrollen.
- *  - Claude skriver inga siffror. Tid räknas ur besökarens egna svar
+ *  - AI:n skriver inga siffror. Tid räknas ur besökarens egna svar
  *    (src/lib/analys.ts), och kontrollen slänger förslag med siffror i.
  *  - Går något fel används regelmotorns förslag. Flödet stannar aldrig.
  */
-
-const MODELL = "claude-opus-5";
 
 const omradesIds = OMRADEN.map((o) => o.id) as [string, ...string[]];
 
@@ -106,7 +103,7 @@ Regler:
 - hypotes: en kort mening, högst femton ord, om vad du ser hittills i deras verksamhet — hur det påverkar affären, inte bara vilka uppgifter som tar tid. Den visas för besökaren medan de svarar, så skriv den till dem.`;
 
 /**
- * Underlaget till Claude: företaget, arbetsflödena med uträknad tid, bara de
+ * Underlaget till AI:n: företaget, arbetsflödena med uträknad tid, bara de
  * extra signaler som faktiskt frågats, områdena att välja bland och deras
  * eget arbetsflöde.
  */
@@ -195,36 +192,31 @@ export async function analysera(
   svar: Svar,
   tidigare: AiAnalys | null,
 ): Promise<AiAnalys | null> {
-  if (!process.env.ANTHROPIC_API_KEY) return null;
-
-  // Kort tidsgräns: analysen körs i bakgrunden medan besökaren svarar, och
-  // hinner den inte bli klar tar regelmotorn över. Hellre det än att vänta.
-  const klient = new Anthropic({ timeout: 15_000, maxRetries: 1 });
+  if (!harAi()) return null;
 
   try {
-    const svaret = await klient.beta.messages.parse({
+    const svaret = await aiKlient().responses.parse({
       model: MODELL,
-      max_tokens: 8000,
-      // Låg ansträngning: analysen körs efter varje skärm och ska hinna klart
-      // innan nästa. Kvaliteten sitter i underlaget och reglerna.
-      output_config: { effort: "low", format: betaZodOutputFormat(AnalysSchema) },
-      // Om modellen avböjer tar en annan modell över i samma anrop.
-      betas: ["server-side-fallback-2026-07-01"],
-      fallbacks: "default",
-      system: SYSTEM,
-      messages: [{ role: "user", content: underlag(svar, tidigare) }],
+      // Systemprompten först och oförändrad — OpenAI cachar den mellan
+      // anropen, så de upprepade analyserna under ett besök blir billigare.
+      instructions: SYSTEM,
+      input: underlag(svar, tidigare),
+      // Inget resonerande: analysen ska hinna klart innan resultatsidan
+      // slutar vänta (MAX_VANTAN_PA_ANALYS, 12 s). I provet 2026-10-05 tog
+      // "low" 12–13 s och "none" 7–8 s, med lika bra förslag. Kvaliteten
+      // sitter i underlaget och reglerna.
+      reasoning: { effort: "none" },
+      text: { format: zodTextFormat(AnalysSchema, "analys") },
+      max_output_tokens: 8000,
+      // Svaren sparas inte hos OpenAI.
+      store: false,
     });
 
-    if (svaret.stop_reason === "refusal") return null;
-    return kontrolleraAiAnalys(svaret.parsed_output);
+    // Avböjer modellen, eller tar svaret slut, finns inget tolkat svar.
+    if (!svaret.output_parsed) return null;
+    return kontrolleraAiAnalys(svaret.output_parsed);
   } catch (fel) {
-    if (fel instanceof Anthropic.RateLimitError) {
-      loggaFel("Analys: rate limit hos Anthropic");
-    } else if (fel instanceof Anthropic.APIError) {
-      loggaFel(`Analys: API-fel ${fel.status}`, fel.message);
-    } else {
-      loggaFel("Analys: oväntat fel", fel);
-    }
+    loggaAiFel("Analys", fel);
     return null;
   }
 }

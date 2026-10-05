@@ -45,7 +45,7 @@ import {
   type Sammanhang,
   type Tillvaxtide,
 } from "@/kompass/data/floden";
-import { kontrolleraMotSvar, type AiAnalys, type AiForslag } from "@/kompass/lib/ai-typer";
+import { kontrolleraMotSvar, verktygIText, type AiAnalys, type AiForslag } from "@/kompass/lib/ai-typer";
 import {
   diagnosFor as svarensDiagnos,
   malFor as resultatMal,
@@ -469,7 +469,7 @@ export function omradeForFritext(fritext: string, bransch: Bransch | undefined):
 }
 
 /**
- * Arbetsflödet de vill ska sköta sig självt. Claude skriver flödet (se
+ * Arbetsflödet de vill ska sköta sig självt. AI:n skriver flödet (se
  * ResultatVy); stegen här
  * är reserven — regelmotorns flöde för det område texten pekar på — som visas
  * om AI:n inte svarar. Pekar texten inte på något område blir stegen tomma.
@@ -673,10 +673,18 @@ export function diagnosFor(f: Forslag | undefined): string | undefined {
 const omradesIds = (f: Forslag): string[] =>
   f.omraden?.map((o) => o.id) ?? (f.omrade ? [f.omrade.id] : []);
 
-/** Verktygen besökaren valt. */
-const verktygIsvar = (svar: Svar): string[] => {
+/**
+ * Verktygen besökaren har: de valda, plus de de själva skrev om i sitt
+ * arbetsflöde ("offerter i Excel"). AI:ns text får nämna dem — annars
+ * slängdes AI:ns förslag när den använde besökarens egna ord.
+ */
+export const verktygIsvar = (svar: Svar): string[] => {
   const v = svar[FRAGA.verktyg];
-  return Array.isArray(v) ? v : [];
+  const fritext = svar[FRAGA.fritext];
+  return [
+    ...(Array.isArray(v) ? v : []),
+    ...(typeof fritext === "string" ? verktygIText(fritext) : []),
+  ];
 };
 
 /** Regelmotorns förslag: kedja, starkaste områdena, branschens vanligaste. */

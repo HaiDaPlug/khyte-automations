@@ -1,7 +1,7 @@
 /**
  * AI-analysen: formen den har, och kontrollen av den.
  *
- * Delas av servern (som tar emot svaret från Claude) och klienten (som visar
+ * Delas av servern (som tar emot svaret från AI:n) och klienten (som visar
  * det). Kontrollen är handskriven i stället för zod så att klienten slipper
  * ladda ett helt valideringsbibliotek.
  *
@@ -157,6 +157,17 @@ const VERKTYG_I_TEXT: Readonly<Record<string, string>> = {
   sharepoint: VERKTYG.microsoft,
   excel: VERKTYG.excel,
 };
+
+/**
+ * Verktyg besökaren själv nämner i en text ("vi skriver offerter i Excel").
+ * Dem vet vi att de har, även om de inte kryssat i dem bland systemen.
+ */
+export function verktygIText(text: string): string[] {
+  const t = text.toLowerCase();
+  return Object.entries(VERKTYG_I_TEXT)
+    .filter(([ord]) => new RegExp(`\\b${ord}\\b`).test(t))
+    .map(([, verktyg]) => verktyg);
+}
 
 /** Andra leverantörers produkter. Nämns aldrig — vi vet inte att de har dem. */
 const ANDRA_PRODUKTER = [

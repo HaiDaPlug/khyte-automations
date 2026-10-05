@@ -232,7 +232,7 @@ export default function Kompass({ visaLogga = true, delningsSokvag }: Props) {
 
     if (sista) {
       void loggaHandelse(sessionId, "resultat_visat");
-      // Claude-förslaget börjar tas fram direkt — det hinner ofta bli klart
+      // AI-förslaget börjar tas fram direkt — det hinner ofta bli klart
       // medan analysen visas.
       void taFramForslag(sparat);
       void visaAnalysSedanResultat();
@@ -246,8 +246,8 @@ export default function Kompass({ visaLogga = true, delningsSokvag }: Props) {
   }
 
   /**
-   * Ber servern ta fram Claudes förslag på arbetsflödet redan nu. Det visas
-   * inte på sidan — det står i resultatmejlet och säljnotisen, och är då
+   * Ber servern ta fram AI:ns förslag på arbetsflödet redan nu. Det visas
+   * inte på sidan — det står i säljnotisen inför mötet, och är då
    * redan klart när mejl lämnas. Väntar in det sista sparandet först —
    * servern läser fritexten från raden, inte från oss.
    */

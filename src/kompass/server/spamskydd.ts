@@ -5,7 +5,8 @@ import { createHash } from "node:crypto";
 import { fraga } from "@/kompass/server/db";
 
 /**
- * Enkel begränsning: max antal inskick per IP och timme.
+ * Enkel begränsning: max antal inskick per IP och timme — och för AI:n även
+ * ett tak för hela sajten per dygn.
  *
  * IP-adressen lagras som hash, aldrig i klartext — vi behöver bara kunna
  * räkna, inte veta vem det är.
@@ -24,10 +25,22 @@ export const GRANSER = {
   session: 30,
   // KALIBRERA: mätningshändelser per IP och timme — ett besök gör runt 12.
   event: 300,
-  // KALIBRERA: ett besök gör upp till ~8 AI-anrop. 60 räcker för ett kontor
-  // bakom samma IP, men stoppar någon som kör flödet i en loop.
+  // KALIBRERA: ett besök gör upp till 6 AI-anrop (5 analyser och ett
+  // förslag). 60 räcker för ett kontor bakom samma IP, men stoppar någon
+  // som kör flödet i en loop.
   ai: 60,
 } as const;
+
+/**
+ * Tak per dygn för hela sajten, oavsett IP. Skyddar mot någon som sprider
+ * anropen över många adresser. När taket nås får besökarna resultatet från
+ * regelmotorn i stället för AI:n — flödet stannar inte. Två samtidiga anrop
+ * precis vid gränsen kan båda gå igenom, så taket är ungefärligt.
+ */
+export const GRANSER_PER_DYGN: Partial<Record<Gransttyp, number>> = {
+  // KALIBRERA: runt 500 fulla besök per dygn.
+  ai: 3000,
+};
 
 export type Gransttyp = keyof typeof GRANSER;
 
@@ -68,6 +81,19 @@ export async function slappIgenom(
     );
 
     if (antal >= GRANSER[typ]) return false;
+
+    const dygnstak = GRANSER_PER_DYGN[typ];
+    if (dygnstak !== undefined) {
+      const [{ totalt }] = await fraga<{ totalt: number }>(
+        `select count(*)::int as totalt from kompass_inskick
+         where typ = $1 and created_at >= now() - interval '24 hours'`,
+        [typ],
+      );
+      if (totalt >= dygnstak) {
+        loggaFel(`Taket för ${typ} per dygn (${dygnstak}) är nått — regelmotorn tar över`);
+        return false;
+      }
+    }
 
     await fraga("insert into kompass_inskick (ip_hash, typ) values ($1, $2)", [hash, typ]);
     return true;

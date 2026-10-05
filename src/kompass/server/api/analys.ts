@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { loggaFel } from "@/kompass/server/logg";
 import { analysera } from "@/kompass/server/ai-analys";
-import { FRAGA } from "@/kompass/data/kompass";
+import { verktygIsvar } from "@/kompass/lib/analys";
 import { kontrolleraAiAnalys, kontrolleraMotSvar } from "@/kompass/lib/ai-typer";
 import { nivaFor } from "@/kompass/lib/flode";
 import { lasIp, slappIgenom } from "@/kompass/server/spamskydd";
@@ -9,13 +9,11 @@ import { fraga, uppdateraSvarsrad } from "@/kompass/server/db";
 import type { Svar } from "@/kompass/lib/typer";
 import { analysSchema } from "@/kompass/lib/validering";
 
-/** Tak per besök. Ett helt flöde gör runt fem analyser. */
-const MAX_ANALYSER_PER_BESOK = 10;
-
-const verktyg = (svar: Svar): string[] => {
-  const v = svar[FRAGA.verktyg];
-  return Array.isArray(v) ? v : [];
-};
+/**
+ * Tak per besök. Ett helt flöde gör runt fem analyser; blir det fler visas
+ * den senaste analysen. Taket för hela sajten finns i spamskydd.ts.
+ */
+const MAX_ANALYSER_PER_BESOK = 5;
 
 /**
  * Kör nästa steg i den löpande analysen.
@@ -62,7 +60,7 @@ export async function POST(request: Request) {
     // Hypotesen visas direkt under frågorna — tvätta den mot svaren redan
     // här. Förslagen tvättas där de används (byggForslag).
     const ny = analys
-      ? { ...analys, hypotes: kontrolleraMotSvar(analys, verktyg(svar), nivaFor(svar)).hypotes }
+      ? { ...analys, hypotes: kontrolleraMotSvar(analys, verktygIsvar(svar), nivaFor(svar)).hypotes }
       : null;
 
     try {

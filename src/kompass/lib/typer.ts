@@ -77,7 +77,7 @@ export type Forslag = {
   affarsnytta?: string;
   /** Deras egna svar som grund. Aldrig en gissning. */
   varfor: string;
-  /** Flödet, steg för steg. Tomt för önskemålet — det kommer från Claude. */
+  /** Flödet, steg för steg. Tomt för önskemålet — det kommer från AI:n. */
   steg: string[];
   slipper: string;
   besparing?: Intervall;

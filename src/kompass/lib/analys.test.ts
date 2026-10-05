@@ -204,7 +204,7 @@ describe("flödesmallarna", () => {
 });
 
 describe("tolkaForslag", () => {
-  it("delar upp Claudes svar i sammanfattning och steg", () => {
+  it("delar upp AI:ns svar i sammanfattning och steg", () => {
     const t = tolkaForslag(
       "Fakturorna skapas direkt när jobbet är klart.\n- Du markerar jobbet som klart.\n- Fakturan skapas i Fortnox.\n- Påminnelse går ut vid förfall.",
     );
@@ -345,6 +345,19 @@ describe("AI-analysen", () => {
     expect(r.forslag[2].kalla).toBe("ide");
     expect(r.forslag[2].besparing).toBeUndefined();
     expect(r.plan[0].text).toBe("A.");
+  });
+
+  it("AI:ns förslag får nämna verktyg som besökaren själv skrivit om", () => {
+    const medExcel = { ...ai, forslag: [{ ...ai.forslag[0], slipper: "Excel-listorna." }, ...ai.forslag.slice(1)] };
+    const utanExcel = { ...HANTVERKARE, [FRAGA.verktyg]: [VERKTYG.fortnox] };
+    const rubriker = (svar: Svar) => raknaUtResultat(svar, kontrolleraAiAnalys(medExcel)).forslag.map((f) => f.rubrik);
+
+    // Varken vald eller nämnd: förslaget slängs.
+    expect(rubriker(utanExcel)).not.toContain("Ett flöde från offert till betalning");
+    // Nämnd i deras eget arbetsflöde: förslaget används.
+    expect(rubriker({ ...utanExcel, [FRAGA.fritext]: "Vi skriver offerter i Excel." })).toContain(
+      "Ett flöde från offert till betalning",
+    );
   });
 
   it("slänger förslag med siffror, okända områden eller för få steg", () => {

@@ -30,8 +30,8 @@ const ETIKETT =
 
 /**
  * Resultatet, i tre luftiga block: er tid, tre förslag, nästa steg. Så lite
- * text som möjligt — en mening, en siffra, tre rubriker. Stegen, planen och
- * uträkningarna står i mejlet; vill de veta mer tar vi det i mötet.
+ * text som möjligt — en mening, en siffra, tre rubriker. Mejlet är lika
+ * kort; stegen och planen tar vi på mötet.
  */
 export default function ResultatVy({
   resultat,
@@ -156,7 +156,7 @@ export default function ResultatVy({
         </section>
       ) : null}
 
-      {/* Block 2: tre förslag — bara rubrikerna. Resten står i mejlet. */}
+      {/* Block 2: tre förslag — bara rubrikerna. Resten tar vi på mötet. */}
       <section style={ordning(3)} className="k-tona-in mt-12">
         <h2 className={ETIKETT}>{TEXT.resultat.forslagRubrik}</h2>
         <ol className="mt-3 border-t border-[var(--k-border)]">

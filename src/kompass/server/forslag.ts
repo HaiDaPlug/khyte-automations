@@ -1,15 +1,15 @@
 import "server-only";
 
 import { loggaFel } from "@/kompass/server/logg";
-import Anthropic from "@anthropic-ai/sdk";
 import { MAX_FRITEXT } from "@/kompass/data/kompass";
-import { otillatenText } from "@/kompass/lib/ai-typer";
+import { otillatenText, verktygIText } from "@/kompass/lib/ai-typer";
 import { utanPersonuppgifter } from "@/kompass/lib/personuppgifter";
 import { uppdateraSvarsrad } from "@/kompass/server/db";
 import type { SvarsRad } from "@/kompass/server/rad";
+import { aiKlient, harAi, loggaAiFel, MODELL } from "@/kompass/server/openai";
 
 /**
- * Claudes förslag på arbetsflödet besökaren vill ska sköta sig självt.
+ * AI:ns förslag på arbetsflödet besökaren vill ska sköta sig självt.
  *
  * Det enda stället i kompassen där text genereras. Allt annat är skrivet för
  * hand. Förslaget visas för besökaren som ett flöde i steg, och står i
@@ -18,8 +18,6 @@ import type { SvarsRad } from "@/kompass/server/rad";
  * Saknas nyckeln, eller går något fel, blir det inget förslag — resultatet
  * visar då "vi tar med det i genomgången". Flödet stannar aldrig för det här.
  */
-
-const MODELL = "claude-opus-5";
 
 /** Svaret vi ber om när texten inte beskriver en arbetsuppgift. */
 const INGET = "INGET";
@@ -61,37 +59,31 @@ function underlag(rad: SvarsRad): string {
   ].join("\n");
 }
 
-/** Ber Claude om ett förslag. Returnerar null om det inte blir något. */
-async function fragaClaude(rad: SvarsRad): Promise<string | null> {
-  if (!process.env.ANTHROPIC_API_KEY || !rad.fritext?.trim()) return null;
+/** Ber AI:n om ett förslag. Returnerar null om det inte blir något. */
+async function fragaAi(rad: SvarsRad): Promise<string | null> {
+  if (!harAi() || !rad.fritext?.trim()) return null;
 
-  const klient = new Anthropic({ timeout: 15_000, maxRetries: 1 });
-
-  const svar = await klient.beta.messages.create({
+  const svar = await aiKlient().responses.create({
     model: MODELL,
-    max_tokens: 4000,
+    instructions: SYSTEM,
+    input: underlag(rad),
     // Kort text, inget tungt resonerande — låg ansträngning ger snabbt svar.
-    output_config: { effort: "low" },
-    // Om modellen avböjer tar en annan modell över i samma anrop.
-    betas: ["server-side-fallback-2026-07-01"],
-    fallbacks: "default",
-    system: SYSTEM,
-    messages: [{ role: "user", content: underlag(rad) }],
+    reasoning: { effort: "low" },
+    max_output_tokens: 4000,
+    // Svaren sparas inte hos OpenAI.
+    store: false,
   });
 
-  if (svar.stop_reason === "refusal") return null;
-
-  const text = svar.content
-    .flatMap((b) => (b.type === "text" ? [b.text] : []))
-    .join("")
-    .trim();
+  // Ett avböjande hamnar inte i output_text — då blir texten tom.
+  const text = svar.output_text.trim();
 
   if (!text || text === INGET) return null;
 
   // Samma kontroll som för analysens förslag: inga siffror, casekunder,
   // andra produkter eller verktyg de inte valt. Hellre regelmotorns reserv
   // än en text vi inte kan stå för.
-  const skal = otillatenText(text, rad.verktyg ?? []);
+  // Verktyg de själva skrev om räknas som deras, även om de inte kryssats i.
+  const skal = otillatenText(text, [...(rad.verktyg ?? []), ...verktygIText(rad.fritext ?? "")]);
   if (skal) {
     loggaFel("Förslag på fritexten slängt", skal);
     return null;
@@ -103,13 +95,13 @@ async function fragaClaude(rad: SvarsRad): Promise<string | null> {
 
 /**
  * Hämtar förslaget för en rad — från databasen om det redan finns, annars
- * frågar vi Claude och sparar svaret. Ett förslag per rad, aldrig fler.
+ * frågar vi AI:n och sparar svaret. Ett förslag per rad, aldrig fler.
  */
 export async function hamtaForslag(rad: SvarsRad): Promise<string | null> {
   if (rad.ai_forslag) return rad.ai_forslag;
 
   try {
-    const forslag = await fragaClaude(rad);
+    const forslag = await fragaAi(rad);
     if (forslag) {
       try {
         await uppdateraSvarsrad({ ai_forslag: forslag }, "session_id = $1", [rad.session_id]);
@@ -119,13 +111,7 @@ export async function hamtaForslag(rad: SvarsRad): Promise<string | null> {
     }
     return forslag;
   } catch (fel) {
-    if (fel instanceof Anthropic.RateLimitError) {
-      loggaFel("Förslag: rate limit hos Anthropic");
-    } else if (fel instanceof Anthropic.APIError) {
-      loggaFel(`Förslag: API-fel ${fel.status}`, fel.message);
-    } else {
-      loggaFel("Förslag: oväntat fel", fel);
-    }
+    loggaAiFel("Förslag", fel);
     return null;
   }
 }

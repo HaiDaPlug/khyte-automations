@@ -187,7 +187,7 @@ export function vantaPaAnalys(): Promise<void> {
 }
 
 /**
- * Hämtar Claudes förslag på det besökaren vill slippa. Ska anropas efter att
+ * Hämtar AI:ns förslag på det besökaren vill slippa. Ska anropas efter att
  * det sista sparandet gått igenom — servern läser fritexten från raden.
  */
 export async function hamtaForslag(sessionId: string): Promise<string | null> {

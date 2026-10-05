@@ -1,4 +1,4 @@
-# Khyte Automations - Current State (v2.32)
+# Khyte Automations - Current State (v2.33)
 
 ## Tech Stack
 - **Next.js** 16.1.1 (App Router)
@@ -682,7 +682,7 @@ FAQ schema, and never let the schema list and the accordion list drift apart —
 - Trigger: `openCalendly()` from `CalendlyContext` — used in Nav CTA, PreFooterCTA, CalendlyButton
 - `CalendlyProvider` wraps the full app in layout.tsx; `CalendlyDrawer` renders globally alongside Nav
 
-## Automationskompassen (v2.32)
+## Automationskompassen (v2.33)
 Lead magnet moved in from the separate `khyte-kompass` repo with its `npm run flytta` script. **Since 2026-09-30 this repo is the source of truth** — edit `src/kompass/` here. `khyte-kompass` is archived (it was never deployed on its own; its move script refuses to overwrite and has no update path, so don't use it).
 
 - **Logic and prompts**: `docs/KOMPASS_LOGIK.md` — the full question flow, both AI prompts, how proposals are chosen, and the result page.
@@ -696,7 +696,7 @@ Lead magnet moved in from the separate `khyte-kompass` repo with its `npm run fl
 - **Nav**: secondary ghost button left of the CTA — icon only at `lg`, icon + "Kompassen" from `xl`, hidden below `lg` (right side has no room; the nav already overlaps at 768px). Mobile drawer: full-width ghost button above "Kontakta oss". Logo/CTA/centered links untouched. On `/kompass` the button just scrolls to top.
 - **Teaser** (`KompassTeaser.tsx`): homepage only. Dark card bottom-right (mobile: bottom, full width) after scrolling past ~0.8 viewport or 20 s. Hidden for 7 days after close or after the compass is opened (`localStorage` key `khyte-kompass-ruta`). Hidden while the compass or Calendly is open.
 - **SiteChrome** also hides nav/footer/Calendly on `/kompass/inbaddad`.
-- **Env vars (Vercel)**: `DATABASE_URL`, `RESEND_API_KEY`, `MAIL_FROM`, `SALES_EMAIL`, `ADMIN_EMAIL`, `ANTHROPIC_API_KEY`, `CRON_SECRET` — see `.env.example`. Locally, `neon link` writes `DATABASE_URL` to the git-ignored `.env.local`. **Without `DATABASE_URL`, saving answers and the contact form return 500** (the visitor sees "Vi kunde inte skicka just nu"). Without `ANTHROPIC_API_KEY` the result falls back to the rule engine.
+- **Env vars (Vercel)**: `DATABASE_URL`, `RESEND_API_KEY`, `MAIL_FROM`, `SALES_EMAIL`, `ADMIN_EMAIL`, `OPENAI_API_KEY`, `CRON_SECRET` — see `.env.example`. Locally, `neon link` writes `DATABASE_URL` to the git-ignored `.env.local`. **Without `DATABASE_URL`, saving answers and the contact form return 500** (the visitor sees "Vi kunde inte skicka just nu"). Without `OPENAI_API_KEY` the result falls back to the rule engine.
 - **Cron, once a day** (`vercel.json`, `0 5 * * *` UTC — on Hobby it runs at some point within that hour, and daily is the most it allows): retries failed mails and deletes data past its retention (`LAGRING`: answers without email and events after 90 days, spam counters after 2). The first send attempt happens when the email is submitted; cron makes attempts two and three, so the admin alarm goes out on the second cron run after a failure (within ~2 days). Needs `CRON_SECRET` in Vercel — without it the route answers 500 and nothing runs.
 - **Mail delivery is checked**: Resend doesn't throw when it rejects a send — it returns `{ error }`. `skicka()` in `mail.ts` turns that into a thrown error, so a rejected mail is marked `misslyckad` and retried (before 2026-09-30 it was silently marked `skickad`). Each send carries an idempotency key per visit, step and attempt.
 - **No lead left without retries**: the contact route saves the lead with `behover_forsok = true` and holds the row's lock (`behandlas_till`) while it sends. `sparaStatus` then sets the real value. If the status never gets saved (crash, or the save fails), the lock expires and cron runs the steps from the start (`behoverKoras`: the sales mail has no status). Same idempotency keys as the first time, so Resend won't resend a mail that actually went out within 24 h; after that a duplicate is possible — better than a lost lead. Test: `src/kompass/server/api/kontakt.test.ts`.
@@ -705,7 +705,7 @@ Lead magnet moved in from the separate `khyte-kompass` repo with its `npm run fl
 - **Going live** (as of 2026-10-05):
   1. ✅ Neon project created and linked (`neon link`).
   2. ✅ `db/schema.sql` run against the Neon `production` branch (fresh database: the migrations are already included; an existing database: run the files in `db/migrations/` that are newer than it).
-  3. In Vercel → Settings → Environment Variables: `DATABASE_URL` (the pooled connection string from Neon → Connect), `CRON_SECRET`, `RESEND_API_KEY`, `MAIL_FROM`, `SALES_EMAIL`, `ADMIN_EMAIL`, `ANTHROPIC_API_KEY`. Not checked in Vercel yet.
+  3. In Vercel → Settings → Environment Variables: `DATABASE_URL` (the pooled connection string from Neon → Connect), `CRON_SECRET`, `RESEND_API_KEY`, `MAIL_FROM`, `SALES_EMAIL`, `ADMIN_EMAIL`, `OPENAI_API_KEY`. Not checked in Vercel yet.
   4. Redeploy, do one full run-through with a real email, then check `/internal/kompass` (lead, both mails ✓) and your inbox.
   5. Trigger the cron once by hand: `curl -H "Authorization: Bearer $CRON_SECRET" https://www.khyte.se/api/kompass/cron` — expect `{"ok":true,…}`.
   6. Check the lock: make a row need a retry (e.g. a lead whose result mail failed), then call the cron twice at the same time. One run should report it under `kvar` or `lyckade`, the other under `upptagna` — and only one mail should arrive. (`forsokta` counts rows that needed a retry before the lock, so both runs show it; `lyckade` means the row no longer needs retries — including when it gave up after the third attempt.) Verified locally against the Neon database on 2026-10-05: attempts went from 1 to 2, not 3.
@@ -839,6 +839,16 @@ Moved to `docs/INTENTIONS.md` — the living log for ideas, directions, and thin
 
 ## Changelog
 
+### v2.33 — Kompassen: kortare resultatmejl, och AI:n via OpenAI
+- **AI moved from Anthropic (Claude Opus 5) to OpenAI (`gpt-6-luna`)** to cut cost — roughly from ~2.5 kr to well under 0.1 kr per visitor at list prices. `@anthropic-ai/sdk` removed, `openai` added; shared client/model in `src/kompass/server/openai.ts`. Same prompts, same schema and the same checks afterwards. Env: `ANTHROPIC_API_KEY` → `OPENAI_API_KEY`. Responses API with `store: false`.
+- **AI spend caps**: 5 analyses per visit (was 10), 60 AI calls per IP and hour, and **3,000 AI calls per day for the whole site** (`GRANSER_PER_DYGN` in `spamskydd.ts`; new index `kompass_inskick_typ_idx`, migration `db/migrations/20261005_dygnstak.sql`, applied to Neon 2026-10-05). Over the cap, visitors get the rule-engine result. Also set a monthly limit in OpenAI's billing settings — the only cap nothing in our code can bypass.
+- **Tools the visitor names in their own workflow text** (e.g. "Excel") may now appear in the AI's workflow proposal even if not ticked among the systems — before, such a proposal was thrown away (`verktygIText` in `ai-typer.ts`).
+- **Run against OpenAI with a real key on 2026-10-05** (locally, production build, real Neon, real Resend): analysis ~7–8 s with `reasoning.effort: "none"` (`"low"` took 12–13 s — longer than the result page waits), proposals in good Swedish that follow the rules, AI proposals used on the result page, workflow proposal in the mail. Also found and fixed: AI text naming a tool the visitor wrote themselves (e.g. Excel) was thrown away — `verktygIsvar` now includes tools named in the workflow text.
+- **Result mail rewritten to match the result page**: greeting with the goal, the same single number, the three proposals as title + one sentence, and "Vill du veta mer?" with a **Boka ett möte** button (the mail had no meeting link before). Steps, plan, case quotes and "Första steget" are gone from the visitor's mail — that's for the meeting; the sales notice still has everything. About half the length on a phone.
+- **Kite and logo in the mail**: the kite from the compass start page sits in the right edge of the number box (static PNG `public/kompass/drake-mejl.png`, served from `https://khyte.se/kompass/drake-mejl.png` — 404 until this branch is deployed). The box keeps its exact size and the text its position (measured). The shared mail footer shows the small K icon from the email signature next to "Khyte Automations · khyte.se". No logo at the top (tried, looked like a separate box).
+- Replies to the result mail go to `SAJT.mejl` (`replyTo`), whatever `MAIL_FROM` is. Mail frame gets a viewport meta tag so phones don't render it zoomed out.
+- `resultatmejl(rad)` in `mail.ts` builds subject + HTML without sending — handy for previews.
+
 ### v2.32 — Kompassen: databasen flyttad till Neon
 - **Supabase → Neon Postgres** (project "Ai kompass" on Hai's account). `@supabase/supabase-js` removed, `@neondatabase/serverless` added; `src/kompass/server/supabase.ts` replaced by `db.ts` with plain parameterized SQL. Same tables and behavior — the schema needed no changes.
 - `supabase/` renamed to `db/`. Env: `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` → `DATABASE_URL`.
@@ -859,7 +869,7 @@ Moved to `docs/INTENTIONS.md` — the living log for ideas, directions, and thin
 - Full logic and prompts: `docs/KOMPASS_LOGIK.md`.
 
 ### v2.29 — Automationskompassen on the site
-- Moved the compass module in from `khyte-kompass` (`src/kompass/`, `/kompass`, `/api/kompass/*`, `public/kompass/`). New deps: `@anthropic-ai/sdk`, `@supabase/supabase-js` (replaced by Neon in v2.32), `resend`, `server-only`, `zod`.
+- Moved the compass module in from `khyte-kompass` (`src/kompass/`, `/kompass`, `/api/kompass/*`, `public/kompass/`). New deps: `@anthropic-ai/sdk` (replaced by `openai` in v2.33), `@supabase/supabase-js` (replaced by Neon in v2.32), `resend`, `server-only`, `zod`.
 - Popup: `KompassProvider` in layout, `KompassModal` (iframe to `/kompass/inbaddad`), homepage `KompassTeaser`. Nav button (lg+) and mobile drawer button. See "Automationskompassen" above.
 - `/kompass` added to the sitemap.
 

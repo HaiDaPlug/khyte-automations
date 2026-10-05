@@ -1173,7 +1173,7 @@ export const TEXT = {
       manad: `Tid per månad är veckotiden gånger ${String(VECKOR_PER_MANAD).replace(".", ",")} veckor.`,
     },
     forslagRubrik: "Tre saker vi skulle börja med",
-    // Den enda siffran på sidan. Allt annat står i mejlet.
+    // Den enda siffran på sidan (och i resultatmejlet).
     frigor: "Går troligen att frigöra",
     frigorFot: "i veckan",
     frigorFotManad: "i månaden",

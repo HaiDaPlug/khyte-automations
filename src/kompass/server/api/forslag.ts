@@ -7,7 +7,7 @@ import { fraga } from "@/kompass/server/db";
 import { forslagSchema } from "@/kompass/lib/validering";
 
 /**
- * Tar fram Claudes förslag på det besökaren helst vill slippa.
+ * Tar fram AI:ns förslag på det besökaren helst vill slippa.
  *
  * Anropas när resultatet visas, så att förslaget hinner bli klart innan
  * besökaren lämnar mejl. Förslaget sparas på raden — ett andra anrop för samma
@@ -39,7 +39,7 @@ export async function POST(request: Request) {
     if (rad.ai_forslag) return NextResponse.json({ forslag: rad.ai_forslag });
     if (!rad.fritext?.trim()) return NextResponse.json({ forslag: null });
 
-    // Varje nytt förslag kostar ett anrop till Claude. AI-gränsen per IP
+    // Varje nytt förslag kostar ett anrop till AI:n. AI-gränsen per IP
     // håller kostnaden nere om någon försöker missbruka.
     if (!(await slappIgenom(lasIp(request), "ai"))) {
       return NextResponse.json({ forslag: null });

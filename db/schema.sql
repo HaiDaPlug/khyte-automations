@@ -176,6 +176,8 @@ create table if not exists kompass_inskick (
 );
 
 create index if not exists kompass_inskick_idx on kompass_inskick (ip_hash, typ, created_at desc);
+-- Taket per dygn för hela sajten räknar per typ, oavsett IP.
+create index if not exists kompass_inskick_typ_idx on kompass_inskick (typ, created_at desc);
 
 -- ── RLS ─────────────────────────────────────────────────────────────────────
 -- På, utan policies: ingen annan roll än ägaren kommer åt tabellerna.

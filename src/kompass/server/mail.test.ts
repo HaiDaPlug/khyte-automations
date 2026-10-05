@@ -17,7 +17,8 @@ process.env.RESEND_API_KEY = "test";
 process.env.MAIL_FROM = "Khyte <hej@khyte.se>";
 process.env.SALES_EMAIL = "salj@khyte.se";
 
-const { skickaSaljnotis } = await import("@/kompass/server/mail");
+const { resultatmejl, skickaSaljnotis } = await import("@/kompass/server/mail");
+const { SAJT } = await import("@/kompass/data/kompass");
 const { behoverForsok, korEftersteg } = await import("@/kompass/server/leverans");
 
 const RAD = {
@@ -71,5 +72,49 @@ describe("leveransen när Resend nekar", () => {
     const nycklar = send.mock.calls.map((c) => c[1]?.idempotencyKey);
     expect(nycklar).toContain("kompass-abc-123-saljmejl-1");
     expect(nycklar).toContain("kompass-abc-123-saljmejl-2");
+  });
+});
+
+describe("resultatmejlet", () => {
+  const forslag = (f: Record<string, unknown>) => ({
+    id: "x", kalla: "valt", rubrik: "Rubrik", affarsnytta: null, varfor: "Varför", steg: ["Steg ett"],
+    slipper: "", besparing_min: null, besparing_max: null, lagt_min: null, lagt_max: null,
+    pengar: null, forsta_steget: "Första steget", omraden: [], tjanster: null, ...f,
+  });
+  const rad = (extra: Record<string, unknown>) =>
+    ({ ...(RAD as object), besparing_min: 2, besparing_max: 6, mal: null, kontakt_namn: null, ...extra }) as never;
+
+  it("har mötesknappen, siffran och en rad per förslag — inte steg och första steg", () => {
+    const { html } = resultatmejl(
+      rad({ forslag: [forslag({ rubrik: "Snabbare offerter", affarsnytta: "Fler ja." })] }),
+    );
+    expect(html).toContain(SAJT.bokaMote);
+    expect(html).toContain(`${SAJT.bas}/kompass/drake-mejl.png`);
+    expect(html).toContain(`${SAJT.bas}/signature-assets/khyte-logo.png`);
+    expect(html).toContain("2–6 h");
+    expect(html).toContain("Snabbare offerter");
+    expect(html).toContain("Fler ja.");
+    expect(html).not.toContain("Steg ett");
+    expect(html).not.toContain("Första steget");
+  });
+
+  it("arbetsflödet: AI-förslagets mening med, men inte stegen", () => {
+    const { html } = resultatmejl(
+      rad({
+        forslag: [forslag({ kalla: "onskemal", varfor: "Offerter i Excel." })],
+        ai_forslag: "Offerten byggs från era mallar.\n- Kunden fyller i ett formulär\n- Offerten skickas",
+      }),
+    );
+    expect(html).toContain("Offerter i Excel.");
+    expect(html).toContain("Offerten byggs från era mallar.");
+    expect(html).not.toContain("Kunden fyller i ett formulär");
+  });
+
+  it("visar besökarens egen text kortad och skyddad", () => {
+    const lang = `<b>offerter</b> ${"ord ".repeat(60)}`;
+    const { html } = resultatmejl(rad({ forslag: [forslag({ kalla: "onskemal", varfor: lang })] }));
+    expect(html).toContain("&lt;b&gt;offerter&lt;/b&gt;");
+    expect(html).not.toContain("<b>offerter");
+    expect(html).toContain("…”");
   });
 });
