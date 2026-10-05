@@ -870,7 +870,10 @@ Moved to `docs/INTENTIONS.md` — the living log for ideas, directions, and thin
 
 ### Open items — SEO & local (as of 2026-10-03)
 Full detail and reasoning in `docs/SEO_AUDIT.md` → Open items.
-- [x] **Homepage stat bands** — done 2026-10-03: real before/after case numbers with the client named (JaTack, Observa, Kom-Fort) replace "3-15h / vecka", "3–6 månader", "3x" and "0 integrerade system". Don't put seconds as "sek" in the big number — the display font capitalises it to "SEK" (kronor).
+- [ ] **Homepage stat bands** — "3-15h / vecka" (twice) and "3–6 månader" break the owner's rule of no
+  site-wide hours claim (hours saved only on the case where it was measured). Proposal waiting for a yes:
+  real before/after case numbers (JaTack 2 min → 5 sek per lead, ≈32 h per 1 000 leads; Observa 4 min →
+  ~10 sek per företag). Visible change — design pass first.
 - [ ] **Case → service links** (P2) — see the services list above; needs a design pass.
 - [ ] **`/boras`** — a real local page (team, office, Borås cases, map/GBP), not a city-swap page. GSC
   already shows Borås demand: "automationsföretag borås" at position 1.8. Should say plainly that Khyte
