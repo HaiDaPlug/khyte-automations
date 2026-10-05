@@ -30,8 +30,8 @@ export const metadata: Metadata = {
 
 const faqs = [
   {
-    q: "Varför ska vi betala för en kartläggning?",
-    a: "Kartläggningen är riktigt arbete, inte ett säljsamtal. Vi går in i era system, kartlägger dataflödena och ritar upp en exakt lösning. Den görs alltid före ett bygge, så att det fasta priset håller. Är något inte värt att automatisera säger vi det där."
+    q: "Kostar kartläggningen något?",
+    a: "Nej. Kartläggningen är kostnadsfri. Vi går igenom ert behov och tar fram underlaget för en offert med tydlig omfattning och ett fast pris. Ni väljer sedan om ni vill gå vidare med bygget."
   },
   {
     q: "Hur lång tid tar det?",
@@ -58,13 +58,13 @@ const faqs = [
 const steps = [
   {
     title: "Introsamtal",
-    meta: `Gratis · ${facts.introCall.minutes} min`,
+    meta: `Kostnadsfritt · ${facts.introCall.minutes} min`,
     desc: "Vi går igenom era flöden och avgör tillsammans om vi kan hjälpa er.",
   },
   {
     title: "Kartläggning",
-    meta: "Fast pris",
-    desc: "Vi går in i era system och ritar upp lösningen. Ni får en plan, en tidsplan och ett fast pris för bygget.",
+    meta: "Kostnadsfri",
+    desc: "Vi går igenom arbetsflödet, klargör vad lösningen behöver göra och tar fram en offert med omfattning, tidsplan och ett fast pris för bygget.",
   },
   {
     title: "Implementering",

@@ -17,7 +17,7 @@ export interface FAQEntry {
 export const homeFaqs: FAQEntry[] = [
   {
     q: "Vad kostar det?",
-    a: `Det beror på omfattningen. Vi börjar med en kartläggning till fast pris. Efter den får ni ett fast pris för bygget, från ${facts.priceFrom}, innan ni bestämmer er.`,
+    a: `Det beror på omfattningen. Vi börjar med en kostnadsfri kartläggning för att förstå vad ni behöver. Därefter får ni en offert med tydlig omfattning och ett fast pris för bygget, från ${facts.priceFrom}, innan ni bestämmer er.`,
   },
   {
     q: "Hur lång tid tar det?",

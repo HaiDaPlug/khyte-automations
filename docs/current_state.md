@@ -758,7 +758,7 @@ npm run dev                     # Dev mode (Turbopack bug exists)
 9. No tailwind.config.ts — all config in globals.css `@theme`
 10. Nav uses absolute positioning for centered links (requires `relative` on parent)
 11. Small SVG icons use plain `<img>` instead of Next Image for simplicity
-12. Pricing on /tjanster: "15 000+ kr, fast pris efter kartläggning". The first step is called **Kartläggning** everywhere (never "förstudie") and is a paid, required step; the exact build price is set there. Delivery: 1–2 veckor för mindre automationer, 4–6 veckor för större system. Intro call: 30 min.
+12. Pricing on /tjanster: "15 000+ kr, fast pris efter kartläggning". The first step is called **Kartläggning** everywhere (never "förstudie") and is **free** (owner, 2026-10-05; supersedes "paid, required" from 2026-09-30). It is used when needed to scope a build and ends in a written offer with scope, timeline and a fixed build price; straightforward projects may only need the intro call. The 15 000 kr starting price is for the build. Delivery: 1–2 veckor för mindre automationer, 4–6 veckor för större system. Intro call: 30 min.
 13. Legal pages are live at `/integritetspolicy` and `/villkor`.
 14. **Full-bleed sections belong at page root** — never nest `w-screen` / viewport-escape sections inside `<Container>`. Statement is the one exception (see Homepage Layout Architecture).
 15. **ROIBand needs `relative`** — its inner `absolute inset-0` gradient anchors to it; removing `relative` causes the gradient to escape to the nearest positioned ancestor.
@@ -888,16 +888,33 @@ Full detail and reasoning in `docs/SEO_AUDIT.md` → Open items.
 - [ ] **Measure** — re-export GSC around mid-November 2026 and compare with the 2026-10-02 baseline in
   `docs/SEO_AUDIT.md`; that export also picks the next service pages.
 
-### Open items — services work (as of 2026-10-03)
+### Open items — services work (as of 2026-10-05)
+- [ ] **Services redesign — three pages, split by buying situation** (owner, 2026-10-05). Automatisering
+  ("we keep processing, moving or preparing the same information"), Egna system ("we need a tool to run
+  our work"), AI-rådgivning (a paid session). Overview goes image-led (HELkom as reference), with small
+  animations of real work in place of photos; animations never link to cases, proof is a short text link.
+  Order: (0) free-kartläggning wording ✓ → (1) copy for all three pages, agreed before any animation →
+  (2) Automatisering as the complete pattern page → (3) Egna system onto the same pattern → (4)
+  AI-rådgivning → (5) overview. Example allocation: Etcetera (Excel → plocksedel) and JaTack move to
+  Automatisering, Observa is its named AI section; Kom-Fort is Egna system; Osteopaticentrum fits either,
+  by angle. Each build page covers: when it fits, examples, deliverable, what we need from the customer,
+  pricing factors, delivery, support, FAQ.
 - [ ] **Eyeball the "Vad vi löser" loop** on khyte.se/tjanster in a normal browser window. It was
   verified through the browser's animation API and frozen frames only (the test tab was hidden), so the
-  pacing has not been judged by eye. Tune with the single `7.5s` in `.area-ill` (`globals.css`).
-- [ ] **Rådgivning subpage** — Rådgivning is a separate service (tile + FAQ on `/tjanster` today, CTA books
-  the intro). Needs the owner to define what's included and the price model before a page is written.
-  When it exists: add an entry to `services` in `services.ts` and set `serviceSlug` on the `radgivning` area.
-- [ ] **Next service pages (AI automation, workflow automation)** — decide from the next GSC export,
-  4–6 weeks after the 2026-10-02 deploy. Proof is ready (Observa for AI, JaTack for workflows); once a
-  page ships, set `serviceSlug` on the matching area (`steg` / `excel`) and the tile repoints itself.
+  pacing has not been judged by eye. Tune with the single `7.5s` in `.area-ill` (`globals.css`). Moot once
+  step (5) of the redesign replaces the tiles.
+- [ ] **AI-rådgivning page** — scope decided 2026-10-05 (supersedes "needs the owner to define what's
+  included"): for individuals within companies, addressed as "du", beginners and people who already use
+  AI. Two hours, remote or in person, one participant. Base price 2 990 kr; +1 500 kr per extra
+  participant is the intended expansion, not the launch offer. Booking: confirm the time, collect a
+  preparation form, invoice after the session. The customer gets a summary and a document tailored to
+  their needs (instructions, prompts, tool recommendations, prioritised next steps). **Open:** VAT
+  wording on the price, and the owner wants the fee credited toward something afterwards — destination
+  and terms not yet decided. Promise practical progress on a chosen task, not a delivered integration.
+- [ ] ~~**Next service pages (AI automation, workflow automation)** — decide from the next GSC export.~~
+  Superseded 2026-10-05: one **Automatisering** page with AI as a named section. A separate AI page is
+  reconsidered when the offer, search results and GSC data support it (mid-November export is a review
+  point, not a gate).
 - [ ] **Systemintegration page** — only once there's a delivered integration case. Until then the
   "Verktyg som inte pratar med varandra" tile deliberately has no link.
 - [ ] **Case → service links** (the other agent's P2): call `servicesForCase(c.slug)` from
@@ -906,6 +923,13 @@ Full detail and reasoning in `docs/SEO_AUDIT.md` → Open items.
 ---
 
 ## Changelog
+
+### v2.33 — Kartläggning is free (2026-10-05)
+- Wording only, no layout change. Home FAQ "Vad kostar det?" now opens with a free kartläggning followed
+  by an offer with clear scope and a fixed build price. `/tjanster`: the FAQ "Varför ska vi betala för en
+  kartläggning?" became "Kostar kartläggningen något?", and the Kartläggning step is labelled
+  "Kostnadsfri" (Implementering keeps "Fast pris"); Introsamtal's "Gratis" became "Kostnadsfritt" to match.
+  FAQ markup follows the visible text automatically.
 
 ### v2.32 — SEO pass, Search Console, Business Profile (2026-09-30 – 10-02)
 - **Invisible SEO pass** (no layout change, live 2026-10-02): `src/data/facts.ts` as the one place for the
