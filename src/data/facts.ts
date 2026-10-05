@@ -3,9 +3,7 @@
  *
  * Copy, metadata and structured data read these instead of repeating the
  * values, so a change here reaches every page at once. Keep it to facts —
- * contact details and terms we stand behind. Estimates that depend on the
- * workflow (hours saved, payback time) belong in the individual case, where
- * they were measured, not here.
+ * contact details and terms we stand behind.
  */
 export const facts = {
   name: "Khyte Automations",

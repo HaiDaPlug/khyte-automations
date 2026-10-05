@@ -380,7 +380,6 @@ Skills live in `~/.claude/skills/` and are invoked via `/skill-name` or triggere
 - **Det här har vi byggt**: `<CaseList items={cases} />` — one row per case (number, company, `problem`,
   arrow) linking to `/case/{slug}`. New cases appear with no edit to the page. Mobile: name + arrow on row 1,
   problem wraps beneath.
-- **No sitewide hours-saved claim** on this page; measured figures live on the case pages.
 - CTA hierarchy: Tier 1 = `CalendlyButton primary` (book now). Tier 2 = underline `<Link>`.
 - Anchor links use `text-[var(--color-muted)] hover:text-[var(--color-text)]`
 
@@ -900,10 +899,10 @@ Moved to `docs/INTENTIONS.md` — the living log for ideas, directions, and thin
 
 ### Open items — SEO & local (as of 2026-10-03)
 Full detail and reasoning in `docs/SEO_AUDIT.md` → Open items.
-- [ ] **Homepage stat bands** — "3-15h / vecka" (twice) and "3–6 månader" still conflict with the no
-  site-wide hours rule. **Owner decision 2026-10-05: no case numbers or client names on the homepage** — a
-  version with JaTack/Observa/Kom-Fort figures went live briefly and was reverted (`b88586c`). Any
-  replacement must be general, not case-specific; owner to decide whether to change the bands at all.
+- [x] **Homepage stat bands** — closed 2026-10-05. **Owner: the general statistics stay** ("3-15h / vecka",
+  "3–6 månader", "24/7", "3x", "0 integrerade system"), and **no case numbers or client names on the
+  homepage** (a case-figure version went live briefly and was reverted, `b88586c`). The earlier "no
+  site-wide hours claim" note was an AI suggestion, never an owner rule — it is retired; don't act on it.
 - [ ] **Case → service links** (P2) — see the services list above; needs a design pass.
 - [ ] **`/boras`** — a real local page (team, office, Borås cases, map/GBP), not a city-swap page. GSC
   already shows Borås demand: "automationsföretag borås" at position 1.8. Should say plainly that Khyte

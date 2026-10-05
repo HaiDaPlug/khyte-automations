@@ -49,8 +49,8 @@ build. They reach khyte.se on the next deploy.
 |---|---|
 | 2026-09-30 | The March "24 pieces in 90 days" plan is retired. Strengthen the existing small site first; new pages only when GSC data or sales reality earns them. |
 | 2026-09-30 | **Business facts live in `src/data/facts.ts`** and are read from there: intro call **30 min** (what Calendly books), delivery **1–2 veckor för mindre automationer, 4–6 veckor för större system** (owner's call, 2026-09-30 — replaces "ofta 2–6 veckor"), price **från 15 000 kr, fast pris efter kartläggning**, public name for the first step **Kartläggning** — a **paid, required** step (owner confirmed 2026-09-30; *superseded 2026-10-05: kartläggning is free, see below*), Calendly URL, address/phone/email. Kept small — numbers and contact details, not whole paragraphs. |
-| 2026-10-05 | **No case numbers or client names on the home page.** Case proof lives on the case pages and the case section; a version of the home stat bands built from JaTack/Observa/Kom-Fort figures felt wrong to the owner and was reverted (`b88586c`). |
-| 2026-09-30 | **No site-wide "hours saved" claim.** Hours saved is only stated per case, where it was measured. Generic copy stays qualitative. |
+| 2026-10-05 | **The home page keeps its general statistics** ("3-15h / vecka", "3–6 månader", "24/7", "3x", "0 integrerade system") — owner's call. **No case numbers or client names on the home page**: case proof lives on the case pages and the case section; a version of the home stat bands built from JaTack/Observa/Kom-Fort figures felt wrong to the owner and was reverted (`b88586c`). |
+| ~~2026-09-30~~ | ~~No site-wide "hours saved" claim.~~ **Retired 2026-10-05:** this was an AI suggestion recorded as if it were an owner decision. It is not a rule — don't act on it. |
 | 2026-09-30 | Team: only render members we can present properly (Hai, Abdi). Erik is added when his profile is ready; `src/lib/signature-profiles.ts` is the future team source. |
 | 2026-09-30 | Home page owns **"automatisering för företag"** (workflows, systems, repetitive work). AI-specific intent goes to a dedicated service page later. |
 | 2026-09-30 | Case titles lead with the workflow, client second: `SMS-system för kunduppföljning – Osteopaticentrum`. |
@@ -117,7 +117,7 @@ build. They reach khyte.se on the next deploy.
 - [ ] Bing Webmaster Tools (import from GSC), check the AI Performance report. IndexNow optional.
 
 **Copy (Swedish pass, not SEO-critical but trust-critical)**
-- [ ] Home ROI/COI bands: "3-15h / vecka" (twice) and "3–6 månader" payback still conflict with the no-site-wide-hours decision. Case-backed numbers are ruled out (see Decisions, 2026-10-05); only a general, non-case version is an option, and only if the owner wants the bands changed at all.
+- [x] Home ROI/COI bands — closed 2026-10-05: the general statistics stay, no case numbers on the home page (see Decisions).
 - [x] Home FAQ: "har ett API", "var ni tappar tid" (services rework, `e7f24f4`). Mixed du/ni on the home page remains.
 - [ ] `/om-oss`: "Vart allt började" → "Där allt började"; "fick med han" → "fick med honom".
 - [x] `/tjanster` Swedish fixes and "Kartläggning" (services rework, `e7f24f4`).
