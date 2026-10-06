@@ -44,20 +44,18 @@ export default function RollingWord() {
      * overflow-hidden clips the entering/exiting words.
      * min-width keeps the h1 from reflowing when shorter words show.
      * vertical-align: bottom keeps baseline aligned with surrounding text.
+     *
+     * The visible word is the only copy in the DOM. A separate sr-only copy
+     * made crawlers read the h1 as "manuellt arbete manuellt arbete", and an
+     * aria-live region re-announced the heading every four seconds.
      */
     <span
       className="relative inline-block overflow-hidden align-bottom"
       style={{ minWidth: "14ch" }}
-      aria-live="polite"
-      aria-atomic="true"
     >
-      {/* Accessible label for screen readers */}
-      <span className="sr-only">{WORDS[index]}</span>
-
       {/* mode="wait" — exit fully completes before enter starts; no layout measurement overhead */}
       {!mounted ? (
         <span
-          aria-hidden="true"
           className="italic font-bold bg-clip-text text-transparent inline-block py-1 -my-1 px-1 -mx-1"
           style={{ backgroundImage: GRADIENT }}
         >
@@ -67,7 +65,6 @@ export default function RollingWord() {
         <AnimatePresence mode="wait" initial={false}>
           <motion.span
             key={index}
-            aria-hidden="true"
             className="italic font-bold bg-clip-text text-transparent inline-block py-1 -my-1 px-1 -mx-1" /* revert: remove font-bold */
             style={{ backgroundImage: GRADIENT, willChange: "transform" }}
             initial={{ y: "35%", opacity: 0 }}

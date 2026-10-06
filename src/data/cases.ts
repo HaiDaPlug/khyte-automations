@@ -14,6 +14,10 @@ export interface CaseData {
   index: string;
   company: string;
   problem: string;
+  /** <title> for the case page: the workflow first, the client second. */
+  seoTitle: string;
+  /** Meta description: what was built and, where measured, the result. */
+  metaDescription: string;
   category: string;
   description: string;
   hook: string;
@@ -37,11 +41,14 @@ export const cases: CaseData[] = [
     index: "01",
     company: "JaTack AB",
     problem: "Leadgenerering för listor",
+    seoTitle: "Automatiserade prospektlistor från Allabolag – JaTack AB",
+    metaDescription:
+      "Hur JaTack AB gick från manuell research till färdiga ringlistor: ett n8n-flöde hämtar bolagen från Allabolag och levererar listan i Excel. ≈32 h sparad per 1 000 leads.",
     category: "Sälj & Prospektering",
     description:
       "Filtrera bolagen i Allabolag. Klistra in länken. Få en färdig prospektlista i Excel.",
     hook: "Från filtrering till ringlista på några sekunder.",
-    image: "/case-images/1.png",
+    image: "/case-images/1.jpg",
     gradient: [
       "radial-gradient(ellipse 55% 60% at 78% 18%, rgba(255,235,185,0.72) 0%, rgba(255,235,185,0) 65%)",
       "radial-gradient(ellipse 70% 65% at 28% 52%, rgba(212,98,43,0.90) 0%, rgba(212,98,43,0) 62%)",
@@ -93,11 +100,14 @@ export const cases: CaseData[] = [
     index: "02",
     company: "Etcetera Offset",
     problem: "Automatisk generering av plock- och följesedlar",
+    seoTitle: "Plock- och följesedlar direkt från Excel – Etcetera Offset",
+    metaDescription:
+      "Etcetera Offset laddar upp kundernas Excel-filer och får färdiga, brandade plock- och följesedlar – utan att föra över artikelnummer, storlekar och antal för hand.",
     category: "Dokument & Produktion",
     description:
       "Excel in. Färdiga plocksedlar ut.",
     hook: "Excel in. Färdiga plocksedlar ut.",
-    image: "/case-images/4.png",
+    image: "/case-images/4.jpg",
     gradient: [
       "radial-gradient(ellipse 55% 55% at 80% 20%, rgba(235,225,205,0.60) 0%, rgba(235,225,205,0) 62%)",
       "radial-gradient(ellipse 65% 60% at 25% 50%, rgba(200,110,40,0.80) 0%, rgba(200,110,40,0) 62%)",
@@ -150,11 +160,14 @@ export const cases: CaseData[] = [
     index: "03",
     company: "Kom-Fort Bilvård",
     problem: "Verksamhetssystem för bokningar och personal",
+    seoTitle: "Boknings- och personalsystem för bilvård – Kom-Fort Bilvård",
+    metaDescription:
+      "Ett skräddarsytt system där Kom-Fort Bilvård samlar bokningar, kund- och fordonsuppgifter och personalens pass – med automatisk orderbekräftelse till kunden.",
     category: "Drift & Schemaläggning",
     description:
       "Från telefon, minne och lösa trådar till ett system för hela verksamheten.",
     hook: "Från telefon, minne och lösa trådar till ett system för hela verksamheten.",
-    image: "/case-images/5.png",
+    image: "/case-images/5.jpg",
     gradient: [
       "radial-gradient(ellipse 50% 55% at 82% 15%, rgba(220,225,235,0.55) 0%, rgba(220,225,235,0) 62%)",
       "radial-gradient(ellipse 65% 60% at 22% 48%, rgba(180,90,35,0.85) 0%, rgba(180,90,35,0) 62%)",
@@ -207,11 +220,14 @@ export const cases: CaseData[] = [
     index: "04",
     company: "Osteopaticentrum",
     problem: "SMS-system för kunduppföljning och återaktivering",
+    seoTitle: "SMS-system för kunduppföljning – Osteopaticentrum",
+    metaDescription:
+      "Osteopaticentrum importerar sin kundlista, skickar SMS till tidigare kunder och ser vilka utskick som leder till nya bokningar – i ett eget system för återaktivering.",
     category: "Kunduppföljning & SMS",
     description:
       "Från kundlista till mätbara återbesök.",
     hook: "Från kundlista till mätbara återbesök.",
-    image: "/case-images/3.png",
+    image: "/case-images/3.jpg",
     gradient: [
       "radial-gradient(ellipse 55% 55% at 78% 18%, rgba(210,230,225,0.55) 0%, rgba(210,230,225,0) 62%)",
       "radial-gradient(ellipse 65% 60% at 24% 50%, rgba(40,120,100,0.80) 0%, rgba(40,120,100,0) 62%)",
@@ -257,18 +273,21 @@ export const cases: CaseData[] = [
       { value: "1 eget system", unit: "", label: "För SMS, kunduppföljning och återaktivering" },
       { value: "Mindre verktygsberoende", unit: "", label: "Byggt runt Osteopaticentrums faktiska arbetssätt" },
     ],
-    nextSlug: "lead-lista",
+    nextSlug: "foretagsresearch",
   },
   {
-    slug: "lead-lista",
+    slug: "foretagsresearch",
     index: "05",
     company: "Observa Inkasso & Juridik",
     problem: "Automatisk research av befintlig data",
+    seoTitle: "AI-research av företagslistor – Observa Inkasso & Juridik",
+    metaDescription:
+      "Från enbart företagsnamn till research med domän, ort, B2B/B2C och ekonomichef. Observas AI-flöde tar ~10 sekunder per företag i stället för 4 minuter.",
     category: "Research & Analys",
     description:
       "Från en lista med företagsnamn till researchade leads med domän, bolagstyp, ort och beslutsfattare.",
     hook: "Från företagsnamn till färdig research på sekunder.",
-    image: "/case-images/2.png",
+    image: "/case-images/2.jpg",
     gradient: [
       "radial-gradient(ellipse 45% 55% at 15% 25%, rgba(90,20,8,0.95) 0%, rgba(90,20,8,0) 65%)",
       "radial-gradient(ellipse 60% 50% at 85% 45%, rgba(160,60,20,0.70) 0%, rgba(160,60,20,0) 60%)",

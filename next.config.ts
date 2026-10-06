@@ -22,11 +22,12 @@ const nextConfig: NextConfig = {
       // Path redirects are fine, and are what the rest of this list is for.
 
       // Retired sub-pages. Listed before the /services wildcard so the old
-      // English URLs land on /tjanster in one hop instead of chaining.
+      // English URLs land in one hop instead of chaining. The old custom-build
+      // page now has a real successor in /tjanster/egna-system.
       { source: "/services/audit", destination: "/tjanster", permanent: true },
-      { source: "/services/custom-build", destination: "/tjanster", permanent: true },
+      { source: "/services/custom-build", destination: "/tjanster/egna-system", permanent: true },
       { source: "/tjanster/audit", destination: "/tjanster", permanent: true },
-      { source: "/tjanster/custom-build", destination: "/tjanster", permanent: true },
+      { source: "/tjanster/custom-build", destination: "/tjanster/egna-system", permanent: true },
 
       // English → Swedish route migration (permanent 301s)
       { source: "/services", destination: "/tjanster", permanent: true },
@@ -37,6 +38,9 @@ const nextConfig: NextConfig = {
       { source: "/contact", destination: "/kontakt", permanent: true },
       // Legacy routes
       { source: "/automations", destination: "/", permanent: true },
+
+      // Renamed case slugs — the old slug did not describe the case.
+      { source: "/case/lead-lista", destination: "/case/foretagsresearch", permanent: true },
     ];
   },
 };

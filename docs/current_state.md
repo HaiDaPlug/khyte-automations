@@ -1,4 +1,4 @@
-# Khyte Automations - Current State (v2.33)
+# Khyte Automations - Current State (v2.38)
 
 ## Tech Stack
 - **Next.js** 16.1.1 (App Router)
@@ -355,16 +355,59 @@ Skills live in `~/.claude/skills/` and are invoked via `/skill-name` or triggere
 
 ### Services Page (Consolidated)
 **Route**: `/tjanster` (accessible via "Tjänster" link in nav; 301 redirect from `/services`)
-- **Launch-ready**: 9 sections — Hero, Vad vi automatiserar, Så jobbar vi, Skräddarsydd automation, Support, Automationsresa, Resultat, FAQ, CTA
-- Price card: `border border-[rgba(58,51,48,0.25)]` (heavier border signals hierarchy)
-- Step numbers: `text-[var(--color-muted)]`
-- FAQ: native `<details>`/`<summary>`, `focus-visible:ring-[rgba(58,51,48,0.30)]`
-- CTA hierarchy: Tier 1 = `CalendlyButton primary` (book now). Tier 2 = underline `<Link>` to /kontakt.
+- **Role**: the services pillar and the canonical page for process, pricing logic and timelines. Service
+  subpages live under `/tjanster/<slug>` (see Service Pages below).
+  The homepage owns the search term "automatisering för företag" — `/tjanster` targets "tjänster och priser".
+- **A short hub, on purpose** — what we solve, how we work, what it costs, proof. Service depth lives on the
+  subpages; don't grow sections here into service descriptions.
+- **Sections**: Hero (H1 "TJÄNSTER / OCH PRISER." + intro CTA) → **Vad vi löser** (5 tiles) → Så jobbar vi
+  (4-step strip: Introsamtal → Kartläggning → Implementering → Överlämning) → **Vad det kostar** (espresso
+  band: från-pris, delivery, "Er kod" + one "Ingår alltid" line) → **Det här har vi byggt** → FAQ (6)
+- **Vad vi löser** (`components/sections/ServiceAreas.tsx`, data `serviceAreas` in `services.ts`): Excel-
+  sammanställningar, Manuella steg, Verktyg som inte pratar med varandra, Allt på ett ställe, and a wide
+  **Rådgivning** tile with an intro CTA. Each tile links to its service page if one exists, else to a case,
+  else nowhere (`areaLink()`, which fails the build on unknown slugs). Server component; only the drawings
+  are client-side.
+- **Tile drawings** (`components/AreaIllustration.tsx`): inline SVG, looping before → after on a shared
+  7.5s CSS cycle defined in `globals.css` (`.area-ill`, keyframes `area-gather/-appear/-draw/-dim`).
+  Elements declare a role via `data-a` plus `--dx/--dy/--o` and a delay; tiles are phase-shifted 600ms
+  apart. An IntersectionObserver sets `data-on`, so loops pause off screen. Reduced motion shows the
+  finished state. No motion/react — zero animation JS.
+- **Stable anchors** — link targets for service and case pages, don't rename: `#vad-vi-loser`,
+  `#sa-jobbar-vi`, `#vad-det-kostar`, `#case`, `#vanliga-fragor`. Each carries `scroll-mt-28`
+  so the heading clears the fixed nav pill (there is no global `scroll-padding-top`).
+- **Facts** (intro length, price, delivery) are read from `src/data/facts.ts`, never typed in.
+- **Det här har vi byggt**: `<CaseList items={cases} />` — one row per case (number, company, `problem`,
+  arrow) linking to `/case/{slug}`. New cases appear with no edit to the page. Mobile: name + arrow on row 1,
+  problem wraps beneath.
+- **No sitewide hours-saved claim** on this page; measured figures live on the case pages.
+- CTA hierarchy: Tier 1 = `CalendlyButton primary` (book now). Tier 2 = underline `<Link>`.
 - Anchor links use `text-[var(--color-muted)] hover:text-[var(--color-text)]`
 
-**Subpage Redirects**: `/tjanster/audit` and `/tjanster/custom-build` → permanent 308 to
-`/tjanster`, declared in `next.config.ts`. The `page.tsx` stubs that used to do this were
-deleted in v2.25 — they emitted 307 temporary, which tells Google the old URL may return.
+**Subpage Redirects**: `/tjanster/audit` → permanent 308 to `/tjanster`; `/tjanster/custom-build`
+(and `/services/custom-build`) → permanent 308 to `/tjanster/egna-system`, its real successor. All
+declared in `next.config.ts`. The `page.tsx` stubs that used to do this were deleted in v2.25 — they
+emitted 307 temporary, which tells Google the old URL may return.
+
+### Service Pages (`/tjanster/[slug]`)
+- **Data**: `src/data/services.ts` drives the route (`generateStaticParams`, `dynamicParams = false`, so
+  unknown slugs 404), the sitemap, the service cards on `/tjanster` and the structured data. Adding a service
+  is a data entry, not new code.
+- **Live**: `/tjanster/egna-system` ("Egna system") — proven by Etcetera Offset, Kom-Fort, Osteopaticentrum.
+- **Service ↔ case relationship** lives only in `services.ts` (`caseSlugs`). `casesForService()` throws on an
+  unknown slug, so renaming a case fails the build instead of silently dropping proof. `servicesForCase(slug)`
+  is the hook for linking a case page back to its service.
+- **Sections**: breadcrumb (Tjänster / name) → `PageHeader` + CalendlyButton ("Boka ett intro (30 min)") +
+  "Se vad vi har byggt" → När behövs (problem cards) → Vad vi bygger (numbered cards) → Det här har vi byggt
+  (`CaseList`, numbered 01–03 by position) → Pris och upplägg (espresso band, summary from `facts.ts`, links up
+  to `/tjanster#sa-jobbar-vi` and `#vad-det-kostar`) → FAQ.
+- **Anchors**: `#nar-behovs`, `#vad-vi-bygger`, `#case`, `#pris`, `#vanliga-fragor`.
+- **FAQ rule**: a service FAQ only answers questions specific to that service. Price, ownership and timeline
+  questions live on `/tjanster` — never duplicate them here.
+- **Schema**: Service (provider → `#organization`, `minPrice` parsed from `facts.priceFrom`), BreadcrumbList
+  (Hem → Tjänster → service) and FAQPage. No page-level `openGraph`, so the layout's siteName/locale/image apply.
+- **Breadcrumb colours** are set on the `<li>`s, not the `<ol>`: `.text-label` sets its own colour and wins
+  over a colour utility on the same element.
 
 **FAQ**: `/tjanster` defines its own longer FAQ list locally and passes it to
 `<FAQAccordion items={faqs} />`, then emits matching JSON-LD via
@@ -612,16 +655,18 @@ Components requiring `"use client"`:
   everywhere (metadata, sitemap, robots, every JSON-LD `@id`) until v2.25. The npm package
   is still named `khyte-automations`, so the stale domain tends to creep back in — watch for it.
 - Title template: `"%s | Khyte Automations"`
-  - **Does not apply to `/`** — Next.js skips the template for the segment that defines it,
-    so the homepage title renders bare with no brand suffix. Worth knowing, not a bug.
+  - **Does not apply to `/`** — Next.js skips the template for the segment that defines it, so
+    `page.tsx` sets `title: { absolute: "… | Khyte Automations" }` with the brand written out.
   - Page titles must therefore **not** end in `| Khyte` themselves, or the suffix doubles up.
     `/case`, `/case/[slug]` and `/om-oss` all did until v2.25.
 - Canonical URLs per page (Swedish routes: `/`, `/tjanster`, `/case`, `/om-oss`, `/kontakt`, `/integritetspolicy`, `/villkor`)
 - **JSON-LD** — rendered through `components/JsonLd.tsx`, which escapes non-ASCII to
   backslash-u codepoints so Swedish diacritics survive any response encoding and nothing in
   the payload can close the `<script>` tag.
-  - **Sitewide** (`layout.tsx`): Organization, ProfessionalService (LocalBusiness w/ Borås
-    address, geo, areaServed, `priceRange: "Från 15 000 SEK"`, openingHours), WebSite, Person.
+  - **Sitewide** (`layout.tsx`): Organization (with `logo` → `public/logo.png`, a 512px PNG of
+    the K mark), ProfessionalService (full street address and postcode, coordinates for
+    Västerbrogatan 8A, areaServed, `priceRange`, openingHours), WebSite, Person. Name, URL,
+    email, phone, address and price come from `src/data/facts.ts`.
   - **Per-page**: FAQPage is emitted **only on `/` and `/tjanster`** — the two pages that
     actually render `<FAQAccordion />`. It used to sit in `layout.tsx`, which fired it on
     `/villkor` and `/kontakt` where no FAQ exists, with answer text that did not match the
@@ -633,12 +678,22 @@ Components requiring `"use client"`:
   rendered blank.
   - `openGraph.images` / `twitter.images` are deliberately **absent** from `layout.tsx` —
     setting them overrides the file convention and reintroduces a stale URL.
+  - The layout's `openGraph` / `twitter` also carry **no title or description**: Next fills
+    `og:*` and `twitter:*` from each page's own title and description, so every page previews
+    as itself. Don't add them back.
+  - **Case pages** set their own `openGraph` (type `article`, image = the co-branded case
+    photo). A page-level `openGraph` *replaces* the layout's, so it repeats `siteName` and
+    `locale` — copy that pattern for any page that needs its own image.
   - No external assets by design: satori cannot rasterize the filter/clipPath-heavy logo
     SVGs in `/public`, and neither Bebas nor Satoshi exists on disk as a `.ttf`. Only Geist
     Regular ships with `@vercel/og`, so `fontWeight` is inert — weight comes from scale and
     colour instead. Card is built from the espresso tokens.
-- Sitemap: `/sitemap.xml` — static routes **plus every case detail page**, generated from
-  `src/data/cases.ts`, so a new case indexes itself with no edit to `sitemap.ts`.
+- Sitemap: `/sitemap.xml` — static routes **plus every service and case page**, generated from
+  `src/data/services.ts` and `src/data/cases.ts`, so a new one indexes itself with no edit to
+  `sitemap.ts`. No `lastmod`: stamping every URL with the build time teaches Google to ignore it.
+  Submitted in Search Console 2026-10-02 (status Success).
+- Case titles/descriptions come from `seoTitle` / `metaDescription` in `cases.ts` (workflow
+  first, client second) — separate from `problem`, which is visible copy on `/tjanster`.
 - Robots: `/robots.txt` — allows all, disallows `/internal/` (also password-gated in `proxy.ts`)
 - **Host normalisation** — configured **in Vercel** (Settings → Domains), *not* in
   `next.config.ts`. `khyte.se` is the canonical production host; `www.khyte.se`,
@@ -653,8 +708,10 @@ Components requiring `"use client"`:
   > and the whole site returned redirect-loop errors until the rule was removed.
 - **Path redirects** (all in `next.config.ts`, all permanent 308, all single-hop):
   `/services→/tjanster`, `/cases→/case`, `/cases/:path*→/case/:path*`, `/about→/om-oss`,
-  `/contact→/kontakt`, `/automations→/`, and the retired sub-pages `/tjanster/audit`,
-  `/tjanster/custom-build`, `/services/audit`, `/services/custom-build` → `/tjanster`.
+  `/contact→/kontakt`, `/automations→/`, the retired sub-pages `/tjanster/audit` and
+  `/services/audit` → `/tjanster`, `/tjanster/custom-build` and `/services/custom-build` →
+  `/tjanster/egna-system`, and the renamed case slug `/case/lead-lista` →
+  `/case/foretagsresearch` (the old slug didn't describe Observa's research case).
   - The retired sub-pages were previously `redirect()` stubs in `page.tsx` files, which emit
     **307 temporary**. Moved to config so they are permanent and resolve at the edge.
   - The `/services/*` entries sit **before** the `/services/:path*` wildcard so the old
@@ -663,7 +720,9 @@ Components requiring `"use client"`:
   shell and links onward to the four main routes. Returns a real 404 status. Renders inside
   the root layout, so Nav / PreFooterCTA / Footer come for free.
 - **Analytics**: GA4 `G-F91HE9L5LS` (lazy-loaded `next/script` in `layout.tsx`) + Vercel
-  Analytics. Google Search Console verification is still outstanding.
+  Analytics. **Google Search Console** is verified (DNS TXT) under the *second* Google account
+  in Chrome — use `https://search.google.com/u/1/search-console?resource_id=sc-domain%3Akhyte.se`;
+  the default account only has an unverified duplicate.
 
 ## FAQ Content
 `src/data/faq.ts` is the **single source of truth** for FAQ copy.
@@ -682,7 +741,7 @@ FAQ schema, and never let the schema list and the accordion list drift apart —
 - Trigger: `openCalendly()` from `CalendlyContext` — used in Nav CTA, PreFooterCTA, CalendlyButton
 - `CalendlyProvider` wraps the full app in layout.tsx; `CalendlyDrawer` renders globally alongside Nav
 
-## Automationskompassen (v2.33)
+## Automationskompassen (v2.38)
 Lead magnet moved in from the separate `khyte-kompass` repo with its `npm run flytta` script. **Since 2026-09-30 this repo is the source of truth** — edit `src/kompass/` here. `khyte-kompass` is archived (it was never deployed on its own; its move script refuses to overwrite and has no update path, so don't use it).
 
 - **Logic and prompts**: `docs/KOMPASS_LOGIK.md` — the full question flow, both AI prompts, how proposals are chosen, and the result page.
@@ -729,7 +788,7 @@ npm test                        # Kompassens tester (Vitest)
 9. No tailwind.config.ts — all config in globals.css `@theme`
 10. Nav uses absolute positioning for centered links (requires `relative` on parent)
 11. Small SVG icons use plain `<img>` instead of Next Image for simplicity
-12. Pricing on /tjanster: "15 000+ kr, fast pris efter scope". Exact number set in förstudie.
+12. Pricing on /tjanster: "15 000+ kr, fast pris efter kartläggning". The first step is called **Kartläggning** everywhere (never "förstudie") and is **free** (owner, 2026-10-05; supersedes "paid, required" from 2026-09-30). It is used when needed to scope a build and ends in a written offer with scope, timeline and a fixed build price; straightforward projects may only need the intro call. The 15 000 kr starting price is for the build. Delivery: 1–2 veckor för mindre automationer, 4–6 veckor för större system. Intro call: 30 min.
 13. Legal pages are live at `/integritetspolicy` and `/villkor`.
 14. **Full-bleed sections belong at page root** — never nest `w-screen` / viewport-escape sections inside `<Container>`. Statement is the one exception (see Homepage Layout Architecture).
 15. **ROIBand needs `relative`** — its inner `absolute inset-0` gradient anchors to it; removing `relative` causes the gradient to escape to the nearest positioned ancestor.
@@ -759,6 +818,9 @@ npm test                        # Kompassens tester (Vitest)
 | SEO audit + reconciliation log | `docs/SEO_AUDIT.md` |
 | Homepage | `src/app/page.tsx` |
 | Services (consolidated) | `src/app/tjanster/page.tsx` |
+| Service pages (data + template) | `src/data/services.ts`, `src/app/tjanster/[slug]/page.tsx` |
+| Case row list (/tjanster + service pages) | `src/components/CaseList.tsx` |
+| "Vad vi löser" tiles + looping drawings | `src/components/sections/ServiceAreas.tsx`, `src/components/AreaIllustration.tsx` (keyframes in `globals.css`) |
 | Navigation | `src/components/Nav.tsx` |
 | Global pre-footer CTA | `src/components/PreFooterCTA.tsx` |
 | Global footer | `src/components/Footer.tsx` |
@@ -827,19 +889,75 @@ Moved to `docs/INTENTIONS.md` — the living log for ideas, directions, and thin
 - **`npm run lint` is broken.** `eslint-config-next` is pinned to `^0.2.4` in `package.json`
   — not the real Next 16 package (should be `^16`). ESLint fails to resolve
   `eslint-config-next/core-web-vitals`. Pre-existing; `npm run build` is unaffected.
-- **`twitter:title` is English** — "KHYTE AUTOMATIONS | No Hype, Just Workflows" — while
-  `og:title` is Swedish. Inconsistent on a Swedish site (`layout.tsx`).
-- **Homepage title carries no brand.** Next skips `title.template` for the root segment, so
-  `/` renders bare. The SEO audit suggests adding a geo signal here — a copy decision.
-- **Missing schema**: `Service` on `/tjanster`, `BreadcrumbList` on subpages.
-- **Google Search Console** not yet verified; **Google Business Profile** not yet created.
-  Both are the top remaining items in `docs/SEO_AUDIT.md`.
+- **Schema**: `Service` + `BreadcrumbList` exist on service pages (`/tjanster/egna-system`).
+  `BreadcrumbList` is still missing on case pages (low priority — see `docs/SEO_AUDIT.md`).
+- **Deploys and git identity.** All GitHub repos are private since 2026-10-02. On Vercel Hobby a
+  private repo only deploys commits whose author email is linked to the GitHub account, so this
+  repo uses the global `haigillarris@gmail.com`. Don't set a repo-local `user.email` (e.g.
+  `hai@khyteteam.com`) — Vercel will block the deploy ("Deployment was blocked").
+- SEO state, decisions, evidence and measurements live in `docs/SEO_AUDIT.md`; the list below is
+  the short version.
+
+### Open items — SEO & local (as of 2026-10-03)
+Full detail and reasoning in `docs/SEO_AUDIT.md` → Open items.
+- [ ] **Homepage stat bands** — "3-15h / vecka" (twice) and "3–6 månader" still conflict with the no
+  site-wide hours rule. **Owner decision 2026-10-05: no case numbers or client names on the homepage** — a
+  version with JaTack/Observa/Kom-Fort figures went live briefly and was reverted (`b88586c`). Any
+  replacement must be general, not case-specific; owner to decide whether to change the bands at all.
+- [ ] **Case → service links** (P2) — see the services list above; needs a design pass.
+- [ ] **`/boras`** — a real local page (team, office, Borås cases, map/GBP), not a city-swap page. GSC
+  already shows Borås demand: "automationsföretag borås" at position 1.8. Should say plainly that Khyte
+  automates office and system work, since Google partly reads the name as industrial automation.
+- [ ] **`/om-oss`** — Swedish fixes ("Vart allt började" → "Där allt började", "fick med han" → "fick med
+  honom"), mention the Borås office, founder background; add Erik when his photo is ready.
+- [ ] **Performance** — load is now held by JavaScript render delay (LCP ~9.5 s lab on mobile), not bytes:
+  look at what the hero waits for before hydration. Design-sensitive; plan first.
+- [ ] **Favicons** — `icon.svg` / `apple-icon.svg` are 381 KB each, and iOS needs a PNG touch icon.
+- [ ] **Other repos' deploys** — `bni-references` and `hovaliden` still commit as `hai@khyteteam.com` and
+  will be blocked on their next push (remove the local override, or add the email to GitHub).
+- [ ] **Off-site (owner)** — Google reviews from case clients; ask BNI Sjuhärad and E-handelsstaden to link
+  `https://khyte.se` (E-handelsstaden points at khyteteam.com); Hitta and Allabolag under the Khyte name;
+  Bing Webmaster Tools (import from GSC); GBP photos and posts.
+- [ ] **Measure** — re-export GSC around mid-November 2026 and compare with the 2026-10-02 baseline in
+  `docs/SEO_AUDIT.md`; that export also picks the next service pages.
+
+### Open items — services work (as of 2026-10-05)
+- [ ] **Services redesign — three pages, split by buying situation** (owner, 2026-10-05). Automatisering
+  ("we keep processing, moving or preparing the same information"), Egna system ("we need a tool to run
+  our work"), AI-rådgivning (a paid session). Overview goes image-led (HELkom as reference), with small
+  animations of real work in place of photos; animations never link to cases, proof is a short text link.
+  Order: (0) free-kartläggning wording ✓ → (1) copy for all three pages, agreed before any animation →
+  (2) Automatisering as the complete pattern page → (3) Egna system onto the same pattern → (4)
+  AI-rådgivning → (5) overview. Example allocation: Etcetera (Excel → plocksedel) and JaTack move to
+  Automatisering, Observa is its named AI section; Kom-Fort is Egna system; Osteopaticentrum fits either,
+  by angle. Each build page covers: when it fits, examples, deliverable, what we need from the customer,
+  pricing factors, delivery, support, FAQ.
+- [ ] **Eyeball the "Vad vi löser" loop** on khyte.se/tjanster in a normal browser window. It was
+  verified through the browser's animation API and frozen frames only (the test tab was hidden), so the
+  pacing has not been judged by eye. Tune with the single `7.5s` in `.area-ill` (`globals.css`). Moot once
+  step (5) of the redesign replaces the tiles.
+- [ ] **AI-rådgivning page** — scope decided 2026-10-05 (supersedes "needs the owner to define what's
+  included"): for individuals within companies, addressed as "du", beginners and people who already use
+  AI. Two hours, remote or in person, one participant. Base price 2 990 kr; +1 500 kr per extra
+  participant is the intended expansion, not the launch offer. Booking: confirm the time, collect a
+  preparation form, invoice after the session. The customer gets a summary and a document tailored to
+  their needs (instructions, prompts, tool recommendations, prioritised next steps). **Open:** VAT
+  wording on the price, and the owner wants the fee credited toward something afterwards — destination
+  and terms not yet decided. Promise practical progress on a chosen task, not a delivered integration.
+- [ ] ~~**Next service pages (AI automation, workflow automation)** — decide from the next GSC export.~~
+  Superseded 2026-10-05: one **Automatisering** page with AI as a named section. A separate AI page is
+  reconsidered when the offer, search results and GSC data support it (mid-November export is a review
+  point, not a gate).
+- [ ] **Systemintegration page** — only once there's a delivered integration case. Until then the
+  "Verktyg som inte pratar med varandra" tile deliberately has no link.
+- [ ] **Case → service links** (the other agent's P2): call `servicesForCase(c.slug)` from
+  `src/data/services.ts` on case pages; anchors are listed in `docs/SEO_AUDIT.md` → Open items → P2.
 
 ---
 
 ## Changelog
 
-### v2.33 — Kompassen: kortare resultatmejl, och AI:n via OpenAI
+### v2.38 — Kompassen: kortare resultatmejl, och AI:n via OpenAI
 - **AI moved from Anthropic (Claude Opus 5) to OpenAI (`gpt-6-luna`)** to cut cost — roughly from ~2.5 kr to well under 0.1 kr per visitor at list prices. `@anthropic-ai/sdk` removed, `openai` added; shared client/model in `src/kompass/server/openai.ts`. Same prompts, same schema and the same checks afterwards. Env: `ANTHROPIC_API_KEY` → `OPENAI_API_KEY`. Responses API with `store: false`.
 - **AI spend caps**: 5 analyses per visit (was 10), 60 AI calls per IP and hour, and **3,000 AI calls per day for the whole site** (`GRANSER_PER_DYGN` in `spamskydd.ts`; new index `kompass_inskick_typ_idx`, migration `db/migrations/20261005_dygnstak.sql`, applied to Neon 2026-10-05). Over the cap, visitors get the rule-engine result. Also set a monthly limit in OpenAI's billing settings — the only cap nothing in our code can bypass.
 - **Tools the visitor names in their own workflow text** (e.g. "Excel") may now appear in the AI's workflow proposal even if not ticked among the systems — before, such a proposal was thrown away (`verktygIText` in `ai-typer.ts`).
@@ -849,29 +967,98 @@ Moved to `docs/INTENTIONS.md` — the living log for ideas, directions, and thin
 - Replies to the result mail go to `SAJT.mejl` (`replyTo`), whatever `MAIL_FROM` is. Mail frame gets a viewport meta tag so phones don't render it zoomed out.
 - `resultatmejl(rad)` in `mail.ts` builds subject + HTML without sending — handy for previews.
 
-### v2.32 — Kompassen: databasen flyttad till Neon
+### v2.37 — Kompassen: databasen flyttad till Neon
 - **Supabase → Neon Postgres** (project "Ai kompass" on Hai's account). `@supabase/supabase-js` removed, `@neondatabase/serverless` added; `src/kompass/server/supabase.ts` replaced by `db.ts` with plain parameterized SQL. Same tables and behavior — the schema needed no changes.
 - `supabase/` renamed to `db/`. Env: `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` → `DATABASE_URL`.
 - Cron lock now uses the database clock (`now()`) for the lease; cleanup counts deleted rows in SQL.
 - **Fix (pre-existing gap, found in review)**: if the mails failed and the delivery status then couldn't be saved, the visitor got OK but cron never found the row. The contact route now marks the row pending and locked before sending; cron also picks up leads whose status was never saved.
 
-### v2.31 — Kompassen: intern översikt och dagligt cron-jobb
+### v2.36 — Kompassen: intern översikt och dagligt cron-jobb
 - **Fixes after review**: rejected Resend sends are now errors (were marked sent — pre-existing bug), cron claims rows before sending (new column `behandlas_till` + migration), funnel percentages count only visits that started in the period (could exceed 100 %), lead list is paginated with a real total.
 - **`/internal/kompass`**: funnel, answered per screen, drop-off, leads (with mail delivery status and meeting click) and all visits. Behind the existing `/internal` Basic auth — no `proxy.ts` change.
 - **`vercel.json` added** with the compass cron once a day (mail retries + 90-day cleanup, which wasn't running at all before).
 - Database setup checklist under "Automationskompassen" above — the database is not set up yet.
 
-### v2.30 — Kompassen: kortare, generell, och källan flyttad hit
+### v2.35 — Kompassen: kortare, generell, och källan flyttad hit
 - **This repo is now the source of truth for the compass**; `khyte-kompass` is archived. Schema, migrations and tests moved here; Vitest added (`npm test`, 152 tests).
 - **Questions rebuilt for any business, then shortened**: 6–7 screens (om er, mål, vad görs för hand, at most one relevant follow-up, one time screen, system, optional workflow text). Fewer options everywhere. Follow-ups are neutral — "Vet inte" / "fungerar bra" never steer the result.
 - **Result page simplified**: one sentence, one number, three proposal titles, then "Boka ett möte" (Calendly, new tab) with the email field as the alternative. Steps, plan and cases are in the result email only. Satoshi headings instead of Bebas across the compass.
 - **AI analysis** gets a generalized input and reads the visitor's workflow text (as data, with PII stripped). New event `mote_klick`.
 - Full logic and prompts: `docs/KOMPASS_LOGIK.md`.
 
-### v2.29 — Automationskompassen on the site
-- Moved the compass module in from `khyte-kompass` (`src/kompass/`, `/kompass`, `/api/kompass/*`, `public/kompass/`). New deps: `@anthropic-ai/sdk` (replaced by `openai` in v2.33), `@supabase/supabase-js` (replaced by Neon in v2.32), `resend`, `server-only`, `zod`.
+### v2.34 — Automationskompassen on the site
+- Moved the compass module in from `khyte-kompass` (`src/kompass/`, `/kompass`, `/api/kompass/*`, `public/kompass/`). New deps: `@anthropic-ai/sdk` (replaced by `openai` in v2.38), `@supabase/supabase-js` (replaced by Neon in v2.37), `resend`, `server-only`, `zod`.
 - Popup: `KompassProvider` in layout, `KompassModal` (iframe to `/kompass/inbaddad`), homepage `KompassTeaser`. Nav button (lg+) and mobile drawer button. See "Automationskompassen" above.
 - `/kompass` added to the sitemap.
+
+### v2.33 — Kartläggning is free (2026-10-05)
+- Wording only, no layout change. Home FAQ "Vad kostar det?" now opens with a free kartläggning followed
+  by an offer with clear scope and a fixed build price. `/tjanster`: the FAQ "Varför ska vi betala för en
+  kartläggning?" became "Kostar kartläggningen något?", and the Kartläggning step is labelled
+  "Kostnadsfri" (Implementering keeps "Fast pris"); Introsamtal's "Gratis" became "Kostnadsfritt" to match.
+  FAQ markup follows the visible text automatically.
+
+### v2.32 — SEO pass, Search Console, Business Profile (2026-09-30 – 10-02)
+- **Invisible SEO pass** (no layout change, live 2026-10-02): `src/data/facts.ts` as the one place for the
+  intro-call length, Calendly URL, price, delivery and contact details; full address, coordinates and logo
+  in the sitewide schema; home H1 reads once (`RollingWord` no longer renders a hidden duplicate); every page
+  previews with its own title and description; home retargeted at "automatisering för företag"; case pages
+  get workflow-first titles, real descriptions, the case photo as preview image and h2/h3 headings; case
+  photos PNG → JPG (~1.5 MB → ~80 KB each) and the text logo 510 KB → 100 KB; no sitemap `lastmod`;
+  `/case/lead-lista` → `/case/foretagsresearch`; footer label "Address" → "Adress".
+- **Measured live** (Lighthouse mobile): home 46 → 59, 8.3 MB → 1.4 MB, LCP 19.6 s → 9.5 s; case page 61 → 68.
+- **Search Console**: baseline exported, sitemap submitted (first time ever), recrawls requested for 7 pages.
+- **Business Profile**: primary category Automationsföretag → Programvaruföretag (secondary: Datorkonsult,
+  Automationsföretag), new short description, services list (IT-konsultverksamhet, Programutveckling,
+  Automatisering av arbetsflöden, Systemintegration, AI-automation, Excel-automatisering, Skräddarsydda system).
+- **Repos** made private; Vercel deploy block fixed by dropping the repo-local commit email.
+
+### v2.31 — /tjanster becomes a short hub; "Vad vi löser" with looping drawings
+- **Six domain cards → "Vad vi löser"**: five tiles (Excelsammanställningar, Manuella steg, Verktyg som inte
+  pratar med varandra, Allt på ett ställe, wide **Rådgivning** tile) that double as the menu into service
+  pages and cases. Each has a small SVG drawing looping before → after (CSS keyframes, paused off screen,
+  static "after" frame under reduced motion).
+- **Condensed**: process cards → a 4-step strip ("Implementation" → "Implementering", matching the home
+  page); price card, "vad ingår", support and the results band → one "Vad det kostar" band; FAQ 8 → 6
+  (adds "Vad påverkar priset?" and "Kan vi köpa bara rådgivning?"). Around 44 list items → 23.
+- **Rådgivning** added as a separate service (owner's call): tile + FAQ now, own page once defined.
+- Anchors: `#vad-vi-automatiserar` → `#vad-vi-loser`; `#resultat` removed (nothing linked to either).
+- Verified with `npm run build` + `next start` (port 3100 — a `next dev` server held :3000): `/tjanster` and
+  `/tjanster/egna-system` 200, 6 FAQ in schema, 25 element animations on a 7.5s infinite cycle, correct
+  before/after/rest states per role, paused off screen; no horizontal overflow at 1536px or 375px.
+
+### v2.30 — First service page: Egna system
+- **New route `/tjanster/egna-system`**, generated from the new `src/data/services.ts` (same pattern as
+  `cases.ts`). Problems and builds are drawn only from the three cases that prove it; positioning is
+  "custom, built from parts we already know work", not a bespoke software house.
+- **`/tjanster`** gains a card per service page, stable section anchors (with `scroll-mt-28`), and reads intro
+  length, price and delivery from `facts.ts`. Price card now reads "Från 15 000 kr" (was "15 000+ kr").
+- **`CaseList` extracted** from `/tjanster` so both pages render case rows identically; rows are numbered by
+  position in the list.
+- **Plumbing**: sitemap includes service pages; `/tjanster/custom-build` + `/services/custom-build` 308 to the
+  new page; Service + BreadcrumbList + FAQPage JSON-LD on the service page.
+- Verified with `npm run build` + `npm run start`: 200 on the new page, 404 on unknown slugs, redirects single
+  hop, one H1, 3 case links + 3 links up to `/tjanster`, FAQ schema matches the 5 visible questions, no em
+  dashes, no horizontal overflow at 1920px or 375px.
+
+### v2.29 — Services page Phase 0: one set of facts, proof links, clean Swedish
+- **Business facts aligned across the site** (owner's decisions, 2026-09-30): the first step is
+  **Kartläggning** (paid, required) — `/tjanster` said "Förstudie" while the homepage said "Kartläggning";
+  delivery is **1–2 veckor för mindre automationer, 4–6 för större system** (was "1–2" on the homepage FAQ and
+  "2–6" on `/tjanster`); the intro call is **30 min** everywhere (pre-footer and `/tjanster` said 15, the Calendly
+  event is 30). "Kvalificeringssamtal" → "Introsamtal", matching `/kontakt`.
+- **`/tjanster` metadata + H1**: title "Tjänster och priser – automation, AI och egna system", new description
+  with price and ownership, H1 "VÅRA TJÄNSTER." → "TJÄNSTER / OCH PRISER." (verified: fits 375px, no overflow).
+- **Pricing section renamed** "SKRÄDDARSYDD AUTOMATION." → "VAD DET KOSTAR." so it cannot be confused with a
+  future custom-systems service page.
+- **New "Det här har vi byggt" section** on `/tjanster` linking every case, driven by `cases.ts`.
+- **Generic "5–20h / vecka" removed** from the Resultat band in favour of Observa's measured figure.
+- **Swedish fixes**: "ta hand av" ×2, "andra källorna", "integrar", "sköter sig själv", "era nuläge", "full
+  fokus", "Ni gör", "vart ni tappar tid" (homepage process card), "har en API" (homepage FAQ). Em dashes removed
+  from edited copy.
+- Homepage FAQ answers for price and delivery rewritten to the same facts; FAQPage JSON-LD follows automatically.
+- Verified with `npm run build` + `npm run start`: `/tjanster` 200, one H1, links to all 5 cases, FAQ schema
+  matches the accordion, 30 min on every page's pre-footer, no horizontal overflow at 375px or 1920px.
 
 ### v2.28 — Real case photos + strongest-case ordering
 - **Replaced procedural gradient+text mockups with real photos** on both the homepage testimonial cards (`CasesSection.tsx`) and the `/case` listing grid (`case/page.tsx`). Each case now has an `image` field in `cases.ts` pointing at a Canva-made "Company x Khyte" photo in `public/case-images/`.

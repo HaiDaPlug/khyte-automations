@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import { facts } from "@/data/facts";
 
 export const metadata: Metadata = {
-  title: "Boka ett intro (30 min) eller berätta om era arbetsflöden",
-  description:
-    "Boka ett 30-minuters intro eller berätta om era arbetsflöden. Vi svarar inom 24h med en första bedömning och nästa steg.",
+  title: `Boka ett intro (${facts.introCall.minutes} min) eller berätta om era arbetsflöden`,
+  description: `Boka ett ${facts.introCall.minutes}-minuters intro eller berätta om era arbetsflöden. Vi svarar inom 24h med en första bedömning och nästa steg.`,
   alternates: {
     canonical: "/kontakt",
   },

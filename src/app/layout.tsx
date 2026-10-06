@@ -30,6 +30,7 @@ const jakartaSans = Plus_Jakarta_Sans({
 import { Analytics } from "@vercel/analytics/next";
 import Script from "next/script";
 import JsonLd from "@/components/JsonLd";
+import { facts } from "@/data/facts";
 import Nav from "@/components/Nav";
 import SiteChrome from "@/components/SiteChrome";
 import PreFooterCTA from "@/components/PreFooterCTA";
@@ -62,11 +63,10 @@ export const metadata: Metadata = {
     apple: "/apple-icon.svg",
   },
 
-  // OpenGraph for social media previews
+  // OpenGraph for social media previews. No title/description here on
+  // purpose: Next fills og:* and twitter:* from each page's own title and
+  // description, so a shared case link previews as that case.
   openGraph: {
-    title: "Khyte Automations | Inget onödigt skit, bara automationer som håller",
-    description:
-      "Vi bygger AI-automationer som tar bort manuellt arbete, minskar fel och frigör tid — utan hype, bara fungerande workflows.",
     siteName: "Khyte Automations",
     // og:image comes from the file-based opengraph-image.tsx convention —
     // setting `images` here would override it with a stale URL.
@@ -77,15 +77,12 @@ export const metadata: Metadata = {
   // Twitter card configuration
   twitter: {
     card: "summary_large_image",
-    title: "KHYTE AUTOMATIONS | No Hype, Just Workflows",
-    description:
-      "Vi bygger AI-automationer som tar bort manuellt arbete, minskar fel och frigör tid — utan hype, bara fungerande workflows.",
   },
 };
 
 // Structured Data (JSON-LD) for SEO
-const SITE_URL = "https://khyte.se";
-const CONTACT_EMAIL = "hai@khyte.se";
+const SITE_URL = facts.url;
+const CONTACT_EMAIL = facts.email;
 const LINKEDIN_PERSONAL = "https://www.linkedin.com/in/hai-pham-bui-8a9893395";
 const LINKEDIN_COMPANY = "https://www.linkedin.com/company/khyte-automations";
 const COLOR_CONCEPT = "espresso";
@@ -95,8 +92,9 @@ const structuredData = [
     "@context": "https://schema.org",
     "@type": "Organization",
     "@id": `${SITE_URL}/#organization`,
-    name: "Khyte Automations",
+    name: facts.name,
     url: SITE_URL,
+    logo: `${SITE_URL}/logo.png`,
     email: CONTACT_EMAIL,
     sameAs: [LINKEDIN_COMPANY],
   },
@@ -104,21 +102,24 @@ const structuredData = [
     "@context": "https://schema.org",
     "@type": "ProfessionalService",
     "@id": `${SITE_URL}/#local`,
-    name: "Khyte Automations",
+    name: facts.name,
     image: `${SITE_URL}/opengraph-image`,
     url: SITE_URL,
-    telephone: "+46700996838",
+    telephone: facts.phone.e164,
     email: CONTACT_EMAIL,
     address: {
       "@type": "PostalAddress",
-      addressLocality: "Borås",
-      addressRegion: "Västra Götaland",
-      addressCountry: "SE",
+      streetAddress: facts.address.street,
+      postalCode: facts.address.postalCode,
+      addressLocality: facts.address.city,
+      addressRegion: facts.address.region,
+      addressCountry: facts.address.country,
     },
+    // Västerbrogatan 8A, per OpenStreetMap
     geo: {
       "@type": "GeoCoordinates",
-      latitude: 57.721,
-      longitude: 12.9401,
+      latitude: 57.72175,
+      longitude: 12.93704,
     },
     areaServed: [
       { "@type": "City", name: "Borås" },
@@ -126,7 +127,7 @@ const structuredData = [
       { "@type": "AdministrativeArea", name: "Västra Götaland" },
       { "@type": "Country", name: "Sverige" },
     ],
-    priceRange: "Från 15 000 SEK",
+    priceRange: `Från ${facts.priceFrom}`,
     openingHoursSpecification: {
       "@type": "OpeningHoursSpecification",
       dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],

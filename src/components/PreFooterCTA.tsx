@@ -1,5 +1,6 @@
 import Container from "./Container";
 import CalendlyButton from "./CalendlyButton";
+import { facts } from "@/data/facts";
 
 export default function PreFooterCTA() {
   return (
@@ -10,7 +11,7 @@ export default function PreFooterCTA() {
             Redo för att automatisera repetitivt arbete?
           </h2>
           <p className="text-[var(--color-warm-text-muted)] text-base md:text-lg leading-[1.6] max-w-[60ch] mb-6">
-            Boka ett 15-minuters samtal. Ingen press, vi går igenom era arbetsflöden och ser om det finns potential för ett samarbete.
+            Boka ett samtal på {facts.introCall.minutes} minuter. Ingen press, vi går igenom era arbetsflöden och ser om det finns potential för ett samarbete.
           </p>
           <CalendlyButton
             variant="warm"
