@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useCalendly } from "./CalendlyContext";
+import { KompassIkon, useKompass } from "./KompassContext";
 
 function useIsMobile(breakpointPx = 768) {
   const [isMobile, setIsMobile] = useState<boolean>(false);
@@ -27,6 +28,7 @@ export default function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const isMobile = useIsMobile(768);
   const { openCalendly } = useCalendly();
+  const { openKompass } = useKompass();
 
   // Homepage-only: track scroll to reveal nav pill
   useEffect(() => {
@@ -135,7 +137,19 @@ export default function Nav() {
         </div>
 
         {/* CTA Button - Right (desktop only) */}
-        <div className="hidden md:flex items-center">
+        <div className="hidden md:flex items-center gap-2.5">
+          {/* Automationskompassen — secondary, left of the CTA. Icon only at lg,
+              icon + label from xl; below lg the right side has no room left. */}
+          <button
+            type="button"
+            onClick={openKompass}
+            aria-label="Öppna Automationskompassen"
+            title="Automationskompassen"
+            className="hidden lg:inline-flex items-center justify-center gap-2 rounded-full border border-white/20 bg-white/5 hover:bg-white/10 transition-colors text-white text-sm font-bold p-2.5 xl:px-5 shrink-0 cursor-pointer whitespace-nowrap"
+          >
+            <KompassIkon className="w-5 h-5 xl:w-4 xl:h-4" />
+            <span className="hidden xl:inline">Kompassen</span>
+          </button>
           <button
             onClick={openCalendly}
             className="btn-cta text-sm font-bold px-6 py-2.5 rounded-full shrink-0 cursor-pointer whitespace-nowrap"
@@ -195,7 +209,18 @@ export default function Nav() {
             <Link href="/kontakt" className="text-white/70 hover:text-white text-lg" onClick={() => setOpen(false)}>Kontakt</Link>
           </nav>
           {/* CTA */}
-          <div className="mt-auto px-6 py-6 border-t border-white/10">
+          <div className="mt-auto px-6 py-6 border-t border-white/10 flex flex-col gap-3">
+            <button
+              type="button"
+              onClick={() => {
+                setOpen(false);
+                openKompass();
+              }}
+              className="flex w-full items-center justify-center gap-2 rounded-full border border-white/20 bg-white/5 hover:bg-white/10 text-white font-bold py-3 cursor-pointer"
+            >
+              <KompassIkon />
+              <span>Automationskompassen</span>
+            </button>
             <Link
               href="/kontakt"
               onClick={() => setOpen(false)}

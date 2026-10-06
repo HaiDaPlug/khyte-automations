@@ -10,6 +10,7 @@ const staticRoutes = [
   "/case",
   "/om-oss",
   "/kontakt",
+  "/kompass",
   "/integritetspolicy",
   "/villkor",
 ];

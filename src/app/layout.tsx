@@ -38,6 +38,9 @@ import Footer from "@/components/Footer";
 import PageTransition from "@/components/PageTransition";
 import { CalendlyProvider } from "@/components/CalendlyContext";
 import CalendlyDrawer from "@/components/CalendlyDrawer";
+import { KompassProvider } from "@/components/KompassContext";
+import KompassModal from "@/components/KompassModal";
+import KompassTeaser from "@/components/KompassTeaser";
 
 export const viewport: Viewport = {
   viewportFit: "cover",
@@ -187,18 +190,22 @@ export default function RootLayout({
       </head>
       <body className="main-wrapper">
         <CalendlyProvider>
-          <SiteChrome>
-            <Nav />
-          </SiteChrome>
-          <PageTransition>{children}</PageTransition>
-          <SiteChrome>
-            <div className="base-band">
-              <PreFooterCTA />
-              <Footer />
-            </div>
-            <CalendlyDrawer />
-          </SiteChrome>
-          <Analytics />
+          <KompassProvider>
+            <SiteChrome>
+              <Nav />
+            </SiteChrome>
+            <PageTransition>{children}</PageTransition>
+            <SiteChrome>
+              <div className="base-band">
+                <PreFooterCTA />
+                <Footer />
+              </div>
+              <CalendlyDrawer />
+              <KompassTeaser />
+              <KompassModal />
+            </SiteChrome>
+            <Analytics />
+          </KompassProvider>
         </CalendlyProvider>
         <Script src="https://www.googletagmanager.com/gtag/js?id=G-F91HE9L5LS" strategy="lazyOnload" />
         <Script id="gtag-init" strategy="lazyOnload">{`

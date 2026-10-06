@@ -61,3 +61,4 @@ html_data.md
 # public/signature-assets ARE committed; these are not. Ask a teammate for the
 # originals if you need to regenerate or add a person.
 /assets/signature-sources/
+.neon
