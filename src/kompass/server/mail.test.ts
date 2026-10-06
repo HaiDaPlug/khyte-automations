@@ -53,6 +53,28 @@ describe("utskick via Resend", () => {
   });
 });
 
+describe("mottagare", () => {
+  it("flera adresser i SALES_EMAIL får alla säljnotisen", async () => {
+    send.mockResolvedValue({ data: { id: "e1" }, error: null, headers: null });
+    process.env.SALES_EMAIL = "hai@khyte.se, erik@khyte.se";
+    try {
+      await skickaSaljnotis(RAD);
+      expect(send.mock.calls[0][0].to).toEqual(["hai@khyte.se", "erik@khyte.se"]);
+    } finally {
+      process.env.SALES_EMAIL = "salj@khyte.se";
+    }
+  });
+
+  it("en tom SALES_EMAIL är ett fel, inte ett tyst utskick till ingen", async () => {
+    process.env.SALES_EMAIL = " , ";
+    try {
+      await expect(skickaSaljnotis(RAD)).rejects.toThrow(/SALES_EMAIL saknas/);
+    } finally {
+      process.env.SALES_EMAIL = "salj@khyte.se";
+    }
+  });
+});
+
 describe("leveransen när Resend nekar", () => {
   it("markeras som misslyckad och försöks igen — inte som skickad", async () => {
     send.mockResolvedValue(NEKAD);

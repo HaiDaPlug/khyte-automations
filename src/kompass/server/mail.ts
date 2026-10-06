@@ -36,6 +36,19 @@ function klient(): Resend {
   return resend;
 }
 
+/**
+ * Mottagarna i en miljövariabel. Flera adresser skrivs med kommatecken
+ * emellan ("hai@khyte.se,erik@khyte.se") — alla får samma mejl.
+ */
+function mottagare(namn: "SALES_EMAIL" | "ADMIN_EMAIL"): string[] {
+  const adresser = (process.env[namn] ?? "")
+    .split(",")
+    .map((a) => a.trim())
+    .filter(Boolean);
+  if (adresser.length === 0) throw new Error(`${namn} saknas. Se .env.example.`);
+  return adresser;
+}
+
 function avsandare(): string {
   const from = process.env.MAIL_FROM;
   if (!from) {
@@ -131,8 +144,7 @@ function svarText(rad: SvarsRad, id: string): string {
 
 /** Notis till säljaren: allt som behövs för att förbereda samtalet. */
 export async function skickaSaljnotis(rad: SvarsRad, nyckel?: string): Promise<void> {
-  const till = process.env.SALES_EMAIL;
-  if (!till) throw new Error("SALES_EMAIL saknas. Se .env.example.");
+  const till = mottagare("SALES_EMAIL");
 
   const foretag = rad.foretag?.trim() || rad.kontakt_namn?.trim() || "Okänt";
 
@@ -374,8 +386,7 @@ export async function skickaKompletteringsnotis(rad: {
   roll: string | null;
   tidshorisont: string | null;
 }): Promise<void> {
-  const till = process.env.SALES_EMAIL;
-  if (!till) throw new Error("SALES_EMAIL saknas. Se .env.example.");
+  const till = mottagare("SALES_EMAIL");
 
   const rader: [string, string | null][] = [
     ["Namn", rad.kontakt_namn],
@@ -418,8 +429,7 @@ export async function skickaAdminlarm(
   steg: string,
   fel: string,
 ): Promise<void> {
-  const till = process.env.ADMIN_EMAIL;
-  if (!till) throw new Error("ADMIN_EMAIL saknas. Se .env.example.");
+  const till = mottagare("ADMIN_EMAIL");
 
   await skicka({
     // Ett larm per besök och steg, även om två körningar skulle larma samtidigt.
