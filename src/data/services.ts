@@ -89,7 +89,7 @@ export const services: ServiceData[] = [
       },
       {
         q: "Vad händer med systemet om vi slutar jobba med er?",
-        a: "Det fortsätter att fungera. Ni äger koden, all data och alla inloggningar, och får dokumentation vid överlämningen. Ni kan drifta och bygga vidare själva eller med någon annan.",
+        a: "Ni äger koden vi levererar och har tillgång till er data och de inloggningar som hör till lösningen. Ni kan låta oss sköta driften eller ta över själva, med eller utan en annan leverantör. Driften och supporten har ingen bindningstid, och upplägget för överlämningen specificerar vi i offerten.",
       },
       {
         q: "Kan systemet kopplas till det vi redan använder?",

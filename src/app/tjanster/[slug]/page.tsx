@@ -62,7 +62,7 @@ export default async function ServicePage({
     {
       num: facts.priceFrom,
       unit: "från",
-      body: "Fast pris för bygget, satt efter kartläggningen. Ni vet vad det kostar innan något byggs.",
+      body: `Fast pris för bygget, ${facts.priceVat}, satt efter kartläggningen. Ni vet vad det kostar innan något byggs.`,
     },
     {
       num: facts.delivery.large,
@@ -93,6 +93,7 @@ export default async function ServicePage({
           "@type": "PriceSpecification",
           minPrice: Number(facts.priceFrom.replace(/\D/g, "")),
           priceCurrency: "SEK",
+          valueAddedTaxIncluded: false,
         },
       },
     },

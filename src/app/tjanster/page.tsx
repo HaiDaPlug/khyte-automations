@@ -14,7 +14,7 @@ import { facts } from "@/data/facts";
 
 export const metadata: Metadata = {
   title: "Tjänster och priser – automation, AI och egna system",
-  description: `Automatiserade flöden, AI, egna system och rådgivning för svenska företag. Fast pris från ${facts.priceFrom} efter kartläggning. Ni äger allt vi bygger.`,
+  description: `Automatiserade flöden, AI, egna system och rådgivning för svenska företag. Fast pris från ${facts.priceFrom} ${facts.priceVat} efter kartläggning. Ni äger allt vi bygger.`,
   alternates: {
     canonical: "/tjanster",
   },
@@ -47,7 +47,7 @@ const faqs = [
   },
   {
     q: "Vad ingår efter leverans?",
-    a: "Dokumentation, en genomgång med ert team och en supportperiod där vi fixar buggar kostnadsfritt. Ni äger koden och kan drifta allt själva. Vill ni ha hjälp efter det finns löpande support och små förbättringar till ett fast månadspris."
+    a: "Dokumentation och en genomgång med ert team. Vilken support och felrättning som ingår i bygget står i offerten. Efter leverans kan vi sköta hosting, underhåll och löpande support till ett fast månadspris utifrån lösningens omfattning, utan bindningstid."
   },
   {
     q: "Kan vi köpa bara rådgivning?",
@@ -82,7 +82,7 @@ const terms = [
   {
     num: facts.priceFrom,
     unit: "från",
-    body: "För bygget. Exakt pris sätts i kartläggningen, utifrån hur många system, steg och undantag flödet har.",
+    body: `För bygget, ${facts.priceVat}. Exakt pris sätts i kartläggningen, utifrån hur många system, steg och undantag flödet har.`,
   },
   {
     num: facts.delivery.small,
@@ -196,8 +196,9 @@ export default function ServicesPage() {
           </ul>
 
           <p className="mt-12 md:mt-16 border-t border-white/10 pt-8 text-base text-white/70 leading-relaxed max-w-[72ch]">
-            Ingår alltid: dokumentation, en genomgång med ert team och en supportperiod efter leverans.
-            Löpande support och små förbättringar finns som tillval till ett fast månadspris.
+            Ingår alltid: dokumentation och en genomgång med ert team. Vilken support och felrättning som
+            ingår i bygget står i offerten. Efter leverans kan vi sköta hosting, underhåll och löpande support
+            till ett fast månadspris utifrån lösningens omfattning, utan bindningstid.
           </p>
         </div>
       </EspressoBand>
