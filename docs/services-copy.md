@@ -1,4 +1,4 @@
-# Services copy — draft for review (2026-10-07, rev. 4)
+# Services copy — draft for review (2026-10-07, rev. 5)
 
 Copy for the three service pages and the matching `/tjanster` overview text. **Agree this before any
 animation is built.** Design (layout, image, motion) is handled separately; the "Bild" line under each
@@ -14,12 +14,14 @@ example only says what the visual has to show.
   build with no expiry. One participant at launch.
 - The AI-rådgivning offer should feel generous for its price.
 - An overview with large visuals, HELkom as reference. Visuals don't link to cases.
-- No written ownership or support terms exist for builds yet.
+- Build terms (2026-10-07), see "Build terms" below: ongoing support at a fixed monthly price based on
+  scope, no binding period; Khyte hosts and pays for hosting, covered by the maintenance fee; customers
+  have access to their data and the logins tied to their solution; builds from 15 000 kr exkl. moms.
 
 **Still proposed (Claude and GPT), until the owner adopts them:**
 - One Automatisering page with AI inside it, and which examples go on which page.
-- Section order, the exact public wording below, and Automatisering as the first page to build.
-- Ownership, support and handover wording that depends on terms not yet set (open questions below).
+- Section order, the exact public wording below (including the build-terms wording), and Automatisering
+  as the first page to build.
 
 A docs-only commit of this draft is for review. It doesn't approve the copy or any site change.
 
@@ -30,18 +32,34 @@ A docs-only commit of this draft is for review. It doesn't approve the copy or a
 - No em dashes in public copy. Facts (price, delivery, intro length) come from `src/data/facts.ts` when built.
 - Build cases prove the build services only. Nothing suggests those customers bought AI-rådgivning.
 
-## Open questions (don't block the draft)
+## Build terms (owner-confirmed 2026-10-07)
 
-**[INTERNT] Build terms.** Until these are settled, the draft uses neutral wording: *Upplägget för drift,
-support och överlämning går vi igenom tillsammans och specificerar i offerten.*
-1. **Monthly support.** The live site offers "löpande support och små förbättringar till ett fast
-   månadspris". Do you offer that? If not, it should come off the live site too.
-2. **Support period.** Its length and scope per offer.
-3. **Running costs.** Do customers pay their own hosting and external services (SMS, AI, APIs) after
-   handover?
-4. **"All data och alla inloggningar".** The live overview promises this. Is it true?
-5. **Moms on the build price.** The session price is exkl. moms; the "från 15 000 kr" build price has no
-   stated basis on the site today.
+- Ongoing support at a fixed monthly price, based on the project's scope.
+- Support arrangements vary by project, with no binding period.
+- Khyte handles and pays for hosting; the cost is covered by the client's maintenance fee.
+- Customers have access to their data and the logins tied to their solution, even if they let Khyte
+  manage everything.
+- Builds start at **15 000 kr exkl. moms**. Use "exkl. moms" wherever the starting price appears.
+
+**Public wording (proposed, used throughout this draft):**
+
+*Drift och support:* Efter leverans kan vi sköta hosting, underhåll och löpande support till ett fast
+månadspris utifrån lösningens omfattning, utan bindningstid. Offerten visar vad som ingår och vad det
+kostar.
+
+*Ägande och överlämning:* Ni äger koden vi levererar och har tillgång till er data och de inloggningar som
+hör till lösningen. Ni kan låta oss sköta driften eller ta över själva, med eller utan en annan
+leverantör. Upplägget för överlämningen specificerar vi i offerten.
+
+*Pris:* Byggen från 15 000 kr exkl. moms. Kartläggningen är kostnadsfri och ni får en offert med tydlig
+omfattning och fast pris innan ni bestämmer er.
+
+**[INTERNT] Set per quote, never as a site-wide promise:** how much support and bug fixing the build
+price itself includes (no standard duration), and costs for external services such as SMS and AI. The
+hosting answer doesn't settle whether those are inside the monthly fee, so the page only says the quote
+states them.
+
+## Open questions (don't block the draft)
 
 **[INTERNT] AI-rådgivning.**
 - **Booking.** A simple request followed by a personal confirmation of a 90-minute time. Never route it to
@@ -57,7 +75,7 @@ support och överlämning går vi igenom tillsammans och specificerar i offerten
 **Title** (unchanged): Tjänster och priser – automation, AI och egna system
 
 **Meta description:** Automatisering, egna system och AI-rådgivning för svenska företag. Kostnadsfri
-kartläggning och fast pris för bygget från 15 000 kr. Ni äger koden vi bygger.
+kartläggning och fast pris för bygget från 15 000 kr exkl. moms. Ni äger koden vi bygger.
 
 **H1** (unchanged): TJÄNSTER / OCH PRISER.
 
@@ -93,14 +111,15 @@ Intro: Gäller automatisering och egna system. AI-rådgivningen har ett eget, fa
 | Big text | Body |
 |---|---|
 | Kostnadsfritt | Introsamtal och kartläggning är kostnadsfria. Ni får en offert med omfattning, tidsplan och fast pris innan ni bestämmer er. |
-| från 15 000 kr | För bygget. Priset beror på hur många system, steg och undantag lösningen ska hantera. |
+| från 15 000 kr exkl. moms | För bygget. Priset beror på hur många system, steg och undantag lösningen ska hantera. |
 | 1–2 veckor | För mindre automationer, från kartläggning till drift. Större system tar 4–6 veckor. Ni får en tidsplan i offerten. |
-| Er kod | Ni äger koden vi levererar. Upplägget för drift, support och överlämning går vi igenom tillsammans och specificerar i offerten. |
+| Er kod | Ni äger koden vi levererar och har tillgång till er data och de inloggningar som hör till lösningen. |
 
-Below the band: Offerten visar vad som ingår och vilka löpande kostnader lösningen innebär, till exempel
-för hosting eller externa tjänster.
-**[INTERNT]** Replaces today's "Ingår alltid…" line and its fixed monthly price (open question 1).
-Four items where the band has three today; layout is a design call.
+Below the band: Efter leverans kan vi sköta hosting, underhåll och löpande support till ett fast
+månadspris utifrån lösningens omfattning, utan bindningstid. Offerten visar vad som ingår och vad det
+kostar.
+**[INTERNT]** Replaces today's "Ingår alltid…" line, which promises a standard "supportperiod". Four
+items where the band has three today; layout is a design call.
 
 ### FAQ changes
 
@@ -117,10 +136,9 @@ en fil. Det kan handla om CRM, bokföring, mejl eller ett eget system. Vad som �
 igenom i den kostnadsfria kartläggningen.
 
 **New answer** to "Vad ingår efter leverans?":
-Dokumentation och en genomgång med ert team. Upplägget för drift, support och överlämning går vi igenom
-tillsammans och specificerar i offerten, liksom eventuella löpande kostnader för hosting eller externa
-tjänster.
-**[INTERNT]** Add the monthly-support sentence back only if open question 1 is a yes.
+Dokumentation och en genomgång med ert team. Efter leverans kan vi sköta hosting, underhåll och löpande
+support till ett fast månadspris utifrån lösningens omfattning, utan bindningstid. Offerten visar vad som
+ingår och vad det kostar, även för externa tjänster som SMS eller AI.
 
 The other three ("Kostar kartläggningen något?", "Hur lång tid tar det?", "Vad påverkar priset?") stay.
 
@@ -140,7 +158,7 @@ Real photo; phone and email from `facts.ts`.
 
 **Title:** Automatisering av arbetsflöden och dokument
 **Meta description:** Vi automatiserar listor, dokument och företagsresearch. Se exempel med Excel och AI.
-Kostnadsfri kartläggning och fast pris från 15 000 kr.
+Kostnadsfri kartläggning och fast pris från 15 000 kr exkl. moms.
 
 **H1:** AUTOMATISERING / AV MANUELLT ARBETE.  *(check it fits at 375px)*
 
@@ -196,7 +214,7 @@ emot uppgifter.
 **Ni får**
 - Ett färdigt flöde i drift.
 - Dokumentation och en genomgång med dem som ska använda det.
-- Koden vi levererar.
+- Koden vi levererar, och tillgång till er data och era inloggningar.
 - Support och felrättning efter leverans, enligt offerten.
 
 **Vi behöver från er**
@@ -210,12 +228,11 @@ emot uppgifter.
 | Big text | Body |
 |---|---|
 | Kostnadsfritt | Introsamtal och kartläggning är kostnadsfria. Ni får en offert med omfattning, tidsplan och fast pris innan ni bestämmer er. |
-| från 15 000 kr | Priset beror på hur många system och steg flödet har, hur datan ser ut och vilka undantag det ska klara. |
+| från 15 000 kr exkl. moms | Priset beror på hur många system och steg flödet har, hur datan ser ut och vilka undantag det ska klara. |
 | 1–2 veckor | För mindre automationer, från kartläggning till drift. Större bygge tar 4–6 veckor. Ni får en tidsplan i offerten. |
-| Efter leverans | Upplägget för drift, support och överlämning går vi igenom tillsammans och specificerar i offerten. |
+| Drift och support | Efter leverans kan vi sköta hosting, underhåll och löpande support till ett fast månadspris utifrån lösningens omfattning, utan bindningstid. Offerten visar vad som ingår och vad det kostar. |
 
-Below the band: Offerten visar vad som ingår och vilka löpande kostnader lösningen innebär, till exempel
-för hosting eller externa tjänster.
+Below the band: Kostnader för externa tjänster, som SMS eller AI, står också i offerten.
 
 ### Vanliga frågor
 
@@ -287,7 +304,7 @@ leder till nya bokningar.
 **Ni får**
 - Ett system i drift, med inloggning för dem som ska använda det.
 - Dokumentation och en genomgång med personalen.
-- Koden vi levererar.
+- Koden vi levererar, och tillgång till er data och era inloggningar.
 - Support och felrättning efter leverans, enligt offerten.
 
 **Vi behöver från er**
@@ -300,12 +317,11 @@ leder till nya bokningar.
 | Big text | Body |
 |---|---|
 | Kostnadsfritt | Introsamtal och kartläggning är kostnadsfria. Ni får en offert med omfattning, tidsplan och fast pris innan ni bestämmer er. |
-| från 15 000 kr | Priset beror på hur många delar systemet har, hur många som ska använda det och vad det ska kopplas till. |
+| från 15 000 kr exkl. moms | Priset beror på hur många delar systemet har, hur många som ska använda det och vad det ska kopplas till. |
 | 4–6 veckor | Från kartläggning till drift för de flesta system. Mindre verktyg är ofta klara på 1–2 veckor. Ni får en tidsplan i offerten. |
-| Efter leverans | Upplägget för drift, support och överlämning går vi igenom tillsammans och specificerar i offerten. |
+| Drift och support | Efter leverans kan vi sköta hosting, underhåll och löpande support till ett fast månadspris utifrån lösningens omfattning, utan bindningstid. Offerten visar vad som ingår och vad det kostar. |
 
-Below the band: Offerten visar vad som ingår och vilka löpande kostnader lösningen innebär, till exempel
-för hosting eller externa tjänster.
+Below the band: Kostnader för externa tjänster, som SMS eller AI, står också i offerten.
 
 ### Vanliga frågor
 
@@ -318,10 +334,9 @@ kan vara automatiserad eller bygga på att ni exporterar och importerar en fil. 
 till exempel sin kundlista som CSV i sitt SMS-system.
 
 **Vad händer med systemet om vi slutar jobba med er?**
-Ni äger koden vi levererar och kan driva och utveckla systemet själva eller med någon annan. Hur
-överlämningen går till, och vilka löpande kostnader som finns för hosting eller externa tjänster,
-specificerar vi i offerten.
-**[INTERNT]** Can be made more specific once open questions 3 and 4 are answered.
+Ni äger koden vi levererar och har tillgång till er data och de inloggningar som hör till lösningen. Ni
+kan låta oss sköta driften eller ta över själva, med eller utan en annan leverantör. Driften och supporten
+har ingen bindningstid, och upplägget för överlämningen specificerar vi i offerten.
 
 ---
 
@@ -462,6 +477,10 @@ resolves case pages to the right service). Case URLs don't change:
   that still exists.
 - The `services.ts` comment says service FAQs never repeat the overview. The new Egna system ownership
   answer does repeat it, on purpose: update the comment with the change.
+
+**Price:** "15 000 kr exkl. moms" wherever the build starting price appears (`facts.priceFrom`, its
+callers, metadata). The `Service` schema's `priceSpecification` can carry `valueAddedTaxIncluded: false`;
+`minPrice` parses digits only, so it keeps working.
 
 **AI-rådgivning booking:** a request form, then a personal confirmation of a 90-minute time. Not the
 30-min intro event; no payment system.
