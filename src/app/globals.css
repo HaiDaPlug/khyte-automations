@@ -742,3 +742,47 @@ details[open] > div {
   .area-ill [data-a="draw"] { scale: 1 1; }
   .area-ill [data-a="dim"] { opacity: var(--o, 0); }
 }
+
+/* ── Service scenes (/tjanster/<slug> examples) ───────────────────────────
+   Small stories of real work, told in steps. <SceneStage> advances --step on
+   a timer while the scene is on screen. Each element with .s declares the
+   step it appears at (--at, default 0) and optionally the step it leaves at
+   (--until); the clamp() math turns that into 0 or 1, and transitions do the
+   motion. --i staggers siblings that share a step. Only opacity, translate
+   and scale change (compositor-only). Sizes inside a scene are in em, and the
+   scene's font size follows the frame's width (cqw), so a scene scales like
+   an image but never drops below a readable size. */
+.scene-stage {
+  container-type: inline-size;
+}
+.scene {
+  --step: 0;
+  font-size: clamp(10px, 2.75cqw, 15.5px);
+}
+.scene .s {
+  --on: clamp(0, calc(var(--step) - var(--at, 0) + 1), 1);
+  --off: clamp(0, calc(var(--step) - var(--until, 999) + 1), 1);
+  opacity: calc(var(--on) * (1 - var(--off)));
+  translate: 0 calc((1 - var(--on)) * 0.5em);
+  transition:
+    opacity 450ms cubic-bezier(0.22, 1, 0.36, 1),
+    translate 450ms cubic-bezier(0.22, 1, 0.36, 1),
+    scale 650ms cubic-bezier(0.65, 0, 0.35, 1);
+  transition-delay: calc(var(--i, 0) * 110ms);
+}
+/* Lines and bars grow from one edge instead of rising into place. */
+.scene .s-grow-x {
+  translate: none;
+  scale: var(--on) 1;
+  transform-origin: left center;
+}
+.scene .s-grow-y {
+  translate: none;
+  scale: 1 var(--on);
+  transform-origin: center top;
+}
+@media (prefers-reduced-motion: reduce) {
+  .scene .s {
+    transition: none;
+  }
+}

@@ -8,9 +8,10 @@ import FAQAccordion from "@/components/FAQAccordion";
 import JsonLd from "@/components/JsonLd";
 import PageHeader from "@/components/PageHeader";
 import SectionHeading from "@/components/SectionHeading";
+import ServiceExamples from "@/components/sections/ServiceExamples";
 import { facts } from "@/data/facts";
 import { faqPageSchema } from "@/data/faq";
-import { casesForService, getServiceBySlug, services } from "@/data/services";
+import { casesForService, getServiceBySlug, services, type ServiceTerm } from "@/data/services";
 
 type Params = { slug: string };
 
@@ -56,9 +57,14 @@ export default async function ServicePage({
   const proof = casesForService(service);
   const url = `${facts.url}/tjanster/${service.slug}`;
 
+  // Example-led pages (examples, gets, needs and their own price band in
+  // services.ts) and the older problems/builds layout share this template
+  // until every service has moved over.
+  const exampleLed = Boolean(service.examples);
+
   // Process and price are owned by /tjanster. This band only summarises them,
   // from facts.ts, and links up to the full version.
-  const terms = [
+  const terms: ServiceTerm[] = service.terms ?? [
     {
       num: "Kostnadsfritt",
       unit: null,
@@ -66,12 +72,10 @@ export default async function ServicePage({
     },
     {
       num: facts.delivery.large,
-      unit: null,
       body: `Från kartläggning till drift för större system. Mindre lösningar är ofta klara på ${facts.delivery.small}.`,
     },
     {
       num: "Er kod",
-      unit: null,
       body: "Ni äger koden, all data och alla inloggningar. Ni kan drifta och bygga vidare själva.",
     },
   ];
@@ -131,99 +135,153 @@ export default async function ServicePage({
                 Boka ett intro ({facts.introCall.minutes} min)
               </CalendlyButton>
               <Link
-                href="#case"
+                href={exampleLed ? "#exempel" : "#case"}
                 className="text-[var(--color-muted)] hover:text-[var(--color-text)] text-base underline underline-offset-4 transition-colors"
               >
-                Se vad vi har byggt
+                {exampleLed ? "Se exempel" : "Se vad vi har byggt"}
               </Link>
             </div>
           </PageHeader>
         </div>
       </section>
 
-      {/* 2. NÄR BEHÖVS ETT EGET SYSTEM */}
-      <section id="nar-behovs" className="scroll-mt-28 py-16 md:py-20">
-        <div className="max-w-[1100px] mx-auto px-6">
-          <div className="mb-10">
-            <SectionHeading
-              line1="NÄR BEHÖVS"
-              line2="ETT EGET SYSTEM?"
-              intro="Tre lägen där vi oftast bygger ett."
-            />
-          </div>
+      {exampleLed ? (
+        <>
+          {/* 2. EXEMPEL — situation, before, after and the case; the scenes only illustrate */}
+          <section id="exempel" className="scroll-mt-28 py-16 md:py-24">
+            <div className="max-w-[1100px] mx-auto px-6">
+              {service.examplesHeading && (
+                <div className="mb-12 md:mb-16">
+                  <SectionHeading
+                    line1={service.examplesHeading.line1}
+                    line2={service.examplesHeading.line2}
+                    intro={service.examplesIntro}
+                  />
+                </div>
+              )}
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-            {service.problems.map((p) => (
-              <div
-                key={p.title}
-                className="rounded-2xl bg-transparent p-8 border border-[var(--color-border)] transition-colors duration-300 hover:border-[rgba(58,51,48,0.28)]"
-              >
-                <h3 className="text-lg md:text-xl font-semibold tracking-[-0.02em] text-[var(--color-text)] leading-[1.2] mb-3">
-                  {p.title}
-                </h3>
-                <p className="text-[15px] font-medium text-[var(--color-text-body)] leading-relaxed">
-                  {p.body}
-                </p>
+              <ServiceExamples service={service} />
+            </div>
+          </section>
+
+          {/* 3. SÅ JOBBAR VI MED ER — what the customer gets, what we need from them */}
+          <section id="sa-jobbar-vi" className="scroll-mt-28 border-t border-[var(--color-border)] py-16 md:py-20">
+            <div className="max-w-[1100px] mx-auto px-6">
+              <div className="mb-10">
+                <SectionHeading line1="SÅ JOBBAR VI" line2="MED ER." />
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
-      {/* 3. VAD VI BYGGER */}
-      <section id="vad-vi-bygger" className="scroll-mt-28 border-t border-[var(--color-border)] py-16 md:py-20">
-        <div className="max-w-[1100px] mx-auto px-6">
-          <div className="mb-10">
-            <SectionHeading
-              line1="VAD VI"
-              line2="BYGGER."
-              intro="Varje system byggs för er, men av delar vi redan vet fungerar: inloggning, kalender, filimport och utskick. Ni får något som passar, utan att vi uppfinner hjulet varje gång."
-            />
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-            {service.builds.map((b, i) => (
-              <div
-                key={b.title}
-                className="rounded-2xl bg-transparent p-8 lg:p-10 border border-[var(--color-border)]"
-              >
-                <span className="block font-display text-[2.5rem] leading-none tracking-wide text-[var(--color-accent)]">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <h3 className="text-lg md:text-xl font-semibold tracking-[-0.02em] text-[var(--color-text)] leading-[1.2] mt-6 mb-3">
-                  {b.title}
-                </h3>
-                <p className="text-base font-medium text-[var(--color-text-body)] leading-relaxed">
-                  {b.body}
-                </p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16">
+                {[
+                  { title: "Ni får", items: service.gets ?? [] },
+                  { title: "Vi behöver från er", items: service.needs ?? [] },
+                ].map(({ title, items }) => (
+                  <div key={title}>
+                    <h3 className="text-label">{title}</h3>
+                    <ul className="mt-5 border-t border-[var(--color-border)]">
+                      {items.map((item) => (
+                        <li
+                          key={item}
+                          className="flex gap-4 border-b border-[var(--color-border)] py-4 text-base font-medium leading-relaxed text-[var(--color-text-body)]"
+                        >
+                          <span aria-hidden="true" className="mt-[0.6em] h-1.5 w-1.5 shrink-0 rounded-full bg-[#D4622B]" />
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
+            </div>
+          </section>
+        </>
+      ) : (
+        <>
+          {/* 2. NÄR BEHÖVS ETT EGET SYSTEM */}
+          <section id="nar-behovs" className="scroll-mt-28 py-16 md:py-20">
+            <div className="max-w-[1100px] mx-auto px-6">
+              <div className="mb-10">
+                <SectionHeading
+                  line1="NÄR BEHÖVS"
+                  line2="ETT EGET SYSTEM?"
+                  intro="Tre lägen där vi oftast bygger ett."
+                />
+              </div>
 
-      {/* 4. CASE — the proof, from services.ts → cases.ts */}
-      <section id="case" className="scroll-mt-28 border-t border-[var(--color-border)] py-16 md:py-20">
-        <div className="max-w-[1100px] mx-auto px-6">
-          <div className="mb-10">
-            <SectionHeading
-              line1="DET HÄR HAR"
-              line2="VI BYGGT."
-              intro="System vi har byggt för verksamheter som inte passade i färdiga verktyg."
-            />
-          </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                {(service.problems ?? []).map((p) => (
+                  <div
+                    key={p.title}
+                    className="rounded-2xl bg-transparent p-8 border border-[var(--color-border)] transition-colors duration-300 hover:border-[rgba(58,51,48,0.28)]"
+                  >
+                    <h3 className="text-lg md:text-xl font-semibold tracking-[-0.02em] text-[var(--color-text)] leading-[1.2] mb-3">
+                      {p.title}
+                    </h3>
+                    <p className="text-[15px] font-medium text-[var(--color-text-body)] leading-relaxed">
+                      {p.body}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
 
-          <CaseList items={proof} />
+          {/* 3. VAD VI BYGGER */}
+          <section id="vad-vi-bygger" className="scroll-mt-28 border-t border-[var(--color-border)] py-16 md:py-20">
+            <div className="max-w-[1100px] mx-auto px-6">
+              <div className="mb-10">
+                <SectionHeading
+                  line1="VAD VI"
+                  line2="BYGGER."
+                  intro="Varje system byggs för er, men av delar vi redan vet fungerar: inloggning, kalender, filimport och utskick. Ni får något som passar, utan att vi uppfinner hjulet varje gång."
+                />
+              </div>
 
-          <Link
-            href="/case"
-            className="mt-8 inline-flex items-center gap-2 font-display text-sm font-bold tracking-[0.18em] uppercase text-[var(--color-text)] hover:text-[#D4622B] transition-colors duration-300"
-          >
-            ALLA CASE
-            <Arrow />
-          </Link>
-        </div>
-      </section>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                {(service.builds ?? []).map((b, i) => (
+                  <div
+                    key={b.title}
+                    className="rounded-2xl bg-transparent p-8 lg:p-10 border border-[var(--color-border)]"
+                  >
+                    <span className="block font-display text-[2.5rem] leading-none tracking-wide text-[var(--color-accent)]">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <h3 className="text-lg md:text-xl font-semibold tracking-[-0.02em] text-[var(--color-text)] leading-[1.2] mt-6 mb-3">
+                      {b.title}
+                    </h3>
+                    <p className="text-base font-medium text-[var(--color-text-body)] leading-relaxed">
+                      {b.body}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          {/* 4. CASE — the proof, from services.ts → cases.ts */}
+          <section id="case" className="scroll-mt-28 border-t border-[var(--color-border)] py-16 md:py-20">
+            <div className="max-w-[1100px] mx-auto px-6">
+              <div className="mb-10">
+                <SectionHeading
+                  line1="DET HÄR HAR"
+                  line2="VI BYGGT."
+                  intro="System vi har byggt för verksamheter som inte passade i färdiga verktyg."
+                />
+              </div>
+
+              <CaseList items={proof} />
+
+              <Link
+                href="/case"
+                className="mt-8 inline-flex items-center gap-2 font-display text-sm font-bold tracking-[0.18em] uppercase text-[var(--color-text)] hover:text-[#D4622B] transition-colors duration-300"
+              >
+                ALLA CASE
+                <Arrow />
+              </Link>
+            </div>
+          </section>
+        </>
+      )}
 
       {/* 5. UPPLÄGG — summary; /tjanster owns the full version */}
       <EspressoBand>
@@ -237,21 +295,34 @@ export default async function ServicePage({
             />
           </div>
 
-          <ul className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-8">
-            {terms.map(({ num, unit, body }) => (
+          <ul
+            className={`grid grid-cols-1 gap-10 ${
+              terms.length === 4 ? "md:grid-cols-2 md:gap-x-12 md:gap-y-14" : "md:grid-cols-3 md:gap-8"
+            }`}
+          >
+            {terms.map(({ num, unit, note, body }) => (
               <li key={num} className="border-l border-white/10 pl-8">
-                <div className="flex items-baseline flex-wrap gap-3 mb-3">
+                <div className="flex items-baseline flex-wrap gap-x-3 gap-y-1 mb-3">
                   {unit && (
                     <span className="text-sm text-white/70 uppercase tracking-widest">{unit}</span>
                   )}
                   <span className="font-display text-4xl md:text-5xl leading-none tracking-wide uppercase text-white">
                     {num}
                   </span>
+                  {note && (
+                    <span className="text-sm text-white/70 uppercase tracking-widest">{note}</span>
+                  )}
                 </div>
-                <p className="text-base text-white/70 leading-relaxed max-w-[40ch]">{body}</p>
+                <p className="text-base text-white/70 leading-relaxed max-w-[44ch]">{body}</p>
               </li>
             ))}
           </ul>
+
+          {service.termsNote && (
+            <p className="mt-12 md:mt-14 border-t border-white/10 pt-8 text-base text-white/70 leading-relaxed max-w-[72ch]">
+              {service.termsNote}
+            </p>
+          )}
 
           <div className="mt-12 md:mt-16 flex flex-wrap gap-x-10 gap-y-4">
             <Link
