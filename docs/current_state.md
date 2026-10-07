@@ -921,7 +921,11 @@ Full detail and reasoning in `docs/SEO_AUDIT.md` → Open items.
   `docs/SEO_AUDIT.md`; that export also picks the next service pages.
 
 ### Open items — services work (as of 2026-10-05)
-- [ ] **Services redesign — three pages, split by buying situation** (owner, 2026-10-05). Automatisering
+- [ ] **Services redesign — three pages, split by buying situation.** Owner's calls (2026-10-04/05):
+  AI-rådgivning as its own page, an image-led overview with HELkom as reference, no visuals linking to
+  cases, free kartläggning. Proposed by Claude and GPT and not yet confirmed by the owner: one
+  Automatisering page with AI inside, the split by buying situation, the example allocation and the page
+  template. Copy draft: `docs/services-copy.md`. Automatisering
   ("we keep processing, moving or preparing the same information"), Egna system ("we need a tool to run
   our work"), AI-rådgivning (a paid session). Overview goes image-led (HELkom as reference), with small
   animations of real work in place of photos; animations never link to cases, proof is a short text link.
@@ -935,14 +939,17 @@ Full detail and reasoning in `docs/SEO_AUDIT.md` → Open items.
   verified through the browser's animation API and frozen frames only (the test tab was hidden), so the
   pacing has not been judged by eye. Tune with the single `7.5s` in `.area-ill` (`globals.css`). Moot once
   step (5) of the redesign replaces the tiles.
-- [ ] **AI-rådgivning page** — scope decided 2026-10-05 (supersedes "needs the owner to define what's
-  included"): for individuals within companies, addressed as "du", beginners and people who already use
-  AI. Two hours, remote or in person, one participant. Base price 2 990 kr; +1 500 kr per extra
-  participant is the intended expansion, not the launch offer. Booking: confirm the time, collect a
-  preparation form, invoice after the session. The customer gets a summary and a document tailored to
-  their needs (instructions, prompts, tool recommendations, prioritised next steps). **Open:** VAT
-  wording on the price, and the owner wants the fee credited toward something afterwards — destination
-  and terms not yet decided. Promise practical progress on a chosen task, not a delivered integration.
+- [ ] **AI-rådgivning page** — offer decided by the owner (2026-10-05, updated 2026-10-06; supersedes
+  "needs the owner to define what's included" and the earlier two-hour session): for one individual in a
+  company, addressed as "du", beginners and people who already use AI. **90 minutes** (shortened from two
+  hours: two hours is a big ask for buyers), remote or in person. **2 990 kr exkl. moms.** Questions sent
+  in advance so the session is prepared around them; the session is a deep dive into those questions
+  (concepts, tools, advice, applying it to their work). Afterwards a written summary and a tailored
+  document with explanations and next steps, **within two working days** (same day is an internal
+  ambition, not a promise). Invoice after the session. The **full fee is credited toward a later
+  automation or system build, with no expiry**. The offer should feel generous for its price. One
+  participant at launch; +1 500 kr per extra participant is a future option. Booking: a request, then a
+  personal confirmation of a 90-minute time (not the 30-min intro event).
 - [ ] ~~**Next service pages (AI automation, workflow automation)** — decide from the next GSC export.~~
   Superseded 2026-10-05: one **Automatisering** page with AI as a named section. A separate AI page is
   reconsidered when the offer, search results and GSC data support it (mid-November export is a review
