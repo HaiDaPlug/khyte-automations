@@ -25,10 +25,6 @@ export const facts = {
     minutes: 30,
     url: "https://calendly.com/hai-khyteteam/30min",
   },
-  /** Fixed price for the build, quoted after the free kartläggning. */
-  priceFrom: "15 000 kr",
-  /** The VAT basis of priceFrom. State it wherever the price appears. */
-  priceVat: "exkl. moms",
   /** From kartläggning to production. */
   delivery: {
     small: "1–2 veckor",

@@ -127,7 +127,6 @@ const structuredData = [
       { "@type": "AdministrativeArea", name: "Västra Götaland" },
       { "@type": "Country", name: "Sverige" },
     ],
-    priceRange: `Från ${facts.priceFrom} ${facts.priceVat}`,
     openingHoursSpecification: {
       "@type": "OpeningHoursSpecification",
       dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],

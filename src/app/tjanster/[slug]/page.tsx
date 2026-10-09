@@ -60,9 +60,9 @@ export default async function ServicePage({
   // from facts.ts, and links up to the full version.
   const terms = [
     {
-      num: facts.priceFrom,
-      unit: "från",
-      body: `Fast pris för bygget, ${facts.priceVat}, satt efter kartläggningen. Ni vet vad det kostar innan något byggs.`,
+      num: "Kostnadsfritt",
+      unit: null,
+      body: "Introsamtal och kartläggning är kostnadsfria. Ni får en offert med omfattning, tidsplan och fast pris innan ni bestämmer er.",
     },
     {
       num: facts.delivery.large,
@@ -86,16 +86,6 @@ export default async function ServicePage({
       url,
       provider: { "@id": `${facts.url}/#organization` },
       areaServed: { "@type": "Country", name: "Sverige" },
-      offers: {
-        "@type": "Offer",
-        priceCurrency: "SEK",
-        priceSpecification: {
-          "@type": "PriceSpecification",
-          minPrice: Number(facts.priceFrom.replace(/\D/g, "")),
-          priceCurrency: "SEK",
-          valueAddedTaxIncluded: false,
-        },
-      },
     },
     {
       "@context": "https://schema.org",
@@ -235,13 +225,13 @@ export default async function ServicePage({
         </div>
       </section>
 
-      {/* 5. PRIS OCH UPPLÄGG — summary; /tjanster owns the full version */}
+      {/* 5. UPPLÄGG — summary; /tjanster owns the full version */}
       <EspressoBand>
         <div id="pris" className="scroll-mt-28 relative z-10 max-w-[1100px] mx-auto px-6 py-20 md:py-28">
           <div className="mb-12 md:mb-16">
             <SectionHeading
               tone="dark"
-              line1="PRIS OCH"
+              line1="VÅRT"
               line2="UPPLÄGG."
               intro="Samma upplägg som för allt vi bygger: först en kartläggning, sedan ett fast pris för bygget."
             />
@@ -275,7 +265,7 @@ export default async function ServicePage({
               href="/tjanster#vad-det-kostar"
               className="inline-flex items-center gap-2 font-display text-sm font-bold tracking-[0.18em] uppercase text-white hover:text-[#E8833A] transition-colors duration-300"
             >
-              VAD DET KOSTAR
+              VILLKOR
               <Arrow />
             </Link>
           </div>

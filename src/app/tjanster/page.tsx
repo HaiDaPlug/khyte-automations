@@ -13,8 +13,8 @@ import { cases } from "@/data/cases";
 import { facts } from "@/data/facts";
 
 export const metadata: Metadata = {
-  title: "Tjänster och priser – automation, AI och egna system",
-  description: `Automatiserade flöden, AI, egna system och rådgivning för svenska företag. Fast pris från ${facts.priceFrom} ${facts.priceVat} efter kartläggning. Ni äger allt vi bygger.`,
+  title: "Tjänster – automatisering, egna system och AI-rådgivning",
+  description: `Automatiserade flöden, AI, egna system och rådgivning för svenska företag. Kostnadsfri kartläggning och fast pris innan vi bygger. Ni äger allt vi bygger.`,
   alternates: {
     canonical: "/tjanster",
   },
@@ -80,9 +80,9 @@ const steps = [
 
 const terms = [
   {
-    num: facts.priceFrom,
-    unit: "från",
-    body: `För bygget, ${facts.priceVat}. Exakt pris sätts i kartläggningen, utifrån hur många system, steg och undantag flödet har.`,
+    num: "Kostnadsfritt",
+    unit: null,
+    body: "Introsamtal och kartläggning är kostnadsfria. Ni får en offert med omfattning, tidsplan och fast pris innan ni bestämmer er.",
   },
   {
     num: facts.delivery.small,
@@ -105,8 +105,8 @@ export default function ServicesPage() {
         <div className="max-w-[1100px] mx-auto px-6">
           <PageHeader
             divider
-            line1="TJÄNSTER"
-            line2="OCH PRISER."
+            line1="VÅRA"
+            line2="TJÄNSTER."
             intro="Vi tar bort manuellt arbete som återkommer varje vecka, med automatiserade flöden, AI eller ett system byggt för just er verksamhet. Ni äger koden, ni bestämmer takten."
           >
             <div className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-4">
@@ -167,14 +167,16 @@ export default function ServicesPage() {
         </div>
       </section>
 
-      {/* 4. VAD DET KOSTAR — price, delivery and ownership in one band */}
+      {/* 4. VILLKOR — free kartläggning, delivery and ownership in one band. Build
+          prices aren't shown on the site (owner, 2026-10-09). The anchor keeps its
+          old id because service pages link to it. */}
       <EspressoBand>
         <div id="vad-det-kostar" className="scroll-mt-28 relative z-10 max-w-[1100px] mx-auto px-6 py-20 md:py-28">
           <div className="mb-12 md:mb-16">
             <SectionHeading
               tone="dark"
-              line1="VAD DET"
-              line2="KOSTAR."
+              line1="TYDLIGA"
+              line2="VILLKOR."
               intro="Samma upplägg oavsett vad vi bygger."
             />
           </div>

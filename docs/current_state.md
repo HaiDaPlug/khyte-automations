@@ -357,12 +357,15 @@ Skills live in `~/.claude/skills/` and are invoked via `/skill-name` or triggere
 **Route**: `/tjanster` (accessible via "Tjänster" link in nav; 301 redirect from `/services`)
 - **Role**: the services pillar and the canonical page for process, pricing logic and timelines. Service
   subpages live under `/tjanster/<slug>` (see Service Pages below).
-  The homepage owns the search term "automatisering för företag" — `/tjanster` targets "tjänster och priser".
+  The homepage owns the search term "automatisering för företag". `/tjanster` is the plain services hub,
+  "Våra tjänster" (owner, 2026-10-09); each service page targets its own searches. It targeted "tjänster och
+  priser" until build prices came off the site.
 - **A short hub, on purpose** — what we solve, how we work, what it costs, proof. Service depth lives on the
   subpages; don't grow sections here into service descriptions.
-- **Sections**: Hero (H1 "TJÄNSTER / OCH PRISER." + intro CTA) → **Vad vi löser** (5 tiles) → Så jobbar vi
-  (4-step strip: Introsamtal → Kartläggning → Implementering → Överlämning) → **Vad det kostar** (espresso
-  band: från-pris, delivery, "Er kod" + one "Ingår alltid" line) → **Det här har vi byggt** → FAQ (6)
+- **Sections**: Hero (H1 "VÅRA / TJÄNSTER." + intro CTA) → **Vad vi löser** (5 tiles) → Så jobbar vi
+  (4-step strip: Introsamtal → Kartläggning → Implementering → Överlämning) → **Tydliga villkor** (espresso
+  band: kostnadsfri kartläggning, delivery, "Er kod" + one "Ingår alltid" line; the anchor is still
+  `#vad-det-kostar`) → **Det här har vi byggt** → FAQ (6)
 - **Vad vi löser** (`components/sections/ServiceAreas.tsx`, data `serviceAreas` in `services.ts`): Excel-
   sammanställningar, Manuella steg, Verktyg som inte pratar med varandra, Allt på ett ställe, and a wide
   **Rådgivning** tile with an intro CTA. Each tile links to its service page if one exists, else to a case,
@@ -403,7 +406,7 @@ emitted 307 temporary, which tells Google the old URL may return.
 - **Anchors**: `#nar-behovs`, `#vad-vi-bygger`, `#case`, `#pris`, `#vanliga-fragor`.
 - **FAQ rule**: a service FAQ only answers questions specific to that service. Price, ownership and timeline
   questions live on `/tjanster` — never duplicate them here.
-- **Schema**: Service (provider → `#organization`, `minPrice` parsed from `facts.priceFrom`), BreadcrumbList
+- **Schema**: Service (provider → `#organization`; no Offer, since build prices aren't shown), BreadcrumbList
   (Hem → Tjänster → service) and FAQPage. No page-level `openGraph`, so the layout's siteName/locale/image apply.
 - **Breadcrumb colours** are set on the `<li>`s, not the `<ol>`: `.text-label` sets its own colour and wins
   over a colour utility on the same element.
@@ -787,7 +790,7 @@ npm test                        # Kompassens tester (Vitest)
 9. No tailwind.config.ts — all config in globals.css `@theme`
 10. Nav uses absolute positioning for centered links (requires `relative` on parent)
 11. Small SVG icons use plain `<img>` instead of Next Image for simplicity
-12. Pricing on /tjanster: "15 000+ kr, fast pris efter kartläggning". The first step is called **Kartläggning** everywhere (never "förstudie") and is **free** (owner, 2026-10-05; supersedes "paid, required" from 2026-09-30). It is used when needed to scope a build and ends in a written offer with scope, timeline and a fixed build price; straightforward projects may only need the intro call. The 15 000 kr starting price is for the build and is **exkl. moms** (owner, 2026-10-07); the live site doesn't say so yet. Delivery: 1–2 veckor för mindre automationer, 4–6 veckor för större system. Intro call: 30 min.
+12. Pricing: **build prices are not shown anywhere on the site** (owner, 2026-10-09: an unclear starting price scares buyers off). The site says "fast pris" after a free kartläggning; the starting point (15 000 kr exkl. moms, 2026-10-07) only goes in quotes. AI-rådgivning keeps its 2 990 kr exkl. moms. No `priceFrom` in `facts.ts`, no `priceRange` or Service `Offer` in the schema. The first step is called **Kartläggning** everywhere (never "förstudie") and is **free** (owner, 2026-10-05; supersedes "paid, required" from 2026-09-30). It is used when needed to scope a build and ends in a written offer with scope, timeline and a fixed build price; straightforward projects may only need the intro call. Delivery: 1–2 veckor för mindre automationer, 4–6 veckor för större system. Intro call: 30 min.
     **Build terms (owner, 2026-10-07):** ongoing support at a fixed monthly price based on the project's scope, no binding period, arrangements vary by project; Khyte handles and pays for hosting, covered by the client's maintenance fee; customers have access to their data and the logins tied to their solution, even when Khyte manages everything. Set per quote, never as a site-wide promise: how much support and bug fixing the build price includes (no standard duration) and costs for external services such as SMS and AI.
 13. Legal pages are live at `/integritetspolicy` and `/villkor`.
 14. **Full-bleed sections belong at page root** — never nest `w-screen` / viewport-escape sections inside `<Container>`. Statement is the one exception (see Homepage Layout Architecture).
@@ -963,6 +966,15 @@ Full detail and reasoning in `docs/SEO_AUDIT.md` → Open items.
 ---
 
 ## Changelog
+
+### v2.34 — No build prices on the site (2026-10-09)
+- Owner's call: an unclear starting price scares buyers off. "15 000 kr" is gone from the home FAQ, the
+  `/tjanster` band and metadata, the service-page band, the sitewide `priceRange` and the Service `Offer`;
+  `facts.priceFrom` and `priceVat` are removed so it can't creep back. Bands lead with "Kostnadsfritt"
+  (introsamtal and kartläggning, then an offer with a fixed price) instead.
+- `/tjanster` is now "VÅRA / TJÄNSTER." with the title "Tjänster – automatisering, egna system och
+  AI-rådgivning"; its band is "Tydliga villkor" (anchor unchanged), the service-page band "Vårt upplägg",
+  and its link "VILLKOR".
 
 ### v2.38 — Kompassen: kortare resultatmejl, och AI:n via OpenAI
 - **AI moved from Anthropic (Claude Opus 5) to OpenAI (`gpt-6-luna`)** to cut cost — roughly from ~2.5 kr to well under 0.1 kr per visitor at list prices. `@anthropic-ai/sdk` removed, `openai` added; shared client/model in `src/kompass/server/openai.ts`. Same prompts, same schema and the same checks afterwards. Env: `ANTHROPIC_API_KEY` → `OPENAI_API_KEY`. Responses API with `store: false`.

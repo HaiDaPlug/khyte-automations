@@ -4,6 +4,10 @@ Copy for the three service pages and the matching `/tjanster` overview text. **A
 animation is built.** Design (layout, image, motion) is handled separately; the "Bild" line under each
 example only says what the visual has to show.
 
+> **2026-10-09 (owner):** build prices are not shown anywhere on the site, so every "15 000 kr" line below is
+> superseded; price bands lead with "Kostnadsfritt" instead. `/tjanster` is "VÅRA / TJÄNSTER." Automatisering's
+> examples move to a 2×2 grid with one sentence each; its price band and "Så jobbar vi med er" go.
+
 ## Status: what's decided and what's proposed
 
 **Owner-confirmed:**
