@@ -786,3 +786,18 @@ details[open] > div {
     transition: none;
   }
 }
+
+/* Snap the page to each example while scrolling through an <ExampleScroller>
+   (desktop only). "proximity" only settles a scroll that stops near a snap
+   point, so nothing is forced and the rest of the page scrolls freely; :has
+   keeps it to pages that have the section. scroll-margin-top matches the
+   panel's sticky top (--stick), so a snap lands on a slice's middle. */
+@media (min-width: 1024px) {
+  html:has([data-snap-track]) {
+    scroll-snap-type: y proximity;
+  }
+  [data-snap-track] .snap-point {
+    scroll-snap-align: start;
+    scroll-margin-top: var(--stick);
+  }
+}

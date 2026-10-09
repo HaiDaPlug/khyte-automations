@@ -14,6 +14,11 @@ import { SceneControl } from "@/components/scenes/SceneStage";
  * example's scene builds itself from the first step. Scroll progress through
  * the track picks the active example; clicking a title scrolls to it.
  *
+ * Desktop scrolling snaps (gently, "proximity") to the middle of each
+ * example's slice, so a stop in the section always lands on one example. The
+ * snap points are the .snap-point markers in the track; see
+ * [data-snap-track] in globals.css.
+ *
  * Mobile: the same rail runs down the page, every example open, each with its
  * scene inline under the text.
  *
@@ -115,10 +120,27 @@ export default function ExampleScroller({
     <>
       {heading && <div className="mb-10 lg:mb-4">{heading}</div>}
 
-      <div ref={trackRef} className="relative lg:h-[calc(var(--n)*85vh)]" style={{ "--n": n } as CSSProperties}>
+      {/* --slice: scroll per example. --panel: the sticky panel's height.
+          --stick: where it sticks (clears the nav); the snap points use it too. */}
+      <div
+        ref={trackRef}
+        data-snap-track
+        className="relative lg:h-[calc(var(--n)*var(--slice))]"
+        style={{ "--n": n, "--slice": "85vh", "--panel": "calc(100svh - 7rem)", "--stick": "6rem" } as CSSProperties}
+      >
+        {/* Snap points: the middle of each example's slice, where go() scrolls to. */}
+        {examples.map((ex, i) => (
+          <span
+            key={ex.title}
+            aria-hidden="true"
+            className="snap-point pointer-events-none absolute left-0 hidden h-px w-px lg:block"
+            style={{ top: `calc((var(--n) * var(--slice) - var(--panel)) * ${(i + 0.5) / n})` }}
+          />
+        ))}
+
         <div
           ref={panelRef}
-          className="lg:sticky lg:top-24 lg:grid lg:h-[calc(100svh-7rem)] lg:grid-cols-12 lg:items-center lg:gap-12"
+          className="lg:sticky lg:top-[var(--stick)] lg:grid lg:h-[var(--panel)] lg:grid-cols-12 lg:items-center lg:gap-12"
         >
           <div className="lg:col-span-4">
             <ol>
