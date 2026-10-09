@@ -395,7 +395,28 @@ emitted 307 temporary, which tells Google the old URL may return.
 - **Data**: `src/data/services.ts` drives the route (`generateStaticParams`, `dynamicParams = false`, so
   unknown slugs 404), the sitemap, the service cards on `/tjanster` and the structured data. Adding a service
   is a data entry, not new code.
-- **Live**: `/tjanster/egna-system` ("Egna system") — proven by Etcetera Offset, Kom-Fort, Osteopaticentrum.
+- **Live**: `/tjanster/automatisering` (example-led layout, 2026-10-09) and `/tjanster/egna-system` (older
+  layout until it moves over). Page list confirmed by the owner 2026-10-09: Automatisering, Egna system and
+  AI-rådgivning; separate Excel or AI-automation pages are decided from the mid-November GSC export.
+- **Two layouts, one template** (`[slug]/page.tsx` branches on `service.examples`):
+  - **Example-led** (Automatisering): hero ("Se exempel" → `#exempel`) → **examples as a scroll story**
+    (`#exempel`) → **Så går det till** (3 steps: introsamtal, kartläggning, bygge; `#sa-gar-det-till`) → FAQ.
+    No price band and no prices (owner, 2026-10-09).
+  - **Older** (Egna system): the sections below.
+- **The scroll story** (`components/sections/ServiceExamples.tsx` server → `ExampleScroller.tsx` client):
+  desktop is a tall track (`--n` × `--slice` 85vh) with a sticky panel (`--panel`, stuck at `--stick`).
+  Left, the examples on a rail that fills with the scroll; the active one opens with its summary and case
+  text link, clicking a title scrolls to it. Right, one window where the active scene builds from step 0,
+  with a progress line, "Scrolla ↓" and a 01 / 04 counter. Scroll progress is set as `--p` on the track
+  from a rAF scroll handler (no re-render). CSS scroll-snap ("proximity", desktop only, scoped with
+  `html:has([data-snap-track])`) settles a stop on the middle of each example. Mobile: the rail down the
+  page, every example open, its scene inline. All text is server-rendered; scenes are aria-hidden and never
+  links.
+- **Scenes** (`components/scenes/`): `ServiceScene` holds the four scenes (dokument, ringlista, research,
+  flera-system) as plain markup with made-up data; `SceneStage` advances `--step` on a timer and `.scene`
+  in `globals.css` turns it into opacity/translate/scale. Scenes start on their finished state (crawlers,
+  no-JS, reduced motion see that). Under a `SceneControl` provider (the sticky stage) a scene rewinds when it
+  becomes active and builds once; otherwise it loops while on screen.
 - **Service ↔ case relationship** lives only in `services.ts` (`caseSlugs`). `casesForService()` throws on an
   unknown slug, so renaming a case fails the build instead of silently dropping proof. `servicesForCase(slug)`
   is the hook for linking a case page back to its service.
@@ -403,7 +424,8 @@ emitted 307 temporary, which tells Google the old URL may return.
   "Se vad vi har byggt" → När behövs (problem cards) → Vad vi bygger (numbered cards) → Det här har vi byggt
   (`CaseList`, numbered 01–03 by position) → Pris och upplägg (espresso band, summary from `facts.ts`, links up
   to `/tjanster#sa-jobbar-vi` and `#vad-det-kostar`) → FAQ.
-- **Anchors**: `#nar-behovs`, `#vad-vi-bygger`, `#case`, `#pris`, `#vanliga-fragor`.
+- **Anchors**: older layout `#nar-behovs`, `#vad-vi-bygger`, `#case`, `#pris`, `#vanliga-fragor`;
+  example-led `#exempel`, `#sa-gar-det-till`, `#vanliga-fragor`.
 - **FAQ rule**: a service FAQ only answers questions specific to that service. Price, ownership and timeline
   questions live on `/tjanster` — never duplicate them here.
 - **Schema**: Service (provider → `#organization`; no Offer, since build prices aren't shown), BreadcrumbList
@@ -822,6 +844,8 @@ npm test                        # Kompassens tester (Vitest)
 | Homepage | `src/app/page.tsx` |
 | Services (consolidated) | `src/app/tjanster/page.tsx` |
 | Service pages (data + template) | `src/data/services.ts`, `src/app/tjanster/[slug]/page.tsx` |
+| Service examples scroll story | `src/components/sections/ServiceExamples.tsx`, `src/components/sections/ExampleScroller.tsx` |
+| Service scenes (animations) | `src/components/scenes/ServiceScene.tsx`, `src/components/scenes/SceneStage.tsx` (`.scene`, `[data-snap-track]` in `globals.css`) |
 | Case row list (/tjanster + service pages) | `src/components/CaseList.tsx` |
 | "Vad vi löser" tiles + looping drawings | `src/components/sections/ServiceAreas.tsx`, `src/components/AreaIllustration.tsx` (keyframes in `globals.css`) |
 | Navigation | `src/components/Nav.tsx` |
@@ -927,14 +951,18 @@ Full detail and reasoning in `docs/SEO_AUDIT.md` → Open items.
 ### Open items — services work (as of 2026-10-05)
 - [ ] **Services redesign — three pages, split by buying situation.** Owner's calls (2026-10-04/05):
   AI-rådgivning as its own page, an image-led overview with HELkom as reference, no visuals linking to
-  cases, free kartläggning. Proposed by Claude and GPT and not yet confirmed by the owner: one
-  Automatisering page with AI inside, the split by buying situation, the example allocation and the page
-  template. Copy draft: `docs/services-copy.md`. Automatisering
+  cases, free kartläggning. **2026-10-09 (owner):** the three pages are confirmed (Excel and AI stay
+  examples inside Automatisering; separate pages are decided from the mid-November GSC export), no build
+  prices anywhere, and **Automatisering is live** as the pattern page. **Done** = the three pages and the
+  overview live, reviewed on desktop and mobile by the owner, a working AI-rådgivning booking request,
+  mobile/keyboard/reduced-motion/performance checked, internal links, titles, canonicals and sitemap right.
+  Copy draft: `docs/services-copy.md`. Automatisering
   ("we keep processing, moving or preparing the same information"), Egna system ("we need a tool to run
   our work"), AI-rådgivning (a paid session). Overview goes image-led (HELkom as reference), with small
   animations of real work in place of photos; animations never link to cases, proof is a short text link.
-  Order: (0) free-kartläggning wording ✓ → (1) copy for all three pages, agreed before any animation →
-  (2) Automatisering as the complete pattern page → (3) Egna system onto the same pattern → (4)
+  Order: (0) free-kartläggning wording ✓ → (1) copy for all three pages, agreed before any animation ✓ →
+  (2) Automatisering as the complete pattern page ✓ (live 2026-10-09) → (3) Egna system onto the same
+  pattern, with complete tools as examples and no case links on them (owner's example model, 2026-10-09) → (4)
   AI-rådgivning → (5) overview. Example allocation: Etcetera (Excel → plocksedel) and JaTack move to
   Automatisering, Observa is its named AI section; Kom-Fort is Egna system; Osteopaticentrum fits either,
   by angle. Each build page covers: when it fits, examples, deliverable, what we need from the customer,
@@ -955,9 +983,11 @@ Full detail and reasoning in `docs/SEO_AUDIT.md` → Open items.
   participant at launch; +1 500 kr per extra participant is a future option. Booking: a request, then a
   personal confirmation of a 90-minute time (not the 30-min intro event).
 - [ ] ~~**Next service pages (AI automation, workflow automation)** — decide from the next GSC export.~~
-  Superseded 2026-10-05: one **Automatisering** page with AI as a named section. A separate AI page is
-  reconsidered when the offer, search results and GSC data support it (mid-November export is a review
-  point, not a gate).
+  Superseded: one **Automatisering** page with AI and Excel as examples inside it (owner confirmed
+  2026-10-09). Separate Excelautomatisering or AI-automation pages are decided from the mid-November GSC
+  export; each needs at least two real examples of its own.
+- [ ] **After the Automatisering launch:** request indexing in GSC for `/tjanster/automatisering` and
+  `/tjanster` (owner, in the GSC UI).
 - [ ] **Systemintegration page** — only once there's a delivered integration case. Until then the
   "Verktyg som inte pratar med varandra" tile deliberately has no link.
 - [ ] **Case → service links** (the other agent's P2): call `servicesForCase(c.slug)` from
@@ -966,6 +996,14 @@ Full detail and reasoning in `docs/SEO_AUDIT.md` → Open items.
 ---
 
 ## Changelog
+
+### v2.35 — Automatisering live (2026-10-09)
+- New `/tjanster/automatisering`, the first example-led service page: hero, the four examples as a scroll
+  story (Etcetera, JaTack, Observa as "AI i flödet", and a possible integration flow labelled as such),
+  "Så går det till" and the FAQ. Built through three owner reviews: alternating rows → a 2×2 grid → one
+  example at a time on scroll with a connecting rail, a sticky window, visible scroll progress and snapping.
+- The "Excelsammanställningar" and "Manuella steg" tiles on `/tjanster` now link to it.
+- `[slug]/page.tsx` serves both layouts; Egna system is unchanged until it moves over.
 
 ### v2.34 — No build prices on the site (2026-10-09)
 - Owner's call: an unclear starting price scares buyers off. "15 000 kr" is gone from the home FAQ, the
