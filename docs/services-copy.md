@@ -6,7 +6,7 @@ example only says what the visual has to show.
 
 > **2026-10-09 (owner):** build prices are not shown anywhere on the site, so every "15 000 kr" line below is
 > superseded; price bands lead with "Kostnadsfritt" instead. `/tjanster` is "VÅRA / TJÄNSTER." Automatisering's
-> examples move to a 2×2 grid with one sentence each; its price band and "Så jobbar vi med er" go.
+> examples are told one at a time on scroll (see section 2); its price band and "Så jobbar vi med er" go.
 
 ## Status: what's decided and what's proposed
 
@@ -158,7 +158,8 @@ Real photo; phone and email from `facts.ts`.
 
 **Buyer's situation:** "We keep processing, moving or preparing the same information."
 
-**Sections (owner, 2026-10-09):** hero → examples as a 2×2 grid → "Så går det till" (three steps) → FAQ.
+**Sections (owner, 2026-10-09):** hero → examples told one at a time on scroll → "Så går det till" (three
+steps) → FAQ.
 No price band and no "Ni får / Vi behöver" lists.
 
 **Title:** Automatisering av arbetsflöden och dokument
@@ -172,7 +173,12 @@ er, med AI när information behöver läsas eller tolkas.
 
 **CTAs:** Boka ett intro (30 min) · Se exempel
 
-### Vad vi automatiserar (2×2 grid: scene, optional tag, title, summary, case link)
+### Vad vi automatiserar (scroll story)
+
+Desktop: a sticky panel. Left, the examples on a connecting rail that fills as you scroll; the active one
+opens with its summary and case link. Right, one window where the active workflow builds itself, with a
+progress line, "Scrolla ↓" and a 01 / 04 counter. Mobile: the same rail down the page, each example open
+with its animation under the text. Each example: optional tag, title, summary, case link.
 
 Section intro: Fyra vanliga lägen. Tre av dem kommer från uppdrag vi har levererat.
 

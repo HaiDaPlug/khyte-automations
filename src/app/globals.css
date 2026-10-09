@@ -757,7 +757,7 @@ details[open] > div {
 }
 .scene {
   --step: 0;
-  font-size: clamp(10px, 2.75cqw, 15.5px);
+  font-size: clamp(10px, 2.75cqw, 17px);
 }
 .scene .s {
   --on: clamp(0, calc(var(--step) - var(--at, 0) + 1), 1);

@@ -323,13 +323,20 @@ const SCENES: Record<SceneId, { Scene: ComponentType; durations: number[] }> = {
   "flera-system": { Scene: FleraSystem, durations: [500, 1200, 1100, 1500, 3400] },
 };
 
-export default function ServiceScene({ id }: { id: SceneId }) {
+export default function ServiceScene({
+  id,
+  fill = false,
+}: {
+  id: SceneId;
+  /** Fill the parent (the sticky stage) instead of being a rounded card of its own. */
+  fill?: boolean;
+}) {
   const { Scene, durations } = SCENES[id];
   return (
     <SceneStage
       durations={durations}
-      className="relative overflow-hidden rounded-2xl bg-[#1B1613]"
-      sceneClassName="relative flex items-center p-[6%] lg:aspect-[4/3]"
+      className={`relative overflow-hidden bg-[#1B1613] ${fill ? "h-full" : "rounded-2xl"}`}
+      sceneClassName={`relative flex items-center p-[6%] ${fill ? "h-full" : ""}`}
     >
       <span
         className="pointer-events-none absolute inset-0"

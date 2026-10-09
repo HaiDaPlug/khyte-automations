@@ -165,19 +165,9 @@ export default async function ServicePage({
 
       {exampleLed ? (
         <>
-          {/* 2. EXEMPEL — a grid of cards; the scenes only illustrate */}
+          {/* 2. EXEMPEL — told one at a time on scroll; the scenes only illustrate */}
           <section id="exempel" className="scroll-mt-28 py-16 md:py-24">
             <div className="max-w-[1100px] mx-auto px-6">
-              {service.examplesHeading && (
-                <div className="mb-12 md:mb-14">
-                  <SectionHeading
-                    line1={service.examplesHeading.line1}
-                    line2={service.examplesHeading.line2}
-                    intro={service.examplesIntro}
-                  />
-                </div>
-              )}
-
               <ServiceExamples service={service} />
             </div>
           </section>
