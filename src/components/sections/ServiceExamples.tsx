@@ -11,18 +11,16 @@ import { exampleCaseHref, type ServiceData } from "@/data/services";
  * and as an inline card on mobile; only one of the two is ever displayed.
  */
 export default function ServiceExamples({ service }: { service: ServiceData }) {
-  const examples = service.examples ?? [];
+  const examples = service.examples;
 
   return (
     <ExampleScroller
       heading={
-        service.examplesHeading && (
-          <SectionHeading
-            line1={service.examplesHeading.line1}
-            line2={service.examplesHeading.line2}
-            intro={service.examplesIntro}
-          />
-        )
+        <SectionHeading
+          line1={service.examplesHeading.line1}
+          line2={service.examplesHeading.line2}
+          intro={service.examplesIntro}
+        />
       }
       examples={examples.map((ex) => {
         const href = exampleCaseHref(service, ex);

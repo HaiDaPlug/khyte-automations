@@ -181,7 +181,7 @@ export default function ExampleScroller({
 
                     {ex.tag && (
                       <span
-                        className={`mb-2 inline-block rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-[0.05em] ${
+                        className={`mb-2 inline-block whitespace-nowrap rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-[0.05em] ${
                           ex.hypothetical
                             ? "border border-dashed border-[rgba(58,51,48,0.35)] text-[var(--color-text-body)]"
                             : "bg-[#D4622B]/10 text-[#B8521C]"
@@ -235,7 +235,7 @@ export default function ExampleScroller({
           </div>
 
           {/* The stage: one window, the active example's scene building inside it. */}
-          <div className="hidden lg:col-span-8 lg:flex lg:h-full lg:max-h-[640px] lg:flex-col overflow-hidden rounded-2xl bg-[#1B1613] shadow-[0_30px_80px_-30px_rgba(27,22,19,0.55)]">
+          <div className="hidden lg:col-span-8 lg:flex lg:aspect-[4/3] lg:max-h-full lg:w-full lg:flex-col overflow-hidden rounded-2xl bg-[#1B1613] shadow-[0_30px_80px_-30px_rgba(27,22,19,0.55)]">
             <div aria-hidden="true" className="relative flex h-11 shrink-0 items-center gap-2 border-b border-white/[0.06] px-5">
               <span className="h-2.5 w-2.5 rounded-full bg-white/15" />
               <span className="h-2.5 w-2.5 rounded-full bg-white/15" />

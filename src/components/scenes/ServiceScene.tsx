@@ -1,4 +1,4 @@
-import type { CSSProperties, ComponentType, ReactNode } from "react";
+import { Fragment, type CSSProperties, type ComponentType, type ReactNode } from "react";
 import type { SceneId } from "@/data/services";
 import SceneStage from "./SceneStage";
 
@@ -315,12 +315,285 @@ function FleraSystem() {
   );
 }
 
+/* ── Egna system: complete tools people work in ───────────────────────────
+   Each of these is a small app window (sidebar + workspace), so the scene
+   reads as "a system you log in to", not as a file being processed. */
+
+/** A small app window: the tool's sections on the left, the active one marked. */
+function AppShell({
+  nav,
+  children,
+  className = "",
+  style,
+}: {
+  nav: string[];
+  children: ReactNode;
+  className?: string;
+  style?: CSSProperties;
+}) {
+  return (
+    <Paper className={`grid w-full grid-cols-[6.2em_1fr] overflow-hidden ${className}`} style={style}>
+      <div className="flex flex-col gap-[0.25em] border-r border-black/[0.07] bg-black/[0.025] px-[0.55em] py-[0.8em]">
+        <span className="mb-[0.5em] h-[0.9em] w-[0.9em] rounded-[0.25em]" style={{ background: ACCENT }} />
+        {nav.map((item, k) => (
+          <span
+            key={item}
+            className={`truncate rounded-[0.35em] px-[0.45em] py-[0.3em] text-[0.78em] font-semibold ${
+              k === 0 ? "bg-white text-[#3A3330] shadow-[0_1px_2px_rgba(0,0,0,0.08)]" : "text-[#9C8E82]"
+            }`}
+          >
+            {item}
+          </span>
+        ))}
+      </div>
+      <div className="min-w-0 p-[0.85em]">{children}</div>
+    </Paper>
+  );
+}
+
+/* ── 5. Bokningar och personal på ett ställe (Kom-Fort) ───────────────────
+   A week calendar: a new job lands, a staff member takes it, and the
+   customer's confirmation goes out. */
+function Bokning() {
+  const days = ["Tis", "Ons", "Tor"];
+  const hours = ["08", "10", "13"];
+  const existing: Record<string, [string, string]> = {
+    "0-0": ["Polering", "Tesla Y"],
+    "2-1": ["Rekond", "BMW i4"],
+    "0-2": ["Tvätt", "Audi A6"],
+  };
+  return (
+    <div className="flex w-full flex-col gap-[0.7em]">
+      <AppShell nav={["Kalender", "Kunder", "Personal"]} className="s" style={at(1)}>
+        <div className="flex items-baseline justify-between gap-[0.5em]">
+          <p className="text-[0.95em] font-semibold">Vecka 42</p>
+          <Label>3 medarbetare</Label>
+        </div>
+        <div className="mt-[0.6em] grid grid-cols-[1.8em_repeat(3,1fr)] gap-[0.3em] text-[0.8em]">
+          <span />
+          {days.map((d) => (
+            <span key={d} className="pb-[0.2em] text-center font-semibold text-[#9C8E82]">
+              {d}
+            </span>
+          ))}
+          {hours.map((h, hi) => (
+            <Fragment key={h}>
+              <span className="pt-[0.35em] tabular-nums text-[#9C8E82]">{h}</span>
+              {days.map((d, di) => {
+                const booking = existing[`${di}-${hi}`];
+                return (
+                  <div key={d} className="relative h-[3.4em] rounded-[0.4em] bg-black/[0.035]">
+                    {booking && (
+                      <div
+                        className="s absolute inset-[0.2em] rounded-[0.35em] bg-white px-[0.45em] py-[0.3em] shadow-[0_1px_2px_rgba(0,0,0,0.08)]"
+                        style={at(2, { i: di + hi })}
+                      >
+                        <p className="truncate font-semibold">{booking[0]}</p>
+                        <p className="truncate text-[#9C8E82]">{booking[1]}</p>
+                      </div>
+                    )}
+                    {di === 1 && hi === 1 && (
+                      <div
+                        className="s absolute inset-[0.2em] rounded-[0.35em] border px-[0.45em] py-[0.3em]"
+                        style={{ ...at(3), borderColor: ACCENT, background: "rgba(212,98,43,0.08)" }}
+                      >
+                        <p className="truncate font-semibold">Rekond</p>
+                        <p className="truncate text-[#9C8E82]">Volvo XC60</p>
+                        <span
+                          className="s absolute -right-[0.45em] -top-[0.45em] grid h-[1.6em] w-[1.6em] place-items-center rounded-full text-[0.8em] font-bold text-white ring-2 ring-[#FBF7F2]"
+                          style={{ ...at(4), background: ACCENT }}
+                        >
+                          AL
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </Fragment>
+          ))}
+        </div>
+      </AppShell>
+
+      <Chip className="s self-end" style={at(5)}>
+        <Check /> Bekräftelse skickad till kunden
+      </Chip>
+    </div>
+  );
+}
+
+/* ── 6. Kunder som bokar igen (Osteopaticentrum) ──────────────────────────
+   An imported customer list, a selection, one SMS, and a booking that
+   comes back from it. */
+function Sms() {
+  const customers = [
+    { name: "Sara Lind", last: "8 mån sedan", pick: true },
+    { name: "Johan Berg", last: "11 mån sedan", pick: true },
+    { name: "Maria Kahn", last: "2 mån sedan", pick: false },
+    { name: "Erik Nyström", last: "14 mån sedan", pick: true, booked: true },
+  ];
+  return (
+    <div className="flex w-full flex-col gap-[0.7em]">
+      <AppShell nav={["Utskick", "Kunder", "Resultat"]} className="s" style={at(1)}>
+        <div className="flex items-baseline justify-between gap-[0.5em]">
+          <p className="text-[0.95em] font-semibold">Nytt utskick</p>
+          <Label>kunder.csv · 4 kunder</Label>
+        </div>
+        <div className="mt-[0.5em] grid grid-cols-[1.15fr_1fr] gap-[0.8em]">
+          <ul>
+            {customers.map((c, i) => (
+              <li
+                key={c.name}
+                className="s flex items-center gap-[0.45em] border-t border-black/[0.06] py-[0.35em] text-[0.82em]"
+                style={at(1, { i })}
+              >
+                <span className="relative grid h-[1.05em] w-[1.05em] shrink-0 place-items-center rounded-[0.25em] border border-black/20">
+                  {c.pick && (
+                    <span
+                      className="s absolute -inset-px grid place-items-center rounded-[0.25em] text-white"
+                      style={{ ...at(2, { i }), background: ACCENT }}
+                    >
+                      <Check />
+                    </span>
+                  )}
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block truncate font-semibold">{c.name}</span>
+                  <span className="block truncate text-[0.9em] text-[#9C8E82]">Senast {c.last}</span>
+                </span>
+                {c.booked && (
+                  <span
+                    className="s shrink-0 rounded-full px-[0.5em] py-[0.1em] text-[0.8em] font-bold text-white"
+                    style={{ ...at(5), background: ACCENT }}
+                  >
+                    Bokade
+                  </span>
+                )}
+              </li>
+            ))}
+          </ul>
+          <div className="flex flex-col gap-[0.5em]">
+            <div
+              className="s rounded-[0.8em] rounded-bl-[0.2em] bg-black/[0.05] px-[0.7em] py-[0.55em] text-[0.82em] leading-[1.35]"
+              style={at(3)}
+            >
+              Hej! Det var ett tag sedan sist. Boka din nästa tid här →
+            </div>
+            <span
+              className="s self-start rounded-[0.5em] px-[0.8em] py-[0.35em] text-[0.82em] font-semibold text-white"
+              style={{ ...at(3, { i: 1 }), background: ACCENT }}
+            >
+              Skicka till 3
+            </span>
+            <span className="s flex items-center gap-[0.3em] text-[0.78em] text-[#9C8E82]" style={at(4)}>
+              <Check /> Skickat
+            </span>
+          </div>
+        </div>
+      </AppShell>
+
+      <Chip className="s self-end" style={at(5)}>
+        Ny bokning från utskicket
+      </Chip>
+    </div>
+  );
+}
+
+/* ── 7. Status på varje uppdrag (illustration, not a delivered case) ──────
+   One board everyone shares: a job is finished, another one starts, and
+   nobody has to ask where things are. Moving cards are two copies in the
+   same grid cell: one leaves, the other arrives. */
+function StatusCard({
+  title,
+  client,
+  style,
+  done = false,
+  who,
+}: {
+  title: string;
+  client: string;
+  style: CSSProperties;
+  done?: boolean;
+  who?: string;
+}) {
+  return (
+    <div
+      className="s col-start-1 row-start-1 rounded-[0.4em] bg-white px-[0.45em] py-[0.35em] text-[0.78em] shadow-[0_1px_2px_rgba(0,0,0,0.08)]"
+      style={style}
+    >
+      <p className="truncate font-semibold leading-tight">{title}</p>
+      <p className="truncate text-[#9C8E82]">{client}</p>
+      {(done || who) && (
+        <div className="mt-[0.3em] flex items-center gap-[0.3em]">
+          {done && (
+            <span className="flex items-center gap-[0.2em] font-semibold" style={{ color: ACCENT }}>
+              <Check /> Klart
+            </span>
+          )}
+          {who && (
+            <span
+              className="grid h-[1.6em] w-[1.6em] place-items-center rounded-full text-[0.85em] font-bold text-white"
+              style={{ background: ACCENT }}
+            >
+              {who}
+            </span>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function Status() {
+  return (
+    <div className="flex w-full flex-col gap-[0.7em]">
+      <AppShell nav={["Uppdrag", "Kunder", "Team"]} className="s" style={at(1)}>
+        <div className="flex items-baseline justify-between gap-[0.5em]">
+          <p className="text-[0.95em] font-semibold">Alla uppdrag</p>
+          <Label>Uppdaterat nu</Label>
+        </div>
+        <div className="mt-[0.6em] grid grid-cols-3 gap-[0.45em]">
+          <div className="flex min-h-[11em] flex-col gap-[0.4em] rounded-[0.5em] bg-black/[0.035] p-[0.4em]">
+            <Label>Förfrågan</Label>
+            <div className="grid">
+              <StatusCard title="Offert" client="Lindqvist Bygg" style={at(1)} />
+            </div>
+            <div className="grid">
+              <StatusCard title="Service" client="Café Solsidan" style={at(1, { i: 1, until: 3 })} />
+            </div>
+          </div>
+          <div className="flex min-h-[11em] flex-col gap-[0.4em] rounded-[0.5em] bg-black/[0.035] p-[0.4em]">
+            <Label>Pågår</Label>
+            <div className="grid">
+              <StatusCard title="Installation" client="Nordplåt" style={at(1, { i: 2, until: 2 })} />
+              <StatusCard title="Service" client="Café Solsidan" who="AL" style={at(3)} />
+            </div>
+          </div>
+          <div className="flex min-h-[11em] flex-col gap-[0.4em] rounded-[0.5em] bg-black/[0.035] p-[0.4em]">
+            <Label>Klart</Label>
+            <div className="grid">
+              <StatusCard title="Installation" client="Nordplåt" done style={at(2)} />
+            </div>
+          </div>
+        </div>
+      </AppShell>
+
+      <Chip className="s self-end" style={at(4)}>
+        Alla ser samma läge
+      </Chip>
+    </div>
+  );
+}
+
 /** Each scene and how long each of its steps is held (ms); the last step is the finished state. */
 const SCENES: Record<SceneId, { Scene: ComponentType; durations: number[] }> = {
   dokument: { Scene: Dokument, durations: [500, 1300, 1000, 800, 1600, 3400] },
   ringlista: { Scene: Ringlista, durations: [500, 900, 900, 700, 1700, 3400] },
   research: { Scene: Research, durations: [500, 1100, 1200, 1200, 1200, 3400] },
   "flera-system": { Scene: FleraSystem, durations: [500, 1200, 1100, 1500, 3400] },
+  bokning: { Scene: Bokning, durations: [500, 1100, 1200, 1000, 900, 3400] },
+  sms: { Scene: Sms, durations: [500, 1200, 1000, 1200, 900, 3400] },
+  status: { Scene: Status, durations: [500, 1200, 1300, 1300, 3400] },
 };
 
 export default function ServiceScene({
@@ -336,7 +609,7 @@ export default function ServiceScene({
     <SceneStage
       durations={durations}
       className={`relative overflow-hidden bg-[#1B1613] ${fill ? "h-full" : "rounded-2xl"}`}
-      sceneClassName={`relative flex items-center p-[6%] ${fill ? "h-full" : ""}`}
+      sceneClassName={`relative flex items-center ${fill ? "scene-fill h-full p-[5%]" : "p-[6%]"}`}
     >
       <span
         className="pointer-events-none absolute inset-0"

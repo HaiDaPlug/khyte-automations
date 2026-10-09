@@ -759,6 +759,11 @@ details[open] > div {
   --step: 0;
   font-size: clamp(10px, 2.75cqw, 17px);
 }
+/* In the sticky stage (desktop) the frame is always large, so scenes can sit
+   a touch bigger. 17.5px keeps the tallest scene inside a 4:3 window. */
+.scene.scene-fill {
+  font-size: clamp(11px, 2.75cqw, 17.5px);
+}
 .scene .s {
   --on: clamp(0, calc(var(--step) - var(--at, 0) + 1), 1);
   --off: clamp(0, calc(var(--step) - var(--until, 999) + 1), 1);

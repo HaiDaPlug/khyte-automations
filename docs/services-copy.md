@@ -234,11 +234,14 @@ Ja. Vi kan börja med ett avgränsat flöde och ta nästa steg när ni har sett 
 
 ---
 
-## 3. `/tjanster/egna-system` — existing page, restructured
+## 3. `/tjanster/egna-system` — built on `feat/egna-system` (2026-10-09 layout)
 
 **Buyer's situation:** "We need a tool to run our work."
 
-**Sections:** hero → examples → what you get / what we need → price → FAQ.
+**Sections:** the same template as Automatisering: hero → examples told one at a time on scroll → "Så går
+det till" → FAQ. Examples are complete tools people work in, as illustrations of what's possible (owner's
+example model, 2026-10-09); no case links on them. "Så går det till" and the FAQ use the editorial grid
+(heading left, content right), shared with Automatisering.
 
 **Title** (unchanged): Egna system – skräddarsydda verksamhetssystem för företag
 **Meta description:** Skräddarsydda system för bokningar, personal eller kunduppföljning när färdiga
@@ -249,70 +252,31 @@ verktyg inte räcker. Kostnadsfri kartläggning, fast pris och ni äger koden.
 **Intro:** Vi bygger ett verktyg för jobbet ni behöver göra, när färdiga program inte räcker. Det kan
 samla bokningar och personal, eller hjälpa er att följa upp kunder.
 
-**CTAs:** Boka ett intro (30 min) · Se exempel
+### Vad vi bygger (scroll story)
 
-### Vad vi bygger (examples)
+Section intro: Exempel på vad ett eget system kan hjälpa er med. Varje system byggs för er, av delar vi
+redan vet fungerar.
 
-Section intro: Två exempel på system vi har byggt för olika sätt att arbeta.
+**Bokningar och personal på ett ställe**
+Hos Kom-Fort Bilvård registreras uppdrag, kund, bil och ansvarig medarbetare på ett ställe. Personalen ser
+sina pass, och kunden får sin bekräftelse automatiskt.
+*Bild:* a week calendar; a new job lands, a staff member takes it, the confirmation goes out.
 
-**1. Verksamheten levde i en telefon**
-*Kom-Fort Bilvård*
-Varje ny bokning betydde att ägaren skulle hitta en ledig medarbetare, skriva om passet, samla uppgifter
-om kund och bil och skicka bekräftelsen från sin egen telefon.
-Nu registreras uppdraget på ett ställe. Personalen loggar in och ser sina pass, och kunden får sin
-orderbekräftelse automatiskt.
-*I systemet:* bokning och kalender · inloggning för personalen · automatisk bekräftelse
-*Link:* Så byggde vi Kom-Forts system → `/case/komfort-bilvard`
-*Bild:* a booking lands in the calendar, a shift appears for a staff member, and the customer's confirmation goes out.
+**Kunder som bokar igen**
+Osteopaticentrum importerar sin kundlista, väljer vilka som ska få ett SMS och ser vilka utskick som leder
+till nya bokningar.
+*Bild:* an imported customer list, a selection, one SMS, a booking that comes back.
 
-**2. SMS-utskick som går att följa upp**
-*Osteopaticentrum*
-Osteopaticentrum ville påminna tidigare kunder om att boka en ny behandling, men verktygen på marknaden
-passade inte hur de jobbade.
-I sitt eget system importerar de kundlistan, väljer vilka som ska få ett SMS och ser vilka utskick som
-leder till nya bokningar.
-*I systemet:* import av kundlista · SMS-utskick · koppling till bokningar
-*Link:* Så byggde vi Osteopaticentrums SMS-system → `/case/osteopaticentrum`
-*Bild:* a customer list, a selection of recipients, an SMS, then a booking that ties back to it.
-
-### Så jobbar vi med er (one block, two columns)
-
-**Ni får**
-- Ett system i drift, med inloggning för dem som ska använda det.
-- Dokumentation och en genomgång med personalen.
-- Koden vi levererar, och tillgång till er data och era inloggningar.
-- Support och felrättning efter leverans, enligt offerten.
-
-**Vi behöver från er**
-- En person som kan visa hur ni jobbar i dag, steg för steg.
-- Exempel på riktiga bokningar, kundlistor eller dokument.
-- Någon som testar varje del innan vi går vidare.
-
-### Pris och upplägg (band)
-
-| Big text | Body |
-|---|---|
-| Kostnadsfritt | Introsamtal och kartläggning är kostnadsfria. Ni får en offert med omfattning, tidsplan och fast pris innan ni bestämmer er. |
-| från 15 000 kr exkl. moms | Priset beror på hur många delar systemet har, hur många som ska använda det och vad det ska kopplas till. |
-| 4–6 veckor | Från kartläggning till drift för de flesta system. Mindre verktyg är ofta klara på 1–2 veckor. Ni får en tidsplan i offerten. |
-| Drift och support | Efter leverans kan vi sköta hosting, underhåll och löpande support till ett fast månadspris utifrån lösningens omfattning, utan bindningstid. Offerten visar vad som ingår och vad det kostar. |
-
-Below the band: Kostnader för externa tjänster, som SMS eller AI, står också i offerten.
+**Status på varje uppdrag** *(tag, dashed: Exempel på ett möjligt system)*
+Alla ser var ett uppdrag står, från förfrågan till klart, utan att behöva fråga någon.
+*Bild:* a shared board; jobs move from förfrågan to pågår to klart.
 
 ### Vanliga frågor
 
-Three stay as they are: "Varför ett eget system och inte ett färdigt verktyg?", "Behöver personalen lära
-sig något nytt?", "Kan systemet växa med oss?". Two get new answers:
-
-**Kan systemet kopplas till det vi redan använder?**
-Det undersöker vi i kartläggningen, utifrån hur era system kan lämna och ta emot uppgifter. En koppling
-kan vara automatiserad eller bygga på att ni exporterar och importerar en fil. Osteopaticentrum importerar
-till exempel sin kundlista som CSV i sitt SMS-system.
-
-**Vad händer med systemet om vi slutar jobba med er?**
-Ni äger koden vi levererar och har tillgång till er data och de inloggningar som hör till lösningen. Ni
-kan låta oss sköta driften eller ta över själva, med eller utan en annan leverantör. Driften och supporten
-har ingen bindningstid, och upplägget för överlämningen specificerar vi i offerten.
+The five questions stay. New answer to "Kan systemet kopplas till det vi redan använder?": Det undersöker
+vi i kartläggningen, utifrån hur era system kan lämna och ta emot uppgifter. En koppling kan vara
+automatiserad eller bygga på att ni exporterar och importerar en fil. Osteopaticentrum importerar till
+exempel sin kundlista som CSV i sitt SMS-system.
 
 ---
 

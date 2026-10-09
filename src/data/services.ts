@@ -1,26 +1,22 @@
 import type { FAQEntry } from "./faq";
-import { cases, type CaseData } from "./cases";
+import { cases } from "./cases";
 
 /**
  * Service pages under /tjanster/<slug>.
  *
  * Works like cases.ts: this data drives the route, the sitemap, the service
  * cards on /tjanster and the structured data. The service ↔ case relationship
- * lives here (caseSlugs) and nowhere else. Service pages list their proof with
- * casesForService(); case pages link back with servicesForCase().
+ * lives here (caseSlugs) and nowhere else. Examples link their case with
+ * exampleCaseHref(); case pages link back with servicesForCase().
  *
- * Generic questions (price, ownership, timeline) belong on /tjanster, which is
- * the canonical page for them. A service's own FAQ only answers what is
- * specific to that service, so the pages never repeat each other.
+ * Generic questions (price, timeline) belong on /tjanster, which is the
+ * canonical page for them. A service's own FAQ mostly answers what is specific
+ * to that service; a generic answer is repeated only where a buyer of that
+ * service needs it (Egna system's ownership question).
  */
 
-export interface ServicePoint {
-  title: string;
-  body: string;
-}
-
 /** Picks the animated scene beside an example in <ServiceScene />. */
-export type SceneId = "dokument" | "ringlista" | "research" | "flera-system";
+export type SceneId = "dokument" | "ringlista" | "research" | "flera-system" | "bokning" | "sms" | "status";
 
 /**
  * One card on an example-led service page: the situation in the buyer's
@@ -38,11 +34,6 @@ export interface ServiceExample {
   scene: SceneId;
 }
 
-/**
- * Two page layouts share this type while the services move over one at a
- * time. Example-led pages (Automatisering) set examples; Egna system still
- * uses problems and builds until it moves over, and then those two go.
- */
 export interface ServiceData {
   slug: string;
   /** Display name, used in links, breadcrumbs and schema. */
@@ -56,13 +47,9 @@ export interface ServiceData {
   intro: string;
   /** One sentence for the card on /tjanster. */
   summary: string;
-  /** The situations that make someone need this, in their own words. */
-  problems?: ServicePoint[];
-  /** What we build. */
-  builds?: ServicePoint[];
-  examplesHeading?: { line1: string; line2: string };
-  examplesIntro?: string;
-  examples?: ServiceExample[];
+  examplesHeading: { line1: string; line2: string };
+  examplesIntro: string;
+  examples: ServiceExample[];
   /** Cases that prove the service, strongest first. Must be slugs in cases.ts. */
   caseSlugs: string[];
   faqs: FAQEntry[];
@@ -143,40 +130,39 @@ export const services: ServiceData[] = [
     heading: { line1: "EGNA", line2: "SYSTEM." },
     seoTitle: "Egna system – skräddarsydda verksamhetssystem för företag",
     metaDescription:
-      "Vi bygger egna system när färdiga verktyg inte passar: bokning och personal, dokument från Excel, SMS-uppföljning. Fast pris, och ni äger koden.",
+      "Skräddarsydda system för bokningar, personal eller kunduppföljning när färdiga verktyg inte räcker. Kostnadsfri kartläggning, fast pris och ni äger koden.",
     intro:
-      "När färdiga verktyg inte passar hur ni jobbar bygger vi ett eget system som gör det. Anpassat efter er verksamhet, byggt av delar vi redan vet fungerar.",
+      "Vi bygger ett verktyg för jobbet ni behöver göra, när färdiga program inte räcker. Det kan samla bokningar och personal, eller hjälpa er att följa upp kunder.",
     summary:
-      "När inget färdigt verktyg passar bygger vi ett eget, för bokning och personal, dokument eller kunduppföljning.",
-    problems: [
+      "Ett verktyg byggt för hur ni jobbar, när färdiga program inte räcker. Till exempel för bokningar, personal eller kunduppföljning.",
+    examplesHeading: { line1: "VAD VI", line2: "BYGGER." },
+    examplesIntro:
+      "Exempel på vad ett eget system kan hjälpa er med. Varje system byggs för er, av delar vi redan vet fungerar.",
+    // Complete tools people work in, as illustrations of what's possible rather
+    // than a catalogue (owner, 2026-10-09). No case links on these examples.
+    examples: [
       {
-        title: "Samma dokument byggs för hand",
-        body: "Information från kundernas filer förs över rad för rad till nya dokument. Varje gång en ny fil kommer in.",
+        title: "Bokningar och personal på ett ställe",
+        summary:
+          "Hos Kom-Fort Bilvård registreras uppdrag, kund, bil och ansvarig medarbetare på ett ställe. Personalen ser sina pass, och kunden får sin bekräftelse automatiskt.",
+        scene: "bokning",
       },
       {
-        title: "Verksamheten lever i en telefon",
-        body: "Bokningar, pass och bekräftelser hålls ihop av en person, via meddelanden och minnet. Det fungerar tills det blir fler kunder och fler anställda.",
+        title: "Kunder som bokar igen",
+        summary:
+          "Osteopaticentrum importerar sin kundlista, väljer vilka som ska få ett SMS och ser vilka utskick som leder till nya bokningar.",
+        scene: "sms",
       },
       {
-        title: "Färdiga verktyg passar inte",
-        body: "Det ni behöver finns inte, eller kommer med en dyr och krånglig process runt sig. Så ni anpassar er efter verktyget istället för tvärtom.",
+        title: "Status på varje uppdrag",
+        summary:
+          "Alla ser var ett uppdrag står, från förfrågan till klart, utan att behöva fråga någon.",
+        tag: "Exempel på ett möjligt system",
+        hypothetical: true,
+        scene: "status",
       },
     ],
-    builds: [
-      {
-        title: "Dokument som skapar sig själva",
-        body: "Ladda upp filen ni redan får. Systemet läser den och tar fram färdiga dokument i ert format, till exempel plock- och följesedlar.",
-      },
-      {
-        title: "Boknings- och personalsystem",
-        body: "Kund, uppdrag, tid och ansvarig medarbetare på ett ställe. Personalen loggar in och ser sina pass, och kunden får sin bekräftelse automatiskt.",
-      },
-      {
-        title: "Egna verktyg för kunduppföljning",
-        body: "Importera kundlistan, skicka SMS och se vilka utskick som faktiskt leder till nya bokningar.",
-      },
-    ],
-    caseSlugs: ["etcetera-offset", "komfort-bilvard", "osteopaticentrum"],
+    caseSlugs: ["komfort-bilvard", "osteopaticentrum"],
     faqs: [
       {
         q: "Varför ett eget system och inte ett färdigt verktyg?",
@@ -188,7 +174,7 @@ export const services: ServiceData[] = [
       },
       {
         q: "Kan systemet kopplas till det vi redan använder?",
-        a: "Ofta. Har ert nuvarande system ett API eller kan exportera data går det att koppla. Osteopaticentrum importerar sin kundlista som CSV direkt i sitt SMS-system. Vad som går i ert fall ser vi i kartläggningen.",
+        a: "Det undersöker vi i kartläggningen, utifrån hur era system kan lämna och ta emot uppgifter. En koppling kan vara automatiserad eller bygga på att ni exporterar och importerar en fil. Osteopaticentrum importerar till exempel sin kundlista som CSV i sitt SMS-system.",
       },
       {
         q: "Behöver personalen lära sig något nytt?",
@@ -261,7 +247,7 @@ export const serviceAreas: ServiceArea[] = [
 ];
 
 /**
- * Where a tile leads. Throws on an unknown slug, like casesForService(), so a
+ * Where a tile leads. Throws on an unknown slug, like exampleCaseHref(), so a
  * renamed page or case fails the build instead of leaving a dead tile.
  */
 export function areaLink(area: ServiceArea): { href: string; label: string } | null {
@@ -278,21 +264,16 @@ export function areaLink(area: ServiceArea): { href: string; label: string } | n
   return null;
 }
 
-export function getServiceBySlug(slug: string): ServiceData | undefined {
-  return services.find((s) => s.slug === slug);
+// Every caseSlug must be a real case; checked when this module loads, so a
+// renamed or removed case fails the build.
+for (const s of services) {
+  for (const slug of s.caseSlugs) {
+    if (!cases.some((c) => c.slug === slug)) throw new Error(`services.ts: "${s.slug}" lists unknown case "${slug}"`);
+  }
 }
 
-/**
- * The cases behind a service, in the order listed. Throws on an unknown slug
- * so a renamed or removed case fails the build instead of silently dropping
- * the proof from the page.
- */
-export function casesForService(service: ServiceData): CaseData[] {
-  return service.caseSlugs.map((slug) => {
-    const c = cases.find((x) => x.slug === slug);
-    if (!c) throw new Error(`services.ts: "${service.slug}" lists unknown case "${slug}"`);
-    return c;
-  });
+export function getServiceBySlug(slug: string): ServiceData | undefined {
+  return services.find((s) => s.slug === slug);
 }
 
 /**
