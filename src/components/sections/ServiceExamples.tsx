@@ -3,15 +3,15 @@ import ServiceScene from "@/components/scenes/ServiceScene";
 import { exampleCaseHref, type ServiceData } from "@/data/services";
 
 /**
- * The examples on an example-led service page: each one is the situation in
- * the buyer's words, how it was done before, what we built, and a text link to
- * the case. The scene beside it only illustrates the text; it is never a link.
+ * The examples on an example-led service page, as a grid of cards: the
+ * animated scene on top, then the situation, one or two sentences on what
+ * changed, and a text link to the case. All of them are visible at once, so
+ * the page reads as "here is the work" before anyone reads a paragraph.
  *
- * Before and after are told apart by their rule (muted vs. orange), not by
- * extra labels, so the text stays as short as the copy.
+ * The scene only illustrates the card; it is never a link.
  *
- * Desktop: text and scene side by side, swapping sides on every other example.
- * Mobile: text first, then the scene.
+ * Desktop (lg): two columns, scenes at a fixed 4:3 so the cards line up.
+ * Below lg: one column, scenes as tall as their content.
  */
 
 const Arrow = () => (
@@ -21,64 +21,48 @@ const Arrow = () => (
 );
 
 export default function ServiceExamples({ service }: { service: ServiceData }) {
-  const examples = service.examples ?? [];
-
   return (
-    <ol className="flex flex-col gap-16 md:gap-24">
-      {examples.map((ex, i) => {
+    <ul className="grid grid-cols-1 gap-x-6 gap-y-14 lg:grid-cols-2">
+      {(service.examples ?? []).map((ex) => {
         const href = exampleCaseHref(service, ex);
-        const flip = i % 2 === 1;
 
         return (
-          <li key={ex.title} className="grid grid-cols-1 items-center gap-8 md:grid-cols-12 md:gap-12">
-            <div className={`md:col-span-5 md:row-start-1 ${flip ? "md:col-start-8" : "md:col-start-1"}`}>
-              <span className="block font-display text-[2.5rem] leading-none tracking-wide text-[var(--color-accent)]">
-                {String(i + 1).padStart(2, "0")}
-              </span>
+          <li key={ex.title} className="flex flex-col">
+            <ServiceScene id={ex.scene} />
 
-              <p className="mt-5 flex flex-wrap items-center gap-2">
-                {ex.hypothetical ? (
-                  <span className="rounded-full border border-dashed border-[rgba(58,51,48,0.35)] px-3 py-1 text-[12px] font-bold uppercase tracking-[0.05em] text-[var(--color-text-body)]">
-                    {ex.label}
-                  </span>
-                ) : (
-                  <span className="text-label">{ex.label}</span>
-                )}
-                {ex.tag && (
-                  <span className="rounded-full bg-[#D4622B]/10 px-3 py-1 text-[12px] font-bold uppercase tracking-[0.05em] text-[#B8521C]">
-                    {ex.tag}
-                  </span>
-                )}
-              </p>
+            <div className="mt-6 flex flex-1 flex-col">
+              {ex.tag && (
+                <span
+                  className={`mb-3 self-start rounded-full px-3 py-1 text-[12px] font-bold uppercase tracking-[0.05em] ${
+                    ex.hypothetical
+                      ? "border border-dashed border-[rgba(58,51,48,0.35)] text-[var(--color-text-body)]"
+                      : "bg-[#D4622B]/10 text-[#B8521C]"
+                  }`}
+                >
+                  {ex.tag}
+                </span>
+              )}
 
-              <h3 className="mt-3 text-2xl md:text-[1.75rem] font-semibold tracking-[-0.02em] leading-[1.15] text-[var(--color-text)]">
+              <h3 className="text-xl md:text-2xl font-semibold tracking-[-0.02em] leading-[1.2] text-[var(--color-text)]">
                 {ex.title}
               </h3>
-
-              <p className="mt-5 border-l-2 border-[rgba(58,51,48,0.18)] pl-4 text-[15px] md:text-base font-medium leading-relaxed text-[var(--color-text-body)]">
-                {ex.before}
-              </p>
-              <p className="mt-4 border-l-2 border-[#D4622B] pl-4 text-[15px] md:text-base font-medium leading-relaxed text-[var(--color-text)]">
-                {ex.after}
+              <p className="mt-3 max-w-[52ch] text-[15px] md:text-base font-medium leading-relaxed text-[var(--color-text-body)]">
+                {ex.summary}
               </p>
 
               {href && ex.case && (
                 <Link
                   href={href}
-                  className="group mt-6 inline-flex items-center gap-2 font-display text-sm font-bold tracking-[0.18em] uppercase text-[var(--color-text)] hover:text-[#D4622B] transition-colors duration-300"
+                  className="group mt-5 inline-flex items-center gap-2 self-start font-display text-sm font-bold tracking-[0.18em] uppercase text-[var(--color-text)] hover:text-[#D4622B] transition-colors duration-300"
                 >
                   {ex.case.linkText}
                   <Arrow />
                 </Link>
               )}
             </div>
-
-            <div className={`md:col-span-7 md:row-start-1 ${flip ? "md:col-start-1" : "md:col-start-6"}`}>
-              <ServiceScene id={ex.scene} />
-            </div>
           </li>
         );
       })}
-    </ol>
+    </ul>
   );
 }

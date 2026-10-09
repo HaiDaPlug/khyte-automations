@@ -1,6 +1,5 @@
 import type { FAQEntry } from "./faq";
 import { cases, type CaseData } from "./cases";
-import { facts } from "./facts";
 
 /**
  * Service pages under /tjanster/<slug>.
@@ -24,42 +23,25 @@ export interface ServicePoint {
 export type SceneId = "dokument" | "ringlista" | "research" | "flera-system";
 
 /**
- * One example on an example-led service page: the situation in the buyer's
- * words, how it was done before, what we built, and the case behind it.
+ * One card on an example-led service page: the situation in the buyer's
+ * words, one or two sentences on what changed, and the case behind it.
  */
 export interface ServiceExample {
   title: string;
-  /** Who it was built for, or what kind of example it is. */
-  label: string;
-  /** Shown after the label, e.g. "AI i flödet". */
+  summary: string;
+  /** A small pill above the title, e.g. "AI i flödet". */
   tag?: string;
-  /** Not a delivered case. The label is styled so the difference shows. */
+  /** Not a delivered case. The tag is drawn dashed so the difference shows. */
   hypothetical?: boolean;
-  /** How the work was done before. */
-  before: string;
-  /** What we built and what it gave. */
-  after: string;
   /** The case behind the example, linked as text. Must also be in caseSlugs. */
   case?: { slug: string; linkText: string };
   scene: SceneId;
 }
 
-/** One item in the price band. */
-export interface ServiceTerm {
-  /** The big text. */
-  num: string;
-  /** Small label before it, e.g. "från". */
-  unit?: string;
-  /** Small label after it, e.g. "exkl. moms". */
-  note?: string;
-  body: string;
-}
-
 /**
  * Two page layouts share this type while the services move over one at a
- * time. Example-led pages (Automatisering) set examples, gets, needs and
- * terms; Egna system still uses problems and builds until it moves over, and
- * then those two fields go.
+ * time. Example-led pages (Automatisering) set examples; Egna system still
+ * uses problems and builds until it moves over, and then those two go.
  */
 export interface ServiceData {
   slug: string;
@@ -81,14 +63,6 @@ export interface ServiceData {
   examplesHeading?: { line1: string; line2: string };
   examplesIntro?: string;
   examples?: ServiceExample[];
-  /** "Ni får": what the customer gets. */
-  gets?: string[];
-  /** "Vi behöver från er": what we need from the customer. */
-  needs?: string[];
-  /** The price band. */
-  terms?: ServiceTerm[];
-  /** One line under the price band. */
-  termsNote?: string;
   /** Cases that prove the service, strongest first. Must be slugs in cases.ts. */
   caseSlugs: string[];
   faqs: FAQEntry[];
@@ -100,7 +74,7 @@ export const services: ServiceData[] = [
     name: "Automatisering",
     heading: { line1: "AUTOMATISERING", line2: "AV MANUELLT ARBETE." },
     seoTitle: "Automatisering av arbetsflöden och dokument",
-    metaDescription: `Vi automatiserar listor, dokument och företagsresearch. Se exempel med Excel och AI. Kostnadsfri kartläggning och fast pris från ${facts.priceFrom} ${facts.priceVat}.`,
+    metaDescription: "Vi automatiserar listor, dokument och företagsresearch. Se exempel med Excel och AI. Kostnadsfri kartläggning och fast pris innan vi bygger.",
     intro:
       "Samma lista, samma dokument, samma kopierande. Vi bygger flöden som gör återkommande arbete åt er, med AI när information behöver läsas eller tolkas.",
     summary:
@@ -110,79 +84,35 @@ export const services: ServiceData[] = [
     examples: [
       {
         title: "Kundfiler som ska bli färdiga dokument",
-        label: "Etcetera Offset",
-        before:
-          "Kunderna skickar stora Excel-filer. Artikelnummer, storlekar och antal fördes över för hand till plock- och följesedlar, rad för rad.",
-        after:
-          "Nu laddar teamet upp filen. Systemet läser raderna, delar upp dem rätt och tar fram färdiga sedlar i Etceteras eget format.",
+        summary:
+          "Kundens Excel-fil laddas upp, och färdiga plock- och följesedlar kommer ut i Etceteras eget format. Inget förs över för hand.",
         case: { slug: "etcetera-offset", linkText: "Så gjorde vi för Etcetera Offset" },
         scene: "dokument",
       },
       {
         title: "Prospektlistor som byggs för hand",
-        label: "JaTack",
-        before:
-          "JaTack bokar möten åt andra företag och behöver nya prospektlistor hela tiden. Varje bolag öppnades, kopierades och klistrades in i Excel för hand.",
-        after:
-          "Nu klistrar de in länken till en sökning i Allabolag, och ett knapptryck senare ligger en färdig ringlista i Excel. Två minuter per lead blev fem sekunder.",
+        summary:
+          "En länk till en sökning i Allabolag blir en färdig ringlista i Excel. Två minuter per lead blev fem sekunder.",
         case: { slug: "lead-engine", linkText: "Så gjorde vi för JaTack" },
         scene: "ringlista",
       },
       {
         title: "AI-research från en lista med företagsnamn",
-        label: "Observa Inkasso & Juridik",
+        summary:
+          "Ett AI-flöde tar fram hemsida, ort, kundtyp och ekonomiansvarig för varje företag i listan. Fyra minuter per företag blev omkring tio sekunder.",
         tag: "AI i flödet",
-        before:
-          "Observa hade tiotusentals företagsnamn, men saknade uppgifter som behövdes för säljarbetet. Varje företag behövde sökas upp och informationen sammanställas.",
-        after:
-          "Vi byggde ett AI-flöde i tre steg som söker fram hemsida, ort, kundtyp och ekonomiansvarig och skriver tillbaka resultatet till listan. Fyra minuters research per företag blev omkring tio sekunder. Uppgifterna finns samlade för fortsatt arbete och granskning.",
         case: { slug: "foretagsresearch", linkText: "Så gjorde vi för Observa" },
         scene: "research",
       },
       {
         title: "Samma uppgifter i flera system",
-        label: "Exempel på ett möjligt flöde",
+        summary:
+          "När en bokning kommer in kan uppgifterna föras över till CRM och bokföring, så att ingen skriver in dem igen. Vad som går att koppla ihop undersöker vi i kartläggningen.",
+        tag: "Exempel på ett möjligt flöde",
         hypothetical: true,
-        before:
-          "Samma kunduppgifter skrivs in i bokningssystemet, CRM:et och bokföringen. Det tar tid, och informationen kan skilja sig mellan systemen.",
-        after:
-          "Ett flöde kan föra över uppgifterna när bokningen kommer in, så att de inte behöver skrivas in igen. Vilka steg som går att koppla ihop undersöker vi i kartläggningen, utifrån hur era system kan lämna och ta emot uppgifter.",
         scene: "flera-system",
       },
     ],
-    gets: [
-      "Ett färdigt flöde i drift.",
-      "Dokumentation och en genomgång med dem som ska använda det.",
-      "Koden vi levererar, och tillgång till er data och era inloggningar.",
-      "Support och felrättning efter leverans, enligt offerten.",
-    ],
-    needs: [
-      "En person som kan visa hur jobbet görs i dag.",
-      "Exempel på riktiga filer, listor eller ärenden.",
-      "Tillgång till de system flödet ska använda.",
-      "Någon som testar och godkänner varje del innan vi går vidare.",
-    ],
-    terms: [
-      {
-        num: "Kostnadsfritt",
-        body: "Introsamtal och kartläggning är kostnadsfria. Ni får en offert med omfattning, tidsplan och fast pris innan ni bestämmer er.",
-      },
-      {
-        num: facts.priceFrom,
-        unit: "från",
-        note: facts.priceVat,
-        body: "Priset beror på hur många system och steg flödet har, hur datan ser ut och vilka undantag det ska klara.",
-      },
-      {
-        num: facts.delivery.small,
-        body: `För mindre automationer, från kartläggning till drift. Större bygge tar ${facts.delivery.large}. Ni får en tidsplan i offerten.`,
-      },
-      {
-        num: "Drift och support",
-        body: "Efter leverans kan vi sköta hosting, underhåll och löpande support till ett fast månadspris utifrån lösningens omfattning, utan bindningstid. Offerten visar vad som ingår och vad det kostar.",
-      },
-    ],
-    termsNote: "Kostnader för externa tjänster, som SMS eller AI, står också i offerten.",
     caseSlugs: ["etcetera-offset", "lead-engine", "foretagsresearch"],
     faqs: [
       {

@@ -154,89 +154,55 @@ Real photo; phone and email from `facts.ts`.
 
 ---
 
-## 2. `/tjanster/automatisering` — new page
+## 2. `/tjanster/automatisering` — built on `feat/automatisering` (2026-10-09 layout)
 
 **Buyer's situation:** "We keep processing, moving or preparing the same information."
 
-**Sections:** hero → examples (one is the AI example) → what you get / what we need → price → FAQ.
+**Sections (owner, 2026-10-09):** hero → examples as a 2×2 grid → "Så går det till" (three steps) → FAQ.
+No price band and no "Ni får / Vi behöver" lists.
 
 **Title:** Automatisering av arbetsflöden och dokument
 **Meta description:** Vi automatiserar listor, dokument och företagsresearch. Se exempel med Excel och AI.
-Kostnadsfri kartläggning och fast pris från 15 000 kr exkl. moms.
+Kostnadsfri kartläggning och fast pris innan vi bygger.
 
-**H1:** AUTOMATISERING / AV MANUELLT ARBETE.  *(check it fits at 375px)*
+**H1:** AUTOMATISERING / AV MANUELLT ARBETE.
 
 **Intro:** Samma lista, samma dokument, samma kopierande. Vi bygger flöden som gör återkommande arbete åt
 er, med AI när information behöver läsas eller tolkas.
 
 **CTAs:** Boka ett intro (30 min) · Se exempel
 
-### Vad vi automatiserar (examples)
+### Vad vi automatiserar (2×2 grid: scene, optional tag, title, summary, case link)
 
 Section intro: Fyra vanliga lägen. Tre av dem kommer från uppdrag vi har levererat.
 
-**1. Kundfiler som ska bli färdiga dokument**
-*Etcetera Offset*
-Kunderna skickar stora Excel-filer. Artikelnummer, storlekar och antal fördes över för hand till plock-
-och följesedlar, rad för rad.
-Nu laddar teamet upp filen. Systemet läser raderna, delar upp dem rätt och tar fram färdiga sedlar i
-Etceteras eget format.
+**Kundfiler som ska bli färdiga dokument**
+Kundens Excel-fil laddas upp, och färdiga plock- och följesedlar kommer ut i Etceteras eget format. Inget
+förs över för hand.
 *Link:* Så gjorde vi för Etcetera Offset → `/case/etcetera-offset`
-*Bild:* spreadsheet rows flow into a plocksedel that fills in field by field.
 
-**2. Prospektlistor som byggs för hand**
-*JaTack*
-JaTack bokar möten åt andra företag och behöver nya prospektlistor hela tiden. Varje bolag öppnades,
-kopierades och klistrades in i Excel för hand.
-Nu klistrar de in länken till en sökning i Allabolag, och ett knapptryck senare ligger en färdig ringlista
-i Excel. Två minuter per lead blev fem sekunder.
+**Prospektlistor som byggs för hand**
+En länk till en sökning i Allabolag blir en färdig ringlista i Excel. Två minuter per lead blev fem
+sekunder.
 *Link:* Så gjorde vi för JaTack → `/case/lead-engine`
-*Bild:* a search link is pasted, then rows of companies fill a sheet.
 
-**3. AI-research från en lista med företagsnamn**
-*Observa Inkasso & Juridik · AI i flödet*
-Observa hade tiotusentals företagsnamn, men saknade uppgifter som behövdes för säljarbetet. Varje företag
-behövde sökas upp och informationen sammanställas.
-Vi byggde ett AI-flöde i tre steg som söker fram hemsida, ort, kundtyp och ekonomiansvarig och skriver
-tillbaka resultatet till listan. Fyra minuters research per företag blev omkring tio sekunder. Uppgifterna
-finns samlade för fortsatt arbete och granskning.
+**AI-research från en lista med företagsnamn** *(tag: AI i flödet)*
+Ett AI-flöde tar fram hemsida, ort, kundtyp och ekonomiansvarig för varje företag i listan. Fyra minuter
+per företag blev omkring tio sekunder.
 *Link:* Så gjorde vi för Observa → `/case/foretagsresearch`
-*Bild:* research results are added to a list, row by row. Don't imply every company gets every field.
 
-**4. Samma uppgifter i flera system**
-*Exempel på ett möjligt flöde*  *(this label is visible on the page)*
-Samma kunduppgifter skrivs in i bokningssystemet, CRM:et och bokföringen. Det tar tid, och informationen
-kan skilja sig mellan systemen.
-Ett flöde kan föra över uppgifterna när bokningen kommer in, så att de inte behöver skrivas in igen.
-Vilka steg som går att koppla ihop undersöker vi i kartläggningen, utifrån hur era system kan lämna och ta
-emot uppgifter.
+**Samma uppgifter i flera system** *(tag, dashed: Exempel på ett möjligt flöde)*
+När en bokning kommer in kan uppgifterna föras över till CRM och bokföring, så att ingen skriver in dem
+igen. Vad som går att koppla ihop undersöker vi i kartläggningen.
 *No case link: no delivered integration case yet.*
-*Bild:* one booking updates three tools at once.
 
-### Så jobbar vi med er (one block, two columns)
+### Så går det till
 
-**Ni får**
-- Ett färdigt flöde i drift.
-- Dokumentation och en genomgång med dem som ska använda det.
-- Koden vi levererar, och tillgång till er data och era inloggningar.
-- Support och felrättning efter leverans, enligt offerten.
-
-**Vi behöver från er**
-- En person som kan visa hur jobbet görs i dag.
-- Exempel på riktiga filer, listor eller ärenden.
-- Tillgång till de system flödet ska använda.
-- Någon som testar och godkänner varje del innan vi går vidare.
-
-### Pris och upplägg (band)
-
-| Big text | Body |
-|---|---|
-| Kostnadsfritt | Introsamtal och kartläggning är kostnadsfria. Ni får en offert med omfattning, tidsplan och fast pris innan ni bestämmer er. |
-| från 15 000 kr exkl. moms | Priset beror på hur många system och steg flödet har, hur datan ser ut och vilka undantag det ska klara. |
-| 1–2 veckor | För mindre automationer, från kartläggning till drift. Större bygge tar 4–6 veckor. Ni får en tidsplan i offerten. |
-| Drift och support | Efter leverans kan vi sköta hosting, underhåll och löpande support till ett fast månadspris utifrån lösningens omfattning, utan bindningstid. Offerten visar vad som ingår och vad det kostar. |
-
-Below the band: Kostnader för externa tjänster, som SMS eller AI, står också i offerten.
+1. **Introsamtal** · Kostnadsfritt · 30 min — Vi hör hur ni jobbar och om vi kan hjälpa till.
+2. **Kartläggning** · Kostnadsfri — Vi går igenom flödet och ger er en offert med omfattning, tidsplan och
+   fast pris.
+3. **Bygge** · Fast pris — Vi bygger i steg och ni godkänner varje del. Mindre lösningar är ofta i drift
+   inom 1–2 veckor.
 
 ### Vanliga frågor
 

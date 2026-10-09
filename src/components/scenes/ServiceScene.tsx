@@ -329,7 +329,7 @@ export default function ServiceScene({ id }: { id: SceneId }) {
     <SceneStage
       durations={durations}
       className="relative overflow-hidden rounded-2xl bg-[#1B1613]"
-      sceneClassName="relative flex items-center p-[6%] md:aspect-[4/3]"
+      sceneClassName="relative flex items-center p-[6%] lg:aspect-[4/3]"
     >
       <span
         className="pointer-events-none absolute inset-0"

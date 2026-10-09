@@ -11,7 +11,7 @@ import SectionHeading from "@/components/SectionHeading";
 import ServiceExamples from "@/components/sections/ServiceExamples";
 import { facts } from "@/data/facts";
 import { faqPageSchema } from "@/data/faq";
-import { casesForService, getServiceBySlug, services, type ServiceTerm } from "@/data/services";
+import { casesForService, getServiceBySlug, services } from "@/data/services";
 
 type Params = { slug: string };
 
@@ -57,17 +57,35 @@ export default async function ServicePage({
   const proof = casesForService(service);
   const url = `${facts.url}/tjanster/${service.slug}`;
 
-  // Example-led pages (examples, gets, needs and their own price band in
-  // services.ts) and the older problems/builds layout share this template
-  // until every service has moved over.
+  // Example-led pages (Automatisering) and the older problems/builds layout
+  // (Egna system) share this template until every service has moved over.
   const exampleLed = Boolean(service.examples);
 
-  // Process and price are owned by /tjanster. This band only summarises them,
-  // from facts.ts, and links up to the full version.
-  const terms: ServiceTerm[] = service.terms ?? [
+  // Example-led pages: how a build goes, in three steps. No prices: build
+  // prices aren't shown on the site (owner, 2026-10-09).
+  const steps = [
+    {
+      title: "Introsamtal",
+      meta: `Kostnadsfritt · ${facts.introCall.minutes} min`,
+      desc: "Vi hör hur ni jobbar och om vi kan hjälpa till.",
+    },
+    {
+      title: "Kartläggning",
+      meta: "Kostnadsfri",
+      desc: "Vi går igenom flödet och ger er en offert med omfattning, tidsplan och fast pris.",
+    },
+    {
+      title: "Bygge",
+      meta: "Fast pris",
+      desc: `Vi bygger i steg och ni godkänner varje del. Mindre lösningar är ofta i drift inom ${facts.delivery.small}.`,
+    },
+  ];
+
+  // Older layout: process and terms are owned by /tjanster. This band only
+  // summarises them, from facts.ts, and links up to the full version.
+  const terms = [
     {
       num: "Kostnadsfritt",
-      unit: null,
       body: "Introsamtal och kartläggning är kostnadsfria. Ni får en offert med omfattning, tidsplan och fast pris innan ni bestämmer er.",
     },
     {
@@ -147,11 +165,11 @@ export default async function ServicePage({
 
       {exampleLed ? (
         <>
-          {/* 2. EXEMPEL — situation, before, after and the case; the scenes only illustrate */}
+          {/* 2. EXEMPEL — a grid of cards; the scenes only illustrate */}
           <section id="exempel" className="scroll-mt-28 py-16 md:py-24">
             <div className="max-w-[1100px] mx-auto px-6">
               {service.examplesHeading && (
-                <div className="mb-12 md:mb-16">
+                <div className="mb-12 md:mb-14">
                   <SectionHeading
                     line1={service.examplesHeading.line1}
                     line2={service.examplesHeading.line2}
@@ -164,34 +182,31 @@ export default async function ServicePage({
             </div>
           </section>
 
-          {/* 3. SÅ JOBBAR VI MED ER — what the customer gets, what we need from them */}
-          <section id="sa-jobbar-vi" className="scroll-mt-28 border-t border-[var(--color-border)] py-16 md:py-20">
+          {/* 3. SÅ GÅR DET TILL — three steps, the same strip as /tjanster */}
+          <section id="sa-gar-det-till" className="scroll-mt-28 border-t border-[var(--color-border)] py-16 md:py-20">
             <div className="max-w-[1100px] mx-auto px-6">
               <div className="mb-10">
-                <SectionHeading line1="SÅ JOBBAR VI" line2="MED ER." />
+                <SectionHeading line1="SÅ GÅR" line2="DET TILL." />
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16">
-                {[
-                  { title: "Ni får", items: service.gets ?? [] },
-                  { title: "Vi behöver från er", items: service.needs ?? [] },
-                ].map(({ title, items }) => (
-                  <div key={title}>
-                    <h3 className="text-label">{title}</h3>
-                    <ul className="mt-5 border-t border-[var(--color-border)]">
-                      {items.map((item) => (
-                        <li
-                          key={item}
-                          className="flex gap-4 border-b border-[var(--color-border)] py-4 text-base font-medium leading-relaxed text-[var(--color-text-body)]"
-                        >
-                          <span aria-hidden="true" className="mt-[0.6em] h-1.5 w-1.5 shrink-0 rounded-full bg-[#D4622B]" />
-                          {item}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
+              <ol className="grid grid-cols-1 sm:grid-cols-3 gap-x-6 gap-y-10">
+                {steps.map((step, i) => (
+                  <li key={step.title} className="border-t border-[var(--color-border)] pt-6">
+                    <span className="block font-display text-[2rem] leading-none tracking-wide text-[var(--color-accent)]">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <h3 className="mt-4 text-lg md:text-xl font-semibold tracking-[-0.02em] leading-[1.2] text-[var(--color-text)]">
+                      {step.title}
+                    </h3>
+                    <p className="mt-1 text-[13px] font-bold tracking-[0.05em] uppercase text-[var(--color-muted)]">
+                      {step.meta}
+                    </p>
+                    <p className="mt-3 text-[15px] font-medium leading-relaxed text-[var(--color-text-body)]">
+                      {step.desc}
+                    </p>
+                  </li>
                 ))}
-              </div>
+              </ol>
             </div>
           </section>
         </>
@@ -280,68 +295,50 @@ export default async function ServicePage({
               </Link>
             </div>
           </section>
+
+          {/* 5. UPPLÄGG — summary; /tjanster owns the full version */}
+          <EspressoBand>
+            <div id="pris" className="scroll-mt-28 relative z-10 max-w-[1100px] mx-auto px-6 py-20 md:py-28">
+              <div className="mb-12 md:mb-16">
+                <SectionHeading
+                  tone="dark"
+                  line1="VÅRT"
+                  line2="UPPLÄGG."
+                  intro="Samma upplägg som för allt vi bygger: först en kartläggning, sedan ett fast pris för bygget."
+                />
+              </div>
+
+              <ul className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-8">
+                {terms.map(({ num, body }) => (
+                  <li key={num} className="border-l border-white/10 pl-8">
+                    <span className="block mb-3 font-display text-4xl md:text-5xl leading-none tracking-wide uppercase text-white">
+                      {num}
+                    </span>
+                    <p className="text-base text-white/70 leading-relaxed max-w-[40ch]">{body}</p>
+                  </li>
+                ))}
+              </ul>
+
+              <div className="mt-12 md:mt-16 flex flex-wrap gap-x-10 gap-y-4">
+                <Link
+                  href="/tjanster#sa-jobbar-vi"
+                  className="inline-flex items-center gap-2 font-display text-sm font-bold tracking-[0.18em] uppercase text-white hover:text-[#E8833A] transition-colors duration-300"
+                >
+                  SÅ JOBBAR VI
+                  <Arrow />
+                </Link>
+                <Link
+                  href="/tjanster#vad-det-kostar"
+                  className="inline-flex items-center gap-2 font-display text-sm font-bold tracking-[0.18em] uppercase text-white hover:text-[#E8833A] transition-colors duration-300"
+                >
+                  VILLKOR
+                  <Arrow />
+                </Link>
+              </div>
+            </div>
+          </EspressoBand>
         </>
       )}
-
-      {/* 5. UPPLÄGG — summary; /tjanster owns the full version */}
-      <EspressoBand>
-        <div id="pris" className="scroll-mt-28 relative z-10 max-w-[1100px] mx-auto px-6 py-20 md:py-28">
-          <div className="mb-12 md:mb-16">
-            <SectionHeading
-              tone="dark"
-              line1="VÅRT"
-              line2="UPPLÄGG."
-              intro="Samma upplägg som för allt vi bygger: först en kartläggning, sedan ett fast pris för bygget."
-            />
-          </div>
-
-          <ul
-            className={`grid grid-cols-1 gap-10 ${
-              terms.length === 4 ? "md:grid-cols-2 md:gap-x-12 md:gap-y-14" : "md:grid-cols-3 md:gap-8"
-            }`}
-          >
-            {terms.map(({ num, unit, note, body }) => (
-              <li key={num} className="border-l border-white/10 pl-8">
-                <div className="flex items-baseline flex-wrap gap-x-3 gap-y-1 mb-3">
-                  {unit && (
-                    <span className="text-sm text-white/70 uppercase tracking-widest">{unit}</span>
-                  )}
-                  <span className="font-display text-4xl md:text-5xl leading-none tracking-wide uppercase text-white">
-                    {num}
-                  </span>
-                  {note && (
-                    <span className="text-sm text-white/70 uppercase tracking-widest">{note}</span>
-                  )}
-                </div>
-                <p className="text-base text-white/70 leading-relaxed max-w-[44ch]">{body}</p>
-              </li>
-            ))}
-          </ul>
-
-          {service.termsNote && (
-            <p className="mt-12 md:mt-14 border-t border-white/10 pt-8 text-base text-white/70 leading-relaxed max-w-[72ch]">
-              {service.termsNote}
-            </p>
-          )}
-
-          <div className="mt-12 md:mt-16 flex flex-wrap gap-x-10 gap-y-4">
-            <Link
-              href="/tjanster#sa-jobbar-vi"
-              className="inline-flex items-center gap-2 font-display text-sm font-bold tracking-[0.18em] uppercase text-white hover:text-[#E8833A] transition-colors duration-300"
-            >
-              SÅ JOBBAR VI
-              <Arrow />
-            </Link>
-            <Link
-              href="/tjanster#vad-det-kostar"
-              className="inline-flex items-center gap-2 font-display text-sm font-bold tracking-[0.18em] uppercase text-white hover:text-[#E8833A] transition-colors duration-300"
-            >
-              VILLKOR
-              <Arrow />
-            </Link>
-          </div>
-        </div>
-      </EspressoBand>
 
       {/* 6. FAQ — only questions specific to this service */}
       <section id="vanliga-fragor" className="scroll-mt-28 py-16 md:py-20">

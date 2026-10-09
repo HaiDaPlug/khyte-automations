@@ -11,10 +11,10 @@ import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 
  * with CSS transitions. This component only advances --step on a timer, so the
  * animation costs one timeout per step and no animation library.
  *
- * It renders the last step until the scene first comes into view: crawlers,
- * no-JS visitors and the first paint all see the finished state. On first
- * view it rewinds and plays from the start. With reduced motion it never
- * moves. Off screen it pauses where it is.
+ * It starts on the last step, the finished state, so a visitor always sees
+ * what the example is before it moves; crawlers and no-JS visitors see the
+ * same. In view, it holds that state, rewinds and plays the steps on a loop.
+ * With reduced motion it never moves. Off screen it pauses where it is.
  */
 export default function SceneStage({
   durations,
@@ -32,23 +32,13 @@ export default function SceneStage({
 }) {
   const last = durations.length - 1;
   const ref = useRef<HTMLDivElement>(null);
-  const started = useRef(false);
   const [step, setStep] = useState(last);
   const [inView, setInView] = useState(false);
 
   useEffect(() => {
     const el = ref.current;
     if (!el || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && !started.current) {
-          started.current = true;
-          setStep(0);
-        }
-        setInView(entry.isIntersecting);
-      },
-      { threshold: 0.35 },
-    );
+    const io = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting), { threshold: 0.35 });
     io.observe(el);
     return () => io.disconnect();
   }, []);
