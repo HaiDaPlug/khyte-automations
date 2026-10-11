@@ -7,6 +7,7 @@ const SITE_URL = "https://khyte.se";
 const staticRoutes = [
   "",
   "/tjanster",
+  "/tjanster/ai-konsultation",
   "/case",
   "/om-oss",
   "/kontakt",

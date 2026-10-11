@@ -30,4 +30,15 @@ export const facts = {
     small: "1–2 veckor",
     large: "4–6 veckor",
   },
+  /**
+   * AI-konsultation: a fixed-price session (owner, 2026-10-11). The only price
+   * on the site; build prices are quote-only. The fee is credited toward a
+   * later automation or system build, with no expiry.
+   */
+  consultation: {
+    price: "2 990 kr",
+    vat: "exkl. moms",
+    minutes: 90,
+    deliveryDays: "två arbetsdagar",
+  },
 } as const;

@@ -316,7 +316,16 @@ har ingen bindningstid, och upplägget för överlämningen specificerar vi i of
 
 ---
 
-## 4. `/tjanster/ai-radgivning` — new page
+## 4. `/tjanster/ai-konsultation` — drafted on `feat/ai-konsultation` (2026-10-11)
+
+> **2026-10-11 (owner):** the offer is called **AI-konsultation** (was AI-rådgivning); 2 990 kr exkl. moms
+> at launch, 90 minutes. The page is light and minimal: the problem first, an offer card beside it,
+> "Frågor som många har", two cards for what is and isn't included (green checks, red crosses), the fee
+> credited toward a later build, how it works, FAQ. No dark price band. Built as its own route
+> (`src/app/tjanster/ai-konsultation/page.tsx`), not the examples template. Booking opens an email with the
+> preparation questions until a form is decided. The draft below is the earlier copy it was built from.
+
+### Earlier draft (AI-rådgivning)
 
 **Buyer's situation:** "I want to understand AI better, choose the right tools or work out how to use it
 in my job, and want someone to prepare around my questions."
