@@ -322,8 +322,12 @@ har ingen bindningstid, och upplägget för överlämningen specificerar vi i of
 > at launch, 90 minutes. The page is light and minimal: the problem first, an offer card beside it,
 > "Frågor som många har", two cards for what is and isn't included (green checks, red crosses), the fee
 > credited toward a later build, how it works, FAQ. No dark price band. Built as its own route
-> (`src/app/tjanster/ai-konsultation/page.tsx`), not the examples template. Booking opens an email with the
-> preparation questions until a form is decided. The draft below is the earlier copy it was built from.
+> (`src/app/tjanster/ai-konsultation/page.tsx`), not the examples template. Booking is a four-step form
+> (#boka: om dig → ditt arbete och AI-vana, verktyg, AI-riktlinjer → fokus, frågor, mål → upplägg) that
+> mails Hai via SALES_EMAIL (reply goes to the customer) and sends the customer a confirmation. Follow-up
+> questions are included in practice but not promised on the page (owner, 2026-10-12). The price is a
+> launch price the owner will raise with demand; the page shows it plainly (no "introduktionspris" label).
+> The draft below is the earlier copy it was built from.
 
 ### Earlier draft (AI-rådgivning)
 

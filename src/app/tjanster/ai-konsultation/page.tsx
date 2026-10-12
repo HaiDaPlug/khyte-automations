@@ -5,6 +5,7 @@ import FAQAccordion from "@/components/FAQAccordion";
 import JsonLd from "@/components/JsonLd";
 import PageHeader from "@/components/PageHeader";
 import SectionHeading from "@/components/SectionHeading";
+import KonsultationForm from "@/components/sections/KonsultationForm";
 import { facts } from "@/data/facts";
 import { faqPageSchema, type FAQEntry } from "@/data/faq";
 
@@ -17,8 +18,11 @@ import { faqPageSchema, type FAQEntry } from "@/data/faq";
  * band), the problem first, example questions people start with, two cards for
  * what's included and what isn't, and the fee credited toward a later build.
  *
- * Booking is a request, confirmed personally by Hai, invoiced afterwards. For
- * now the button opens an email with the preparation questions filled in.
+ * Booking is a request through the form in #boka (KonsultationForm →
+ * /api/ai-konsultation → mail to SALES_EMAIL and a confirmation to the
+ * customer), confirmed personally by Hai and invoiced afterwards. Follow-up
+ * questions after the session are included but deliberately not promised on
+ * the page (owner, 2026-10-12).
  */
 
 const c = facts.consultation;
@@ -30,30 +34,6 @@ export const metadata: Metadata = {
   description: `Personlig AI-konsultation för dig i företaget: ${c.minutes} minuter kring dina frågor, förberedd i förväg, med ett skriftligt underlag inom ${c.deliveryDays}. ${c.price} ${c.vat}.`,
   alternates: { canonical: "/tjanster/ai-konsultation" },
 };
-
-const bookingBody = `Hej!
-
-Jag vill boka en AI-konsultation.
-
-Namn:
-Företag:
-Telefon:
-
-1. Vad jobbar du med?
-
-2. Vilka frågor, utmaningar eller uppgifter vill du att vi fokuserar på?
-
-3. Vilka verktyg använder du i ditt arbete i dag?
-
-4. Vad har du redan testat med AI?
-
-5. Vad vill du förstå eller kunna göra efter konsultationen?
-
-På distans eller på plats:
-Tider som passar:
-`;
-
-const bookingHref = `mailto:${facts.email}?subject=${encodeURIComponent("Bokningsförfrågan: AI-konsultation")}&body=${encodeURIComponent(bookingBody)}`;
 
 const startingQuestions = [
   "Vilket AI-verktyg passar mitt jobb?",
@@ -247,7 +227,7 @@ export default function AiKonsultationPage() {
                 </li>
               </ul>
 
-              <Button variant="primary" href={bookingHref} className="mt-8 w-full">
+              <Button variant="primary" href="#boka" className="mt-8 w-full">
                 Skicka bokningsförfrågan
               </Button>
               <p className="mt-4 text-sm leading-relaxed text-[var(--color-text-body)]">
@@ -319,7 +299,7 @@ export default function AiKonsultationPage() {
               Anlitar du oss senare för en automation eller ett eget system räknas hela avgiften av mot
               priset. Det finns ingen tidsgräns.
             </p>
-            <Button variant="primary" href={bookingHref} className="shrink-0">
+            <Button variant="primary" href="#boka" className="shrink-0">
               Skicka bokningsförfrågan
             </Button>
           </div>
@@ -355,7 +335,36 @@ export default function AiKonsultationPage() {
         </div>
       </section>
 
-      {/* 5. FAQ */}
+      {/* 5. BOKA — the request form */}
+      <section id="boka" className="scroll-mt-28 border-t border-[var(--color-border)] py-20 md:py-28">
+        <div className="max-w-[1100px] mx-auto px-6 lg:grid lg:grid-cols-12 lg:gap-12">
+          <div className="mb-10 lg:col-span-4 lg:mb-0">
+            <SectionHeading
+              line1="BOKA DIN"
+              line2="KONSULTATION."
+              intro="Fyra korta steg. Dina svar gör att vi kan förbereda oss på riktigt."
+            />
+            <ul className="mt-8 space-y-3 text-[15px] font-medium leading-relaxed text-[var(--color-text-body)]">
+              {[
+                `${c.price} ${c.vat}, faktura efter konsultationen`,
+                "Vi bekräftar tiden personligen",
+                `Skriftligt underlag inom ${c.deliveryDays}`,
+                "Avgiften räknas av om vi bygger något senare",
+              ].map((rad) => (
+                <li key={rad} className="flex gap-3">
+                  <Mark ok />
+                  {rad}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="lg:col-span-8">
+            <KonsultationForm />
+          </div>
+        </div>
+      </section>
+
+      {/* 6. FAQ */}
       <section id="vanliga-fragor" className="scroll-mt-28 border-t border-[var(--color-border)] py-20 md:py-28">
         <div className="max-w-[1100px] mx-auto px-6 lg:grid lg:grid-cols-12 lg:gap-12">
           <div className="mb-10 lg:col-span-4 lg:mb-0">
