@@ -30,8 +30,9 @@ export async function generateMetadata({
   const { slug } = await params;
   const s = getServiceBySlug(slug);
   if (!s) return {};
-  // No openGraph here: the layout's siteName/locale/image apply, and Next fills
-  // og:title / og:description from this page's own title and description.
+  // No openGraph here: the layout's siteName/locale apply, the image comes from
+  // opengraph-image.tsx next to this file, and Next fills og:title /
+  // og:description from this page's own title and description.
   return {
     title: s.seoTitle,
     description: s.metaDescription,

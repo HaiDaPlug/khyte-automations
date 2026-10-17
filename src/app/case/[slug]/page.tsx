@@ -25,12 +25,12 @@ export async function generateMetadata({
     description: c.metaDescription,
     alternates: { canonical: `/case/${slug}` },
     // A page-level openGraph replaces the layout's, so siteName and locale are
-    // repeated here. Title and description are filled in from the page's own.
+    // repeated here. Title and description are filled in from the page's own,
+    // and the image from opengraph-image.tsx next to this file.
     openGraph: {
       siteName: facts.name,
       locale: "sv_SE",
       type: "article",
-      images: [{ url: c.image, width: 1600, height: 900, alt: `${c.company} x ${facts.name}` }],
     },
   };
 }
